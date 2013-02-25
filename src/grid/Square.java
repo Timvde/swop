@@ -14,7 +14,7 @@ public class Square extends ASquare {
 	
 	@Override
 	public List<IItem> getItemList() {
-		List<IItem> itemList = new ArrayList<>();
+		List<IItem> itemList = new ArrayList<IItem>();
 		for (Placeable placeable : placeableList)
 			if (placeable instanceof IItem)
 				itemList.add((IItem) placeable);
