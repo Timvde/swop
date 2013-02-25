@@ -16,18 +16,13 @@ public class Square extends ASquare {
 	
 	@Override
 	public List<IItem> getItemList() {
-		List<IItem> itemList = new ArrayList<IItem>();
-		
-		for (IItem item : itemList)
-			itemList.add(item);
-		
-		return itemList;
+		return new ArrayList<IItem>(this.itemList);
 	}
 	
 	/**
-	 * Returns whether or not a lightrail is currently active on this square.
+	 * Returns whether or not a light trail is currently active on this square.
 	 * 
-	 * @return whether or not a lightrail is currently active on this square.
+	 * @return whether or not a light trail is currently active on this square.
 	 */
 	public boolean hasLightTrail() {
 		return this.hasLightTrail;
