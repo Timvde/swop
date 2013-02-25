@@ -1,4 +1,4 @@
-package grid;
+package player;
 
 import java.util.List;
 

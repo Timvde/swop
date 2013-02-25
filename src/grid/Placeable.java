@@ -1,5 +1,5 @@
 package grid;
 
-public class Placeable {
+public interface Placeable {
 	
 }

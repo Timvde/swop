@@ -1,4 +1,5 @@
-package grid;
+package item;
+
 
 public class LightGrenade extends Item {
 	

@@ -1,4 +1,6 @@
-package grid;
+package item;
+
+import grid.Placeable;
 
 public class Item extends Placeable {
 	

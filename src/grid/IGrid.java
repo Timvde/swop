@@ -1,5 +1,6 @@
 package grid;
 
+import item.Item;
 import java.util.List;
 
 /**
