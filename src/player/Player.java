@@ -1,5 +1,7 @@
 package player;
 
+import grid.Coordinate;
+import item.Item;
 import java.util.List;
 import notnullcheckweaver.NotNull;
 

@@ -2,6 +2,7 @@ package grid;
 
 import item.Item;
 import java.util.List;
+import player.Player;
 
 /**
  * TODO

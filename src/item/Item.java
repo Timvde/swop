@@ -2,7 +2,7 @@ package item;
 
 import grid.Placeable;
 
-public class Item extends Placeable {
+public class Item implements Placeable {
 	
 	private boolean	isCarriable;
 	private int		id;
