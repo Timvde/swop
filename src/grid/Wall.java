@@ -1,13 +1,14 @@
 package grid;
 
-import item.Item;
+import item.IItem;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Wall extends ASquare {
 
 	@Override
-	public List<Item> getItemList() {
-		return null;
+	public List<IItem> getItemList() {
+		return new ArrayList<>();
 	}
 	
 }

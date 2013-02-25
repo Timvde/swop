@@ -1,6 +1,6 @@
 package player;
 
-import grid.Placeable;
+import item.Placeable;
 
 public class LightTrailPart implements Placeable {
 	

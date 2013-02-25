@@ -1,4 +1,4 @@
-package grid;
+package item;
 
 public interface Placeable {
 	
