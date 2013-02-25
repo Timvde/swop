@@ -16,11 +16,12 @@ public class Player implements IPlayer {
 	private Coordinate				targetPosition;
 	@NotNull
 	private Inventory				inventory	= new Inventory();
+	@NotNull
+	private LightTrail				lightTrail	= new LightTrail();
 	
 	public Player(@NotNull Coordinate targetPosition) {
 		this.id = nextID.incrementAndGet();
 		this.targetPosition = targetPosition;
-		this.inventory = new Inventory();
 	}
 	
 	@Override
@@ -30,7 +31,7 @@ public class Player implements IPlayer {
 	
 	@Override
 	public Coordinate getTargetPosition() {
-		return null;
+		return this.targetPosition;
 	}
 	
 	@Override
