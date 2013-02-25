@@ -8,14 +8,16 @@ import notnullcheckweaver.NotNull;
 
 public class Player implements IPlayer {
 	
-	private int						id;
-	private static AtomicInteger	nextID		= new AtomicInteger();
-	private Coordinate				targetPosition;
-	private Inventory				inventory	= new Inventory();
+	@NotNull private int						id;
+	@NotNull private static AtomicInteger	nextID		= new AtomicInteger();
+	@NotNull private Coordinate				targetPosition;
+	@NotNull private Inventory				inventory	= new Inventory();
+
 	
 	public Player(@NotNull Coordinate targetPosition) {
 		this.id = nextID.incrementAndGet();
 		this.targetPosition = targetPosition;
+		this.inventory = new Inventory();
 	}
 	
 	@Override

@@ -10,10 +10,25 @@ import item.Item;
  */
 public interface IPlayer {
 	
+	/**
+	 * Returns the unique ID-number associated with this player.
+	 * 
+	 * @return the unique ID-number associated with this player.
+	 */
 	public int getID();
 	
+	/**
+	 * Returns the coordinate this player has to reach.
+	 * 
+	 * @return the coordinate this player has to reach.
+	 */
 	public Coordinate getTargetPosition();
 	
+	/**
+	 * Returns the Inventory-content associated with this player.
+	 * 
+	 * @return the Inventory-content associated with this player.
+	 */
 	public List<Item> getInventory();
 	
 }
