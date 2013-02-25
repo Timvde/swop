@@ -7,13 +7,14 @@ import notnullcheckweaver.NotNull;
 
 public class Player implements IPlayer {
 	
-	int			id;
-	Coordinate	targetPosition;
-	Inventory inventory = new Inventory();
+	@NotNull int id;
+	@NotNull Coordinate targetPosition;
+	@NotNull Inventory inventory;
 	
 	public Player(@NotNull int id, @NotNull Coordinate targetPosition) {
 		this.id = id;
 		this.targetPosition = targetPosition;
+		this.inventory = new Inventory();
 	}
 	
 	@Override
