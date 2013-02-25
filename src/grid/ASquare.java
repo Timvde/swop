@@ -1,7 +1,7 @@
 package grid;
 
 import java.util.List;
-import item.Item;
+import item.IItem;
 
 
 public abstract class ASquare {
@@ -9,5 +9,5 @@ public abstract class ASquare {
 	/**
 	 * returns the items on this square
 	 */
-	public abstract List<Item> getItemList();
+	public abstract List<IItem> getItemList();
 }

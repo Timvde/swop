@@ -3,16 +3,24 @@ package player;
 import grid.Coordinate;
 import item.Item;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import notnullcheckweaver.NotNull;
 
 public class Player implements IPlayer {
 	
-	int			id;
-	Coordinate	targetPosition;
-	Inventory inventory = new Inventory();
+	@NotNull
+	private int						id;
+	@NotNull
+	private static AtomicInteger	nextID		= new AtomicInteger();
+	@NotNull
+	private Coordinate				targetPosition;
+	@NotNull
+	private Inventory				inventory	= new Inventory();
+	@NotNull
+	private LightTrail				lightTrail	= new LightTrail();
 	
-	public Player(@NotNull int id, @NotNull Coordinate targetPosition) {
-		this.id = id;
+	public Player(@NotNull Coordinate targetPosition) {
+		this.id = nextID.incrementAndGet();
 		this.targetPosition = targetPosition;
 	}
 	
@@ -23,7 +31,7 @@ public class Player implements IPlayer {
 	
 	@Override
 	public Coordinate getTargetPosition() {
-		return null;
+		return this.targetPosition;
 	}
 	
 	@Override
