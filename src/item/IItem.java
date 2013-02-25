@@ -1,6 +1,6 @@
 package item;
 
-public interface IItem extends Placeable {
+public interface IItem {
 	
 	public int getId();
 	
