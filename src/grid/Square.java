@@ -10,7 +10,7 @@ public class Square extends ASquare {
 	private List<Placeable>	placeableList;
 	
 	private IPlayer			player;
-
+	
 	@Override
 	public List<Item> getItemList() {
 		List<Item> itemList = new ArrayList<>();
