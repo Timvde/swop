@@ -1,6 +1,6 @@
 package grid;
 
-import item.Item;
+import item.IItem;
 import java.util.HashMap;
 import java.util.List;
 import player.Player;
@@ -24,7 +24,7 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public List<Item> getItemList(Coordinate coordinate) {
+	public List<IItem> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getItemList();
 	}
 	
