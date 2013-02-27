@@ -45,6 +45,10 @@ public abstract class AGUI {
 		frame.setVisible(true);
 	}
 	
+	public JPanel getPanel() {
+		return this.panel;
+	}
+	
 	public abstract void paint(Graphics2D graphics);
 	
 	public void handleMouseClick(int x, int y, boolean doubleClick) {
