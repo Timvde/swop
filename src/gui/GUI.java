@@ -22,7 +22,8 @@ import gui.AGUI;
  * This class is the GUI for interacting with the game.
  * 
  * For correct threading, the GUI must be started like this:
- * java.awt.EventQueue.invokeLater(new GUI(moveCont, pickupCont, endTurnCont, useItemCont));
+ * java.awt.EventQueue.invokeLater(new GUI(moveCont, pickupCont, endTurnCont,
+ * useItemCont));
  * 
  * @author Tom
  */
@@ -95,13 +96,17 @@ public class GUI implements Runnable {
 					
 					// Draw players if necessary
 					if (player != null) {
-						if (player.getID() == 0) {
-							graphics.drawImage(playerBlueImage, guiCoord.getX(), guiCoord.getY(),
-									40, 40, null);
-						}
-						if (player.getID() == 1) {
-							graphics.drawImage(playerRedImage, guiCoord.getX(), guiCoord.getY(),
-									40, 40, null);
+						switch (player.getID()) {
+							case 0:
+								graphics.drawImage(playerBlueImage, guiCoord.getX(),
+										guiCoord.getY(), 40, 40, null);
+								break;
+							case 1:
+								graphics.drawImage(playerRedImage, guiCoord.getX(),
+										guiCoord.getY(), 40, 40, null);
+								break;
+							default:
+								break;
 						}
 					}
 					
