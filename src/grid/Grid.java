@@ -3,6 +3,7 @@ package grid;
 import item.IItem;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import player.Player;
 
 
@@ -26,6 +27,16 @@ public class Grid implements IGrid {
 	@Override
 	public List<IItem> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getItemList();
+	}
+	
+	@Override
+	public ASquare getSquareAt(Coordinate coordinate) {
+		return grid.get(coordinate);
+	}
+	
+	@Override
+	public Set<Coordinate> getAllGridCoordinates() {
+		return this.grid.keySet();
 	}
 	
 }

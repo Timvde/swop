@@ -3,6 +3,7 @@ package grid;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
+import player.IPlayer;
 
 /**
  * This class exists to enforce the wall restrictions as class invariants.
@@ -45,9 +46,20 @@ public class Wall {
 			return new ArrayList<IItem>();
 		}
 		
+		@Override
+		public IPlayer getPlayer() {
+			return null;
+		}
+
+		@Override
+		public boolean hasLightTrail() {
+			return false;
+		}
+		
 	}
 	
 	public List<WallPart> getWallParts() {
 		return parts;
 	}
+	
 }

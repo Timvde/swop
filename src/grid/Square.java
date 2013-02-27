@@ -19,13 +19,14 @@ public class Square extends ASquare {
 		return new ArrayList<IItem>(this.itemList);
 	}
 	
-	/**
-	 * Returns whether or not a light trail is currently active on this square.
-	 * 
-	 * @return whether or not a light trail is currently active on this square.
-	 */
+	@Override
 	public boolean hasLightTrail() {
 		return this.hasLightTrail;
+	}
+	
+	@Override
+	public IPlayer getPlayer() {
+		return this.player;
 	}
 	
 }
