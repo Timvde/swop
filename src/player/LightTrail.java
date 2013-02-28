@@ -1,7 +1,7 @@
 package player;
 
-import grid.Direction;
 import grid.Square;
+
 import java.util.LinkedList;
 
 /**
@@ -11,18 +11,19 @@ import java.util.LinkedList;
  * 
  */
 public class LightTrail implements ILightTrail {
-	
+
 	/**
 	 * The number of player-actions the lighttrailpart (one square) remains
 	 * visible.
 	 */
 	public static final int NUMBER_OF_ACTIONS_DELAY = 2;
-	
+
 	/**
 	 * The maximum lenght of a lightrail (in squares). At this moment fixed.
 	 */
 	private static final int MAX_LENGTH = 3;
 
+	//linked list with the first item = the square the player came from
 	private LinkedList<Square> lightTrailList;
 
 	/**
@@ -33,7 +34,7 @@ public class LightTrail implements ILightTrail {
 	public int getMaxLength() {
 		return MAX_LENGTH;
 	}
-	
+
 	/**
 	 * Returns the current length of this lightrail (in squares)
 	 * 
@@ -42,7 +43,7 @@ public class LightTrail implements ILightTrail {
 	public int getLightTrailLenght() {
 		return this.lightTrailList.size();
 	}
-	
+
 	/**
 	 * Returns an array with all the {@link Square}s that are part of this
 	 * lighttrail.
@@ -50,7 +51,9 @@ public class LightTrail implements ILightTrail {
 	 * @return an array of length <code>getLightTrailLength()</code> with all
 	 *         the {@link Square}s that are part of this lightrail.
 	 */
-	public Square[] getLightTrail();
+	public Square[] getLightTrail() {
+		return (Square[]) this.lightTrailList.toArray();
+	}
 
 	/**
 	 * This method updates the lightTrail after a one-square-move of the player
@@ -59,11 +62,15 @@ public class LightTrail implements ILightTrail {
 	 * @param direction
 	 *            The direction the player just moved in
 	 * 
-	 * <br>
-	 * <br>
-	 *            <b>NOTE: Do not call this method manually.</b> Lighttrails are
-	 *            updated automatically whith the move methods of {@link Player}
-	 *            FIXME ...
+	 * @note Do not call this method manually. Lighttrails are
+	 *       updated automatically as the player (and its lighttrail) move around the grid.
 	 */
-	public void updateLightTrail(Direction direction);
+	public void updateLightTrail(Square newSquare) {
+		if (this.getLightTrailLenght() >= this.getMaxLength()) {
+			Square last = this.lightTrailList.removeLast();
+			last.setHasLightTrail(false);
+		}
+		this.lightTrailList.addFirst(newSquare);
+		newSquare.setHasLightTrail(true);
+	}
 }
