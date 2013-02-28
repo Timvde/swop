@@ -1,13 +1,13 @@
 package grid;
 
-import grid.Wall.WallPart;
-import item.Item;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import grid.Wall.WallPart;
+import item.IItem;
 
 public class Grid implements IGrid {
 	
@@ -104,7 +104,7 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
-		
+		return false
 	}
 	
 	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
@@ -150,7 +150,6 @@ public class Grid implements IGrid {
 	
 	@Override
 	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -162,7 +161,7 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public List<Item> getItemList(Coordinate coordinate) {
+	public List<IItem> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getCarryableItems();
 	}
 	

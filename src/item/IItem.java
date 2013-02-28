@@ -21,5 +21,5 @@ public interface IItem {
 	 * 
 	 * @return whether or not this item can be picked up by a {@link Player}.
 	 */
-	public abstract boolean isCarriable();
+	public boolean isCarriable();
 }

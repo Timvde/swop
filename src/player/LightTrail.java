@@ -9,8 +9,22 @@ import java.util.LinkedList;
  * squares.
  * 
  */
-public class LightTrail {
+public class LightTrail implements ILightTrail {
+
+	/**
+	 * The maximum lenght of a lightrail (in squares). At this moment fixed.
+	 */
+	private static final int MAX_LENGTH = 3;
+
+	private LinkedList<Square> lightTrailList;
+
+	@Override
+	public int getMaxLength() {
+		return MAX_LENGTH;
+	}
 	
-	private LinkedList<Square>	lightTrailList;
-	
+	@Override
+	public int getLenght() {
+		return this.lightTrailList.size();
+	}
 }
