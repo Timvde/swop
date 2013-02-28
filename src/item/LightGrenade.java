@@ -4,40 +4,64 @@ import com.sun.istack.internal.NotNull;
 
 public class LightGrenade extends Item implements ILightGrenade {
 
+	// initial state is inactive
 	@NotNull
-	private LightGrenadeState state = LightGrenadeState.INACTIVE; // initial
-																	// state
+	private LightGrenadeState state = LightGrenadeState.INACTIVE;
 
 	@Override
 	public LightGrenadeState getState() {
 		return this.state;
 	}
 
-	public void explode() throws IllegalStateException {
-		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
-			throw new IllegalStateException();
-		this.state = LightGrenadeState.EXPLODED;
+	@Override
+	public void trigger() throws IllegalStateException {
+		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
+			throw new IllegalStateException("Illegal transition from "
+					+ this.state.toString() + " to 'triggered'");
+		this.state = LightGrenadeState.TRIGGERED;
 	}
 
-	public void enable() throws IllegalStateException {
+	/**
+	 * This method sets the state of the grenade to {@link LightGrenadeState}
+	 * .ACTIVE. It cannot be called until the player who dropped the
+	 * lightgrenade and triggered it, left the square.
+	 * 
+	 * @throws IllegalStateException
+	 *             The transition to the ACTIVE state must be valid from the
+	 *             current state:
+	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.ACTIVE)</code>
+	 */
+	void enable() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
-			throw new IllegalStateException();
+			throw new IllegalStateException("Illegal transition from "
+					+ this.state.toString() + " to 'enabled'");
 		this.state = LightGrenadeState.ACTIVE;
 	}
 
-	public void use() throws IllegalStateException {
-		if (!this.state
-				.isAllowedTransistionTo(LightGrenadeState.WAITING_FOR_PLAYER_LEAVE))
-			throw new IllegalStateException();
-		this.state = LightGrenadeState.WAITING_FOR_PLAYER_LEAVE;
+	/**
+	 * This method sets the state of the grenade to {@link LightGrenadeState}
+	 * .EXPLODED
+	 * 
+	 * @throws IllegalStateException
+	 *             The transition to the EXPLODED state must be valid from the
+	 *             current state:
+	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
+	 */
+	void explode() throws IllegalStateException {
+		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
+			throw new IllegalStateException("Illegal transition from "
+					+ this.state.toString() + " to 'exploded'");
+		this.state = LightGrenadeState.EXPLODED;
 	}
 
+	/**
+	 * only inactive grenades can be carried
+	 */
 	@Override
 	public boolean isCarriable() {
-		// exploded grenades cannot be carried
-		return this.state != LightGrenadeState.EXPLODED;
+		return this.state == LightGrenadeState.INACTIVE;
 	}
-	
+
 	/************************* LigthGrenadeEnum *************************/
 
 	/**
@@ -52,22 +76,21 @@ public class LightGrenade extends Item implements ILightGrenade {
 		INACTIVE {
 			@Override
 			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return (toState == this)
-						|| (toState == WAITING_FOR_PLAYER_LEAVE);
+				return (toState == this) || (toState == TRIGGERED);
 			}
 		},
 		/**
-		 * TODO
+		 * The grenade is dropped on a square by a player and will become active
+		 * once the player leaves the square
 		 */
-		WAITING_FOR_PLAYER_LEAVE {
+		TRIGGERED {
 			@Override
 			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
 				return (toState == this) || (toState == ACTIVE);
 			}
 		},
-
 		/**
-		 * the grenade is armed (after dropdown)
+		 * the grenade is armed
 		 */
 		ACTIVE {
 			@Override
