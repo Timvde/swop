@@ -12,6 +12,7 @@ import java.util.Set;
 public class Grid implements IGrid {
 	
 	private HashMap<Coordinate, ASquare>	grid;
+	private List<Wall>						walls;
 	private int								width;
 	private int								height;
 	
@@ -23,6 +24,7 @@ public class Grid implements IGrid {
 	private Grid(Builder builder) {
 		this.width = builder.width;
 		this.height = builder.height;
+		walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
@@ -43,12 +45,13 @@ public class Grid implements IGrid {
 		// a wall must have a length of two
 		if (wallLength < 2)
 			return;
-		Coordinate start = Coordinate.random(width, height);
-		Coordinate end = start.getRandomCoordinateWithDistance(wallLength);
-		while (!canPlaceWall(start, end)) {
+		
+		Coordinate start, end;
+		
+		do {
 			start = Coordinate.random(width, height);
 			end = start.getRandomCoordinateWithDistance(wallLength);
-		}
+		} while (!canPlaceWall(start, end));
 		// place the wall on the grid
 		placeWallOnGrid(start, end);
 	}
@@ -101,11 +104,7 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
-		Collection<Coordinate> positions = getWallPositions(start, end);
-		for (Coordinate coord : grid.keySet())
-			if (positions.contains(coord) && grid.get(coord).getClass() == WallPart.class)
-				return false;
-		return true;
+		
 	}
 	
 	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
