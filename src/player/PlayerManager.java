@@ -39,4 +39,14 @@ public class PlayerManager {
 		this.currentPlayer = (Player) playerList.keySet().toArray()[0];
 		this.currentNumberOfActions = 0;
 	}
+	
+	/**
+	 * Return the Coordinate of the current player.
+	 * 
+	 * @return
+	 * 			A Coordinate object that is the coordinate of the current player.
+	 */
+	public Coordinate getCurrentPlayerCoordinate() {
+		return this.playerList.get(currentPlayer);
+	}
 }

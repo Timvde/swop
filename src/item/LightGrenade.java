@@ -38,4 +38,9 @@ public class LightGrenade extends Item implements ILightGrenade{
 		return this.state != LightGrenadeState.EXPLODED;
 	}
 
+	@Override
+	public String toString() {
+		return "LightGrenade."+getId();
+	}
+
 }
