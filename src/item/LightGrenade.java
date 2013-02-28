@@ -37,6 +37,13 @@ public class LightGrenade extends Item implements ILightGrenade {
 		this.state = LightGrenadeState.EXPLODED;
 	}
 
+
+	@Override
+	public String toString() {
+		return "LightGrenade."+getId();
+	}
+
+
 	/**
 	 * only inactive grenades can be carried
 	 */
@@ -102,4 +109,5 @@ public class LightGrenade extends Item implements ILightGrenade {
 		 */
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
 	}
+
 }

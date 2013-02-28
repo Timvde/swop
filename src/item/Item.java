@@ -21,5 +21,10 @@ public abstract class Item implements IItem{
 	public Item() {
 		this.id = nextID.incrementAndGet();
 	}
+	
+	/**
+	 * Return a string representation of this item.
+	 */
+	public abstract String toString();
 
 }

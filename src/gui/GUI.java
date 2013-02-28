@@ -1,18 +1,27 @@
 package gui;
 
+import game.Game;
 import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.Wall;
 import item.IItem;
+import item.Item;
 import item.LightGrenade;
-
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
+import java.util.Vector;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import player.IPlayer;
+import player.PlayerManager;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -22,8 +31,9 @@ import controllers.UseItemController;
  * This class is the GUI for interacting with the game.
  * 
  * For correct threading, the GUI must be started like this:
- * java.awt.EventQueue.invokeLater(new GUI(moveCont, pickupCont, endTurnCont,
- * useItemCont));
+ * java.awt.EventQueue.invokeLater(new GUI(Game game, PlayerManager
+ * playerManager, MoveController moveCont, PickUpItemController pickupCont,
+ * EndTurnController endturnCont, UseItemController useitemCont));
  * 
  * @author Tom
  */
@@ -31,6 +41,9 @@ public class GUI implements Runnable {
 	
 	private AGUI					gui;
 	private Grid					grid;
+	private Game					game;
+	// TODO playermanager niet gebruiken maar pickupitem controller
+	private PlayerManager			playerManager;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -65,6 +78,14 @@ public class GUI implements Runnable {
 	private Image					finishRed;
 	
 	/**
+	 * This is the list of items that the current player can interact with.
+	 */
+	private gui.List				itemList;
+	private Object					itemListSelected;
+	private gui.List				inventoryList;
+	private Object					inventoryListSelected;
+	
+	/**
 	 * Offsets that determine where the top left position of the grid will be.
 	 */
 	private int						topLeftGridOffsetX	= 150;
@@ -82,9 +103,11 @@ public class GUI implements Runnable {
 	 * @param useitemCont
 	 *        The use item controller.
 	 */
-	public GUI(MoveController moveCont, PickUpItemController pickupCont,
-			EndTurnController endturnCont, UseItemController useitemCont) {
-		
+	public GUI(Game game, PlayerManager playerManager, MoveController moveCont,
+			PickUpItemController pickupCont, EndTurnController endturnCont,
+			UseItemController useitemCont) {
+		this.game = game;
+		this.playerManager = playerManager;
 		this.moveController = moveCont;
 		this.pickUpController = pickupCont;
 		this.endTurnController = endturnCont;
@@ -103,11 +126,14 @@ public class GUI implements Runnable {
 			public void paint(Graphics2D graphics) {
 				// This block is executed with each repaint():
 				
+				
+				
 				// Adjust the grid dimensions and GUI size:
-				numRows = getGridNumRows(grid);
-				numCols = getGridNumCols(grid);
-				gui.getPanel()
-						.setSize(200 + (SQUARE_SIZE * numCols), 200 + (SQUARE_SIZE * numRows));
+				// numRows = getGridNumRows(grid);
+				// numCols = getGridNumCols(grid);
+				// gui.getPanel()
+				// .setSize(200 + (SQUARE_SIZE * numCols), 200 + (SQUARE_SIZE *
+				// numRows));
 				
 				// Draw grid lines
 				for (int r = 0; r < numRows; r++) {
@@ -118,60 +144,85 @@ public class GUI implements Runnable {
 					}
 				}
 				
-				// Populate the grid squares with the correct images:
-				Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
+				// // Populate the grid squares with the correct images:
+				// Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
+				//
+				// for (Coordinate c : gridCoords) {
+				// ASquare square = grid.getSquareAt(c);
+				// IPlayer player = square.getPlayer();
+				// Coordinate guiCoord = toGUICoord(c);
+				//
+				// // Draw players if necessary
+				// if (player != null) {
+				// switch (player.getID()) {
+				// case 0:
+				// graphics.drawImage(playerBlueImage, guiCoord.getX(),
+				// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+				// break;
+				// case 1:
+				// graphics.drawImage(playerRedImage, guiCoord.getX(),
+				// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+				// break;
+				// default:
+				// break;
+				// }
+				// }
+				//
+				// // Draw wall if necessary
+				// if (square instanceof Wall.WallPart) {
+				// graphics.drawImage(wallImage, guiCoord.getX(),
+				// guiCoord.getY(),
+				// SQUARE_SIZE, SQUARE_SIZE, null);
+				// }
+				//
+				// // Draw lighttrail if necessary
+				// if (square.hasLightTrail()) {
+				// graphics.drawImage(lightTrailImage, guiCoord.getX(),
+				// guiCoord.getY(),
+				// SQUARE_SIZE, SQUARE_SIZE, null);
+				// }
+				//
+				// // Draw items if necessary
+				// List<IItem> itemList = square.getCarryableItems();
+				// for (Item i : itemList) {
+				// if (i instanceof LightGrenade) {
+				// graphics.drawImage(lightGrenadeImage, guiCoord.getX(),
+				// guiCoord.getY(),
+				// SQUARE_SIZE, SQUARE_SIZE, null);
+				// }
+				// }
+				//
+				// }
+				//
+				// // Draw the two finish squares:
+				// Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0,
+				// numRows));
+				// Coordinate guiCoordFinishBlue = toGUICoord(new
+				// Coordinate(numCols, 0));
+				// graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
+				// guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+				// graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
+				// guiCoordFinishRed.getY(),
+				// SQUARE_SIZE, SQUARE_SIZE, null);
+				// Draw the list of items that are on the current square.
+				// Coordinate currentPlayerPosition =
+				// playerManager.getCurrentPlayerCoordinate();
+				// ASquare playerSquare =
+				// grid.getSquareAt(currentPlayerPosition);
+				//
+				// List<Item> items = playerSquare.getCarryableItems();
+
 				
-				for (Coordinate c : gridCoords) {
-					ASquare square = grid.getSquareAt(c);
-					IPlayer player = square.getPlayer();
-					Coordinate guiCoord = toGUICoord(c);
-					
-					// Draw players if necessary
-					if (player != null) {
-						switch (player.getID()) {
-							case 0:
-								graphics.drawImage(playerBlueImage, guiCoord.getX(),
-										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-								break;
-							case 1:
-								graphics.drawImage(playerRedImage, guiCoord.getX(),
-										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-								break;
-							default:
-								break;
-						}
-					}
-					
-					// Draw wall if necessary
-					if (square instanceof Wall.WallPart) {
-						graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
-								SQUARE_SIZE, SQUARE_SIZE, null);
-					}
-					
-					// Draw lighttrail if necessary
-					if (square.hasLightTrail()) {
-						graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
-								SQUARE_SIZE, SQUARE_SIZE, null);
-					}
-					
-					// Draw items if necessary
-					List<IItem> itemList = square.getCarryableItems();
-					for (IItem i : itemList) {
-						if (i instanceof LightGrenade) {
-							graphics.drawImage(lightGrenadeImage, guiCoord.getX(), guiCoord.getY(),
-									SQUARE_SIZE, SQUARE_SIZE, null);
-						}
-					}
-					
-				}
+				Vector<Item> items = new Vector<Item>();
 				
-				// Draw the two finish squares:
-				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, numRows));
-				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(numCols, 0));
-				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
-						SQUARE_SIZE, SQUARE_SIZE, null);
+				// for (Item i : items) {
+				// items.add(i);
+				// }
+				Item i = new LightGrenade();
+				items.add(i);
+				
+				itemList.setListData(items);
+				
 				
 			}
 			
@@ -279,15 +330,18 @@ public class GUI implements Runnable {
 		int actionButtonsOffsetX = 10;
 		int actionButtonsOffsetY = 180;
 		
-		Button pickMineUpButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY, 120,
+		Button pickItemUpButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY, 120,
 				30, new Runnable() {
 					
 					public void run() {
-						// TODO pick mine up button pressed
+						// TODO button pick up pressed
+						// Gebruik instance var itemListSelected. Dat is het
+						// item object dat selected is
+						System.out.println(itemListSelected);
 						gui.repaint();
 					}
 				});
-		pickMineUpButton.setText("Pickup mine");
+		pickItemUpButton.setText("Pick up item");
 		// ----
 		Button dropMineButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
 				120, 30, new Runnable() {
@@ -299,6 +353,31 @@ public class GUI implements Runnable {
 				});
 		dropMineButton.setText("Drop mine");
 		/* ---- ---- ---- ----END OF ACTION BUTTONS---- ---- ---- ---- */
+		
+		/* ---- ---- ---- ----        LISTS        ---- ---- ---- ---- */
+		itemList = gui.createList(10, 280, 120, 100, new Runnable() {
+			
+			public void run() {
+				// each time the selection in the list is changed, the
+				// itemListSelected instance variable will update.
+				Object selectedValue = itemList.getSelectedValue();
+
+				// only update if it's a select operation, and not a deselect
+				if (selectedValue != null) {
+					itemListSelected = itemList.getSelectedValue();
+				}
+			}
+		});
+		// ---
+		inventoryList = gui.createList(10, 410, 120, 100, new Runnable() {
+			
+			public void run() {
+				// each time the selection in the list is changed, the
+				// inventoryListSelected instance variable will update.
+				
+			}
+		});
+		/* ---- ---- ---- ----    END OF LISTS     ---- ---- ---- ---- */
 	}
 	
 	/**
