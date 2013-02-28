@@ -13,13 +13,11 @@ public class Grid implements IGrid {
 	
 	@Override
 	public boolean canMovePlayer(Player player, Direction direction) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public void movePlayer(Player player, Direction direction) {
-		// TODO Auto-generated method stub
 		
 	}
 	

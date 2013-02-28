@@ -5,11 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class exists to enforce the wall restrictions as class invariants.
- * - A wall needs to be straight (i.e. either horizontally or vertically aligned)
- * - A wall needs to consist of at least two squares.
+ * This class exists to enforce the wall restrictions as class invariants. - A
+ * wall needs to be straight (i.e. either horizontally or vertically aligned) -
+ * A wall needs to consist of at least two squares.
  */
 public class Wall {
+	
+	Coordinate start;
+	Coordinate stop;
+	/*
+	 * TODO: Add a method to check whether two walls are validly placed.
+	 */
 	
 	private List<WallPart>	parts	= new ArrayList<WallPart>();
 	
@@ -19,6 +25,9 @@ public class Wall {
 		
 		if (start.getX() == stop.getX() && start.getY() == stop.getY())
 			throw new IllegalArgumentException("A wall should consist of at least two squares");
+		
+		this.start = start;
+		this.stop = stop;
 		
 		int numberOfParts = Math.abs((start.getX() == stop.getX() ? start.getY() - stop.getY()
 				: start.getX() - stop.getX()));
@@ -50,4 +59,5 @@ public class Wall {
 	public List<WallPart> getWallParts() {
 		return parts;
 	}
+	
 }

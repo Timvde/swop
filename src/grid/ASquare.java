@@ -7,7 +7,7 @@ import item.IItem;
 public abstract class ASquare {
 	
 	/**
-	 * returns the items on this square
+	 * Returns the items on this square
 	 */
 	public abstract List<IItem> getItemList();
 }
