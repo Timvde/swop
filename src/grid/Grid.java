@@ -2,10 +2,13 @@ package grid;
 
 import grid.Wall.WallPart;
 import item.IItem;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import com.google.java.contract.*;
+//import com.google.java.contract.*;
 
 public class Grid implements IGrid {
 	
@@ -16,8 +19,8 @@ public class Grid implements IGrid {
 	private Grid(Builder builder) {
 		this.width = builder.width;
 		this.height = builder.height;
-		grid = new HashMap<>();
-		for (int i = 0; i < width; i++)
+		grid = new HashMap<Coordinate, ASquare>();
+		for (int i = 0; i < width; i++) 
 			for (int j = 0; j < height; j++)
 				grid.put(new Coordinate(i, j), new Square());
 	}
@@ -25,9 +28,11 @@ public class Grid implements IGrid {
 	private void placeWall(double maxPercentage) {
 		int wallLength = new Random().nextInt(getMaximumLengthOfWall(maxPercentage));
 		Coordinate start = Coordinate.random(width, height);
-		Wall wall = new Wall(start, start.getRandomCoordinateWithDistance(wallLength));
-		while(!canPlaceWall(wall)) 
-			wall = new
+		Coordinate end = start.getRandomCoordinateWithDistance(wallLength);
+		while(!canPlaceWall(start, end))  {
+			start = Coordinate.random(width, height);
+			end = start.getRandomCoordinateWithDistance(wallLength);
+		}
 	}
 	
 	private int getMaximumLengthOfWall(double maxPercentage) {
@@ -35,6 +40,26 @@ public class Grid implements IGrid {
 		int walls = getNumberOfWallParts();
 		while(maxPercentage > (walls + maxLength++) / size());
 		return maxLength;
+	}
+	
+	private boolean canPlaceWall(Coordinate start, Coordinate end) {
+		getWallPositions(start, end);
+	}
+	
+	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
+		Collection<Coordinate> positions = new ArrayList<Coordinate>();
+		
+		//start adding the coordinates
+		if (start.getX() == end.getX() && start.getY() < end.getY())
+			for (int i = start.getY(); i <= end.getY(); i++)
+				positions.add(new Coordinate(start.getX(), i));
+		else if (start.getX() == end.getX() && start.getY() > end.getY())
+			for (int i = start.getY(); i >= end.getY(); i--)
+				positions.add(new Coordinate(start.getX(), i));
+		else if (start.getY() == end.getY() && start.getX() < end.getX())
+			for (int i = start.getX(); i <= end.getX(); i++)
+				positions.add(new Coordinate(i, start.getY()));
+		else if (start.getY() == end.getY() && start.getX() > )
 	}
 	
 	/**
@@ -97,7 +122,7 @@ public class Grid implements IGrid {
 		 *        the minimum length of a wall
 		 * @return this
 		 */
-		@Requires("minimalLengthOfWall >= 2")
+		//@Requires("minimalLengthOfWall >= 2")
 		public Builder setMinimalLengthOfWall(int minimalLength) {
 			this.minimalLengthOfWall = minimalLength;
 			return this;
@@ -135,7 +160,7 @@ public class Grid implements IGrid {
 		 *        the width of the grid
 		 * @return this
 		 */
-		@Requires("width > 0")
+		//@Requires("width > 0")
 		public Builder setGridWidth(int width) {
 			this.width = width;
 			return this;
@@ -148,7 +173,7 @@ public class Grid implements IGrid {
 		 *        the height of the grid
 		 * @return this
 		 */
-		@Requires("height > 0")
+		//@Requires("height > 0")
 		public Builder setGridHeigth(int height) {
 			this.height = height;
 			return this;
