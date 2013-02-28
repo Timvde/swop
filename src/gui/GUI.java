@@ -29,13 +29,16 @@ import gui.AGUI;
  */
 public class GUI implements Runnable {
 	
-	// TODO class constants zoals 40
-	// TODO als huidige player op square, get item list in een lijst.
-	
 	private AGUI					gui;
 	private Grid					grid;
-	private int						numRows				= 4;
-	private int						numCols				= 4;
+	private int						numRows				= 8;
+	private int						numCols				= 8;
+	
+	/**
+	 * This variable is the size of a square on the GUI. If modified, the grid
+	 * and all images will automaticly be resized.
+	 */
+	private final static int		SQUARE_SIZE			= 40;
 	
 	/**
 	 * Controllers for interacting with the game engine.
@@ -66,13 +69,13 @@ public class GUI implements Runnable {
 	 * Construct a new GUI and initialize the controllers.
 	 * 
 	 * @param moveCont
-	 * 				The move controller.
+	 *        The move controller.
 	 * @param pickupCont
-	 * 				The pickup item controller.
+	 *        The pickup item controller.
 	 * @param endturnCont
-	 * 				The end of turn controller.
+	 *        The end of turn controller.
 	 * @param useitemCont
-	 * 				The use item controller.
+	 *        The use item controller.
 	 */
 	public GUI(MoveController moveCont, PickUpItemController pickupCont,
 			EndTurnController endturnCont, UseItemController useitemCont) {
@@ -89,7 +92,7 @@ public class GUI implements Runnable {
 	 */
 	public void run() {
 		
-		this.gui = new AGUI("GUI", 200 + (40 * numCols), 200 + (40 * numRows)) {
+		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * numCols), 200 + (SQUARE_SIZE * numRows)) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
@@ -98,13 +101,15 @@ public class GUI implements Runnable {
 				// Adjust the grid dimensions and GUI size:
 				numRows = getGridNumRows(grid);
 				numCols = getGridNumCols(grid);
-				gui.getPanel().setSize(200 + (40 * numCols), 200 + (40 * numRows));
+				gui.getPanel()
+						.setSize(200 + (SQUARE_SIZE * numCols), 200 + (SQUARE_SIZE * numRows));
 				
 				// Draw grid lines
 				for (int r = 0; r < numRows; r++) {
 					for (int c = 0; c < numCols; c++) {
-						graphics.drawRect(topLeftGridOffsetX + (42 * c), topLeftGridOffsetY
-								+ (42 * r), 42, 42);
+						graphics.drawRect(topLeftGridOffsetX + ((SQUARE_SIZE + 2) * c),
+								topLeftGridOffsetY + ((SQUARE_SIZE + 2) * r), (SQUARE_SIZE + 2),
+								(SQUARE_SIZE + 2));
 					}
 				}
 				
@@ -121,11 +126,11 @@ public class GUI implements Runnable {
 						switch (player.getID()) {
 							case 0:
 								graphics.drawImage(playerBlueImage, guiCoord.getX(),
-										guiCoord.getY(), 40, 40, null);
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 								break;
 							case 1:
 								graphics.drawImage(playerRedImage, guiCoord.getX(),
-										guiCoord.getY(), 40, 40, null);
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 								break;
 							default:
 								break;
@@ -134,14 +139,14 @@ public class GUI implements Runnable {
 					
 					// Draw wall if necessary
 					if (square instanceof Wall.WallPart) {
-						graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(), 40, 40,
-								null);
+						graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
+								SQUARE_SIZE, SQUARE_SIZE, null);
 					}
 					
 					// Draw lighttrail if necessary
 					if (square.hasLightTrail()) {
-						graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(), 40,
-								40, null);
+						graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
+								SQUARE_SIZE, SQUARE_SIZE, null);
 					}
 					
 					// Draw items if necessary
@@ -149,7 +154,7 @@ public class GUI implements Runnable {
 					for (IItem i : itemList) {
 						if (i instanceof LightGrenade) {
 							graphics.drawImage(lightGrenadeImage, guiCoord.getX(), guiCoord.getY(),
-									40, 40, null);
+									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 					}
 					
@@ -159,22 +164,22 @@ public class GUI implements Runnable {
 				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, numRows));
 				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(numCols, 0));
 				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-						guiCoordFinishBlue.getY(), 40, 40, null);
+						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
-						40, 40, null);
+						SQUARE_SIZE, SQUARE_SIZE, null);
 				
 			}
 			
 		};
 		
 		// Initialize images
-		this.playerRedImage = gui.loadImage("player_red.png", 40, 40);
-		this.playerBlueImage = gui.loadImage("player_blue.png", 40, 40);
-		this.wallImage = gui.loadImage("wall.png", 40, 40);
-		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", 40, 40);
-		this.lightTrailImage = gui.loadImage("cell_lighttrail.png", 40, 40);
-		this.finishBlue = gui.loadImage("cell_finish_blue.png", 40, 40);
-		this.finishRed = gui.loadImage("cell_finish_red.png", 40, 40);
+		this.playerRedImage = gui.loadImage("player_red.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.playerBlueImage = gui.loadImage("player_blue.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.wallImage = gui.loadImage("wall.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.lightTrailImage = gui.loadImage("cell_lighttrail.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
 		
 		/* ---- ---- ---- ---- MOVE ARROWS ---- ---- ---- ---- */
 		
@@ -190,7 +195,7 @@ public class GUI implements Runnable {
 						gui.repaint();
 					}
 				});
-		upButton.setImage(gui.loadImage("arrow_N.png", 40, 40));
+		upButton.setImage(gui.loadImage("arrow_N.png", SQUARE_SIZE, SQUARE_SIZE));
 		// --
 		Button leftButton = gui.createButton(moveArrowsOffsetX + 0, moveArrowsOffsetY + 40, 40, 40,
 				new Runnable() {
@@ -200,7 +205,7 @@ public class GUI implements Runnable {
 						gui.repaint();
 					}
 				});
-		leftButton.setImage(gui.loadImage("arrow_W.png", 40, 40));
+		leftButton.setImage(gui.loadImage("arrow_W.png", SQUARE_SIZE, SQUARE_SIZE));
 		// --
 		Button rightButton = gui.createButton(moveArrowsOffsetX + 80, moveArrowsOffsetY + 40, 40,
 				40, new Runnable() {
@@ -210,7 +215,7 @@ public class GUI implements Runnable {
 						gui.repaint();
 					}
 				});
-		rightButton.setImage(gui.loadImage("arrow_E.png", 40, 40));
+		rightButton.setImage(gui.loadImage("arrow_E.png", SQUARE_SIZE, SQUARE_SIZE));
 		// --
 		Button downButton = gui.createButton(moveArrowsOffsetX + 40, moveArrowsOffsetY + 80, 40,
 				40, new Runnable() {
@@ -220,10 +225,75 @@ public class GUI implements Runnable {
 						gui.repaint();
 					}
 				});
-		downButton.setImage(gui.loadImage("arrow_S.png", 40, 40));
+		downButton.setImage(gui.loadImage("arrow_S.png", SQUARE_SIZE, SQUARE_SIZE));
+		// --
+		Button NEButton = gui.createButton(moveArrowsOffsetX + 80, moveArrowsOffsetY, 40, 40,
+				new Runnable() {
+					
+					public void run() {
+						// TODO NE button pressed
+						gui.repaint();
+					}
+				});
+		NEButton.setImage(gui.loadImage("arrow_NE.png", SQUARE_SIZE, SQUARE_SIZE));
+		// --
+		Button SEButton = gui.createButton(moveArrowsOffsetX + 80, moveArrowsOffsetY + 80, 40, 40,
+				new Runnable() {
+					
+					public void run() {
+						// TODO SE button pressed
+						gui.repaint();
+					}
+				});
+		SEButton.setImage(gui.loadImage("arrow_SE.png", SQUARE_SIZE, SQUARE_SIZE));
+		// --
+		Button SWButton = gui.createButton(moveArrowsOffsetX, moveArrowsOffsetY + 80, 40, 40,
+				new Runnable() {
+					
+					public void run() {
+						// TODO SW button pressed
+						gui.repaint();
+					}
+				});
+		SWButton.setImage(gui.loadImage("arrow_SW.png", SQUARE_SIZE, SQUARE_SIZE));
+		// --
+		Button NWButton = gui.createButton(moveArrowsOffsetX, moveArrowsOffsetY, 40, 40,
+				new Runnable() {
+					
+					public void run() {
+						// TODO NW button pressed
+						gui.repaint();
+					}
+				});
+		NWButton.setImage(gui.loadImage("arrow_NW.png", SQUARE_SIZE, SQUARE_SIZE));
 		
 		/* ---- ---- ---- ---- END OF MOVE ARROWS ---- ---- ---- ---- */
 		
+		/* ---- ---- ---- ---- ACTION BUTTONS ---- ---- ---- ---- */
+		// Use these offsets to move all the action buttons at once:
+		int actionButtonsOffsetX = 10;
+		int actionButtonsOffsetY = 180;
+		
+		Button pickMineUpButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY, 120,
+				30, new Runnable() {
+					
+					public void run() {
+						// TODO pick mine up button pressed
+						gui.repaint();
+					}
+				});
+		pickMineUpButton.setText("Pickup mine");
+		// ----
+		Button dropMineButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
+				120, 30, new Runnable() {
+					
+					public void run() {
+						// TODO drop mine button pressed
+						gui.repaint();
+					}
+				});
+		dropMineButton.setText("Drop mine");
+		/* ---- ---- ---- ----END OF ACTION BUTTONS---- ---- ---- ---- */
 	}
 	
 	/**
