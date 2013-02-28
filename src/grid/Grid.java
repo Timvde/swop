@@ -15,6 +15,7 @@ public class Grid implements IGrid {
 	private List<Wall>						walls;
 	private int								width;
 	private int								height;
+	private static final int				MINIMUM_WALL_SIZE	= 2;
 	
 	/**
 	 * Create a new grid with a specified builder.
@@ -29,7 +30,12 @@ public class Grid implements IGrid {
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				grid.put(new Coordinate(i, j), new Square());
-		while (builder.maximumNumberOfWalls > ((double) getNumberOfWallParts() + 2) / grid.size())
+		
+		int max = MINIMUM_WALL_SIZE
+				+ (int) (builder.maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - builder.maximalLengthOfWall
+						* Math.max(width, height));
+		int maximumNumberOfWalls = new Random().nextInt(max);
+		while (maximumNumberOfWalls > getNumberOfWallParts())
 			placeWall(builder.maximumNumberOfWalls, builder.maximalLengthOfWall);
 	}
 	
@@ -41,16 +47,15 @@ public class Grid implements IGrid {
 	 *        The maximum percentage of walls on the grid
 	 */
 	private void placeWall(double maxPercentage, double maximalLengthOfWall) {
-		int wallLength = new Random().nextInt(getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall));
-		// a wall must have a length of two
-		if (wallLength < 2)
-			return;
+		int wallLength = MINIMUM_WALL_SIZE
+				+ new Random().nextInt(getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall)
+						- MINIMUM_WALL_SIZE);
 		
 		Coordinate start, end;
 		
 		do {
 			start = Coordinate.random(width, height);
-			end = start.getRandomCoordinateWithDistance(wallLength);
+			end = start.getRandomCoordinateWithDistance(wallLength - 1);
 		} while (!canPlaceWall(start, end));
 		// place the wall on the grid
 		placeWallOnGrid(start, end);
@@ -75,7 +80,6 @@ public class Grid implements IGrid {
 		for (Coordinate coord : getWallPositions(start, end))
 			grid.put(coord, wall.getWallPart());
 		walls.add(wall);
-		System.out.println("wall placed");
 	}
 	
 	/**
@@ -91,9 +95,9 @@ public class Grid implements IGrid {
 		int maxLength = 0;
 		int walls = getNumberOfWallParts();
 		// increase maxLength until a maximum value is reached
-		while (maxPercentage > (walls + maxLength++) / size());
+		while (maxPercentage >= (walls + maxLength++) / ((double) size()));
 		
-		int maxLength2 = (int) (maximalLengthOfWall / Math.max(height, width));
+		int maxLength2 = (int) (maximalLengthOfWall * Math.max(height, width));
 		
 		return Math.min(maxLength, maxLength2);
 	}
@@ -194,8 +198,8 @@ public class Grid implements IGrid {
 	@Override
 	public String toString() {
 		String str = "";
-		for (int i = 0; i < 100; i++) {
-			for (int j = 0; j < 100; j++) {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
 				if (grid.get(new Coordinate(i, j)) == null)
 					str += "  ";
 				else if (grid.get(new Coordinate(i, j)).getClass() == WallPart.class)

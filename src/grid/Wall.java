@@ -24,8 +24,18 @@ public class Wall {
 		if (start.getX() == end.getX() && start.getY() == end.getY())
 			throw new IllegalArgumentException("A wall should consist of at least two squares");
 		
-		this.start = start;
-		this.end = end;
+		/*
+		 * The one with the smallest x or y value should be first. This is
+		 * consistent, as at least one of them has to be the same.
+		 */
+		if (start.getX() > end.getX() || start.getY() > end.getY()) {
+			this.start = end;
+			this.end = start;
+		}
+		else {
+			this.start = start;
+			this.end = end;
+		}
 	}
 	
 	private Coordinate getStart() {

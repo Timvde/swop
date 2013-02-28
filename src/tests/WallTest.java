@@ -8,17 +8,16 @@ import grid.Wall.WallPart;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 public class WallTest {
 	
-	private static Coordinate start;
-	private static Coordinate validEnd;
-	private static Wall wall;
+	private static Coordinate	start;
+	private static Coordinate	validEnd;
+	private static Wall			wall;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		start = new Coordinate(2, 5);
-		validEnd = new Coordinate(2,8);
+		validEnd = new Coordinate(2, 8);
 		wall = new Wall(start, validEnd);
 	}
 	
@@ -27,21 +26,21 @@ public class WallTest {
 		new Wall(start, validEnd);
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorUnAlignedCoords() {
-		Coordinate end = new Coordinate(3,7);
+		Coordinate end = new Coordinate(3, 7);
 		
 		new Wall(start, end);
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorWallTooSmall() {
 		new Wall(start, start);
 	}
 	
 	@Test
 	public void testTouchingWallNotTouching() {
-		Wall wall2 = new Wall(new Coordinate(4, 3), new Coordinate(6,3));
+		Wall wall2 = new Wall(new Coordinate(4, 3), new Coordinate(6, 3));
 		Wall wall3 = new Wall(new Coordinate(2, 3), new Coordinate(6, 3));
 		
 		assertFalse(wall.touchesWall(wall2));
@@ -62,6 +61,13 @@ public class WallTest {
 		
 		assertTrue(wall.touchesWall(wall2));
 		assertTrue(wall2.touchesWall(wall3));
+		
+		// This is explicitly tested again, because it failed in our program at
+		// some point.
+		Wall first = new Wall(new Coordinate(8, 4), new Coordinate(8, 7));
+		Wall second = new Wall(new Coordinate(8, 3), new Coordinate(4, 3));
+		
+		assertTrue(first.touchesWall(second));
 	}
 	
 	@Test
@@ -72,7 +78,7 @@ public class WallTest {
 		assertEquals(part1, part2);
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testWallPartMethods() {
 		WallPart part = wall.getWallPart();
 		assertEquals(part.getCarryableItems().size(), 0);
