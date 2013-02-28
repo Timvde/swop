@@ -4,7 +4,7 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.Wall;
-import item.Item;
+import item.IItem;
 import item.LightGrenade;
 
 import java.awt.Graphics2D;
@@ -155,8 +155,8 @@ public class GUI implements Runnable {
 					}
 					
 					// Draw items if necessary
-					List<Item> itemList = square.getCarryableItems();
-					for (Item i : itemList) {
+					List<IItem> itemList = square.getCarryableItems();
+					for (IItem i : itemList) {
 						if (i instanceof LightGrenade) {
 							graphics.drawImage(lightGrenadeImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);

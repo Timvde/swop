@@ -1,6 +1,6 @@
 package grid;
 
-import item.Item;
+import item.IItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +8,17 @@ import java.util.List;
 import player.IPlayer;
 
 /**
- * This class exists to enforce the wall restrictions as class invariants.
- * - A wall needs to be straight (i.e. either horizontally or vertically aligned)
- * - A wall needs to consist of at least two squares.
+ * This class exists to enforce the wall restrictions as class invariants. - A
+ * wall needs to be straight (i.e. either horizontally or vertically aligned) -
+ * A wall needs to consist of at least two squares.
  */
 public class Wall {
+	
+	Coordinate start;
+	Coordinate stop;
+	/*
+	 * TODO: Add a method to check whether two walls are validly placed.
+	 */
 	
 	private List<WallPart>	parts	= new ArrayList<WallPart>();
 	
@@ -22,6 +28,9 @@ public class Wall {
 		
 		if (start.getX() == stop.getX() && start.getY() == stop.getY())
 			throw new IllegalArgumentException("A wall should consist of at least two squares");
+		
+		this.start = start;
+		this.stop = stop;
 		
 		int numberOfParts = Math.abs((start.getX() == stop.getX() ? start.getY() - stop.getY()
 				: start.getX() - stop.getX()));
@@ -44,8 +53,8 @@ public class Wall {
 		}
 		
 		@Override
-		public List<Item> getCarryableItems() {
-			return new ArrayList<Item>();
+		public List<IItem> getCarryableItems() {
+			return new ArrayList<IItem>();
 		}
 		
 		@Override
@@ -55,6 +64,16 @@ public class Wall {
 
 		@Override
 		public boolean hasLightTrail() {
+			return false;
+		}
+
+		@Override
+		public IItem pickupItem(int ID) throws IllegalArgumentException {
+			return null;
+		}
+
+		@Override
+		public boolean hasItemWithID(int ID) {
 			return false;
 		}
 		

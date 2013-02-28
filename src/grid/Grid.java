@@ -1,6 +1,6 @@
 package grid;
 
-import item.Item;
+import item.IItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,18 +16,16 @@ public class Grid implements IGrid {
 	
 	@Override
 	public boolean canMovePlayer(Player player, Direction direction) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
 	@Override
 	public void movePlayer(Player player, Direction direction) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public List<Item> getItemList(Coordinate coordinate) {
+	public List<IItem> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getCarryableItems();
 	}
 	
