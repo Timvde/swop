@@ -1,6 +1,6 @@
 package grid;
 
-import item.Item;
+import item.IItem;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ import player.Player;
 public abstract class ASquare {
 
 	/**
-	 * returns the items on this square that can be picked up by a
+	 * Returns the items on this square that can be picked up by a
 	 * {@link Player}
 	 */
-	public abstract List<Item> getCarryableItems();
+	public abstract List<IItem> getCarryableItems();
 
 	/**
 	 * Get the player that is located on this square.
@@ -48,7 +48,7 @@ public abstract class ASquare {
 	 *             The square must hold the requested item
 	 *             <code>this.hasItemWithID(ID)<\code>
 	 */
-	public abstract Item pickupItem(int ID) throws IllegalArgumentException;
+	public abstract IItem pickupItem(int ID) throws IllegalArgumentException;
 
 	/**
 	 * Returns whether or not this square holds the item with a given ID.

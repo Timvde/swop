@@ -5,6 +5,7 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.Wall;
+import item.IItem;
 import item.Item;
 import item.LightGrenade;
 import java.awt.Dimension;
@@ -203,7 +204,6 @@ public class GUI implements Runnable {
 				// graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
 				// guiCoordFinishRed.getY(),
 				// SQUARE_SIZE, SQUARE_SIZE, null);
-				
 				// Draw the list of items that are on the current square.
 				// Coordinate currentPlayerPosition =
 				// playerManager.getCurrentPlayerCoordinate();
@@ -211,6 +211,7 @@ public class GUI implements Runnable {
 				// grid.getSquareAt(currentPlayerPosition);
 				//
 				// List<Item> items = playerSquare.getCarryableItems();
+
 				
 				Vector<Item> items = new Vector<Item>();
 				
