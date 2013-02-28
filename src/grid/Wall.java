@@ -1,8 +1,11 @@
 package grid;
 
 import item.IItem;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import player.IPlayer;
 
 /**
  * This class exists to enforce the wall restrictions as class invariants. - A
@@ -50,8 +53,28 @@ public class Wall {
 		}
 		
 		@Override
-		public List<IItem> getItemList() {
+		public List<IItem> getCarryableItems() {
 			return new ArrayList<IItem>();
+		}
+		
+		@Override
+		public IPlayer getPlayer() {
+			return null;
+		}
+
+		@Override
+		public boolean hasLightTrail() {
+			return false;
+		}
+
+		@Override
+		public IItem pickupItem(int ID) throws IllegalArgumentException {
+			return null;
+		}
+
+		@Override
+		public boolean hasItemWithID(int ID) {
+			return false;
 		}
 		
 	}

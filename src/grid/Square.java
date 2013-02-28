@@ -1,5 +1,6 @@
 package grid;
 
+
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,13 @@ public class Square extends ASquare {
 	}
 	
 	@Override
-	public List<IItem> getItemList() {
-		return new ArrayList<IItem>(this.itemList);
+	public List<IItem> getCarryableItems() {
+		List<IItem> result = new ArrayList<IItem>();
+		for (IItem item : itemList) {
+			if (item.isCarriable())
+				result.add(item);
+		}
+		return result;
 	}
 	
 	/**
@@ -34,7 +40,25 @@ public class Square extends ASquare {
 	public boolean hasLightTrail() {
 		return this.hasLightTrail;
 	}
-	
+
+	@Override
+	public IItem pickupItem(int ID) {
+		for (IItem itemOnSquare : this.itemList)
+			if (ID == itemOnSquare.getId())
+				return itemOnSquare;
+		// if not yet returned --> not on square
+		throw new IllegalArgumentException(
+				"The square doesn't hold the requested item");
+	}
+
+	@Override
+	public boolean hasItemWithID(int ID) {
+		for (IItem itemOnSquare : this.itemList)
+			if (ID == itemOnSquare.getId())
+				return true;
+		return false;
+	}
+
 	/**
 	 * Returns the IPlayer on this square
 	 * 

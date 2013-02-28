@@ -2,8 +2,10 @@ package player;
 
 import grid.Coordinate;
 import item.Item;
+
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import notnullcheckweaver.NotNull;
 
 public class Player implements IPlayer {

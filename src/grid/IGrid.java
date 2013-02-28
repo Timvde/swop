@@ -2,7 +2,10 @@ package grid;
 
 import item.IItem;
 import item.Item;
+
 import java.util.List;
+import java.util.Set;
+
 import player.Player;
 
 /**
@@ -43,4 +46,21 @@ public interface IGrid {
 	 * @return a list of items on a square
 	 */
 	public List<IItem> getItemList(Coordinate coordinate);
+	
+	/**
+	 * Return the square of the grid that has a specific coordinate.
+	 * 
+	 * @param coordinate
+	 * 			The coordinate of the square.
+	 * @return
+	 * 			The square at that coordinate.
+	 */
+	public ASquare getSquareAt(Coordinate coordinate);
+	
+	/**
+	 * Get a set of all the used coordinates in our grid.
+	 * 
+	 * @return A set of the used grid coordinates.
+	 */
+	public Set<Coordinate> getAllGridCoordinates();
 }
