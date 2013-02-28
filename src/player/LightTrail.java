@@ -63,8 +63,7 @@ public class LightTrail implements ILightTrail {
 	 *            The direction the player just moved in
 	 * 
 	 * @note Do not call this method manually. Lighttrails are
-	 *       updated automatically whith the move methods of {@link Player}
-	 *       FIXME ...
+	 *       updated automatically as the player (and its lighttrail) move around the grid.
 	 */
 	public void updateLightTrail(Square newSquare) {
 		if (this.getLightTrailLenght() >= this.getMaxLength()) {
