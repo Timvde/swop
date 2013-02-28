@@ -2,7 +2,6 @@ package grid;
 
 import grid.Wall.WallPart;
 import item.Item;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,11 +10,16 @@ import java.util.Random;
 import java.util.Set;
 
 public class Grid implements IGrid {
-
-	private HashMap<Coordinate, ASquare> grid;
-	private int width;
-	private int height;
-
+	
+	private HashMap<Coordinate, ASquare>	grid;
+	private int								width;
+	private int								height;
+	
+	/**
+	 * Create a new grid with a specified builder.
+	 * 
+	 * @param builder
+	 */
 	private Grid(Builder builder) {
 		this.width = builder.width;
 		this.height = builder.height;
@@ -23,20 +27,21 @@ public class Grid implements IGrid {
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				grid.put(new Coordinate(i, j), new Square());
-		while(builder.maximumNumberOfWalls > ((double) getNumberOfWallParts()) / grid.size())
+		while (builder.maximumNumberOfWalls > ((double) getNumberOfWallParts()) / grid.size())
 			placeWall(builder.maximumNumberOfWalls);
 	}
-
+	
 	/**
-	 * place a new wall on the grid. This method will automatically determine 
-	 * the maximum length of the wall. 
-	 * @param maxPercentage 
+	 * place a new wall on the grid. This method will automatically determine
+	 * the maximum length of the wall.
+	 * 
+	 * @param maxPercentage
+	 *        The maximum percentage of walls on the grid
 	 */
 	private void placeWall(double maxPercentage) {
-		int wallLength = new Random()
-				.nextInt(getMaximumLengthOfWall(maxPercentage));
-		//a wall must have a length of two
-		if (wallLength < 2) 
+		int wallLength = new Random().nextInt(getMaximumLengthOfWall(maxPercentage));
+		// a wall must have a length of two
+		if (wallLength < 2)
 			return;
 		Coordinate start = Coordinate.random(width, height);
 		Coordinate end = start.getRandomCoordinateWithDistance(wallLength);
@@ -44,30 +49,68 @@ public class Grid implements IGrid {
 			start = Coordinate.random(width, height);
 			end = start.getRandomCoordinateWithDistance(wallLength);
 		}
+		// place the wall on the grid
+		placeWallOnGrid(start, end);
 	}
-
+	
+	/**
+	 * This method will place a wall on the grid with a specified start and end
+	 * position. If the wall cannot be placed on the board this method will
+	 * throw an {@link IllegalArgumentException}
+	 * 
+	 * @param start
+	 *        the start position of the grid
+	 * @param end
+	 *        the end position of the grid
+	 * @throws IllegalArgumentException
+	 *         if the wall cannot be placed on the board
+	 */
+	private void placeWallOnGrid(Coordinate start, Coordinate end) throws IllegalArgumentException {
+		if (!canPlaceWall(start, end))
+			throw new IllegalArgumentException("the wall cannot be placed on the board");
+		Wall wall = new Wall(start, end);
+		for (Coordinate coord : getWallPositions(start, end))
+			grid.put(coord, wall.getWallPart());
+	}
+	
+	/**
+	 * Returns the maximum length for new wall that is to be placed on the
+	 * board. this method takes into account the maximum percentage of walls on
+	 * the board. This number will be rounded up.
+	 * 
+	 * @param maxPercentage
+	 *        the maximum percentage of walls on the board
+	 * @return the maximum length of a new wall
+	 */
 	private int getMaximumLengthOfWall(double maxPercentage) {
 		int maxLength = 0;
 		int walls = getNumberOfWallParts();
-		//increase maxLength until a maximum value is reached
-		while (maxPercentage > (walls + maxLength++) / size())
-			;
+		// increase maxLength until a maximum value is reached
+		while (maxPercentage > (walls + maxLength++) / size());
 		return maxLength;
 	}
-
+	
+	/**
+	 * returns whether a wall, specified by its start and end position, can be
+	 * placed on the board.
+	 * 
+	 * @param start
+	 *        the start position of the wall
+	 * @param end
+	 *        the end position of the wall
+	 * @return true if a wall can be placed, else false
+	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
 		Collection<Coordinate> positions = getWallPositions(start, end);
 		for (Coordinate coord : grid.keySet())
-			if (positions.contains(coord)
-					&& grid.get(coord).getClass() == WallPart.class)
+			if (positions.contains(coord) && grid.get(coord).getClass() == WallPart.class)
 				return false;
 		return true;
 	}
-
-	private Collection<Coordinate> getWallPositions(Coordinate start,
-			Coordinate end) {
+	
+	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
 		Collection<Coordinate> positions = new ArrayList<Coordinate>();
-
+		
 		// start adding the coordinates
 		if (start.getX() == end.getX() && start.getY() < end.getY())
 			for (int i = start.getY(); i <= end.getY(); i++)
@@ -83,11 +126,11 @@ public class Grid implements IGrid {
 				positions.add(new Coordinate(i, start.getY()));
 		else
 			// the positions are not alligned...
-			throw new IllegalArgumentException("The given positions " + start
-					+ ", " + end + " are not alligned!");
+			throw new IllegalArgumentException("The given positions " + start + ", " + end
+					+ " are not alligned!");
 		return positions;
 	}
-
+	
 	/**
 	 * returns the number of squares in this grid. If the grid contains more
 	 * than Integer.MAX_VALUE elements, returns Integer.MAX_VALUE.
@@ -97,7 +140,7 @@ public class Grid implements IGrid {
 	public int size() {
 		return grid.size();
 	}
-
+	
 	private int getNumberOfWallParts() {
 		int i = 0;
 		for (ASquare square : grid.values())
@@ -105,44 +148,43 @@ public class Grid implements IGrid {
 				i++;
 		return i;
 	}
-
+	
 	@Override
 	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
 	public void movePlayer(Coordinate coordinate, Direction direction) {
 		if (!canMovePlayer(coordinate, direction))
-			throw new IllegalArgumentException(
-					"Player can not be moved in that direction!");
-
+			throw new IllegalArgumentException("Player can not be moved in that direction!");
+		
 	}
-
+	
 	@Override
 	public List<Item> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getCarryableItems();
 	}
-
+	
 	@Override
 	public ASquare getSquareAt(Coordinate coordinate) {
 		return grid.get(coordinate);
 	}
-
+	
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
 		return this.grid.keySet();
 	}
-
-	public class Builder {
-
-		private int minimalLengthOfWall;
-		private double maximalLengthOfWall;
-		private double maximumNumberOfWalls;
-		private int width;
-		private int height;
-
+	
+	public static class Builder {
+		
+		private int		minimalLengthOfWall;
+		private double	maximalLengthOfWall;
+		private double	maximumNumberOfWalls;
+		private int		width;
+		private int		height;
+		
 		public Builder() {
 			this.minimalLengthOfWall = 2;
 			this.maximalLengthOfWall = 0.50;
@@ -150,13 +192,13 @@ public class Grid implements IGrid {
 			this.width = 10;
 			this.height = 10;
 		}
-
+		
 		/**
 		 * Set the minimum length of a wall in the grid. The specified length
 		 * should be greater then or equal to 2.
 		 * 
 		 * @param minimalLength
-		 *            the minimum length of a wall
+		 *        the minimum length of a wall
 		 * @return this
 		 */
 		// @Requires("minimalLengthOfWall >= 2")
@@ -164,37 +206,37 @@ public class Grid implements IGrid {
 			this.minimalLengthOfWall = minimalLength;
 			return this;
 		}
-
+		
 		/**
 		 * set the maximal length of a wall as a percentage of the grid's
 		 * length/width.
 		 * 
 		 * @param maximalLength
-		 *            the maximal length of a wall
+		 *        the maximal length of a wall
 		 * @return this
 		 */
 		public Builder setMaximalLengthOfWall(double maximalLength) {
 			this.maximalLengthOfWall = maximalLength;
 			return this;
 		}
-
+		
 		/**
 		 * set the maximum number of walls in the grid
 		 * 
 		 * @param maximum
-		 *            the maximum number of walls
+		 *        the maximum number of walls
 		 * @return this
 		 */
 		public Builder setMaximumNumberOfWalls(int maximum) {
 			this.maximumNumberOfWalls = maximum;
 			return this;
 		}
-
+		
 		/**
 		 * set the width of the grid. This must be a strictly positive integer
 		 * 
 		 * @param width
-		 *            the width of the grid
+		 *        the width of the grid
 		 * @return this
 		 */
 		// @Requires("width > 0")
@@ -202,18 +244,22 @@ public class Grid implements IGrid {
 			this.width = width;
 			return this;
 		}
-
+		
 		/**
 		 * set the height of the grid. This must be a strictly positive integer
 		 * 
 		 * @param height
-		 *            the height of the grid
+		 *        the height of the grid
 		 * @return this
 		 */
 		// @Requires("height > 0")
 		public Builder setGridHeigth(int height) {
 			this.height = height;
 			return this;
+		}
+		
+		public Grid build() {
+			return new Grid(this);
 		}
 	}
 }
