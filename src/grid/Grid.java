@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import src.grid.Wall.WallPart;
+import grid.Wall.WallPart;
 import item.Item;
 
 
@@ -95,7 +95,7 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public List<Item> getItemList(Coordinate coordinate) {
+	public List<IItem> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getCarryableItems();
 	}
 	
