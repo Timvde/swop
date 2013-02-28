@@ -32,16 +32,22 @@ public class GUI implements Runnable {
 	// TODO class constants zoals 40
 	// TODO als huidige player op square, get item list in een lijst.
 	
-	private MoveController			moveController;
-	private PickUpItemController	pickUpController;
-	private EndTurnController		endTurnController;
-	private UseItemController		useItemController;
-	
 	private AGUI					gui;
 	private Grid					grid;
 	private int						numRows				= 4;
 	private int						numCols				= 4;
 	
+	/**
+	 * Controllers for interacting with the game engine.
+	 */
+	private MoveController			moveController;
+	private PickUpItemController	pickUpController;
+	private EndTurnController		endTurnController;
+	private UseItemController		useItemController;
+	
+	/**
+	 * Image objects for displaying on the GUI.
+	 */
 	private Image					playerRedImage;
 	private Image					playerBlueImage;
 	private Image					wallImage;
@@ -50,11 +56,24 @@ public class GUI implements Runnable {
 	private Image					finishBlue;
 	private Image					finishRed;
 	
-	// these values decide where the top left position of the grid will
-	// be:
+	/**
+	 * Offsets that determine where the top left position of the grid will be.
+	 */
 	private int						topLeftGridOffsetX	= 150;
 	private int						topLeftGridOffsetY	= 42;
 	
+	/**
+	 * Construct a new GUI and initialize the controllers.
+	 * 
+	 * @param moveCont
+	 * 				The move controller.
+	 * @param pickupCont
+	 * 				The pickup item controller.
+	 * @param endturnCont
+	 * 				The end of turn controller.
+	 * @param useitemCont
+	 * 				The use item controller.
+	 */
 	public GUI(MoveController moveCont, PickUpItemController pickupCont,
 			EndTurnController endturnCont, UseItemController useitemCont) {
 		
@@ -65,13 +84,16 @@ public class GUI implements Runnable {
 		
 	}
 	
+	/**
+	 * Start the GUI thread by creating the GUI elements and displaying them.
+	 */
 	public void run() {
 		
 		this.gui = new AGUI("GUI", 200 + (40 * numCols), 200 + (40 * numRows)) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
-				// Deze blok wordt bij elke repaint uitgevoerd:
+				// This block is executed with each repaint():
 				
 				// Adjust the grid dimensions and GUI size:
 				numRows = getGridNumRows(grid);
