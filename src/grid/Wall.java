@@ -15,8 +15,7 @@ public class Wall {
 	Coordinate				start;
 	Coordinate				end;
 	
-	private List<WallPart>	parts	= new ArrayList<WallPart>();
-	private static WallPart wallPart;
+	private static WallPart	wallPart;
 	
 	public Wall(Coordinate start, Coordinate end) throws IllegalArgumentException {
 		if (start.getX() != end.getX() && start.getY() != end.getY())
@@ -28,15 +27,10 @@ public class Wall {
 		this.start = start;
 		this.end = end;
 		
-		int numberOfParts = Math.abs((start.getX() == end.getX() ? start.getY() - end.getY()
-				: start.getX() - end.getX()));
-		
 		// "Less than or equal to" is intentional. Imagine having a wall on
 		// (0,0) and (0,1). The previous "numberOfParts" calculation will return
 		// 1 - 0 == 1. Therefore, we needed to either add 1 to the previous
 		// calculation, or change this "<" to "<=".
-		for (int i = 0; i <= numberOfParts; i++)
-			parts.add(wallPart);
 		
 	}
 	
@@ -48,12 +42,8 @@ public class Wall {
 		return end;
 	}
 	
-	public List<WallPart> getWallParts() {
-		return parts;
-	}
-	
 	/**
-	 * This method returns whether this wall touches another wall
+	 * This method returns whether this wall touches another specified wall
 	 * 
 	 * @param wall
 	 *        Another wall to compare with
@@ -86,7 +76,7 @@ public class Wall {
 			wallPart = new WallPart();
 		return wallPart;
 	}
-
+	
 	public class WallPart extends ASquare {
 		
 		private WallPart() {}
@@ -105,12 +95,12 @@ public class Wall {
 		public boolean hasLightTrail() {
 			return false;
 		}
-
+		
 		@Override
 		public IItem pickupItem(int ID) throws IllegalArgumentException {
 			throw new IllegalArgumentException("Walls do not contain items");
 		}
-
+		
 		@Override
 		public boolean hasItemWithID(int ID) {
 			return false;
