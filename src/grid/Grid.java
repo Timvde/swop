@@ -1,14 +1,15 @@
 package grid;
 
-import grid.Wall.WallPart;
-import item.IItem;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-//import com.google.java.contract.*;
+import java.util.Set;
+
+import src.grid.Wall.WallPart;
+import item.Item;
+
 
 public class Grid implements IGrid {
 	
@@ -94,8 +95,18 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public List<IItem> getItemList(Coordinate coordinate) {
-		return grid.get(coordinate).getItemList();
+	public List<Item> getItemList(Coordinate coordinate) {
+		return grid.get(coordinate).getCarryableItems();
+	}
+	
+	@Override
+	public ASquare getSquareAt(Coordinate coordinate) {
+		return grid.get(coordinate);
+	}
+	
+	@Override
+	public Set<Coordinate> getAllGridCoordinates() {
+		return this.grid.keySet();
 	}
 	
 	public class Builder {
