@@ -1,22 +1,22 @@
 package gui;
 
-import item.IItem;
-import item.LightGrenade;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.util.List;
-import java.util.Set;
-import controllers.EndTurnController;
-import controllers.MoveController;
-import controllers.PickUpItemController;
-import controllers.UseItemController;
-import player.IPlayer;
 import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.Wall;
-import gui.Button;
-import gui.AGUI;
+import item.Item;
+import item.LightGrenade;
+
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.util.List;
+import java.util.Set;
+
+import player.IPlayer;
+import controllers.EndTurnController;
+import controllers.MoveController;
+import controllers.PickUpItemController;
+import controllers.UseItemController;
 
 /**
  * This class is the GUI for interacting with the game.
@@ -150,8 +150,8 @@ public class GUI implements Runnable {
 					}
 					
 					// Draw items if necessary
-					List<IItem> itemList = square.getItemList();
-					for (IItem i : itemList) {
+					List<Item> itemList = square.getCarryableItems();
+					for (Item i : itemList) {
 						if (i instanceof LightGrenade) {
 							graphics.drawImage(lightGrenadeImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);

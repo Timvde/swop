@@ -1,8 +1,10 @@
 package grid;
 
-import item.IItem;
+import item.Item;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import player.IPlayer;
 
 /**
@@ -42,8 +44,8 @@ public class Wall {
 		}
 		
 		@Override
-		public List<IItem> getItemList() {
-			return new ArrayList<IItem>();
+		public List<Item> getCarryableItems() {
+			return new ArrayList<Item>();
 		}
 		
 		@Override
