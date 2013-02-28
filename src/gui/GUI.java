@@ -206,7 +206,7 @@ public class GUI implements Runnable {
 					}
 				});
 		leftButton.setImage(gui.loadImage("arrow_W.png", SQUARE_SIZE, SQUARE_SIZE));
-		// --
+		// ---
 		Button rightButton = gui.createButton(moveArrowsOffsetX + 80, moveArrowsOffsetY + 40, 40,
 				40, new Runnable() {
 					
