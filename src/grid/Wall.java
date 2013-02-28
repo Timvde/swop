@@ -26,12 +26,6 @@ public class Wall {
 		
 		this.start = start;
 		this.end = end;
-		
-		// "Less than or equal to" is intentional. Imagine having a wall on
-		// (0,0) and (0,1). The previous "numberOfParts" calculation will return
-		// 1 - 0 == 1. Therefore, we needed to either add 1 to the previous
-		// calculation, or change this "<" to "<=".
-		
 	}
 	
 	private Coordinate getStart() {

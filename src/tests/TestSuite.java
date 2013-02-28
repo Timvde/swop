@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ CoordinateTest.class, GridTest.class })
+@SuiteClasses({ CoordinateTest.class, GridTest.class, WallTest.class })
     public class TestSuite {
 	
 	    @BeforeClass 
