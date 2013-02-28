@@ -10,7 +10,7 @@ import java.util.LinkedList;
  * active during NUMBER_OF_ACTIONS_DELAY actions of the player.
  * 
  */
-public class LightTrail implements ILightTrail {
+public class LightTrail {
 
 	/**
 	 * The number of player-actions the lighttrailpart (one square) remains
