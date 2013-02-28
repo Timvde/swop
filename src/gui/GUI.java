@@ -192,7 +192,7 @@ public class GUI implements Runnable {
 					
 				}
 				
-				// Draw the two finish squares:
+				// Draw the two finish squares: 
 				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, numRows));
 				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(numCols, 0));
 				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
