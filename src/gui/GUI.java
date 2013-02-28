@@ -31,6 +31,11 @@ public class GUI implements Runnable {
 	
 	private AGUI					gui;
 	private Grid					grid;
+	
+	/**
+	 * The following values are not final and will be updated with each redraw,
+	 * depending on the Grid object dimension. These are just start values.
+	 */
 	private int						numRows				= 8;
 	private int						numCols				= 8;
 	
