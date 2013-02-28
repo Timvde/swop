@@ -1,16 +1,58 @@
 package grid;
 
+import grid.Wall.WallPart;
 import item.IItem;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import com.google.java.contract.*;
 
 public class Grid implements IGrid {
 	
 	private HashMap<Coordinate, ASquare>	grid;
+	private int								width;
+	private int								height;
 	
 	private Grid(Builder builder) {
-		
+		this.width = builder.width;
+		this.height = builder.height;
+		grid = new HashMap<>();
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++)
+				grid.put(new Coordinate(i, j), new Square());
+	}
+	
+	private void placeWall(double maxPercentage) {
+		int wallLength = new Random().nextInt(getMaximumLengthOfWall(maxPercentage));
+		Coordinate start = Coordinate.random(width, height);
+		Wall wall = new Wall(start, start.getRandomCoordinateWithDistance(wallLength));
+		while(!canPlaceWall(wall)) 
+			wall = new
+	}
+	
+	private int getMaximumLengthOfWall(double maxPercentage) {
+		int maxLength = 0;
+		int walls = getNumberOfWallParts();
+		while(maxPercentage > (walls + maxLength++) / size());
+		return maxLength;
+	}
+	
+	/**
+	 * returns the number of squares in this grid. If the grid contains more
+	 * than Integer.MAX_VALUE elements, returns Integer.MAX_VALUE.
+	 * 
+	 * @return the number of squares
+	 */
+	public int size() {
+		return grid.size();
+	}
+	
+	private int getNumberOfWallParts() {
+		int i = 0;
+		for (ASquare square : grid.values())
+			if (square.getClass() == WallPart.class)
+				i++;
+		return i;
 	}
 	
 	@Override
@@ -35,10 +77,17 @@ public class Grid implements IGrid {
 		
 		private int		minimalLengthOfWall;
 		private double	maximalLengthOfWall;
-		private int		minimumNumberOfWalls;
 		private double	maximumNumberOfWalls;
-		private int		gridXSize;
-		private int		gridYSize;
+		private int		width;
+		private int		height;
+		
+		public Builder() {
+			this.minimalLengthOfWall = 2;
+			this.maximalLengthOfWall = 0.50;
+			this.maximumNumberOfWalls = 0.20;
+			this.width = 10;
+			this.height = 10;
+		}
 		
 		/**
 		 * Set the minimum length of a wall in the grid. The specified length
@@ -68,20 +117,6 @@ public class Grid implements IGrid {
 		}
 		
 		/**
-		 * set the minimum number of walls in the grid. This number must be
-		 * positive!
-		 * 
-		 * @param minimum
-		 *        the minimum number of walls
-		 * @return this
-		 */
-		@Requires("minimum >= 0")
-		public Builder setMinimumNumberOfWalls(int minimum) {
-			this.minimumNumberOfWalls = minimum;
-			return this;
-		}
-		
-		/**
 		 * set the maximum number of walls in the grid
 		 * 
 		 * @param maximum
@@ -102,7 +137,7 @@ public class Grid implements IGrid {
 		 */
 		@Requires("width > 0")
 		public Builder setGridWidth(int width) {
-			this.gridXSize = width;
+			this.width = width;
 			return this;
 		}
 		
@@ -115,7 +150,7 @@ public class Grid implements IGrid {
 		 */
 		@Requires("height > 0")
 		public Builder setGridHeigth(int height) {
-			this.gridYSize = height;
+			this.height = height;
 			return this;
 		}
 	}

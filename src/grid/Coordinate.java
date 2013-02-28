@@ -1,5 +1,7 @@
 package grid;
 
+import java.util.ArrayList;
+import java.util.Random;
 import notnullcheckweaver.NotNull;
 
 /**
@@ -9,10 +11,8 @@ import notnullcheckweaver.NotNull;
  */
 public class Coordinate {
 	
-	private final int	x;
-	private final int	y;
-	
-	
+	private final int				x;
+	private final int				y;
 	
 	/** The origin of the grid */
 	public final static Coordinate	ORIGIN	= new Coordinate(0, 0);
@@ -114,5 +114,26 @@ public class Coordinate {
 		if (y != other.y)
 			return false;
 		return true;
+	}
+	
+	public static Coordinate random(int x, int y) {
+		return new Coordinate(new Random().nextInt(x), new Random().nextInt(y));
+	}
+	
+	public Coordinate getRandomCoordinateWithDistance(int distance) {
+		Direction[] directions = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
+		Direction direction = directions[new Random().nextInt(directions.length)];
+		switch (direction) {
+			case NORTH:
+				return new Coordinate(x, y - distance);
+			case EAST:
+				return new Coordinate(x + distance, y);
+			case SOUTH:
+				return new Coordinate(x, y + distance);
+			case WEST:
+				return new Coordinate(x - distance, y);
+			default:
+				throw new IllegalStateException("Something went terribly wrong :(");
+		}
 	}
 }
