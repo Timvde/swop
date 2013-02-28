@@ -57,6 +57,16 @@ public class Wall {
 		public boolean hasLightTrail() {
 			return false;
 		}
+
+		@Override
+		public Item pickupItem(int ID) throws IllegalArgumentException {
+			throw new IllegalArgumentException("Walls do not contain items");
+		}
+
+		@Override
+		public boolean hasItemWithID(int ID) {
+			return false;
+		}
 		
 	}
 	
