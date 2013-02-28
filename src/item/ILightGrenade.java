@@ -5,7 +5,7 @@ import org.omg.PortableInterceptor.INACTIVE;
 import ObjectronExceptions.IllegalGrenadeStateTranisitionException;
 
 /**
- * A grenade-item that can be enabled en exploded. A lightgrenade always is in a
+ * A grenade can be enabled en exploded. A lightgrenade always is in a
  * {@link LightGrenadeState}. Initially in the {@link INACTIVE} state. Exploded
  * grenades cannot be carried.
  * 
