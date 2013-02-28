@@ -104,7 +104,7 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
-		return false
+		return false;
 	}
 	
 	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
