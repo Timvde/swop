@@ -18,9 +18,9 @@ public interface IPlayer {
 	public int getID();
 	
 	/**
-	 * Returns the coordinate this player has to reach.
+	 * Returns the coordinate this player has to reach to win the game.
 	 * 
-	 * @return the coordinate this player has to reach.
+	 * @return the coordinate this player has to reach to win the game.
 	 */
 	public Coordinate getTargetPosition();
 	

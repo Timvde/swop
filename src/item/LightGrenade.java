@@ -21,33 +21,16 @@ public class LightGrenade extends Item implements ILightGrenade {
 		this.state = LightGrenadeState.TRIGGERED;
 	}
 
-	/**
-	 * This method sets the state of the grenade to {@link LightGrenadeState}
-	 * .ACTIVE. It cannot be called until the player who dropped the
-	 * lightgrenade and triggered it, left the square.
-	 * 
-	 * @throws IllegalStateException
-	 *             The transition to the ACTIVE state must be valid from the
-	 *             current state:
-	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.ACTIVE)</code>
-	 */
-	void enable() throws IllegalStateException {
+	@Override
+	public void enable() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
 			throw new IllegalStateException("Illegal transition from "
 					+ this.state.toString() + " to 'enabled'");
 		this.state = LightGrenadeState.ACTIVE;
 	}
 
-	/**
-	 * This method sets the state of the grenade to {@link LightGrenadeState}
-	 * .EXPLODED
-	 * 
-	 * @throws IllegalStateException
-	 *             The transition to the EXPLODED state must be valid from the
-	 *             current state:
-	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
-	 */
-	void explode() throws IllegalStateException {
+	@Override
+	public void explode() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			throw new IllegalStateException("Illegal transition from "
 					+ this.state.toString() + " to 'exploded'");

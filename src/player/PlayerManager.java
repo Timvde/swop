@@ -22,12 +22,12 @@ public class PlayerManager {
 
 	/**
 	 * Creates a new Playermanager with a given player-coordinate map and takes
-	 * the first player as the 'current player'.
+	 * the first player as the starting player.
 	 * 
 	 * @param playerList
 	 *            the given player-coordinate map
 	 * @throws IllegalNumberOfPlayersException
-	 *             The given player-coordinate map must have exact
+	 *             The given player-coordinate map must have exactly
 	 *             PlayerManager.NUMBER_OF_PLAYERS entries
 	 */
 	public PlayerManager(Map<Player, Coordinate> playerList)
