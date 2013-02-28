@@ -29,7 +29,7 @@ public class Grid implements IGrid {
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				grid.put(new Coordinate(i, j), new Square());
-		while (builder.maximumNumberOfWalls > ((double) getNumberOfWallParts()) / grid.size())
+		while (builder.maximumNumberOfWalls > ((double) getNumberOfWallParts() + 2) / grid.size())
 			placeWall(builder.maximumNumberOfWalls);
 	}
 	
@@ -74,6 +74,7 @@ public class Grid implements IGrid {
 		Wall wall = new Wall(start, end);
 		for (Coordinate coord : getWallPositions(start, end))
 			grid.put(coord, wall.getWallPart());
+		walls.add(wall);
 	}
 	
 	/**
@@ -104,7 +105,10 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
-		return false
+		for (Wall w : walls) 
+			if (w.touchesWall(new Wall(start, end)))
+				return false;
+		return true;
 	}
 	
 	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
@@ -148,6 +152,10 @@ public class Grid implements IGrid {
 		return i;
 	}
 	
+	public HashMap<Coordinate, ASquare> getGrid() {
+		return grid;
+	}
+	
 	@Override
 	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
 		return false;
@@ -173,6 +181,12 @@ public class Grid implements IGrid {
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
 		return this.grid.keySet();
+	}
+	
+	@Override 
+	public String toString() {
+		String str = "";
+		return null;
 	}
 	
 	public static class Builder {
