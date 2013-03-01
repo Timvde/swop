@@ -17,10 +17,8 @@ public class Game extends Observable {
 	
 	private Grid	grid;
 	private IPlayer	currentPlayer;
+
 	
-	/**
-	 * TODO
-	 */
 	public void startNewGame() {
 		
 	}

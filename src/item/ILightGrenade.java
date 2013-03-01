@@ -29,7 +29,6 @@ public interface ILightGrenade {
 	 *             current state:
 	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.WAITING_FOR_PLAYER_LEAVE)</code>
 	 * 
-	 * FIXME <br><br><b>NOTE: Do not call this method directly. Instead use</b> 
 	 */
 	public void trigger() throws IllegalStateException;
 

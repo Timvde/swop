@@ -1,18 +1,10 @@
 package grid;
 
 import item.IItem;
-import item.Item;
-
 import java.util.List;
 import java.util.Set;
 
-import player.Player;
 
-/**
- * TODO
- * 
- * @author Bavo Mees
- */
 public interface IGrid {
 	
 	/**

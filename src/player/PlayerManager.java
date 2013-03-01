@@ -9,10 +9,7 @@ import ObjectronExceptions.IllegalNumberOfPlayersException;
 
 import com.sun.istack.internal.NotNull;
 
-/**
- * TODO verantwoordelijk voor gameflow voor players
- * 
- */
+
 public class PlayerManager {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
