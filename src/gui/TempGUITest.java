@@ -9,7 +9,8 @@ public class TempGUITest {
 		GUI gui = new GUI(null, null, null, null, null);
 		java.awt.EventQueue.invokeLater(gui);
 		
-		Grid g = new Grid();
+		Grid grid = new Grid.Builder().build();
+		gui.draw(grid);
 	}
 	
 }
