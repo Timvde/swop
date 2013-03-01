@@ -113,10 +113,17 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
+		//walls must be placed on the board
 		if (start.getX() >= width || start.getX() < 0 || start.getY() >= height || start.getY() < 0)
 			return false;
 		if (end.getX() >= width || end.getX() < 0 || end.getY() >= height || end.getY() < 0)
 			return false;
+		//walls cannot be placed on start positions 
+		if (start.equals(new Coordinate(0, height - 1)) || start.equals(new Coordinate(width - 1, 0)))
+			return false; 
+		if (end.equals(new Coordinate(0, height - 1)) || end.equals(new Coordinate(width - 1, 0)))
+			return false;
+		//walls cannot touch other walls on the board 
 		for (Wall w : walls)
 			if (w.touchesWall(new Wall(start, end)))
 				return false;
