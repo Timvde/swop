@@ -1,8 +1,10 @@
 *.class
 .classpath
 
+bin/
 .settings/
 .vpprefdata/
+*.vpp.working
 
 # Package Files #
 *.jar
