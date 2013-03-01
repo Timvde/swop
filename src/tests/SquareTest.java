@@ -24,7 +24,8 @@ public class SquareTest {
 		Item item = new LightGrenade();
 		square.addItem(item);
 		assertTrue(square.getCarryableItems().contains(item));
-		square.pickupItem(item.getId());
+		assertTrue(square.hasItemWithID(item.getId()));
+		square.removeItem(item);
 		assertEquals(square.getCarryableItems().size(), 0);
 	}
 	
@@ -35,6 +36,13 @@ public class SquareTest {
 		assertEquals(square.getPlayer(), player);
 		square.removePlayer();
 		assertEquals(square.getPlayer(), null);
+	}
+	
+	@Test
+	public void testLightTrail() {
+		assertFalse(square.hasLightTrail());
+		square.placeLightTrail();
+		assertTrue(square.hasLightTrail());
 	}
 	
 }
