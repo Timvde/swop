@@ -1,42 +1,89 @@
 package grid;
 
+import game.Game;
 import grid.Wall.WallPart;
 import item.IItem;
+import item.LightGrenade;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import player.IPlayer;
 
 public class Grid implements IGrid {
 	
-	private HashMap<Coordinate, ASquare>	grid;
-	private List<Wall>						walls;
-	private int								width;
-	private int								height;
-	private static final int				MINIMUM_WALL_SIZE	= 2;
+	private static final double			NUMBER_OF_ITEMS_ON_BOARD	= 0.05;
+	private Map<Coordinate, ASquare>	grid;
+	private Map<Integer, Coordinate>	players;
+	private List<Wall>					walls;
+	private int							width;
+	private int							height;
+	private static final int			MINIMUM_WALL_SIZE			= 2;
 	
 	/**
-	 * Create a new grid with a specified builder.
+	 * Create a new grid with a specified builder. This will automatically place
+	 * random wall on the board
+	 * 
 	 * 
 	 * @param builder
 	 */
 	private Grid(Builder builder) {
+		// set the width en height of the board
 		this.width = builder.width;
 		this.height = builder.height;
+		// build empty board
 		walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++)
-				grid.put(new Coordinate(i, j), new Square());
+			for (int j = 0; j < height; j++) {
+				Square sq = new Square();
+				builder.game.addObserver(sq);
+				grid.put(new Coordinate(i, j), sq);
+			}
 		
+		// place walls on the grid
 		int max = MINIMUM_WALL_SIZE
 				+ (int) (builder.maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - builder.maximalLengthOfWall
 						* Math.max(width, height));
 		int maximumNumberOfWalls = new Random().nextInt(max);
 		while (maximumNumberOfWalls >= getNumberOfWallParts())
 			placeWall(builder.maximumNumberOfWalls, builder.maximalLengthOfWall);
+		
+		// if there are players in the builder, place them on the board
+		if (builder.players.size() == 2)
+			placePlayersOnBoard(builder.players);
+		
+		// place the items on the board
+		placeItemsOnBoard();
+	}
+	
+	private void placePlayersOnBoard(List<IPlayer> players) {
+		this.players = new HashMap<Integer, Coordinate>();
+		((Square) grid.get(new Coordinate(width - 1, 0))).setPlayer(players.get(0));
+		this.players.put(players.get(0).getID(), new Coordinate(width - 1, 0));
+		((Square) grid.get(new Coordinate(0, height - 1))).setPlayer(players.get(1));
+		this.players.put(players.get(1).getID(), new Coordinate(0, height - 1));
+	}
+	
+	private void placeItemsOnBoard() {
+		int numberOfLightGrenades = 0;
+		while (((double) numberOfLightGrenades) / grid.size() < NUMBER_OF_ITEMS_ON_BOARD) {
+			Coordinate position = Coordinate.random(width, height);
+			if (canPlaceItem(position)) {
+				((Square) grid.get(position)).addItem(new LightGrenade());
+				numberOfLightGrenades++;
+			}
+		}
+	}
+	
+	private boolean canPlaceItem(Coordinate coordinate) {
+		if (coordinate.equals(new Coordinate(width - 1, 0))
+				|| coordinate.equals(new Coordinate(0, height - 1)))
+			return false;
+		return grid.get(coordinate).getClass() != WallPart.class;
 	}
 	
 	/**
@@ -114,18 +161,39 @@ public class Grid implements IGrid {
 	 * @param end
 	 *        the end position of the wall
 	 * @return true if a wall can be placed, else false
+	 * 
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
+		// walls must be placed on the board
 		if (start.getX() >= width || start.getX() < 0 || start.getY() >= height || start.getY() < 0)
 			return false;
 		if (end.getX() >= width || end.getX() < 0 || end.getY() >= height || end.getY() < 0)
 			return false;
+		// walls cannot be placed on start positions
+		if (start.equals(new Coordinate(0, height - 1))
+				|| start.equals(new Coordinate(width - 1, 0)))
+			return false;
+		if (end.equals(new Coordinate(0, height - 1)) || end.equals(new Coordinate(width - 1, 0)))
+			return false;
+		// walls cannot touch other walls on the board
 		for (Wall w : walls)
 			if (w.touchesWall(new Wall(start, end)))
 				return false;
 		return true;
 	}
 	
+	/**
+	 * Return all the coordinates of a wall that starts and ends at two certain
+	 * points.
+	 * 
+	 * @param start
+	 *        The start position of the wall.
+	 * @param end
+	 *        The end position of the wall.
+	 * @return A collection of coordinates of this wall.
+	 * @throws IllegalArgumentException
+	 *         If the given positions are not aligned.
+	 */
 	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
 		Collection<Coordinate> positions = new ArrayList<Coordinate>();
 		
@@ -167,20 +235,55 @@ public class Grid implements IGrid {
 		return i;
 	}
 	
-	public HashMap<Coordinate, ASquare> getGrid() {
+	/**
+	 * Return the grid.
+	 */
+	public Map<Coordinate, ASquare> getGrid() {
 		return grid;
 	}
 	
 	@Override
-	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
-		return false;
+	public boolean canMovePlayer(int playerID, Direction direction) {
+		// player and direction must exist
+		if (!players.containsKey(playerID) || direction == null)
+			return false;
+		// next coordinate must be on the grid
+		else if (!grid.containsKey(players.get(playerID).getCoordinateInDirection(direction)))
+			return false;
+		// players cannot move through walls
+		else if (grid.get(players.get(playerID).getCoordinateInDirection(direction)).getClass() == WallPart.class)
+			return false;
+		// players cannot occupy the same position
+		else if (players.containsValue(players.get(playerID).getCoordinateInDirection(direction)))
+			return false;
+		// players cannot move through light trails
+		else if (grid.get(players.get(playerID).getCoordinateInDirection(direction))
+				.hasLightTrail())
+			return false;
+//		else if (direction.getPrimeryDirections().size() == 2
+//				&& grid.get(
+//						players.get(playerID).getCoordinateInDirection(
+//								direction.getPrimeryDirections().get(0))).hasLightTrail()
+//				&& grid.get(
+//						players.get(playerID).getCoordinateInDirection(
+//								direction.getPrimeryDirections().get(1))).hasLightTrail())
+//			return false;
+		return true;
 	}
 	
 	@Override
-	public void movePlayer(Coordinate coordinate, Direction direction) {
-		if (!canMovePlayer(coordinate, direction))
+	public void movePlayer(int playerID, Direction direction) {
+		if (!canMovePlayer(playerID, direction))
 			throw new IllegalArgumentException("Player can not be moved in that direction!");
-		
+		Coordinate newCoord = players.get(playerID).getCoordinateInDirection(direction);
+		Coordinate oldCoord = players.get(playerID);
+		// update the squares
+		((Square) grid.get(newCoord)).setPlayer(grid.get(oldCoord).getPlayer());
+		((Square) grid.get(oldCoord)).setPlayer(null);
+		// set a new position in the list of players
+		players.put(playerID, newCoord);
+		// set the ligh trail on a previous square
+		((Square) grid.get(oldCoord)).placeLightTrail();
 	}
 	
 	@Override
@@ -196,6 +299,11 @@ public class Grid implements IGrid {
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
 		return this.grid.keySet();
+	}
+	
+	@Override
+	public Coordinate getPlayerCoordinate(int playerId) {
+		return this.players.get(playerId);
 	}
 	
 	@Override
@@ -215,20 +323,30 @@ public class Grid implements IGrid {
 		return str;
 	}
 	
+	/**
+	 * A builder class for building a new grid.
+	 * 
+	 * @author tom
+	 * 
+	 */
 	public static class Builder {
 		
-		private int		minimalLengthOfWall;
-		private double	maximalLengthOfWall;
-		private double	maximumNumberOfWalls;
-		private int		width;
-		private int		height;
+		private List<IPlayer>	players;
+		private int				minimalLengthOfWall;
+		private double			maximalLengthOfWall;
+		private double			maximumNumberOfWalls;
+		private int				width;
+		private int				height;
+		private Game			game;
 		
-		public Builder() {
+		public Builder(Game game, List<IPlayer> players) {
 			this.minimalLengthOfWall = 2;
 			this.maximalLengthOfWall = 0.50;
 			this.maximumNumberOfWalls = 0.20;
 			this.width = 10;
 			this.height = 10;
+			this.game = game;
+			this.players = players;
 		}
 		
 		/**

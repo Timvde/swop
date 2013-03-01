@@ -1,16 +1,21 @@
 package controllers;
 
-import java.util.List;
+import game.Game;
+import item.IItem;
+import actions.PickUpAction;
 
 public class PickUpItemController {
 	
-	public void pickup(int id) {
-		
-	}
+
+	private Game game;
 	
-	public List<Integer> getItemList() {
-		return null;
-		
+	public PickUpItemController(Game game) {
+		this.game = game;
+	} 
+	
+	public void pickUpItem(IItem item) {
+		PickUpAction action = new PickUpAction();
+		game.executeGridAction(action);
 	}
 	
 }

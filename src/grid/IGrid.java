@@ -18,24 +18,24 @@ public interface IGrid {
 	/**
 	 * returns whether a specified player can move in a specific direction
 	 * 
-	 * @param player
-	 *        the player who wants to move
+	 * @param playerID
+	 *        the ID of the player who wants to move
 	 * @param direction
 	 *        the direction the player wants to move in
 	 * @return returns whether a specified player can move in a specific
 	 *         direction.
 	 */
-	public boolean canMovePlayer(Coordinate coordinate, Direction direction);
+	public boolean canMovePlayer(int playerID, Direction direction);
 	
 	/**
 	 * Move a specified player to a new coordinate in a given direction
 	 * 
-	 * @param player
-	 *        the player who wants to move
+	 * @param playerID
+	 *        the id of the player who wants to move
 	 * @param direction
 	 *        the direction the player wants to move in.
 	 */
-	public void movePlayer(Coordinate coordinate, Direction direction);
+	public void movePlayer(int playerID, Direction direction);
 	
 	/**
 	 * returns the list of items on a square, when there are no items on the
@@ -46,6 +46,15 @@ public interface IGrid {
 	 * @return a list of items on a square
 	 */
 	public List<IItem> getItemList(Coordinate coordinate);
+	
+	/**
+	 * Return the coordinate of the player with the given id.
+	 * @param playerId
+	 * 			The id of the player we need the coordinate from.
+	 * @return
+	 * 			The coordinate as a Coordinate object of the given player.
+	 */
+	public Coordinate getPlayerCoordinate(int playerId);
 	
 	/**
 	 * Return the square of the grid that has a specific coordinate.
