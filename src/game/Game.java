@@ -34,4 +34,8 @@ public class Game extends Observable {
 	public void setCurrentPlayer(IPlayer player) {
 		this.currentPlayer = player;
 	}
+	
+	public IPlayer getCurrentPlayer() {
+		return this.currentPlayer;
+	}
 }

@@ -48,6 +48,15 @@ public interface IGrid {
 	public List<IItem> getItemList(Coordinate coordinate);
 	
 	/**
+	 * Return the coordinate of the player with the given id.
+	 * @param playerId
+	 * 			The id of the player we need the coordinate from.
+	 * @return
+	 * 			The coordinate as a Coordinate object of the given player.
+	 */
+	public Coordinate getPlayerCoordinate(int playerId);
+	
+	/**
 	 * Return the square of the grid that has a specific coordinate.
 	 * 
 	 * @param coordinate

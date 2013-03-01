@@ -9,4 +9,10 @@ public class PickUpAction extends Action {
 	public IItem getItem() {
 		return this.item;
 	}
+
+	@Override
+	public void execute() {
+		// TODO Auto-generated method stub
+		
+	}
 }

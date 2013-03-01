@@ -182,7 +182,8 @@ public class GUI implements Runnable {
 					}
 					
 					// Draw items if necessary
-					List<IItem> itemList = square.getCarryableItems();
+					
+					List<IItem> itemList = grid.getItemList(c);
 					for (IItem i : itemList) {
 						if (i instanceof LightGrenade) {
 							graphics.drawImage(lightGrenadeImage, guiCoord.getX(), guiCoord.getY(),
@@ -193,15 +194,29 @@ public class GUI implements Runnable {
 				}
 				
 				
+				// Show the items in the list that the current player can interact with
+				Vector<IItem> itemsSquare = new Vector<IItem>();
+				List<IItem> itemsOfSquare = getItemListController.getSquareItemList(grid);
 				
-				// Draw the list of items that are on the current square.
-				
-				// TODO get items of inventory and items on the square.
-				
-				Vector<Item> itemsSquare = new Vector<Item>();
-				Vector<Item> itemsInventory = new Vector<Item>();
+				// add them into a Vector, because setListData of our list doesn't accept a 
+				// List object.
+				for (IItem i : itemsOfSquare) {
+					itemsSquare.add((Item) i);
+				}
 				
 				itemList.setListData(itemsSquare);
+				
+				
+				// Show the player's inventory items in the inventory list
+				Vector<Item> itemsInventory = new Vector<Item>();
+				List<Item> itemsOfPlayer = getInventoryListController.getCurrentPlayerInventory();
+				
+				// add them into a Vector, because setListData of our list doesn't accept a 
+				// List object.
+				for (IItem i : itemsOfPlayer) {
+					itemsInventory.add((Item) i);
+				}
+				
 				inventoryList.setListData(itemsInventory);
 				
 			}

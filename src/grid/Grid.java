@@ -267,6 +267,11 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
+	public Coordinate getPlayerCoordinate(int playerId) {
+		return this.players.get(playerId);
+	}
+	
+	@Override
 	public String toString() {
 		String str = "";
 		for (int i = 0; i < 10; i++) {
