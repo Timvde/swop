@@ -15,7 +15,6 @@ import player.IPlayer;
 public class Wall {
 	
 	private List<WallPart>	parts	= new ArrayList<WallPart>();
-	private static WallPart wallPart;
 	
 	public Wall(Coordinate start, Coordinate stop) throws IllegalArgumentException {
 		if (start.getX() != stop.getX() && start.getY() != stop.getY())
@@ -32,19 +31,17 @@ public class Wall {
 		// 1 - 0 == 1. Therefore, we needed to either add 1 to the previous
 		// calculation, or change this "<" to "<=".
 		for (int i = 0; i <= numberOfParts; i++)
-			parts.add(wallPart);
+			parts.add(new WallPart(this));
 		
 	}
 	
-	public WallPart getWallPart() {
-		if (wallPart == null)
-			wallPart = new WallPart();
-		return wallPart;
-	}
-
 	public class WallPart extends ASquare {
 		
-		private WallPart() {}
+		private Wall	wall;
+		
+		private WallPart(Wall wall) {
+			this.wall = wall;
+		}
 		
 		@Override
 		public List<Item> getCarryableItems() {
@@ -60,17 +57,11 @@ public class Wall {
 		public boolean hasLightTrail() {
 			return false;
 		}
-
-		@Override
-		public Item pickupItem(int ID) throws IllegalArgumentException {
-			throw new IllegalArgumentException("Walls do not contain items");
-		}
-
-		@Override
-		public boolean hasItemWithID(int ID) {
-			return false;
-		}
 		
+	}
+	
+	public List<WallPart> getWallParts() {
+		return parts;
 	}
 	
 }

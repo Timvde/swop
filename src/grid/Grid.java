@@ -1,9 +1,14 @@
 package grid;
 
+<<<<<<< HEAD
 import grid.Wall.WallPart;
 import item.Item;
 import java.util.ArrayList;
 import java.util.Collection;
+=======
+import item.IItem;
+
+>>>>>>> refs/remotes/origin/master
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -150,20 +155,28 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
+<<<<<<< HEAD
 	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
 		// TODO Auto-generated method stub
+=======
+	public boolean canMovePlayer(Player player, Direction direction) {
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 	
 	@Override
+<<<<<<< HEAD
 	public void movePlayer(Coordinate coordinate, Direction direction) {
 		if (!canMovePlayer(coordinate, direction))
 			throw new IllegalArgumentException("Player can not be moved in that direction!");
+=======
+	public void movePlayer(Player player, Direction direction) {
+>>>>>>> refs/remotes/origin/master
 		
 	}
 	
 	@Override
-	public List<Item> getItemList(Coordinate coordinate) {
+	public List<IItem> getItemList(Coordinate coordinate) {
 		return grid.get(coordinate).getCarryableItems();
 	}
 	

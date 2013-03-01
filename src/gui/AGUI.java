@@ -8,8 +8,10 @@ import java.awt.MediaTracker;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 public abstract class AGUI {
@@ -66,6 +68,17 @@ public abstract class AGUI {
 		Button b = new Button(button);
 		b.setClickHandler(clickHandler);
 		return b;
+	}
+	
+	public final List createList(int x, int y, int width, int height, Runnable clickHandler) {
+		JList list = new JList();
+		list.setLocation(x, y);
+		list.setSize(width, height);
+		panel.add(list);
+		List l = new List(list);
+		l.setClickHandler(clickHandler);
+		
+		return l;
 	}
 	
 	public final Image loadImage(String url, int width, int height) {
