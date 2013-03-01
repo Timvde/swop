@@ -21,6 +21,7 @@ public abstract class AGUI {
 	
 	@SuppressWarnings("serial")
 	public AGUI(String title, final int width, final int height) {
+		System.out.println("xA");
 		frame = new JFrame(title);
 		panel = new JPanel(null) {
 			@Override public void paintComponent(Graphics g) {
@@ -32,6 +33,7 @@ public abstract class AGUI {
 				return new Dimension(width, height);
 			}
 		};
+		System.out.println("xB");
 		panel.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -45,6 +47,7 @@ public abstract class AGUI {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		System.out.println("xC");
 	}
 	
 	public JPanel getPanel() {

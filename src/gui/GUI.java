@@ -2,24 +2,16 @@ package gui;
 
 import grid.ASquare;
 import grid.Coordinate;
-import grid.Direction;
 import grid.Grid;
 import grid.Wall;
 import item.IItem;
 import item.Item;
 import item.LightGrenade;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import player.IPlayer;
 import controllers.GetInventoryListController;
 import controllers.GetItemListController;
@@ -46,8 +38,8 @@ public class GUI implements Runnable {
 	 * The following values are not final and will be updated with each redraw,
 	 * depending on the Grid object dimension. These are just temp start values.
 	 */
-	private int							gridHeight				= 4;
-	private int							gridWidth				= 4;
+	private int							gridHeight			= 4;
+	private int							gridWidth			= 4;
 	
 	/**
 	 * This variable is the size of a square on the GUI. If modified, the grid
@@ -115,8 +107,9 @@ public class GUI implements Runnable {
 	 * Start the GUI thread by creating the GUI elements and displaying them.
 	 */
 	public void run() {
-		
-		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * gridWidth), 200 + (SQUARE_SIZE * gridHeight)) {
+		System.out.println("x2");
+		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * gridWidth),
+				200 + (SQUARE_SIZE * gridHeight)) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
@@ -128,10 +121,11 @@ public class GUI implements Runnable {
 				// Adjust the grid dimensions and GUI size:
 				gridHeight = getGridHeigth(grid);
 				gridWidth = getGridWidth(grid);
-				gui.getPanel()
-						.setSize(200 + (SQUARE_SIZE * gridWidth), 200 + (SQUARE_SIZE * gridHeight));
-				gui.getFrame()
-						.setSize(200 + (SQUARE_SIZE * gridWidth), 200 + (SQUARE_SIZE * gridHeight));
+				
+				gui.getPanel().setSize(200 + (SQUARE_SIZE * gridWidth),
+						200 + (SQUARE_SIZE * gridHeight));
+				gui.getFrame().setSize(200 + (SQUARE_SIZE * gridWidth),
+						200 + (SQUARE_SIZE * gridHeight));
 				// Draw grid lines
 				for (int r = 0; r < gridHeight; r++) {
 					for (int c = 0; c < gridWidth; c++) {
@@ -190,8 +184,8 @@ public class GUI implements Runnable {
 				}
 				
 				// Draw the two finish squares:
-				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, gridHeight-1));
-				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(gridWidth-1, 0));
+				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, gridHeight - 1));
+				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(gridWidth - 1, 0));
 				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
 						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
@@ -230,7 +224,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.NORTH);
+						// moveController.movePlayer(Direction.NORTH);
 						
 						gui.repaint();
 					}
@@ -241,7 +235,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.WEST);
+						// moveController.movePlayer(Direction.WEST);
 						
 						gui.repaint();
 					}
@@ -252,7 +246,7 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.EAST);
+						// moveController.movePlayer(Direction.EAST);
 						
 						gui.repaint();
 					}
@@ -263,7 +257,7 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.SOUTH);
+						// moveController.movePlayer(Direction.SOUTH);
 						
 						gui.repaint();
 					}
@@ -274,7 +268,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.NORTHEAST);
+						// moveController.movePlayer(Direction.NORTHEAST);
 						
 						gui.repaint();
 					}
@@ -285,7 +279,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.SOUTHEAST);
+						// moveController.movePlayer(Direction.SOUTHEAST);
 						
 						gui.repaint();
 					}
@@ -296,7 +290,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.SOUTHWEST);
+						// moveController.movePlayer(Direction.SOUTHWEST);
 						
 						gui.repaint();
 					}
@@ -307,7 +301,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.NORTHWEST);
+						// moveController.movePlayer(Direction.NORTHWEST);
 						gui.repaint();
 					}
 				});
@@ -389,6 +383,7 @@ public class GUI implements Runnable {
 	 */
 	public void draw(Grid g) {
 		this.grid = g;
+		System.out.println("x1");
 		gui.repaint();
 	}
 	
@@ -423,7 +418,7 @@ public class GUI implements Runnable {
 				maxRowNum = c.getY();
 		}
 		
-		return maxRowNum+1;
+		return maxRowNum + 1;
 	}
 	
 	/**
@@ -442,6 +437,6 @@ public class GUI implements Runnable {
 				maxColNum = c.getY();
 		}
 		
-		return maxColNum+1;
+		return maxColNum + 1;
 	}
 }
