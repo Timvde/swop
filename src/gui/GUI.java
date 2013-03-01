@@ -134,8 +134,17 @@ public class GUI implements Runnable {
 					}
 				}
 				
+				// Draw the two finish squares:
+				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, gridHeight - 1));
+				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(gridWidth - 1, 0));
+				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
+						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
+						SQUARE_SIZE, SQUARE_SIZE, null);
+				
 				// Populate the grid squares with the correct images:
 				Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
+				
 				
 				for (Coordinate c : gridCoords) {
 					// TODO draw players anders? coords opvragen..
@@ -146,11 +155,11 @@ public class GUI implements Runnable {
 					// Draw players if necessary
 					if (player != null) {
 						switch (player.getID()) {
-							case 0:
+							case 1:
 								graphics.drawImage(playerBlueImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 								break;
-							case 1:
+							case 2:
 								graphics.drawImage(playerRedImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 								break;
@@ -160,7 +169,7 @@ public class GUI implements Runnable {
 					}
 					
 					// Draw wall if necessary
-					if (square instanceof Wall.WallPart) {
+					if (square.getClass() == Wall.WallPart.class) {
 						graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
 								SQUARE_SIZE, SQUARE_SIZE, null);
 					}
@@ -182,13 +191,7 @@ public class GUI implements Runnable {
 					
 				}
 				
-				// Draw the two finish squares:
-				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, gridHeight - 1));
-				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(gridWidth - 1, 0));
-				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
-						SQUARE_SIZE, SQUARE_SIZE, null);
+				
 				
 				// Draw the list of items that are on the current square.
 				

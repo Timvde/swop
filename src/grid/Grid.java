@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import player.IPlayer;
 
 public class Grid implements IGrid {
 	
@@ -18,25 +19,37 @@ public class Grid implements IGrid {
 	private static final int				MINIMUM_WALL_SIZE	= 2;
 	
 	/**
-	 * Create a new grid with a specified builder.
+	 * Create a new grid with a specified builder. This will automatically place
+	 * random wall on the board
+	 * 
 	 * 
 	 * @param builder
 	 */
 	private Grid(Builder builder) {
+		// set the width en height of the board
 		this.width = builder.width;
 		this.height = builder.height;
+		// build empty board
 		walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				grid.put(new Coordinate(i, j), new Square());
 		
+		// place walls on the grid
 		int max = MINIMUM_WALL_SIZE
 				+ (int) (builder.maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - builder.maximalLengthOfWall
 						* Math.max(width, height));
 		int maximumNumberOfWalls = new Random().nextInt(max);
 		while (maximumNumberOfWalls > getNumberOfWallParts())
 			placeWall(builder.maximumNumberOfWalls, builder.maximalLengthOfWall);
+		if (builder.players.size() == 2) 
+			placePlayersOnBoard(builder.players);
+	}
+	
+	private void placePlayersOnBoard(List<IPlayer> players) {
+		((Square) grid.get(new Coordinate(width - 1, 0))).setPlayer(players.get(0));
+		((Square) grid.get(new Coordinate(0, height - 1))).setPlayer(players.get(1));
 	}
 	
 	/**
@@ -113,17 +126,18 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
-		//walls must be placed on the board
+		// walls must be placed on the board
 		if (start.getX() >= width || start.getX() < 0 || start.getY() >= height || start.getY() < 0)
 			return false;
 		if (end.getX() >= width || end.getX() < 0 || end.getY() >= height || end.getY() < 0)
 			return false;
-		//walls cannot be placed on start positions 
-		if (start.equals(new Coordinate(0, height - 1)) || start.equals(new Coordinate(width - 1, 0)))
-			return false; 
+		// walls cannot be placed on start positions
+		if (start.equals(new Coordinate(0, height - 1))
+				|| start.equals(new Coordinate(width - 1, 0)))
+			return false;
 		if (end.equals(new Coordinate(0, height - 1)) || end.equals(new Coordinate(width - 1, 0)))
 			return false;
-		//walls cannot touch other walls on the board 
+		// walls cannot touch other walls on the board
 		for (Wall w : walls)
 			if (w.touchesWall(new Wall(start, end)))
 				return false;
@@ -221,18 +235,21 @@ public class Grid implements IGrid {
 	
 	public static class Builder {
 		
+		private List<IPlayer> players;
 		private int		minimalLengthOfWall;
 		private double	maximalLengthOfWall;
 		private double	maximumNumberOfWalls;
 		private int		width;
 		private int		height;
 		
-		public Builder() {
+		public Builder(List<IPlayer> players) {
 			this.minimalLengthOfWall = 2;
 			this.maximalLengthOfWall = 0.50;
 			this.maximumNumberOfWalls = 0.20;
 			this.width = 10;
 			this.height = 10;
+			
+			this.players = players;
 		}
 		
 		/**

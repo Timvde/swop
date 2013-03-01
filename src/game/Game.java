@@ -1,8 +1,9 @@
 package game;
 
 
-import java.util.Observable;
 import grid.Grid;
+import java.util.Observable;
+import actions.Action;
 
 public class Game extends Observable {
 	
@@ -12,6 +13,11 @@ public class Game extends Observable {
 		
 	}
 	
-	public void excuteAction() {
+	public void excuteAction(Action action) {
+		
+		this.hasChanged();
+		this.notifyObservers();
 	}
+	
+	
 }
