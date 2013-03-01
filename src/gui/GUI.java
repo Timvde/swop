@@ -107,7 +107,6 @@ public class GUI implements Runnable {
 	 * Start the GUI thread by creating the GUI elements and displaying them.
 	 */
 	public void run() {
-		System.out.println("x2");
 		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * gridWidth),
 				200 + (SQUARE_SIZE * gridHeight)) {
 			
@@ -383,8 +382,6 @@ public class GUI implements Runnable {
 	 */
 	public void draw(Grid g) {
 		this.grid = g;
-		System.out.println("x1");
-		gui.repaint();
 	}
 	
 	/**
