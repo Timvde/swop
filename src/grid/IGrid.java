@@ -25,7 +25,7 @@ public interface IGrid {
 	 * @return returns whether a specified player can move in a specific
 	 *         direction.
 	 */
-	public boolean canMovePlayer(Player player, Direction direction);
+	public boolean canMovePlayer(Coordinate coordinate, Direction direction);
 	
 	/**
 	 * Move a specified player to a new coordinate in a given direction
@@ -35,7 +35,7 @@ public interface IGrid {
 	 * @param direction
 	 *        the direction the player wants to move in.
 	 */
-	public void movePlayer(Player player, Direction direction);
+	public void movePlayer(Coordinate coordinate, Direction direction);
 	
 	/**
 	 * returns the list of items on a square, when there are no items on the
