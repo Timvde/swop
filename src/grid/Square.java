@@ -18,6 +18,12 @@ public class Square extends ASquare implements Observer {
 		
 	}
 	
+	/**
+	 * add an item to the square
+	 * 
+	 * @param item
+	 *        the item to add
+	 */
 	public void addItem(IItem item) {
 		itemList.add(item);
 	}
@@ -25,10 +31,9 @@ public class Square extends ASquare implements Observer {
 	@Override
 	public List<IItem> getCarryableItems() {
 		List<IItem> result = new ArrayList<IItem>();
-		for (IItem item : itemList) {
+		for (IItem item : itemList)
 			if (item.isCarriable())
 				result.add(item);
-		}
 		return result;
 	}
 	
@@ -47,7 +52,7 @@ public class Square extends ASquare implements Observer {
 	 *       updated as the player (and its light trail) moves around the grid.
 	 */
 	public void placeLightTrail() {
-		lightTrail = 3;
+		lightTrail = 4;
 	}
 	
 	@Override

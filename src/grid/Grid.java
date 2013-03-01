@@ -1,5 +1,6 @@
 package grid;
 
+import game.Game;
 import grid.Wall.WallPart;
 import item.IItem;
 import item.LightGrenade;
@@ -37,8 +38,11 @@ public class Grid implements IGrid {
 		walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++)
-				grid.put(new Coordinate(i, j), new Square());
+			for (int j = 0; j < height; j++) {
+				Square sq = new Square();
+				builder.game.addObserver(sq);
+				grid.put(new Coordinate(i, j), sq);
+			}
 		
 		// place walls on the grid
 		int max = MINIMUM_WALL_SIZE
@@ -221,20 +225,30 @@ public class Grid implements IGrid {
 	
 	@Override
 	public boolean canMovePlayer(int playerID, Direction direction) {
-		//player and direction must exist
+		// player and direction must exist
 		if (!players.containsKey(playerID) || direction == null)
 			return false;
-		//next coordinate must be on the grid
+		// next coordinate must be on the grid
 		else if (!grid.containsKey(players.get(playerID).getCoordinateInDirection(direction)))
 			return false;
-		//players cannot move through walls
-		else if (grid
-				.get(players
-						.get(playerID)
-						.getCoordinateInDirection(direction))
-						.getClass() == WallPart.class)
+		// players cannot move through walls
+		else if (grid.get(players.get(playerID).getCoordinateInDirection(direction)).getClass() == WallPart.class)
 			return false;
-		//TODO test for light trails
+		// players cannot occupy the same position
+		else if (players.containsValue(players.get(playerID).getCoordinateInDirection(direction)))
+			return false;
+		// players cannot move through light trails
+		else if (grid.get(players.get(playerID).getCoordinateInDirection(direction))
+				.hasLightTrail())
+			return false;
+		else if (direction.getPrimeryDirections().size() == 2
+				&& grid.get(
+						players.get(playerID).getCoordinateInDirection(
+								direction.getPrimeryDirections().get(0))).hasLightTrail()
+				&& grid.get(
+						players.get(playerID).getCoordinateInDirection(
+								direction.getPrimeryDirections().get(1))).hasLightTrail())
+			return false;
 		return true;
 	}
 	
@@ -244,11 +258,13 @@ public class Grid implements IGrid {
 			throw new IllegalArgumentException("Player can not be moved in that direction!");
 		Coordinate newCoord = players.get(playerID).getCoordinateInDirection(direction);
 		Coordinate oldCoord = players.get(playerID);
-		//update the squares
+		// update the squares
 		((Square) grid.get(newCoord)).setPlayer(grid.get(oldCoord).getPlayer());
 		((Square) grid.get(oldCoord)).setPlayer(null);
-		//set a new position in the list of players
+		// set a new position in the list of players
 		players.put(playerID, newCoord);
+		// set the ligh trail on a previous square
+		((Square) grid.get(oldCoord)).placeLightTrail();
 	}
 	
 	@Override
@@ -291,14 +307,15 @@ public class Grid implements IGrid {
 		private double			maximumNumberOfWalls;
 		private int				width;
 		private int				height;
+		private Game			game;
 		
-		public Builder(List<IPlayer> players) {
+		public Builder(Game game, List<IPlayer> players) {
 			this.minimalLengthOfWall = 2;
 			this.maximalLengthOfWall = 0.50;
 			this.maximumNumberOfWalls = 0.20;
 			this.width = 10;
 			this.height = 10;
-			
+			this.game = game;
 			this.players = players;
 		}
 		
