@@ -11,6 +11,7 @@ import notnullcheckweaver.NotNull;
  */
 public class Coordinate {
 	
+	/** The x and y values of this coordinate */
 	private final int				x;
 	private final int				y;
 	
@@ -61,7 +62,6 @@ public class Coordinate {
 	 *        the direction in which a new coordinate is returned
 	 * @return a new coordinate relative to this coordinate
 	 */
-	
 	public Coordinate getCoordinateInDirection(@NotNull Direction direction) {
 		switch (direction) {
 			case NORTH:
@@ -86,11 +86,17 @@ public class Coordinate {
 		}
 	}
 	
+	/**
+	 * Return a string representation of this coordinate.
+	 */
 	@Override
 	public String toString() {
 		return "Coordinate(" + x + ", " + y + ")";
 	}
 	
+	/**
+	 * Return a hashcode of this coordinate.
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -100,6 +106,9 @@ public class Coordinate {
 		return result;
 	}
 	
+	/**
+	 * Check if this coordinate equals another.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -116,10 +125,20 @@ public class Coordinate {
 		return true;
 	}
 	
+	/**
+	 * Return a random coordinate.
+	 */
 	public static Coordinate random(int x, int y) {
 		return new Coordinate(new Random().nextInt(x), new Random().nextInt(y));
 	}
 	
+	/**
+	 * Return a random coordinate with a given distance from this coordinate.
+	 * @param distance
+	 * 			The distance of the new coordinate.
+	 * @return
+	 * 			A random coordinate that has a certain distance from this coordinate.
+	 */
 	public Coordinate getRandomCoordinateWithDistance(int distance) {
 		Direction[] directions = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
 		Direction direction = directions[new Random().nextInt(directions.length)];

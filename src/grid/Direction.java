@@ -3,17 +3,30 @@ package grid;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Direction enumeration class.
+ * 
+ * @author tom
+ * 
+ */
 public enum Direction {
 	NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST;
 	
-	private List<Direction> primeryDirections;
+	/** A list of the primary directions */
+	private List<Direction>	primaryDirections;
 	
+	/**
+	 * Get a list of the primary directions.
+	 */
 	public List<Direction> getPrimeryDirections() {
-		return primeryDirections;
+		return primaryDirections;
 	}
 	
+	/**
+	 * Set the primary directions.
+	 */
 	private void setPrimerydirections(List<Direction> directions) {
-		this.primeryDirections = directions;
+		this.primaryDirections = directions;
 	}
 	
 	static {
