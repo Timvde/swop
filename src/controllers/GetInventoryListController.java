@@ -1,5 +1,6 @@
 package controllers;
 
+import item.IItem;
 import item.Item;
 import java.util.List;
 import game.Game;
@@ -12,7 +13,7 @@ public class GetInventoryListController {
 		this.game = g;
 	}
 	
-	public List<Item> getCurrentPlayerInventory() {
+	public List<IItem> getCurrentPlayerInventory() {
 		return this.game.getCurrentPlayer().getInventory();
 	}
 }

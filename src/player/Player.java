@@ -1,12 +1,10 @@
 package player;
 
 import grid.Coordinate;
-import item.Item;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import notnullcheckweaver.NotNull;
+import item.IItem;
 
 public class Player implements IPlayer {
 	
@@ -36,7 +34,7 @@ public class Player implements IPlayer {
 	}
 	
 	@Override
-	public List<Item> getInventory() {
+	public List<IItem> getInventory() {
 		return inventory.getItems();
 	}
 }

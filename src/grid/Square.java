@@ -28,6 +28,10 @@ public class Square extends ASquare implements Observer {
 		itemList.add(item);
 	}
 	
+	public void removeItem(IItem item) {
+		itemList.remove(item);
+	}
+	
 	@Override
 	public List<IItem> getCarryableItems() {
 		List<IItem> result = new ArrayList<IItem>();

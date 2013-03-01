@@ -241,14 +241,14 @@ public class Grid implements IGrid {
 		else if (grid.get(players.get(playerID).getCoordinateInDirection(direction))
 				.hasLightTrail())
 			return false;
-		else if (direction.getPrimeryDirections().size() == 2
-				&& grid.get(
-						players.get(playerID).getCoordinateInDirection(
-								direction.getPrimeryDirections().get(0))).hasLightTrail()
-				&& grid.get(
-						players.get(playerID).getCoordinateInDirection(
-								direction.getPrimeryDirections().get(1))).hasLightTrail())
-			return false;
+//		else if (direction.getPrimeryDirections().size() == 2
+//				&& grid.get(
+//						players.get(playerID).getCoordinateInDirection(
+//								direction.getPrimeryDirections().get(0))).hasLightTrail()
+//				&& grid.get(
+//						players.get(playerID).getCoordinateInDirection(
+//								direction.getPrimeryDirections().get(1))).hasLightTrail())
+//			return false;
 		return true;
 	}
 	

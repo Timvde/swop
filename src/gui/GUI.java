@@ -209,7 +209,7 @@ public class GUI implements Runnable {
 				
 				// Show the player's inventory items in the inventory list
 				Vector<Item> itemsInventory = new Vector<Item>();
-				List<Item> itemsOfPlayer = getInventoryListController.getCurrentPlayerInventory();
+				List<IItem> itemsOfPlayer = getInventoryListController.getCurrentPlayerInventory();
 				
 				// add them into a Vector, because setListData of our list doesn't accept a 
 				// List object.
@@ -339,6 +339,7 @@ public class GUI implements Runnable {
 						// Use the itemListSelected to access the Item that is
 						// selected in the items on square list!
 						System.out.println("item list selected:" + itemListSelected);
+						pickUpController.pickUpItem((IItem) itemListSelected);
 						gui.repaint();
 					}
 				});
@@ -354,6 +355,7 @@ public class GUI implements Runnable {
 						// is
 						// selected in the inventory!
 						System.out.println("inventory list selected:" + inventoryListSelected);
+						useItemController.useItem((Item) itemListSelected);
 						gui.repaint();
 					}
 				});

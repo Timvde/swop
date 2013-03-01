@@ -16,8 +16,8 @@ public class TempGUITest {
 	public static void main(String[] args) {
 		
 		Game game = new Game();
-		GUI gui = new GUI(new MoveController(game), new PickUpItemController(),
-				new UseItemController(), new GetInventoryListController(game),
+		GUI gui = new GUI(new MoveController(game), new PickUpItemController(game),
+				new UseItemController(game), new GetInventoryListController(game),
 				new GetItemListController(game));
 		java.awt.EventQueue.invokeLater(gui);
 		ArrayList<IPlayer> players = new ArrayList<IPlayer>();

@@ -2,6 +2,7 @@ package player;
 
 import java.util.List;
 import grid.Coordinate;
+import item.IItem;
 import item.Item;
 
 /**
@@ -29,6 +30,6 @@ public interface IPlayer {
 	 * 
 	 * @return the Inventory-content associated with this player.
 	 */
-	public List<Item> getInventory();
+	public List<IItem> getInventory();
 	
 }

@@ -1,15 +1,20 @@
 package controllers;
 
-import java.util.List;
+import game.Game;
+import actions.MoveAction;
+import item.Item;
+import actions.UseItemAction;
 
 public class UseItemController {
 	
-	public List<Integer> getInventoryList() {
-		return null;
+	private Game game; 
+	
+	public UseItemController(Game game) {
+		this.game = game;
 	}
 	
-	public void use(int id) {
-		
+	public void useItem(Item item) {
+		UseItemAction action = new UseItemAction(item);
+		game.executeAction(action);
 	}
-	
 }
