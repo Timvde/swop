@@ -15,7 +15,7 @@ public class Wall {
 	Coordinate				start;
 	Coordinate				end;
 	
-	private List<WallPart>	parts	= new ArrayList<WallPart>();
+	private static WallPart	wallPart;
 	
 	public Wall(Coordinate start, Coordinate end) throws IllegalArgumentException {
 		if (start.getX() != end.getX() && start.getY() != end.getY())
@@ -24,19 +24,18 @@ public class Wall {
 		if (start.getX() == end.getX() && start.getY() == end.getY())
 			throw new IllegalArgumentException("A wall should consist of at least two squares");
 		
-		this.start = start;
-		this.end = end;
-		
-		int numberOfParts = Math.abs((start.getX() == end.getX() ? start.getY() - end.getY()
-				: start.getX() - end.getX()));
-		
-		// "Less than or equal to" is intentional. Imagine having a wall on
-		// (0,0) and (0,1). The previous "numberOfParts" calculation will return
-		// 1 - 0 == 1. Therefore, we needed to either add 1 to the previous
-		// calculation, or change this "<" to "<=".
-		for (int i = 0; i <= numberOfParts; i++)
-			parts.add(new WallPart(this));
-		
+		/*
+		 * The one with the smallest x or y value should be first. This is
+		 * consistent, as at least one of them has to be the same.
+		 */
+		if (start.getX() > end.getX() || start.getY() > end.getY()) {
+			this.start = end;
+			this.end = start;
+		}
+		else {
+			this.start = start;
+			this.end = end;
+		}
 	}
 	
 	private Coordinate getStart() {
@@ -47,12 +46,8 @@ public class Wall {
 		return end;
 	}
 	
-	public List<WallPart> getWallParts() {
-		return parts;
-	}
-	
 	/**
-	 * This method returns whether this wall touches another wall
+	 * This method returns whether this wall touches another specified wall
 	 * 
 	 * @param wall
 	 *        Another wall to compare with
@@ -80,13 +75,15 @@ public class Wall {
 		return true;
 	}
 	
+	public WallPart getWallPart() {
+		if (wallPart == null)
+			wallPart = new WallPart();
+		return wallPart;
+	}
+	
 	public class WallPart extends ASquare {
 		
-		private Wall	wall;
-		
-		private WallPart(Wall wall) {
-			this.wall = wall;
-		}
+		private WallPart() {}
 		
 		@Override
 		public List<IItem> getCarryableItems() {
@@ -105,14 +102,12 @@ public class Wall {
 		
 		@Override
 		public IItem pickupItem(int ID) throws IllegalArgumentException {
-			return null;
+			throw new IllegalArgumentException("Walls do not contain items");
 		}
 		
 		@Override
 		public boolean hasItemWithID(int ID) {
 			return false;
 		}
-		
 	}
-	
 }
