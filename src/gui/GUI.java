@@ -1,8 +1,8 @@
 package gui;
 
-import game.Game;
 import grid.ASquare;
 import grid.Coordinate;
+import grid.Direction;
 import grid.Grid;
 import grid.Wall;
 import item.IItem;
@@ -21,8 +21,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import player.IPlayer;
-import player.PlayerManager;
-import controllers.EndTurnController;
+import controllers.GetInventoryListController;
+import controllers.GetItemListController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
 import controllers.UseItemController;
@@ -39,58 +39,55 @@ import controllers.UseItemController;
  */
 public class GUI implements Runnable {
 	
-	private AGUI					gui;
-	private Grid					grid;
-	// TODO game is ook niet nodig? doe alles via de controllers..
-	private Game					game;
-	// TODO playermanager niet gebruiken maar pickupitem controller
-	private PlayerManager			playerManager;
+	private AGUI						gui;
+	private Grid						grid;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
 	 * depending on the Grid object dimension. These are just start values.
 	 */
-	private int						numRows				= 8;
-	private int						numCols				= 8;
+	private int							numRows				= 16;
+	private int							numCols				= 16;
 	
 	/**
 	 * This variable is the size of a square on the GUI. If modified, the grid
 	 * and all images will automaticly be resized.
 	 */
-	private final static int		SQUARE_SIZE			= 40;
+	private final static int			SQUARE_SIZE			= 40;
 	
 	/**
 	 * Controllers for interacting with the game engine.
 	 */
-	private MoveController			moveController;
-	private PickUpItemController	pickUpController;
-	private EndTurnController		endTurnController;
-	private UseItemController		useItemController;
+	private MoveController				moveController;
+	private PickUpItemController		pickUpController;
+	private UseItemController			useItemController;
+	private GetItemListController		getItemListController;
+	private GetInventoryListController	getInventoryListController;
 	
 	/**
 	 * Image objects for displaying on the GUI.
 	 */
-	private Image					playerRedImage;
-	private Image					playerBlueImage;
-	private Image					wallImage;
-	private Image					lightGrenadeImage;
-	private Image					lightTrailImage;
-	private Image					finishBlue;
-	private Image					finishRed;
+	private Image						playerRedImage;
+	private Image						playerBlueImage;
+	private Image						wallImage;
+	private Image						lightGrenadeImage;
+	private Image						lightTrailImage;
+	private Image						finishBlue;
+	private Image						finishRed;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
 	 */
-	private gui.List				itemList;
-	private Object					itemListSelected;
-	private gui.List				inventoryList;
-	private Object					inventoryListSelected;
+	private gui.List					itemList;
+	private Object						itemListSelected;
+	private gui.List					inventoryList;
+	private Object						inventoryListSelected;
 	
 	/**
 	 * Offsets that determine where the top left position of the grid will be.
 	 */
-	private int						topLeftGridOffsetX	= 150;
-	private int						topLeftGridOffsetY	= 42;
+	private int							topLeftGridOffsetX	= 150;
+	private int							topLeftGridOffsetY	= 42;
 	
 	/**
 	 * Construct a new GUI and initialize the controllers.
@@ -104,16 +101,14 @@ public class GUI implements Runnable {
 	 * @param useitemCont
 	 *        The use item controller.
 	 */
-	public GUI(Game game, PlayerManager playerManager, MoveController moveCont,
-			PickUpItemController pickupCont, EndTurnController endturnCont,
-			UseItemController useitemCont) {
-		this.game = game;
-		this.playerManager = playerManager;
+	public GUI(MoveController moveCont, PickUpItemController pickupCont,
+			UseItemController useitemCont, GetInventoryListController getInvListCont,
+			GetItemListController getItemListCont) {
 		this.moveController = moveCont;
 		this.pickUpController = pickupCont;
-		this.endTurnController = endturnCont;
 		this.useItemController = useitemCont;
-		
+		this.getInventoryListController = getInvListCont;
+		this.getItemListController = getItemListCont;
 	}
 	
 	/**
@@ -192,7 +187,7 @@ public class GUI implements Runnable {
 					
 				}
 				
-				// Draw the two finish squares: 
+				// Draw the two finish squares:
 				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, numRows));
 				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(numCols, 0));
 				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
@@ -201,8 +196,6 @@ public class GUI implements Runnable {
 						SQUARE_SIZE, SQUARE_SIZE, null);
 				
 				// Draw the list of items that are on the current square.
-				Coordinate currentPlayerPosition = playerManager.getCurrentPlayerCoordinate();
-				ASquare playerSquare = grid.getSquareAt(currentPlayerPosition);
 				
 				// TODO get items of inventory and items on the square.
 				
@@ -235,7 +228,8 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// TODO up button pressed
+						moveController.movePlayer(Direction.NORTH);
+						
 						gui.repaint();
 					}
 				});
@@ -245,7 +239,8 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// TODO left button pressed
+						moveController.movePlayer(Direction.WEST);
+						
 						gui.repaint();
 					}
 				});
@@ -255,7 +250,8 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						// TODO right button pressed
+						moveController.movePlayer(Direction.EAST);
+						
 						gui.repaint();
 					}
 				});
@@ -265,7 +261,8 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						// TODO down button pressed
+						moveController.movePlayer(Direction.SOUTH);
+						
 						gui.repaint();
 					}
 				});
@@ -275,7 +272,8 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// TODO NE button pressed
+						moveController.movePlayer(Direction.NORTHEAST);
+						
 						gui.repaint();
 					}
 				});
@@ -285,7 +283,8 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// TODO SE button pressed
+						moveController.movePlayer(Direction.SOUTHEAST);
+						
 						gui.repaint();
 					}
 				});
@@ -295,7 +294,8 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// TODO SW button pressed
+						moveController.movePlayer(Direction.SOUTHWEST);
+						
 						gui.repaint();
 					}
 				});
@@ -305,7 +305,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// TODO NW button pressed
+						moveController.movePlayer(Direction.NORTHWEST);
 						gui.repaint();
 					}
 				});
