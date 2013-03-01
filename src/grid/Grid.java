@@ -211,7 +211,7 @@ public class Grid implements IGrid {
 			for (int i = start.getX(); i >= end.getX(); i--)
 				positions.add(new Coordinate(i, start.getY()));
 		else
-			// the positions are not alligned...
+			// the positions are not aligned...
 			throw new IllegalArgumentException("The given positions " + start + ", " + end
 					+ " are not alligned!");
 		return positions;
