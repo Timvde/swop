@@ -51,6 +51,10 @@ public abstract class AGUI {
 		return this.panel;
 	}
 	
+	public JFrame getFrame() {
+		return this.frame;
+	}
+	
 	public abstract void paint(Graphics2D graphics);
 	
 	public void handleMouseClick(int x, int y, boolean doubleClick) {

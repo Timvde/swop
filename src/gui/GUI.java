@@ -44,10 +44,10 @@ public class GUI implements Runnable {
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
-	 * depending on the Grid object dimension. These are just start values.
+	 * depending on the Grid object dimension. These are just temp start values.
 	 */
-	private int							numRows				= 16;
-	private int							numCols				= 16;
+	private int							gridHeight				= 4;
+	private int							gridWidth				= 4;
 	
 	/**
 	 * This variable is the size of a square on the GUI. If modified, the grid
@@ -116,7 +116,7 @@ public class GUI implements Runnable {
 	 */
 	public void run() {
 		
-		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * numCols), 200 + (SQUARE_SIZE * numRows)) {
+		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * gridWidth), 200 + (SQUARE_SIZE * gridHeight)) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
@@ -126,17 +126,18 @@ public class GUI implements Runnable {
 				graphics.drawString("items in inventory:", 10, 405);
 				
 				// Adjust the grid dimensions and GUI size:
-				numRows = getGridNumRows(grid);
-				numCols = getGridNumCols(grid);
+				gridHeight = getGridHeigth(grid);
+				gridWidth = getGridWidth(grid);
 				gui.getPanel()
-						.setSize(200 + (SQUARE_SIZE * numCols), 200 + (SQUARE_SIZE * numRows));
-				
+						.setSize(200 + (SQUARE_SIZE * gridWidth), 200 + (SQUARE_SIZE * gridHeight));
+				gui.getFrame()
+						.setSize(200 + (SQUARE_SIZE * gridWidth), 200 + (SQUARE_SIZE * gridHeight));
 				// Draw grid lines
-				for (int r = 0; r < numRows; r++) {
-					for (int c = 0; c < numCols; c++) {
-						graphics.drawRect(topLeftGridOffsetX + ((SQUARE_SIZE + 2) * c),
-								topLeftGridOffsetY + ((SQUARE_SIZE + 2) * r), (SQUARE_SIZE + 2),
-								(SQUARE_SIZE + 2));
+				for (int r = 0; r < gridHeight; r++) {
+					for (int c = 0; c < gridWidth; c++) {
+						graphics.drawRect(topLeftGridOffsetX + ((SQUARE_SIZE) * c),
+								topLeftGridOffsetY + ((SQUARE_SIZE) * r), (SQUARE_SIZE),
+								(SQUARE_SIZE));
 					}
 				}
 				
@@ -144,6 +145,7 @@ public class GUI implements Runnable {
 				Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
 				
 				for (Coordinate c : gridCoords) {
+					// TODO draw players anders? coords opvragen..
 					ASquare square = grid.getSquareAt(c);
 					IPlayer player = square.getPlayer();
 					Coordinate guiCoord = toGUICoord(c);
@@ -188,8 +190,8 @@ public class GUI implements Runnable {
 				}
 				
 				// Draw the two finish squares:
-				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, numRows));
-				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(numCols, 0));
+				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, gridHeight-1));
+				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(gridWidth-1, 0));
 				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
 						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
@@ -412,7 +414,7 @@ public class GUI implements Runnable {
 	 *        The grid.
 	 * @return The number of rows in the grid.
 	 */
-	private int getGridNumRows(Grid g) {
+	private int getGridHeigth(Grid g) {
 		Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
 		
 		int maxRowNum = 0;
@@ -421,7 +423,7 @@ public class GUI implements Runnable {
 				maxRowNum = c.getY();
 		}
 		
-		return maxRowNum;
+		return maxRowNum+1;
 	}
 	
 	/**
@@ -431,7 +433,7 @@ public class GUI implements Runnable {
 	 *        The grid.
 	 * @return The number of columns in the grid.
 	 */
-	private int getGridNumCols(Grid g) {
+	private int getGridWidth(Grid g) {
 		Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
 		
 		int maxColNum = 0;
@@ -440,6 +442,6 @@ public class GUI implements Runnable {
 				maxColNum = c.getY();
 		}
 		
-		return maxColNum;
+		return maxColNum+1;
 	}
 }
