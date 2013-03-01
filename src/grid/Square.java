@@ -1,17 +1,18 @@
 package grid;
 
-
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import notnullcheckweaver.NotNull;
 import player.IPlayer;
 
-public class Square extends ASquare {
+public class Square extends ASquare implements Observer {
 	
 	private List<IItem>	itemList	= new ArrayList<IItem>();
 	private IPlayer		player;
-	private boolean		hasLightTrail;
+	private int			lightTrail;
 	
 	public Square() {
 		
@@ -31,26 +32,24 @@ public class Square extends ASquare {
 		return result;
 	}
 	
-	/**
-	 * Returns whether or not a light trail is currently active on this square.
-	 * 
-	 * @return True when there is a light trail active on this square, otherwise
-	 *         false.
-	 */
+	@Override
 	public boolean hasLightTrail() {
-		return this.hasLightTrail;
+		return lightTrail > 0;
 	}
-
+	
+	public void placeLightTrail() {
+		lightTrail = 3;
+	}
+	
 	@Override
 	public IItem pickupItem(int ID) {
 		for (IItem itemOnSquare : this.itemList)
 			if (ID == itemOnSquare.getId())
 				return itemOnSquare;
 		// if not yet returned --> not on square
-		throw new IllegalArgumentException(
-				"The square doesn't hold the requested item");
+		throw new IllegalArgumentException("The square doesn't hold the requested item");
 	}
-
+	
 	@Override
 	public boolean hasItemWithID(int ID) {
 		for (IItem itemOnSquare : this.itemList)
@@ -58,7 +57,7 @@ public class Square extends ASquare {
 				return true;
 		return false;
 	}
-
+	
 	/**
 	 * Returns the IPlayer on this square
 	 * 
@@ -82,6 +81,12 @@ public class Square extends ASquare {
 	 */
 	public void removePlayer() {
 		this.player = null;
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (lightTrail > 0)
+			lightTrail--;
 	}
 	
 }
