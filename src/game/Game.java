@@ -25,6 +25,8 @@ public class Game extends Observable {
 		action.setGrid(grid);
 		action.setPlayer(currentPlayer);
 		action.execute();
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	public void setGrid(Grid grid) {
