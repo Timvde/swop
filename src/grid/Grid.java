@@ -35,7 +35,7 @@ public class Grid implements IGrid {
 				+ (int) (builder.maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - builder.maximalLengthOfWall
 						* Math.max(width, height));
 		int maximumNumberOfWalls = new Random().nextInt(max);
-		while (maximumNumberOfWalls > getNumberOfWallParts())
+		while (maximumNumberOfWalls >= getNumberOfWallParts())
 			placeWall(builder.maximumNumberOfWalls, builder.maximalLengthOfWall);
 	}
 	
@@ -55,7 +55,10 @@ public class Grid implements IGrid {
 		
 		do {
 			start = Coordinate.random(width, height);
-			end = start.getRandomCoordinateWithDistance(wallLength - 1);
+			end = start.getRandomCoordinateWithDistance(wallLength);
+			// Logically, we should do -1 here, but wallLength is a random
+			// excluding the wallLength itself, so it implicitly already
+			// happened.
 		} while (!canPlaceWall(start, end));
 		// place the wall on the grid
 		placeWallOnGrid(start, end);
