@@ -81,6 +81,10 @@ public class Wall {
 		return wallPart;
 	}
 	
+	/**
+	 * A class that represents a part of a wall.
+	 *
+	 */
 	public class WallPart extends ASquare {
 		
 		private WallPart() {}

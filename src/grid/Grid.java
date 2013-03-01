@@ -158,6 +158,7 @@ public class Grid implements IGrid {
 	 * @param end
 	 *        the end position of the wall
 	 * @return true if a wall can be placed, else false
+	 * 
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
 		// walls must be placed on the board
@@ -178,6 +179,18 @@ public class Grid implements IGrid {
 		return true;
 	}
 	
+	/**
+	 * Return all the coordinates of a wall that starts and ends at two certain
+	 * points.
+	 * 
+	 * @param start
+	 *        The start position of the wall.
+	 * @param end
+	 *        The end position of the wall.
+	 * @return A collection of coordinates of this wall.
+	 * @throws IllegalArgumentException
+	 *         If the given positions are not aligned.
+	 */
 	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
 		Collection<Coordinate> positions = new ArrayList<Coordinate>();
 		
@@ -219,6 +232,9 @@ public class Grid implements IGrid {
 		return i;
 	}
 	
+	/**
+	 * Return the grid.
+	 */
 	public Map<Coordinate, ASquare> getGrid() {
 		return grid;
 	}
@@ -304,6 +320,12 @@ public class Grid implements IGrid {
 		return str;
 	}
 	
+	/**
+	 * A builder class for building a new grid.
+	 * 
+	 * @author tom
+	 * 
+	 */
 	public static class Builder {
 		
 		private List<IPlayer>	players;
