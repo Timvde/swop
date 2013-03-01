@@ -18,7 +18,7 @@ public class TempGUITest {
 		players.add(p1);
 		players.add(p2);
 
-		Grid grid = new Grid.Builder(players).build();
+		Grid grid = new Grid.Builder(players).setGridWidth(20).build();
 		gui.draw(grid);
 	}
 	

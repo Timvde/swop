@@ -434,7 +434,7 @@ public class GUI implements Runnable {
 		int maxColNum = 0;
 		for (Coordinate c : gridCoords) {
 			if (c.getX() > maxColNum)
-				maxColNum = c.getY();
+				maxColNum = c.getX();
 		}
 		
 		return maxColNum + 1;

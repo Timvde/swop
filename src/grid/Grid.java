@@ -2,6 +2,7 @@ package grid;
 
 import grid.Wall.WallPart;
 import item.IItem;
+import item.LightGrenade;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,11 +13,12 @@ import player.IPlayer;
 
 public class Grid implements IGrid {
 	
+	private static final double				NUMBER_OF_ITEMS_ON_BOARD	= 0.05;
 	private HashMap<Coordinate, ASquare>	grid;
 	private List<Wall>						walls;
 	private int								width;
 	private int								height;
-	private static final int				MINIMUM_WALL_SIZE	= 2;
+	private static final int				MINIMUM_WALL_SIZE			= 2;
 	
 	/**
 	 * Create a new grid with a specified builder. This will automatically place
@@ -43,13 +45,36 @@ public class Grid implements IGrid {
 		int maximumNumberOfWalls = new Random().nextInt(max);
 		while (maximumNumberOfWalls > getNumberOfWallParts())
 			placeWall(builder.maximumNumberOfWalls, builder.maximalLengthOfWall);
-		if (builder.players.size() == 2) 
+		
+		// if there are players in the builder, place them on the board
+		if (builder.players.size() == 2)
 			placePlayersOnBoard(builder.players);
+		
+		// place the items on the board
+		placeItemsOnBoard();
 	}
 	
 	private void placePlayersOnBoard(List<IPlayer> players) {
 		((Square) grid.get(new Coordinate(width - 1, 0))).setPlayer(players.get(0));
 		((Square) grid.get(new Coordinate(0, height - 1))).setPlayer(players.get(1));
+	}
+	
+	private void placeItemsOnBoard() {
+		int numberOfLightGrenades = 0;
+		while (((double) numberOfLightGrenades) / grid.size() < NUMBER_OF_ITEMS_ON_BOARD) {
+			Coordinate position = Coordinate.random(width, height);
+			if (canPlaceItem(position)) {
+				((Square) grid.get(position)).addItem(new LightGrenade());
+				numberOfLightGrenades++;
+			}
+		}
+	}
+	
+	private boolean canPlaceItem(Coordinate coordinate) {
+		if (coordinate.equals(new Coordinate(width - 1, 0))
+				|| coordinate.equals(new Coordinate(0, height - 1)))
+			return false;
+		return grid.get(coordinate).getClass() != WallPart.class;
 	}
 	
 	/**
@@ -235,12 +260,12 @@ public class Grid implements IGrid {
 	
 	public static class Builder {
 		
-		private List<IPlayer> players;
-		private int		minimalLengthOfWall;
-		private double	maximalLengthOfWall;
-		private double	maximumNumberOfWalls;
-		private int		width;
-		private int		height;
+		private List<IPlayer>	players;
+		private int				minimalLengthOfWall;
+		private double			maximalLengthOfWall;
+		private double			maximumNumberOfWalls;
+		private int				width;
+		private int				height;
 		
 		public Builder(List<IPlayer> players) {
 			this.minimalLengthOfWall = 2;
