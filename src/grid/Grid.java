@@ -1,14 +1,9 @@
 package grid;
 
-<<<<<<< HEAD
 import grid.Wall.WallPart;
-import item.Item;
+import item.IItem;
 import java.util.ArrayList;
 import java.util.Collection;
-=======
-import item.IItem;
-
->>>>>>> refs/remotes/origin/master
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -17,8 +12,10 @@ import java.util.Set;
 public class Grid implements IGrid {
 	
 	private HashMap<Coordinate, ASquare>	grid;
+	private List<Wall>						walls;
 	private int								width;
 	private int								height;
+	private static final int				MINIMUM_WALL_SIZE	= 2;
 	
 	/**
 	 * Create a new grid with a specified builder.
@@ -28,12 +25,18 @@ public class Grid implements IGrid {
 	private Grid(Builder builder) {
 		this.width = builder.width;
 		this.height = builder.height;
+		walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				grid.put(new Coordinate(i, j), new Square());
-		while (builder.maximumNumberOfWalls > ((double) getNumberOfWallParts()) / grid.size())
-			placeWall(builder.maximumNumberOfWalls);
+		
+		int max = MINIMUM_WALL_SIZE
+				+ (int) (builder.maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - builder.maximalLengthOfWall
+						* Math.max(width, height));
+		int maximumNumberOfWalls = new Random().nextInt(max);
+		while (maximumNumberOfWalls > getNumberOfWallParts())
+			placeWall(builder.maximumNumberOfWalls, builder.maximalLengthOfWall);
 	}
 	
 	/**
@@ -43,17 +46,17 @@ public class Grid implements IGrid {
 	 * @param maxPercentage
 	 *        The maximum percentage of walls on the grid
 	 */
-	private void placeWall(double maxPercentage) {
-		int wallLength = new Random().nextInt(getMaximumLengthOfWall(maxPercentage));
-		// a wall must have a length of two
-		if (wallLength < 2)
-			return;
-		Coordinate start = Coordinate.random(width, height);
-		Coordinate end = start.getRandomCoordinateWithDistance(wallLength);
-		while (!canPlaceWall(start, end)) {
+	private void placeWall(double maxPercentage, double maximalLengthOfWall) {
+		int wallLength = MINIMUM_WALL_SIZE
+				+ new Random().nextInt(getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall)
+						- MINIMUM_WALL_SIZE);
+		
+		Coordinate start, end;
+		
+		do {
 			start = Coordinate.random(width, height);
-			end = start.getRandomCoordinateWithDistance(wallLength);
-		}
+			end = start.getRandomCoordinateWithDistance(wallLength - 1);
+		} while (!canPlaceWall(start, end));
 		// place the wall on the grid
 		placeWallOnGrid(start, end);
 	}
@@ -76,6 +79,7 @@ public class Grid implements IGrid {
 		Wall wall = new Wall(start, end);
 		for (Coordinate coord : getWallPositions(start, end))
 			grid.put(coord, wall.getWallPart());
+		walls.add(wall);
 	}
 	
 	/**
@@ -87,12 +91,15 @@ public class Grid implements IGrid {
 	 *        the maximum percentage of walls on the board
 	 * @return the maximum length of a new wall
 	 */
-	private int getMaximumLengthOfWall(double maxPercentage) {
+	private int getMaximumLengthOfWall(double maxPercentage, double maximalLengthOfWall) {
 		int maxLength = 0;
 		int walls = getNumberOfWallParts();
 		// increase maxLength until a maximum value is reached
-		while (maxPercentage > (walls + maxLength++) / size());
-		return maxLength;
+		while (maxPercentage >= (walls + maxLength++) / ((double) size()));
+		
+		int maxLength2 = (int) (maximalLengthOfWall * Math.max(height, width));
+		
+		return Math.min(maxLength, maxLength2);
 	}
 	
 	/**
@@ -106,9 +113,12 @@ public class Grid implements IGrid {
 	 * @return true if a wall can be placed, else false
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
-		Collection<Coordinate> positions = getWallPositions(start, end);
-		for (Coordinate coord : grid.keySet())
-			if (positions.contains(coord) && grid.get(coord).getClass() == WallPart.class)
+		if (start.getX() >= width || start.getX() < 0 || start.getY() >= height || start.getY() < 0)
+			return false;
+		if (end.getX() >= width || end.getX() < 0 || end.getY() >= height || end.getY() < 0)
+			return false;
+		for (Wall w : walls)
+			if (w.touchesWall(new Wall(start, end)))
 				return false;
 		return true;
 	}
@@ -154,24 +164,19 @@ public class Grid implements IGrid {
 		return i;
 	}
 	
+	public HashMap<Coordinate, ASquare> getGrid() {
+		return grid;
+	}
+	
 	@Override
-<<<<<<< HEAD
 	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
-		// TODO Auto-generated method stub
-=======
-	public boolean canMovePlayer(Player player, Direction direction) {
->>>>>>> refs/remotes/origin/master
 		return false;
 	}
 	
 	@Override
-<<<<<<< HEAD
 	public void movePlayer(Coordinate coordinate, Direction direction) {
 		if (!canMovePlayer(coordinate, direction))
 			throw new IllegalArgumentException("Player can not be moved in that direction!");
-=======
-	public void movePlayer(Player player, Direction direction) {
->>>>>>> refs/remotes/origin/master
 		
 	}
 	
@@ -188,6 +193,23 @@ public class Grid implements IGrid {
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
 		return this.grid.keySet();
+	}
+	
+	@Override
+	public String toString() {
+		String str = "";
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (grid.get(new Coordinate(i, j)) == null)
+					str += " ";
+				else if (grid.get(new Coordinate(i, j)).getClass() == WallPart.class)
+					str += "w ";
+				else if (grid.get(new Coordinate(i, j)).getClass() == Square.class)
+					str += "s ";
+			}
+			str += "\n";
+		}
+		return str;
 	}
 	
 	public static class Builder {
