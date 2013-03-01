@@ -2,6 +2,7 @@ package gui;
 
 import grid.ASquare;
 import grid.Coordinate;
+import grid.Direction;
 import grid.Grid;
 import grid.Wall;
 import item.IItem;
@@ -226,7 +227,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.NORTH);
+						moveController.movePlayer(Direction.NORTH);
 						
 						gui.repaint();
 					}
@@ -237,7 +238,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.WEST);
+						moveController.movePlayer(Direction.WEST);
 						
 						gui.repaint();
 					}
@@ -248,7 +249,7 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.EAST);
+						moveController.movePlayer(Direction.EAST);
 						
 						gui.repaint();
 					}
@@ -259,7 +260,7 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.SOUTH);
+						moveController.movePlayer(Direction.SOUTH);
 						
 						gui.repaint();
 					}
@@ -270,8 +271,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.NORTHEAST);
-						
+						moveController.movePlayer(Direction.NORTHEAST);
 						gui.repaint();
 					}
 				});
@@ -281,7 +281,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.SOUTHEAST);
+						moveController.movePlayer(Direction.SOUTHEAST);
 						
 						gui.repaint();
 					}
@@ -292,8 +292,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.SOUTHWEST);
-						
+						moveController.movePlayer(Direction.SOUTHWEST);
 						gui.repaint();
 					}
 				});
@@ -303,7 +302,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						// moveController.movePlayer(Direction.NORTHWEST);
+						moveController.movePlayer(Direction.NORTHWEST);
 						gui.repaint();
 					}
 				});

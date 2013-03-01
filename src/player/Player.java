@@ -39,5 +39,4 @@ public class Player implements IPlayer {
 	public List<Item> getInventory() {
 		return inventory.getItems();
 	}
-	
 }

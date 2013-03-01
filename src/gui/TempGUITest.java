@@ -1,7 +1,9 @@
 package gui;
 
+import game.Game;
 import grid.Grid;
 import java.util.*;
+import controllers.MoveController;
 import player.IPlayer;
 import player.Player;
 
@@ -9,7 +11,9 @@ import player.Player;
 public class TempGUITest {
 	
 	public static void main(String[] args) {
-		GUI gui = new GUI(null, null, null, null, null);
+		
+		Game game = new Game();
+		GUI gui = new GUI(new MoveController(game), null, null, null, null);
 		java.awt.EventQueue.invokeLater(gui);
 		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
 		IPlayer p1 = new Player(null);
@@ -19,6 +23,8 @@ public class TempGUITest {
 		players.add(p2);
 
 		Grid grid = new Grid.Builder(players).setGridWidth(20).build();
+		game.setGrid(grid);
+		game.setCurrentPlayer(p1);
 		gui.draw(grid);
 	}
 	

@@ -7,18 +7,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import player.IPlayer;
 
 public class Grid implements IGrid {
 	
-	private static final double				NUMBER_OF_ITEMS_ON_BOARD	= 0.05;
-	private HashMap<Coordinate, ASquare>	grid;
-	private List<Wall>						walls;
-	private int								width;
-	private int								height;
-	private static final int				MINIMUM_WALL_SIZE			= 2;
+	private static final double			NUMBER_OF_ITEMS_ON_BOARD	= 0.05;
+	private Map<Coordinate, ASquare>	grid;
+	private Map<Integer, Coordinate>	players;
+	private List<Wall>					walls;
+	private int							width;
+	private int							height;
+	private static final int			MINIMUM_WALL_SIZE			= 2;
 	
 	/**
 	 * Create a new grid with a specified builder. This will automatically place
@@ -55,8 +57,11 @@ public class Grid implements IGrid {
 	}
 	
 	private void placePlayersOnBoard(List<IPlayer> players) {
+		this.players = new HashMap<Integer, Coordinate>();
 		((Square) grid.get(new Coordinate(width - 1, 0))).setPlayer(players.get(0));
+		this.players.put(players.get(0).getID(), new Coordinate(width - 1, 0));
 		((Square) grid.get(new Coordinate(0, height - 1))).setPlayer(players.get(1));
+		this.players.put(players.get(1).getID(), new Coordinate(0, height - 1));
 	}
 	
 	private void placeItemsOnBoard() {
@@ -210,20 +215,40 @@ public class Grid implements IGrid {
 		return i;
 	}
 	
-	public HashMap<Coordinate, ASquare> getGrid() {
+	public Map<Coordinate, ASquare> getGrid() {
 		return grid;
 	}
 	
 	@Override
-	public boolean canMovePlayer(Coordinate coordinate, Direction direction) {
-		return false;
+	public boolean canMovePlayer(int playerID, Direction direction) {
+		//player and direction must exist
+		if (!players.containsKey(playerID) || direction == null)
+			return false;
+		//next coordinate must be on the grid
+		else if (!grid.containsKey(players.get(playerID).getCoordinateInDirection(direction)))
+			return false;
+		//players cannot move through walls
+		else if (grid
+				.get(players
+						.get(playerID)
+						.getCoordinateInDirection(direction))
+						.getClass() == WallPart.class)
+			return false;
+		//TODO test for light trails
+		return true;
 	}
 	
 	@Override
-	public void movePlayer(Coordinate coordinate, Direction direction) {
-		if (!canMovePlayer(coordinate, direction))
+	public void movePlayer(int playerID, Direction direction) {
+		if (!canMovePlayer(playerID, direction))
 			throw new IllegalArgumentException("Player can not be moved in that direction!");
-		
+		Coordinate newCoord = players.get(playerID).getCoordinateInDirection(direction);
+		Coordinate oldCoord = players.get(playerID);
+		//update the squares
+		((Square) grid.get(newCoord)).setPlayer(grid.get(oldCoord).getPlayer());
+		((Square) grid.get(oldCoord)).setPlayer(null);
+		//set a new position in the list of players
+		players.put(playerID, newCoord);
 	}
 	
 	@Override
