@@ -9,7 +9,10 @@ import ObjectronExceptions.IllegalNumberOfPlayersException;
 
 import com.sun.istack.internal.NotNull;
 
-
+/**
+ * TODO Huidige implementatie weggooien, deze klasse moet id's op players mappen.
+ * 
+ */
 public class PlayerManager {
 
 	private static final int NUMBER_OF_PLAYERS = 2;
@@ -64,7 +67,7 @@ public class PlayerManager {
 	public Player getCurrentPlayer() {
 		return this.playerList.get(this.currentPlayerIndex);
 	}
-
+	
 	/**
 	 * Ends the turn of the current player (this.getCurrentPlayer()) and
 	 * appoints a next current player (round robin).
