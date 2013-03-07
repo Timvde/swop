@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 import item.Item;
 import item.LightGrenade;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import player.Inventory;
@@ -12,8 +13,8 @@ public class InventoryTest {
 	
 	private static Inventory inventory;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
+	@Before
+	public void setUp() {
 		inventory = new Inventory();
 	}
 	
