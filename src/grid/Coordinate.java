@@ -2,7 +2,6 @@ package grid;
 
 import java.util.ArrayList;
 import java.util.Random;
-import notnullcheckweaver.NotNull;
 
 /**
  * an immutable coordinate class
@@ -62,7 +61,7 @@ public class Coordinate {
 	 *        the direction in which a new coordinate is returned
 	 * @return a new coordinate relative to this coordinate
 	 */
-	public Coordinate getCoordinateInDirection(@NotNull Direction direction) {
+	public Coordinate getCoordinateInDirection(Direction direction) {
 		switch (direction) {
 			case NORTH:
 				return new Coordinate(x, y - 1);

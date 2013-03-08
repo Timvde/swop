@@ -108,4 +108,12 @@ public class LightGrenade extends Item implements ILightGrenade {
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
 	}
 
+	/** 
+	 * TODO
+	 */
+	@Override
+	public void use() {
+		
+	}
+
 }

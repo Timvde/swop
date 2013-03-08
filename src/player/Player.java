@@ -1,24 +1,24 @@
 package player;
 
 import grid.Coordinate;
+import grid.Direction;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import notnullcheckweaver.NotNull;
 import item.IItem;
 
 public class Player implements IPlayer {
 	
-	@NotNull
+
 	private int						id;
-	@NotNull
+
 	private static AtomicInteger	nextID		= new AtomicInteger();
-	@NotNull
+
 	private Coordinate				targetPosition;
-	@NotNull
+
 	private Inventory				inventory	= new Inventory();
 	
 	
-	public Player(@NotNull Coordinate targetPosition) {
+	public Player(Coordinate targetPosition) {
 		this.id = nextID.incrementAndGet();
 		this.targetPosition = targetPosition;
 	}
@@ -26,6 +26,14 @@ public class Player implements IPlayer {
 	@Override
 	public int getID() {
 		return id;
+	}
+	
+	/**
+	 * TODO
+	 * @return
+	 */
+	private boolean isPreconditionMoveSatisfied() {
+		return false;
 	}
 	
 	@Override
@@ -36,5 +44,47 @@ public class Player implements IPlayer {
 	@Override
 	public List<IItem> getInventory() {
 		return inventory.getItems();
+	}
+
+	@Override
+	public void IncreaseActionCounter() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void move(Direction d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void useItem(IItem i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pickUpItem(IItem i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void decreaseNumberOfActions() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void skipNumberOfActions(int n) {
+		// TODO Auto-generated method stub
+		
 	}
 }

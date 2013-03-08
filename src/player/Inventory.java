@@ -9,7 +9,7 @@ import item.IItem;
  * A class representing an inventory of {@link Item}s that is carried by a
  * {@link Player}.
  */
-public class Inventory {
+public class Inventory implements IInventory {
 
 	// At this moment the number of items is the same for all inventories.
 	private static final int MAX_NUMBER_OF_ITEMS = 6;
@@ -31,6 +31,24 @@ public class Inventory {
 
 	public List<IItem> getItems() {
 		return contents;
+	}
+
+	/**
+	 * TODO
+	 */
+	@Override
+	public void addItem(IItem item) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * TODO
+	 */
+	@Override
+	public void removeItem(IItem item) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
