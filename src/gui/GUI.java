@@ -21,7 +21,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import player.IPlayer;
-import player.PlayerManager;
+import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -44,7 +44,7 @@ public class GUI implements Runnable {
 	// TODO game is ook niet nodig? doe alles via de controllers..
 	private Game					game;
 	// TODO playermanager niet gebruiken maar pickupitem controller
-	private PlayerManager			playerManager;
+	private PlayerDataBase			playerManager;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -104,7 +104,7 @@ public class GUI implements Runnable {
 	 * @param useitemCont
 	 *        The use item controller.
 	 */
-	public GUI(Game game, PlayerManager playerManager, MoveController moveCont,
+	public GUI(Game game, PlayerDataBase playerManager, MoveController moveCont,
 			PickUpItemController pickupCont, EndTurnController endturnCont,
 			UseItemController useitemCont) {
 		this.game = game;
