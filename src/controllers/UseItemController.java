@@ -1,20 +1,17 @@
 package controllers;
 
-import game.Game;
-import actions.MoveAction;
+import player.PlayerDatabase;
 import item.Item;
-import actions.UseItemAction;
 
 public class UseItemController {
 	
-	private Game game; 
+	private PlayerDatabase	playerDB;
 	
-	public UseItemController(Game game) {
-		this.game = game;
+	public UseItemController(PlayerDatabase db) {
+		this.playerDB = db;
 	}
 	
 	public void useItem(Item item) {
-		UseItemAction action = new UseItemAction(item);
-		game.executeAction(action);
+		// TODO
 	}
 }

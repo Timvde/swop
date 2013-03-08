@@ -3,9 +3,24 @@ package grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
+import player.IPlayer;
 
 
 public interface IGrid {
+	
+	/**
+	 * TODO
+	 * @param p
+	 * @param d
+	 */
+	public void movePlayerInDirection(IPlayer p, Direction d);
+	
+	/**
+	 * TODO
+	 * @param p
+	 * @return
+	 */
+	public ASquare getSquareOfPlayer(IPlayer p);
 	
 	/**
 	 * returns whether a specified player can move in a specific direction

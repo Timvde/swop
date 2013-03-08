@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import notnullcheckweaver.NotNull;
 import player.IPlayer;
 
 public class Square extends ASquare implements Observer {
@@ -30,6 +29,14 @@ public class Square extends ASquare implements Observer {
 	
 	public void removeItem(IItem item) {
 		itemList.remove(item);
+	}
+	
+	/**
+	 * TODO
+	 * @return
+	 */
+	public boolean hasPowerFailure() {
+		return false;
 	}
 	
 	@Override
@@ -88,7 +95,7 @@ public class Square extends ASquare implements Observer {
 	/**
 	 * Set an IPlayer on this square.
 	 */
-	public void setPlayer(@NotNull IPlayer player) {
+	public void setPlayer(IPlayer player) {
 		this.player = player;
 	}
 	

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import player.IPlayer;
+import player.Player;
 
 public class Grid implements IGrid {
 	
@@ -40,7 +41,6 @@ public class Grid implements IGrid {
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
 				Square sq = new Square();
-				builder.game.addObserver(sq);
 				grid.put(new Coordinate(i, j), sq);
 			}
 		
@@ -58,6 +58,15 @@ public class Grid implements IGrid {
 		
 		// place the items on the board
 		placeItemsOnBoard();
+	}
+	
+	/**
+	 * TODO
+	 * @param p
+	 * @param d
+	 */
+	private void updatePlayerLocation(Player p, Direction d) {
+		
 	}
 	
 	private void placePlayersOnBoard(List<IPlayer> players) {
@@ -417,5 +426,23 @@ public class Grid implements IGrid {
 		public Grid build() {
 			return new Grid(this);
 		}
+	}
+
+	/**
+	 * TODO
+	 */
+	@Override
+	public void movePlayerInDirection(IPlayer p, Direction d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * TODO
+	 */
+	@Override
+	public ASquare getSquareOfPlayer(IPlayer p) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package player;
 
+import item.IItem;
 import item.Item;
 
 import java.util.List;
@@ -19,7 +20,13 @@ public interface IInventory {
 	 *             The inventory can hold a max of
 	 *             <code>getMaxNumberOfItems()</code> items.
 	 */
-	public void addItem(Item item) throws IllegalArgumentException;
+	public void addItem(IItem item) throws IllegalArgumentException;
+	
+	/**
+	 * TODO
+	 * @param item
+	 */
+	public void removeItem(IItem item);
 
 	/**
 	 * Returns the maximum number of items this inventory can hold.
@@ -33,6 +40,6 @@ public interface IInventory {
 	 * 
 	 * @return a list of the stored items.
 	 */
-	public List<Item> getItems();
+	public List<IItem> getItems();
 
 }

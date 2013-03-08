@@ -1,10 +1,8 @@
 package game;
 
 import grid.Grid;
-import java.util.Observable;
 import player.IPlayer;
-import actions.Action;
-import actions.GridAction;
+import player.Player;
 
 /**
  * The game class contains all information about the game. Controllers are able
@@ -13,40 +11,16 @@ import actions.GridAction;
  * 
  * @author tom
  */
-public class Game extends Observable {
+public class Game implements IGame {
 	
 	private Grid	grid;
 	private IPlayer	currentPlayer;
 
-	
+	/**
+	 * TODO
+	 */
 	public void startNewGame() {
 		
-	}
-	
-	/**
-	 * Execute an action and notify the observers.
-	 * 
-	 * @param action
-	 *        The action that will be executed.
-	 */
-	public void executeAction(Action action) {
-		
-		this.hasChanged();
-		this.notifyObservers();
-	}
-	
-	/**
-	 * Execute an action on the Grid and notify the observers.
-	 * 
-	 * @param action
-	 * 			The action that will be executed.
-	 */
-	public void executeGridAction(GridAction action) {
-		action.setGrid(grid);
-		action.setPlayer(currentPlayer);
-		action.execute();
-		this.setChanged();
-		this.notifyObservers();
 	}
 	
 	/**
@@ -72,5 +46,17 @@ public class Game extends Observable {
 	 */
 	public IPlayer getCurrentPlayer() {
 		return this.currentPlayer;
+	}
+
+	@Override
+	public void newGame(int width, int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endGame(Player p) {
+		// TODO Auto-generated method stub
+		
 	}
 }
