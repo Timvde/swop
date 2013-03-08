@@ -10,4 +10,3 @@ bin/
 *.jar
 *.war
 *.ear
-/src
