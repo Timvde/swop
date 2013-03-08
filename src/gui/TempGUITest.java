@@ -3,9 +3,10 @@ package gui;
 import game.Game;
 import grid.Grid;
 import java.util.*;
-import controllers.GetInventoryListController;
-import controllers.GetItemListController;
+import controllers.EndTurnController;
+import controllers.GUIDataController;
 import controllers.MoveController;
+import controllers.NewGameController;
 import controllers.PickUpItemController;
 import controllers.UseItemController;
 import player.IPlayer;
@@ -16,9 +17,9 @@ public class TempGUITest {
 	public static void main(String[] args) {
 		
 		Game game = new Game();
-		GUI gui = new GUI(new MoveController(game), new PickUpItemController(game),
-				new UseItemController(game), new GetInventoryListController(game),
-				new GetItemListController(game));
+		GUI gui = new GUI(new MoveController(null), new PickUpItemController(null),
+				new UseItemController(null),new NewGameController(null), new EndTurnController(null),
+				new GUIDataController(null));
 		java.awt.EventQueue.invokeLater(gui);
 		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
 		IPlayer p1 = new Player(null);

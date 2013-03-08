@@ -14,9 +14,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import player.IPlayer;
-import controllers.GetInventoryListController;
-import controllers.GetItemListController;
+import controllers.EndTurnController;
+import controllers.GUIDataController;
 import controllers.MoveController;
+import controllers.NewGameController;
 import controllers.PickUpItemController;
 import controllers.UseItemController;
 
@@ -32,55 +33,56 @@ import controllers.UseItemController;
  */
 public class GUI implements Runnable {
 	
-	private AGUI						gui;
-	private Grid						grid;
+	private AGUI					gui;
+	private Grid					grid;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
 	 * depending on the Grid object dimension. These are just temp start values.
 	 */
-	private int							gridHeight			= 4;
-	private int							gridWidth			= 4;
+	private int						gridHeight			= 4;
+	private int						gridWidth			= 4;
 	
 	/**
 	 * This variable is the size of a square on the GUI. If modified, the grid
 	 * and all images will automaticly be resized.
 	 */
-	private final static int			SQUARE_SIZE			= 40;
+	private final static int		SQUARE_SIZE			= 40;
 	
 	/**
 	 * Controllers for interacting with the game engine.
 	 */
-	private MoveController				moveController;
-	private PickUpItemController		pickUpController;
-	private UseItemController			useItemController;
-	private GetItemListController		getItemListController;
-	private GetInventoryListController	getInventoryListController;
+	private NewGameController		newGameController;
+	private EndTurnController		endTurnController;
+	private MoveController			moveController;
+	private PickUpItemController	pickUpController;
+	private UseItemController		useItemController;
+	private GUIDataController		guiDataController;
 	
 	/**
 	 * Image objects for displaying on the GUI.
 	 */
-	private Image						playerRedImage;
-	private Image						playerBlueImage;
-	private Image						wallImage;
-	private Image						lightGrenadeImage;
-	private Image						lightTrailImage;
-	private Image						finishBlue;
-	private Image						finishRed;
+	private Image					playerRedImage;
+	private Image					playerBlueImage;
+	private Image					wallImage;
+	private Image					lightGrenadeImage;
+	private Image					lightTrailImage;
+	private Image					finishBlue;
+	private Image					finishRed;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
 	 */
-	private gui.List					itemList;
-	private Object						itemListSelected;
-	private gui.List					inventoryList;
-	private Object						inventoryListSelected;
+	private gui.List				itemList;
+	private Object					itemListSelected;
+	private gui.List				inventoryList;
+	private Object					inventoryListSelected;
 	
 	/**
 	 * Offsets that determine where the top left position of the grid will be.
 	 */
-	private int							topLeftGridOffsetX	= 150;
-	private int							topLeftGridOffsetY	= 42;
+	private int						topLeftGridOffsetX	= 150;
+	private int						topLeftGridOffsetY	= 42;
 	
 	/**
 	 * Construct a new GUI and initialize the controllers.
@@ -95,13 +97,14 @@ public class GUI implements Runnable {
 	 *        The use item controller.
 	 */
 	public GUI(MoveController moveCont, PickUpItemController pickupCont,
-			UseItemController useitemCont, GetInventoryListController getInvListCont,
-			GetItemListController getItemListCont) {
+			UseItemController useitemCont, NewGameController newGameCont,
+			EndTurnController endTurnCont, GUIDataController guiDataCont) {
 		this.moveController = moveCont;
 		this.pickUpController = pickupCont;
 		this.useItemController = useitemCont;
-		this.getInventoryListController = getInvListCont;
-		this.getItemListController = getItemListCont;
+		this.newGameController = newGameCont;
+		this.endTurnController = endTurnCont;
+		this.guiDataController = guiDataCont;
 	}
 	
 	/**
@@ -146,7 +149,6 @@ public class GUI implements Runnable {
 				// Populate the grid squares with the correct images:
 				Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
 				
-				
 				for (Coordinate c : gridCoords) {
 					// TODO draw players anders? coords opvragen..
 					ASquare square = grid.getSquareAt(c);
@@ -182,7 +184,6 @@ public class GUI implements Runnable {
 					}
 					
 					// Draw items if necessary
-					
 					List<IItem> itemList = grid.getItemList(c);
 					for (IItem i : itemList) {
 						if (i instanceof LightGrenade) {
@@ -193,12 +194,14 @@ public class GUI implements Runnable {
 					
 				}
 				
-				
-				// Show the items in the list that the current player can interact with
+				// Show the items in the list that the current player can
+				// interact with
+				// TODO fix
 				Vector<IItem> itemsSquare = new Vector<IItem>();
 				List<IItem> itemsOfSquare = getItemListController.getSquareItemList(grid);
 				
-				// add them into a Vector, because setListData of our list doesn't accept a 
+				// add them into a Vector, because setListData of our list
+				// doesn't accept a
 				// List object.
 				for (IItem i : itemsOfSquare) {
 					itemsSquare.add((Item) i);
@@ -206,12 +209,13 @@ public class GUI implements Runnable {
 				
 				itemList.setListData(itemsSquare);
 				
-				
 				// Show the player's inventory items in the inventory list
+				// TODO fix
 				Vector<Item> itemsInventory = new Vector<Item>();
 				List<IItem> itemsOfPlayer = getInventoryListController.getCurrentPlayerInventory();
 				
-				// add them into a Vector, because setListData of our list doesn't accept a 
+				// add them into a Vector, because setListData of our list
+				// doesn't accept a
 				// List object.
 				for (IItem i : itemsOfPlayer) {
 					itemsInventory.add((Item) i);
@@ -242,7 +246,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.NORTH);
+						moveController.move(Direction.NORTH);
 						
 						gui.repaint();
 					}
@@ -253,7 +257,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.WEST);
+						moveController.move(Direction.WEST);
 						
 						gui.repaint();
 					}
@@ -264,7 +268,7 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.EAST);
+						moveController.move(Direction.EAST);
 						
 						gui.repaint();
 					}
@@ -275,7 +279,7 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.SOUTH);
+						moveController.move(Direction.SOUTH);
 						
 						gui.repaint();
 					}
@@ -286,7 +290,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.NORTHEAST);
+						moveController.move(Direction.NORTHEAST);
 						gui.repaint();
 					}
 				});
@@ -296,7 +300,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.SOUTHEAST);
+						moveController.move(Direction.SOUTHEAST);
 						
 						gui.repaint();
 					}
@@ -307,7 +311,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.SOUTHWEST);
+						moveController.move(Direction.SOUTHWEST);
 						gui.repaint();
 					}
 				});
@@ -317,7 +321,7 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.movePlayer(Direction.NORTHWEST);
+						moveController.move(Direction.NORTHWEST);
 						gui.repaint();
 					}
 				});
@@ -334,8 +338,6 @@ public class GUI implements Runnable {
 				30, new Runnable() {
 					
 					public void run() {
-						// TODO button pick up pressed
-						
 						// Use the itemListSelected to access the Item that is
 						// selected in the items on square list!
 						System.out.println("item list selected:" + itemListSelected);
@@ -349,11 +351,9 @@ public class GUI implements Runnable {
 				120, 30, new Runnable() {
 					
 					public void run() {
-						// TODO button drop mine pressed
 						
 						// Use the inventoryListSelected to access the Item that
-						// is
-						// selected in the inventory!
+						// is selected in the inventory!
 						System.out.println("inventory list selected:" + inventoryListSelected);
 						useItemController.useItem((Item) itemListSelected);
 						gui.repaint();
