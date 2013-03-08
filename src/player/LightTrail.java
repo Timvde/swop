@@ -1,76 +1,109 @@
 package player;
 
-import grid.Square;
-
+import grid.Coordinate;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Every player leaves behind a lighttrail. A lighttrail consist of multiple
- * squares and has a maximum length. A lighttrailpart (one square) remains
- * active during NUMBER_OF_ACTIONS_DELAY actions of the player.
+ * LightTrail is an impenetrable wall (for other players) which trails the
+ * player. A lightTrail cannot cover more than three squares and has to be
+ * updated every with every action the player performs. The each player is
+ * responsible for keeping his own lightTrail consistent with his actions. Each
+ * coordinate in the lightTrail is a neighbor of at least one other coordinate
+ * in the lightTrail. Also it is not allowed for a lightTrail to occupy the same
+ * position twice.
  * 
+ * @author Bavo Mees
  */
 public class LightTrail {
-
+	
+	/** the lightTrail of the player */
+	private LinkedList<Coordinate>	lightTrail;
+	
 	/**
-	 * The number of player-actions the lighttrailpart (one square) remains
-	 * visible.
+	 * Create a new lightTrail behind a player. The length of the newly created
+	 * lightTrail will be zero.
 	 */
-	public static final int NUMBER_OF_ACTIONS_DELAY = 2;
-
-	/**
-	 * The maximum lenght of a lightrail (in squares). At this moment fixed.
-	 */
-	private static final int MAX_LENGTH = 3;
-
-	//linked list with the first item = the square the player came from
-	private LinkedList<Square> lightTrailList;
-
-	/**
-	 * Returns the maximum length of this lightrail (in squares)
-	 * 
-	 * @return the maximum length of this lightrail (in squares)
-	 */
-	public int getMaxLength() {
-		return MAX_LENGTH;
+	public LightTrail() {
+		lightTrail = new LinkedList<Coordinate>();
 	}
-
+	
 	/**
-	 * Returns the current length of this lightrail (in squares)
+	 * Update the lightTrail to a specified coordinate. This method will trim
+	 * the lightTrail if this appears to be necessary. When the method returns
+	 * the lightTrail will cover an square with the specified coordinate if the
+	 * previous length of the square was less than three, otherwise the
+	 * lightTrail will have shifted to cover the new Coordinate and the last
+	 * coordinate of the square will be cleared of this lightTrail. This method
+	 * should be called whenever the player makes a move action on the board.
 	 * 
-	 * @return the current length of this lightrail (in squares)
+	 * @param coordinate
+	 *        the coordinate which the new lightTrail should cover
+	 * @throws IllegalArgumentException
+	 *         if the specified coordinate is not a
+	 *         {@link #isValidNewCoordinate(Coordinate) valid} new coordinate
+	 *         for this lightTrail
 	 */
-	public int getLightTrailLenght() {
-		return this.lightTrailList.size();
+	public void updateLightTrail(Coordinate coordinate) throws IllegalArgumentException {
+		if (!isValidNewCoordinate(coordinate))
+			throw new IllegalArgumentException(
+					"the specified coordinate could not be added to the lightTrail!");
+		lightTrail.addFirst(coordinate);
+		
+		if (lightTrail.size() > 3)
+			lightTrail.removeLast();
 	}
-
+	
 	/**
-	 * Returns an array with all the {@link Square}s that are part of this
-	 * lighttrail.
+	 * Test whether a coordinate is valid as a new part of the lightTrail. This
+	 * will return false if the lightTrail already contains the specified
+	 * coordinate or if the specified coordinate is not a
+	 * {@link Coordinate#isNeighbor(Coordinate) neighbor} of the first
+	 * coordinate of this lightTrail.
 	 * 
-	 * @return an array of length <code>getLightTrailLength()</code> with all
-	 *         the {@link Square}s that are part of this lightrail.
+	 * @param coordinate
+	 *        the coordinate to test
+	 * @return whether the new coordinate can be set as a new part of the
+	 *         lightTrail
 	 */
-	public Square[] getLightTrail() {
-		return (Square[]) this.lightTrailList.toArray();
+	public boolean isValidNewCoordinate(Coordinate coordinate) {
+		// test whether the lightTrail already contains the coordinate
+		if (lightTrail.contains(coordinate))
+			return false;
+		// test whether the coordinate is a neighbor of the first coordinate
+		else if (lightTrail.getFirst().isNeighbor(coordinate))
+			return false;
+		else
+			return true;
 	}
-
+	
 	/**
-	 * This method updates the lightTrail after a one-square-move of the player
-	 * in a given direction.
-	 * 
-	 * @param direction
-	 *            The direction the player just moved in
-	 * 
-	 * @note Do not call this method manually. Lighttrails are
-	 *       updated automatically as the player (and its lighttrail) move around the grid.
+	 * Update the lightTrail to a new state. When the method returns the
+	 * lightTrail will not cover the last element of the previous lightTrail.
+	 * This method should be called whenever the player executes an action that
+	 * does not include moving around on the grid.
 	 */
-	public void updateLightTrail(Square newSquare) {
-		if (this.getLightTrailLenght() >= this.getMaxLength()) {
-			Square last = this.lightTrailList.removeLast();
-			last.setHasLightTrail(false);
-		}
-		this.lightTrailList.addFirst(newSquare);
-		newSquare.setHasLightTrail(true);
+	public void updateLightTrail() {
+		if (!lightTrail.isEmpty())
+			lightTrail.removeLast();
+	}
+	
+	/**
+	 * returns the size of this lightTrail.
+	 * 
+	 * @return the size of the lightTrail
+	 */
+	public int size() {
+		return lightTrail.size();
+	}
+	
+	/**
+	 * Returns the coordinates of the current lightTrail.
+	 * 
+	 * @return coordinates of the lightTrail
+	 */
+	public List<Coordinate> getLightTrailCoordinates() {
+		return new ArrayList<Coordinate>(lightTrail);
 	}
 }

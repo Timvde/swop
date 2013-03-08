@@ -136,4 +136,25 @@ public class Coordinate {
 				throw new IllegalStateException("Something went terribly wrong :(");
 		}
 	}
+	
+	
+	/**
+	 * returns whether a specified coordinate is a neighbor of this coordinate. More formally a coordinate is 
+	 * a neighbor of an other coordinate if and only if
+	 * <pre>
+	 * {@code 
+	 * Math.abs(coord1.getX() - coord2.getX()) <= 1 
+	 * 		&& Math.abs(coord1.getY() - coord2.getY()) <= 1
+	 * }
+	 * </pre> 
+	 * @param coordinate
+	 * 		the coordinate to test
+	 * @return True if the specified coordinate is a neighbor of this coordinate, otherwise false
+	 */
+	public boolean isNeighbor(Coordinate coordinate) {
+		for (Direction direction : Direction.values())
+			if (this.getCoordinateInDirection(direction).equals(coordinate))
+				return true;
+		return false;
+	}
 }
