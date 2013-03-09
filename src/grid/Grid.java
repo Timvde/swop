@@ -305,4 +305,10 @@ public class Grid implements IGrid {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public Square getSquareOfPlayer(Player player) {
+		return null;
+		// TODO Auto-generated method stub
+		
+	}
 }

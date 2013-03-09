@@ -14,8 +14,8 @@ import com.sun.istack.internal.NotNull;
 /**
  * A class to store PlayerDataBase.NUMBER_OF_PLAYERS {@link Player}s and to
  * appoint the current player allowed to play. The {@link PlayerDataBase} will
- * observe his players. A Player notifies the database to indicate he wants to
- * end his turn.
+ * observe his players. A Player notifies the database (by calling
+ * <code>notifyObsrvers</code>) to indicate he wants to end his turn.
  * 
  */
 public class PlayerDataBase implements Observer, IPlayerDataBase {
@@ -23,8 +23,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	public static final int NUMBER_OF_PLAYERS = 2;
 
 	@NotNull
-	private ArrayList<Player> playerList = new ArrayList<Player>();
-
+	private ArrayList<Player> playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
 	private int currentPlayerIndex; // index in playerList
 
 	/**
@@ -93,7 +92,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			 */
 			if (player.equals(this.getCurrentPlayer())) {
 				this.endCurrentPlayerTurn();
-				player.increaseAllowedNumberOfActions();
+				//FIXME: hier weg? player.increaseAllowedNumberOfActions();
 			}
 		}
 	}
