@@ -4,7 +4,8 @@
 bin/
 .settings/
 .vpprefdata/
-*.vpp.working
+*.vpp.working*
+*.vpp.working~*
 
 .metadata/*
 
