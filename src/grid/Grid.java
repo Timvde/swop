@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import player.Player;
+
 public class Grid implements IGrid {
 	
 	private HashMap<Coordinate, ASquare>	grid;
@@ -296,5 +298,11 @@ public class Grid implements IGrid {
 		public Grid build() {
 			return new Grid(this);
 		}
+	}
+
+	public Coordinate movePlayerInDirection(Player player, Direction direction) {
+		return null;
+		// TODO Auto-generated method stub
+		
 	}
 }

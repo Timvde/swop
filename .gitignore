@@ -6,6 +6,8 @@ bin/
 .vpprefdata/
 *.vpp.working
 
+.metadata/*
+
 # Package Files #
 *.jar
 *.war
