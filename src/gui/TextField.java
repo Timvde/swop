@@ -1,0 +1,22 @@
+package gui;
+
+import javax.swing.JTextField;
+
+public final class TextField {
+	
+	final JTextField	textfield;
+	Runnable			clickHandler;
+	
+	TextField(JTextField textfield) {
+		this.textfield = textfield;
+	}
+	
+	public String getText() {
+		return this.textfield.getText();
+	}
+	
+	public void setText(String t) {
+		this.textfield.setText(t);
+	}
+	
+}

@@ -34,7 +34,7 @@ import controllers.UseItemController;
 public class GUI implements Runnable {
 	
 	private AGUI					gui;
-	private Grid					grid;
+	private Grid					grid = null;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -79,10 +79,17 @@ public class GUI implements Runnable {
 	private Object					inventoryListSelected;
 	
 	/**
+	 * The grid dimension textfields that need to be a static instance field for
+	 * referral reasons.
+	 */
+	private static TextField		gridWidthTextField;
+	private static TextField		gridHeightTextField;
+	
+	/**
 	 * Offsets that determine where the top left position of the grid will be.
 	 */
 	private int						topLeftGridOffsetX	= 150;
-	private int						topLeftGridOffsetY	= 42;
+	private int						topLeftGridOffsetY	= 45;
 	
 	/**
 	 * Construct a new GUI and initialize the controllers.
@@ -111,120 +118,129 @@ public class GUI implements Runnable {
 	 * Start the GUI thread by creating the GUI elements and displaying them.
 	 */
 	public void run() {
-		this.gui = new AGUI("GUI", 200 + (SQUARE_SIZE * gridWidth),
-				200 + (SQUARE_SIZE * gridHeight)) {
+		// These initial width and height only show the New Game button.
+		this.gui = new AGUI("Objectron  |  Groep 9", 140, 85) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
-				// This block is executed with each repaint():
-				
-				graphics.drawString("items on square:", 10, 275);
-				graphics.drawString("items in inventory:", 10, 405);
-				
-				// Adjust the grid dimensions and GUI size:
-				gridHeight = getGridHeigth(grid);
-				gridWidth = getGridWidth(grid);
-				
-				gui.getPanel().setSize(200 + (SQUARE_SIZE * gridWidth),
-						200 + (SQUARE_SIZE * gridHeight));
-				gui.getFrame().setSize(200 + (SQUARE_SIZE * gridWidth),
-						200 + (SQUARE_SIZE * gridHeight));
-				// Draw grid lines
-				for (int r = 0; r < gridHeight; r++) {
-					for (int c = 0; c < gridWidth; c++) {
-						graphics.drawRect(topLeftGridOffsetX + ((SQUARE_SIZE) * c),
-								topLeftGridOffsetY + ((SQUARE_SIZE) * r), (SQUARE_SIZE),
-								(SQUARE_SIZE));
-					}
-				}
-				
-				// Draw the two finish squares:
-				Coordinate guiCoordFinishRed = toGUICoord(new Coordinate(0, gridHeight - 1));
-				Coordinate guiCoordFinishBlue = toGUICoord(new Coordinate(gridWidth - 1, 0));
-				graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-						guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-				graphics.drawImage(finishRed, guiCoordFinishRed.getX(), guiCoordFinishRed.getY(),
-						SQUARE_SIZE, SQUARE_SIZE, null);
-				
-				// Populate the grid squares with the correct images:
-				Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
-				
-				for (Coordinate c : gridCoords) {
-					// TODO draw players anders? coords opvragen..
-					ASquare square = grid.getSquareAt(c);
-					IPlayer player = square.getPlayer();
-					Coordinate guiCoord = toGUICoord(c);
+				// Only paint if a new game started, meaning there is a grid.
+				if (grid != null) {
+					// This block is executed with each repaint():
 					
-					// Draw players if necessary
-					if (player != null) {
-						switch (player.getID()) {
-							case 1:
-								graphics.drawImage(playerBlueImage, guiCoord.getX(),
-										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-								break;
-							case 2:
-								graphics.drawImage(playerRedImage, guiCoord.getX(),
-										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-								break;
-							default:
-								break;
+					// Draw some labels:
+					graphics.drawString("x", 64, 35);
+					graphics.drawString("items on square:", 10, 236);
+					graphics.drawString("items in inventory:", 10, 364);
+					graphics.drawString("CURRENT PLAYER:", 550, 19);
+					graphics.drawString("1", 666, 19);
+					graphics.drawString("ACTIONS LEFT:", 550, 32);
+					graphics.drawString("3", 646, 32);
+					
+					// Adjust the grid dimensions and GUI size:
+					gridHeight = guiDataController.getGridHeigth(grid);
+					gridWidth = guiDataController.getGridWidth(grid);
+					
+					int GUIheight = 100 + (SQUARE_SIZE * gridHeight);
+					int GUIwidth = 180 + (SQUARE_SIZE * gridWidth);
+					if (GUIheight < 530)
+						GUIheight = 530;
+					if (GUIwidth < 720)
+						GUIwidth = 720;
+					
+					gui.getPanel().setSize(GUIwidth, GUIheight);
+					gui.getFrame().setSize(GUIwidth, GUIheight);
+					
+					// Draw grid lines
+					for (int r = 0; r < gridHeight; r++) {
+						for (int c = 0; c < gridWidth; c++) {
+							graphics.drawRect(topLeftGridOffsetX + ((SQUARE_SIZE) * c),
+									topLeftGridOffsetY + ((SQUARE_SIZE) * r), (SQUARE_SIZE),
+									(SQUARE_SIZE));
 						}
 					}
 					
-					// Draw wall if necessary
-					if (square.getClass() == Wall.WallPart.class) {
-						graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
-								SQUARE_SIZE, SQUARE_SIZE, null);
-					}
+					// Draw the two finish squares:
+					Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
+					Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
+					graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
+							guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+					graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
+							guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 					
-					// Draw lighttrail if necessary
-					if (square.hasLightTrail()) {
-						graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
-								SQUARE_SIZE, SQUARE_SIZE, null);
-					}
+					// Populate the grid squares with the correct images:
+					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
 					
-					// Draw items if necessary
-					List<IItem> itemList = grid.getItemList(c);
-					for (IItem i : itemList) {
-						if (i instanceof LightGrenade) {
-							graphics.drawImage(lightGrenadeImage, guiCoord.getX(), guiCoord.getY(),
+					for (Coordinate c : gridCoords) {
+						ASquare square = guiDataController.getSquareAt(c);
+						IPlayer player = square.getPlayer();
+						Coordinate guiCoord = toGUIGridCoord(c);
+						
+						// Draw players if necessary
+						if (player != null) {
+							switch (player.getID()) {
+								case 1:
+									graphics.drawImage(playerBlueImage, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									break;
+								case 2:
+									graphics.drawImage(playerRedImage, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									break;
+								default:
+									break;
+							}
+						}
+						
+						// Draw wall if necessary
+						if (square.getClass() == Wall.WallPart.class) {
+							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
+						
+						// Draw lighttrail if necessary
+						if (square.hasLightTrail()) {
+							graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
+						// Draw items if necessary
+						List<IItem> itemList = guiDataController.getItemList(c);
+						for (IItem i : itemList) {
+							if (i.getClass() == LightGrenade.class) {
+								graphics.drawImage(lightGrenadeImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+						}
+						
 					}
 					
+					// Show the items in the list that the current player can
+					// interact with
+					Vector<IItem> itemsSquare = new Vector<IItem>();
+					List<IItem> itemsOfSquare = guiDataController.getItemsOnSquareOfCurrentPlayer();
+					
+					// add them into a Vector, because setListData of our list
+					// doesn't accept a List object.
+					for (IItem i : itemsOfSquare) {
+						itemsSquare.add((Item) i);
+					}
+					
+					itemList.setListData(itemsSquare);
+					
+					// Show the player's inventory items in the inventory list
+					Vector<Item> itemsInventory = new Vector<Item>();
+					List<IItem> itemsOfPlayer = guiDataController.getCurrentPlayerInventoryItems();
+					
+					// add them into a Vector, because setListData of our list
+					// doesn't accept a List object.
+					for (IItem i : itemsOfPlayer) {
+						itemsInventory.add((Item) i);
+					}
+					
+					inventoryList.setListData(itemsInventory);
+					
 				}
-				
-				// Show the items in the list that the current player can
-				// interact with
-				// TODO fix
-				Vector<IItem> itemsSquare = new Vector<IItem>();
-				List<IItem> itemsOfSquare = getItemListController.getSquareItemList(grid);
-				
-				// add them into a Vector, because setListData of our list
-				// doesn't accept a
-				// List object.
-				for (IItem i : itemsOfSquare) {
-					itemsSquare.add((Item) i);
-				}
-				
-				itemList.setListData(itemsSquare);
-				
-				// Show the player's inventory items in the inventory list
-				// TODO fix
-				Vector<Item> itemsInventory = new Vector<Item>();
-				List<IItem> itemsOfPlayer = getInventoryListController.getCurrentPlayerInventory();
-				
-				// add them into a Vector, because setListData of our list
-				// doesn't accept a
-				// List object.
-				for (IItem i : itemsOfPlayer) {
-					itemsInventory.add((Item) i);
-				}
-				
-				inventoryList.setListData(itemsInventory);
-				
 			}
-			
 		};
 		
 		// Initialize images
@@ -236,11 +252,17 @@ public class GUI implements Runnable {
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
 		
+		// Create the width and height config text fields
+		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
+		gridHeightTextField = gui.createTextField(75, 20, 25, 20);
+		gridWidthTextField.setText("15");
+		gridHeightTextField.setText("15");
+		
 		/* ---- ---- ---- ---- MOVE ARROWS ---- ---- ---- ---- */
 		
 		// Use the two offsets below to move all arrows at once
 		int moveArrowsOffsetX = 10;
-		int moveArrowsOffsetY = 40;
+		int moveArrowsOffsetY = 85;
 		
 		Button upButton = gui.createButton(moveArrowsOffsetX + 40, moveArrowsOffsetY + 0, 40, 40,
 				new Runnable() {
@@ -332,38 +354,59 @@ public class GUI implements Runnable {
 		/* ---- ---- ---- ---- ACTION BUTTONS ---- ---- ---- ---- */
 		// Use these offsets to move all the action buttons at once:
 		int actionButtonsOffsetX = 10;
-		int actionButtonsOffsetY = 180;
+		int actionButtonsOffsetY = 5;
 		
-		Button pickItemUpButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY, 120,
-				30, new Runnable() {
+		Button pickItemUpButton = gui.createButton(actionButtonsOffsetX + 140,
+				actionButtonsOffsetY, 120, 30, new Runnable() {
 					
 					public void run() {
 						// Use the itemListSelected to access the Item that is
 						// selected in the items on square list!
-						System.out.println("item list selected:" + itemListSelected);
 						pickUpController.pickUpItem((IItem) itemListSelected);
 						gui.repaint();
 					}
 				});
 		pickItemUpButton.setText("Pick up item");
 		// ----
-		Button dropMineButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
+		Button useItemButton = gui.createButton(actionButtonsOffsetX + 270, actionButtonsOffsetY,
 				120, 30, new Runnable() {
 					
 					public void run() {
-						
 						// Use the inventoryListSelected to access the Item that
 						// is selected in the inventory!
-						System.out.println("inventory list selected:" + inventoryListSelected);
-						useItemController.useItem((Item) itemListSelected);
+						useItemController.useItem((IItem) inventoryListSelected);
 						gui.repaint();
 					}
 				});
-		dropMineButton.setText("Drop mine");
+		useItemButton.setText("Use item");
+		// ----
+		Button newGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
+				120, 30, new Runnable() {
+					
+					public void run() {
+						int width = Integer.parseInt(gridWidthTextField.getText());
+						int height = Integer.parseInt(gridHeightTextField.getText());
+						
+						newGameController.newGame(width, height);
+					}
+				});
+		newGameButton.setText("New Game");
+		// ----
+		Button endTurnButton = gui.createButton(actionButtonsOffsetX + 400, actionButtonsOffsetY,
+				120, 30, new Runnable() {
+					
+					public void run() {
+						endTurnController.endTurn();
+					}
+				});
+		endTurnButton.setText("End Turn");
 		/* ---- ---- ---- ----END OF ACTION BUTTONS---- ---- ---- ---- */
 		
 		/* ---- ---- ---- ---- LISTS ---- ---- ---- ---- */
-		itemList = gui.createList(10, 280, 120, 100, new Runnable() {
+		int listsOffsetX = 10;
+		int listsOffsetY = 240;
+		
+		itemList = gui.createList(listsOffsetX, listsOffsetY, 120, 100, new Runnable() {
 			
 			public void run() {
 				// each time the selection in the list is changed, the
@@ -377,7 +420,7 @@ public class GUI implements Runnable {
 			}
 		});
 		// ---
-		inventoryList = gui.createList(10, 410, 120, 100, new Runnable() {
+		inventoryList = gui.createList(listsOffsetX, listsOffsetY + 130, 120, 100, new Runnable() {
 			
 			public void run() {
 				// each time the selection in the list is changed, the
@@ -401,6 +444,7 @@ public class GUI implements Runnable {
 	 */
 	public void draw(Grid g) {
 		this.grid = g;
+		gui.repaint();
 	}
 	
 	/**
@@ -411,48 +455,10 @@ public class GUI implements Runnable {
 	 *        The grid coordinate
 	 * @return A new Coordinate object that has the GUI coordinates.
 	 */
-	private Coordinate toGUICoord(Coordinate c) {
+	private Coordinate toGUIGridCoord(Coordinate c) {
 		int x = (c.getX() * 40) + topLeftGridOffsetX;
 		int y = (c.getY() * 40) + topLeftGridOffsetY;
 		
 		return new Coordinate(x, y);
-	}
-	
-	/**
-	 * This method will return the number of rows in a grid.
-	 * 
-	 * @param g
-	 *        The grid.
-	 * @return The number of rows in the grid.
-	 */
-	private int getGridHeigth(Grid g) {
-		Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
-		
-		int maxRowNum = 0;
-		for (Coordinate c : gridCoords) {
-			if (c.getY() > maxRowNum)
-				maxRowNum = c.getY();
-		}
-		
-		return maxRowNum + 1;
-	}
-	
-	/**
-	 * This method will return the number of columns in a grid.
-	 * 
-	 * @param g
-	 *        The grid.
-	 * @return The number of columns in the grid.
-	 */
-	private int getGridWidth(Grid g) {
-		Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
-		
-		int maxColNum = 0;
-		for (Coordinate c : gridCoords) {
-			if (c.getX() > maxColNum)
-				maxColNum = c.getX();
-		}
-		
-		return maxColNum + 1;
 	}
 }

@@ -311,8 +311,8 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public Coordinate getPlayerCoordinate(int playerId) {
-		return this.players.get(playerId);
+	public Coordinate getPlayerCoordinate(IPlayer player) {
+		return this.players.get(player.getID());
 	}
 	
 	@Override

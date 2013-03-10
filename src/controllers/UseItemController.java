@@ -1,7 +1,7 @@
 package controllers;
 
 import player.PlayerDatabase;
-import item.Item;
+import item.IItem;
 
 public class UseItemController {
 	
@@ -11,7 +11,7 @@ public class UseItemController {
 		this.playerDB = db;
 	}
 	
-	public void useItem(Item item) {
+	public void useItem(IItem item) {
 		// TODO
 	}
 }

@@ -61,7 +61,7 @@ public interface IGrid {
 	 * @return
 	 * 			The coordinate as a Coordinate object of the given player.
 	 */
-	public Coordinate getPlayerCoordinate(int playerId);
+	public Coordinate getPlayerCoordinate(IPlayer player);
 	
 	/**
 	 * Return the square of the grid that has a specific coordinate.
