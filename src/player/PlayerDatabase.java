@@ -6,7 +6,7 @@ public class PlayerDatabase implements IPlayerDatabase {
 	@Override
 	public Player getCurrentPlayer() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Player(null);
 	}
 
 	@Override

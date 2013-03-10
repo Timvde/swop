@@ -9,7 +9,7 @@ import item.IItem;
 public class Player implements IPlayer {
 	
 
-	private int						id;
+	private int						id; 
 
 	private static AtomicInteger	nextID		= new AtomicInteger();
 
@@ -42,8 +42,8 @@ public class Player implements IPlayer {
 	}
 	
 	@Override
-	public List<IItem> getInventory() {
-		return inventory.getItems();
+	public Inventory getInventory() {
+		return this.inventory;
 	}
 
 	@Override
@@ -86,5 +86,11 @@ public class Player implements IPlayer {
 	public void skipNumberOfActions(int n) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public int getNumberOfActionsLeft() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
