@@ -44,6 +44,12 @@ public interface IPlayer {
 	
 	/**
 	 * TODO
+	 * @return
+	 */
+	public int getNumberOfActionsLeft();
+	
+	/**
+	 * TODO
 	 * @param n
 	 */
 	public void skipNumberOfActions(int n);
@@ -68,10 +74,10 @@ public interface IPlayer {
 	public Coordinate getTargetPosition();
 	
 	/**
-	 * Returns the Inventory-content associated with this player.
+	 * Returns the Inventory associated with this player.
 	 * 
-	 * @return the Inventory-content associated with this player.
+	 * @return the Inventory associated with this player.
 	 */
-	public List<IItem> getInventory();
+	public Inventory getInventory();
 	
 }

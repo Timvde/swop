@@ -11,4 +11,7 @@ public class NewGameController {
 		this.game = g;
 	}
 	
+	public void newGame(int width, int height) {
+		this.game.newGame(width, height);
+	}
 }
