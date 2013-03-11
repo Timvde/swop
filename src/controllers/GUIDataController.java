@@ -83,41 +83,17 @@ public class GUIDataController {
 	}
 	
 	/**
-	 * This method will return the number of rows in a grid.
-	 * 
-	 * @param g
-	 *        The grid.
-	 * @return The number of rows in the grid.
+	 * Return the width of the grid.
 	 */
-	public int getGridHeigth(Grid g) {
-		Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
-		
-		int maxRowNum = 0;
-		for (Coordinate c : gridCoords) {
-			if (c.getY() > maxRowNum)
-				maxRowNum = c.getY();
-		}
-		
-		return maxRowNum + 1;
+	public int getGridWidth() {
+		return this.grid.getWidth();
 	}
 	
 	/**
-	 * This method will return the number of columns in a grid.
-	 * 
-	 * @param g
-	 *        The grid.
-	 * @return The number of columns in the grid.
+	 * Return the height of the grid.
 	 */
-	public int getGridWidth(Grid g) {
-		Set<Coordinate> gridCoords = grid.getAllGridCoordinates();
-		
-		int maxColNum = 0;
-		for (Coordinate c : gridCoords) {
-			if (c.getX() > maxColNum)
-				maxColNum = c.getX();
-		}
-		
-		return maxColNum + 1;
+	public int getGridHeight() {
+		return this.grid.getHeight();
 	}
 	
 }

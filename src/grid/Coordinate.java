@@ -1,6 +1,5 @@
 package grid;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -62,6 +61,8 @@ public class Coordinate {
 	 * @return a new coordinate relative to this coordinate
 	 */
 	public Coordinate getCoordinateInDirection(Direction direction) {
+		if (direction == null) throw new IllegalStateException("Direction cannot be null");
+		
 		switch (direction) {
 			case NORTH:
 				return new Coordinate(x, y - 1);
@@ -80,7 +81,6 @@ public class Coordinate {
 			case SOUTHWEST:
 				return new Coordinate(x - 1, y + 1);
 			default:
-				// this can never happen
 				throw new IllegalStateException();
 		}
 	}

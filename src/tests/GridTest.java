@@ -29,6 +29,8 @@ public class GridTest {
 				numberOfWalls++;
 		assertTrue(numberOfWalls >= 2); // Minimum wall size
 		assertTrue(numberOfWalls <= 20);// 20% of 100 squares filled
+		assertTrue(grid.getWidth() >= 10);
+		assertTrue(grid.getHeight() >= 10);
 	}
 	
 }

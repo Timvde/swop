@@ -8,7 +8,8 @@ import player.IPlayer;
 /**
  * This class exists to enforce the wall restrictions as class invariants. - A
  * wall needs to be straight (i.e. either horizontally or vertically aligned) -
- * A wall needs to consist of at least two squares.
+ * A wall needs to consist of at least two squares. A wall cannot intersect with
+ * another wall.
  */
 public class Wall {
 	

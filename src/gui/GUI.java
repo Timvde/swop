@@ -137,8 +137,8 @@ public class GUI implements Runnable {
 					graphics.drawString("3", 646, 32);
 					
 					// Adjust the grid dimensions and GUI size:
-					gridHeight = guiDataController.getGridHeigth(grid);
-					gridWidth = guiDataController.getGridWidth(grid);
+					gridHeight = guiDataController.getGridHeight();
+					gridWidth = guiDataController.getGridWidth();
 					
 					int GUIheight = 100 + (SQUARE_SIZE * gridHeight);
 					int GUIwidth = 180 + (SQUARE_SIZE * gridWidth);

@@ -62,6 +62,7 @@ public class Grid implements IGrid {
 	
 	/**
 	 * TODO
+	 * 
 	 * @param p
 	 * @param d
 	 */
@@ -269,14 +270,14 @@ public class Grid implements IGrid {
 		else if (grid.get(players.get(playerID).getCoordinateInDirection(direction))
 				.hasLightTrail())
 			return false;
-//		else if (direction.getPrimeryDirections().size() == 2
-//				&& grid.get(
-//						players.get(playerID).getCoordinateInDirection(
-//								direction.getPrimeryDirections().get(0))).hasLightTrail()
-//				&& grid.get(
-//						players.get(playerID).getCoordinateInDirection(
-//								direction.getPrimeryDirections().get(1))).hasLightTrail())
-//			return false;
+		// else if (direction.getPrimeryDirections().size() == 2
+		// && grid.get(
+		// players.get(playerID).getCoordinateInDirection(
+		// direction.getPrimeryDirections().get(0))).hasLightTrail()
+		// && grid.get(
+		// players.get(playerID).getCoordinateInDirection(
+		// direction.getPrimeryDirections().get(1))).hasLightTrail())
+		// return false;
 		return true;
 	}
 	
@@ -303,11 +304,6 @@ public class Grid implements IGrid {
 	@Override
 	public ASquare getSquareAt(Coordinate coordinate) {
 		return grid.get(coordinate);
-	}
-	
-	@Override
-	public Set<Coordinate> getAllGridCoordinates() {
-		return this.grid.keySet();
 	}
 	
 	@Override
@@ -427,7 +423,46 @@ public class Grid implements IGrid {
 			return new Grid(this);
 		}
 	}
-
+	
+	/**
+	 * This method will return the number of rows in the grid.
+	 * 
+	 * @return The number of rows in the grid.
+	 */
+	public int getHeight() {
+		Set<Coordinate> gridCoords = grid.keySet();
+		
+		int maxRowNum = 0;
+		for (Coordinate c : gridCoords) {
+			if (c.getY() > maxRowNum)
+				maxRowNum = c.getY();
+		}
+		
+		return maxRowNum + 1;
+	}
+	
+	/**
+	 * This method will return the number of columns in the grid.
+	 * 
+	 * @return The number of columns in the grid.
+	 */
+	public int getWidth() {
+		Set<Coordinate> gridCoords = grid.keySet();
+		
+		int maxColNum = 0;
+		for (Coordinate c : gridCoords) {
+			if (c.getX() > maxColNum)
+				maxColNum = c.getX();
+		}
+		
+		return maxColNum + 1;
+	}
+	
+	@Override
+	public Set<Coordinate> getAllGridCoordinates() {
+		return this.grid.keySet();
+	}
+	
 	/**
 	 * TODO
 	 */
@@ -436,7 +471,7 @@ public class Grid implements IGrid {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	/**
 	 * TODO
 	 */

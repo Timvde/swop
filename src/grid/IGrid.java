@@ -74,9 +74,7 @@ public interface IGrid {
 	public ASquare getSquareAt(Coordinate coordinate);
 	
 	/**
-	 * Get a set of all the used coordinates in our grid.
-	 * 
-	 * @return A set of the used grid coordinates.
+	 * Return all the possible coordinates in the grid.
 	 */
 	public Set<Coordinate> getAllGridCoordinates();
 }
