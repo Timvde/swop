@@ -1,15 +1,20 @@
 package grid;
 
 import java.util.Random;
+import notnullcheckweaver.NotNull;
 
 /**
- * an immutable coordinate class
+ * A immutable Cartesian coordinate in a two dimensional plane. Each coordinate
+ * is represented by an X- and Y-coordinate. {@code Position.ORIGIN} represents
+ * a position in the upper left corner of the screen. If {@code x} represents an
+ * {@code Integer} then {@code new Coordinate(x, 0)} is a coordinate at the top
+ * of the screen. Similarly, if {@code y} represents an {@code Integer} then
+ * {@code new Coordinate(0, y)} is a coordinate on the left of the screen.
  * 
  * @author Bavo Mees
  */
 public class Coordinate {
 	
-	/** The x and y values of this coordinate */
 	private final int				x;
 	private final int				y;
 	
@@ -60,9 +65,8 @@ public class Coordinate {
 	 *        the direction in which a new coordinate is returned
 	 * @return a new coordinate relative to this coordinate
 	 */
-	public Coordinate getCoordinateInDirection(Direction direction) {
-		if (direction == null) throw new IllegalStateException("Direction cannot be null");
-		
+	
+	public Coordinate getCoordinateInDirection(@NotNull Direction direction) {
 		switch (direction) {
 			case NORTH:
 				return new Coordinate(x, y - 1);
@@ -81,21 +85,16 @@ public class Coordinate {
 			case SOUTHWEST:
 				return new Coordinate(x - 1, y + 1);
 			default:
+				// this can never happen
 				throw new IllegalStateException();
 		}
 	}
 	
-	/**
-	 * Return a string representation of this coordinate.
-	 */
 	@Override
 	public String toString() {
 		return "Coordinate(" + x + ", " + y + ")";
 	}
 	
-	/**
-	 * Return a hashcode of this coordinate.
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -105,9 +104,6 @@ public class Coordinate {
 		return result;
 	}
 	
-	/**
-	 * Check if this coordinate equals another.
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -125,19 +121,20 @@ public class Coordinate {
 	}
 	
 	/**
-	 * Return a random coordinate.
+	 * returns a new pseudorandom coordinate uniformly distributed between
+	 * {@code new Coordinate(0,0)} (included) and {@code new Coordinate(x, y)}
+	 * (excluded) within specified dimensions. The equality of the distribution
+	 * is guaranteed by the the randomness of the {@link Random#nextInt(int n)
+	 * nextInt(int)} mehtod.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
 	 */
 	public static Coordinate random(int x, int y) {
 		return new Coordinate(new Random().nextInt(x), new Random().nextInt(y));
 	}
 	
-	/**
-	 * Return a random coordinate with a given distance from this coordinate.
-	 * @param distance
-	 * 			The distance of the new coordinate.
-	 * @return
-	 * 			A random coordinate that has a certain distance from this coordinate.
-	 */
 	public Coordinate getRandomCoordinateWithDistance(int distance) {
 		Direction[] directions = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
 		Direction direction = directions[new Random().nextInt(directions.length)];
@@ -153,5 +150,29 @@ public class Coordinate {
 			default:
 				throw new IllegalStateException("Something went terribly wrong :(");
 		}
+	}
+	
+	/**
+	 * returns whether a specified coordinate is a neighbor of this coordinate.
+	 * More formally a coordinate is a neighbor of an other coordinate if and
+	 * only if
+	 * 
+	 * <pre>
+	 * {@code
+	 * Math.abs(coord1.getX() - coord2.getX()) <= 1
+	 * && Math.abs(coord1.getY() - coord2.getY()) <= 1
+	 * }
+	 * </pre>
+	 * 
+	 * @param coordinate
+	 *        the coordinate to test
+	 * @return True if the specified coordinate is a neighbor of this
+	 *         coordinate, otherwise false
+	 */
+	public boolean isNeighbor(Coordinate coordinate) {
+		for (Direction direction : Direction.values())
+			if (this.getCoordinateInDirection(direction).equals(coordinate))
+				return true;
+		return false;
 	}
 }
