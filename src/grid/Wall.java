@@ -18,6 +18,16 @@ public class Wall {
 	
 	private static WallPart	wallPart;
 	
+	/**
+	 * Create a new wall
+	 * 
+	 * @param start
+	 *        The starting coordinate
+	 * @param end
+	 *        The end coordinate
+	 * @throws IllegalArgumentException
+	 *         When the coordinates do not define a proper wall
+	 */
 	public Wall(Coordinate start, Coordinate end) throws IllegalArgumentException {
 		if (start.getX() != end.getX() && start.getY() != end.getY())
 			throw new IllegalArgumentException("Coordinates not aligned");
@@ -40,8 +50,8 @@ public class Wall {
 	}
 	
 	/*
-	 * The following methods are package private, since they can
-	 * be accessed by Grid, to create a predefined test grid.
+	 * The following methods are package private, since they can be accessed by
+	 * Grid, to create a predefined test grid.
 	 */
 	Coordinate getStart() {
 		return start;
@@ -80,6 +90,11 @@ public class Wall {
 		return true;
 	}
 	
+	/**
+	 * Get a WallPart. This will always be the same instance.
+	 * 
+	 * @return A wall part
+	 */
 	public WallPart getWallPart() {
 		if (wallPart == null)
 			wallPart = new WallPart();
