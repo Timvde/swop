@@ -6,7 +6,7 @@ import item.Item;
 
 /**
  * A Player is the main actor of the game. It can move round, pick up objects
- * and tries to win the game
+ * and tries to win the game. 
  */
 public interface IPlayer {
 	
@@ -25,9 +25,9 @@ public interface IPlayer {
 	public Coordinate getTargetPosition();
 	
 	/**
-	 * Returns the Inventory-content associated with this player.
+	 * Returns the Inventory-content associated with this player. 
 	 * 
-	 * @return the Inventory-content associated with this player.
+	 * @return the Inventory of the player.
 	 */
 	public List<Item> getInventory();
 	

@@ -9,7 +9,6 @@ public class GridTest {
 	@Test
 	public void testConstructor() {
 		Grid grid = new Grid.Builder().build();
-		
 	}
 	
 }

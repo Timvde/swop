@@ -5,7 +5,8 @@ import item.Item;
 import java.util.List;
 
 /**
- * An inventory of {@link Item}s is carried by a {@link Player}.
+ * An inventory of {@link Item items} is carried by a {@link Player player}. The inventory cannot 
+ * hold more then a {@link #getMaxNumberOfItems() maximum} number of items.
  */
 public interface IInventory {
 
@@ -24,7 +25,7 @@ public interface IInventory {
 	/**
 	 * Returns the maximum number of items this inventory can hold.
 	 * 
-	 * @return the maximum number of items this inventory can hold.
+	 * @return the maximum number of items
 	 */
 	public int getMaxNumberOfItems();
 
