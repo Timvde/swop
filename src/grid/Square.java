@@ -1,10 +1,12 @@
 package grid;
 
+import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import notnullcheckweaver.NotNull;
 import player.IPlayer;
 
 public class Square extends ASquare implements Observer {
@@ -33,16 +35,22 @@ public class Square extends ASquare implements Observer {
 	
 	/**
 	 * TODO
+	 * 
 	 * @return
 	 */
 	public boolean hasPowerFailure() {
 		return false;
 	}
 	
+	private List<IItem> getAllItems() {
+		// Encapsulation isn't required, as this is a private method.
+		return itemList;
+	}
+	
 	@Override
 	public List<IItem> getCarryableItems() {
 		List<IItem> result = new ArrayList<IItem>();
-		for (IItem item : itemList)
+		for (IItem item : getAllItems())
 			if (item.isCarriable())
 				result.add(item);
 		return result;
@@ -68,7 +76,7 @@ public class Square extends ASquare implements Observer {
 	
 	@Override
 	public IItem pickupItem(int ID) {
-		for (IItem itemOnSquare : this.itemList)
+		for (IItem itemOnSquare : this.getAllItems())
 			if (ID == itemOnSquare.getId())
 				return itemOnSquare;
 		// if not yet returned --> not on square
@@ -77,7 +85,7 @@ public class Square extends ASquare implements Observer {
 	
 	@Override
 	public boolean hasItemWithID(int ID) {
-		for (IItem itemOnSquare : this.itemList)
+		for (IItem itemOnSquare : this.getAllItems())
 			if (ID == itemOnSquare.getId())
 				return true;
 		return false;
@@ -93,12 +101,25 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
-	 * Set an IPlayer on this square.
+	 * Move an IPlayer on this square. This might cause a penalty to the player,
+	 * depending on the square's current power state and the items it contains.
 	 */
-	public void setPlayer(IPlayer player) {
+	public void setPlayer(@NotNull IPlayer player) {
 		this.player = player;
+		penalty(player);
 	}
 	
+	private void penalty(IPlayer player) {
+		Effect effect = new Effect(player);
+		
+		if (hasPowerFailure())
+			effect.addPowerFailure();
+		for (IItem item : getAllItems())
+			item.addToEffect(effect);
+		
+		effect.execute();
+	}
+
 	/**
 	 * This method removes a player from a square. This method is enforced:
 	 * setPlayer(null) will throw. This is for both readability's sake and to

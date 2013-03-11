@@ -10,7 +10,7 @@ import item.LightGrenade.LightGrenadeState;
  * become 'active', once the player leaves the square. When a player enters a
  * square with an active lightgrenade, it will go in the 'exploded' state.
  */
-public interface ILightGrenade {
+public interface ILightGrenade extends IItem {
 
 	/**
 	 * This method returns the current {@link LightGrenadeState} the grenade is
