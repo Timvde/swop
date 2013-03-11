@@ -12,7 +12,7 @@ public class MoveController {
 	}
 	
 	public void move(Direction direction) {
-		// TODO
+		playerDB.getCurrentPlayer().move(direction);
 	}
 	
 }
