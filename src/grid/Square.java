@@ -9,12 +9,20 @@ import java.util.Observer;
 import notnullcheckweaver.NotNull;
 import player.IPlayer;
 
+/**
+ * A Square represents a place on a grid, which a player can stand on, as long
+ * as it is not prevented by the square's internal state. Moving to another
+ * Square can have side effects.
+ */
 public class Square extends ASquare implements Observer {
 	
 	private List<IItem>	itemList	= new ArrayList<IItem>();
 	private IPlayer		player;
 	private int			lightTrail;
 	
+	/**
+	 * Default constructor.
+	 */
 	public Square() {
 		
 	}
@@ -29,6 +37,12 @@ public class Square extends ASquare implements Observer {
 		itemList.add(item);
 	}
 	
+	/**
+	 * Remove an item from the square
+	 * 
+	 * @param item
+	 *        The item to remove
+	 */
 	public void removeItem(IItem item) {
 		itemList.remove(item);
 	}
@@ -109,6 +123,13 @@ public class Square extends ASquare implements Observer {
 		penalty(player);
 	}
 	
+	/**
+	 * This method will set up an Effect object with the right parameters and
+	 * execute it.
+	 * 
+	 * @param player
+	 *        The Player which will feel the consequences.
+	 */
 	private void penalty(IPlayer player) {
 		Effect effect = new Effect(player);
 		
@@ -119,7 +140,7 @@ public class Square extends ASquare implements Observer {
 		
 		effect.execute();
 	}
-
+	
 	/**
 	 * This method removes a player from a square. This method is enforced:
 	 * setPlayer(null) will throw. This is for both readability's sake and to
