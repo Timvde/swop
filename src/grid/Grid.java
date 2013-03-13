@@ -68,16 +68,17 @@ public class Grid implements IGrid {
 	private Grid(int width, int height, List<Wall> walls, List<IPlayer> players) {
 		this.width = width;
 		this.height = height;
-		this.walls = walls;
+		this.walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
 				Square sq = new Square();
 				grid.put(new Coordinate(i, j), sq);
 			}
-		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
 		if (players.size() == 2)
 			placePlayersOnBoard(players);
+		
+		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
 		
 		((Square) grid.get(new Coordinate(2, 7))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
@@ -370,14 +371,18 @@ public class Grid implements IGrid {
 	@Override
 	public String toString() {
 		String str = "";
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < 10; j++) {
+			for (int i = 0; i < 10; i++) {
 				if (grid.get(new Coordinate(i, j)) == null)
 					str += "  ";
 				else if (grid.get(new Coordinate(i, j)).getClass() == WallPart.class)
 					str += "w ";
-				else if (grid.get(new Coordinate(i, j)).getClass() == Square.class)
-					str += "s ";
+				else if (grid.get(new Coordinate(i, j)).getClass() == Square.class) {
+					if (grid.get(new Coordinate(i, j)).getCarryableItems().size() != 0)
+						str += "l ";
+					else
+						str += "s ";
+				}
 			}
 			str += "\n";
 		}
