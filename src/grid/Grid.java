@@ -182,9 +182,11 @@ public class Grid implements IGrid {
 	
 	/**
 	 * TODO
+	 * @return 
 	 */
 	@Override
-	public void movePlayerInDirection(IPlayer p, Direction d) {
+	public Coordinate movePlayerInDirection(IPlayer p, Direction d) {
+		return null;
 		// TODO Auto-generated method stub
 		
 	}

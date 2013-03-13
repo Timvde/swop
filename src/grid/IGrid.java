@@ -12,8 +12,9 @@ public interface IGrid {
 	 * 
 	 * @param p
 	 * @param d
+	 * @return
 	 */
-	public void movePlayerInDirection(IPlayer p, Direction d);
+	public Coordinate movePlayerInDirection(IPlayer p, Direction d);
 	
 	/**
 	 * TODO
