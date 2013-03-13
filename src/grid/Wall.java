@@ -18,6 +18,18 @@ public class Wall {
 	
 	private static WallPart	wallPart;
 	
+	/**
+	 * Construct a Wall with the given start and end coordinates
+	 * 
+	 * @param start
+	 *        Start coordinate
+	 * @param end
+	 *        End coordinate
+	 * @throws IllegalArgumentException
+	 *         The specified Coordinates are not aligned
+	 * @throws IllegalArgumentException
+	 *         A wall should should consist of at least two squares
+	 */
 	public Wall(Coordinate start, Coordinate end) throws IllegalArgumentException {
 		if (start.getX() != end.getX() && start.getY() != end.getY())
 			throw new IllegalArgumentException("Coordinates not aligned");
@@ -76,6 +88,12 @@ public class Wall {
 		return true;
 	}
 	
+	/**
+	 * Returns a WallPart. As all WallParts are actually the same, this will be
+	 * a reference to the same object every time.
+	 * 
+	 * @return A WallPart
+	 */
 	public WallPart getWallPart() {
 		if (wallPart == null)
 			wallPart = new WallPart();
@@ -84,7 +102,6 @@ public class Wall {
 	
 	/**
 	 * A class that represents a part of a wall.
-	 *
 	 */
 	public class WallPart extends ASquare {
 		

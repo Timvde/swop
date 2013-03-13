@@ -12,7 +12,7 @@ import controllers.NewGameController;
 /**
  * This class will test scenarios concerning the movement of players.
  * 
- * To test:
+ * To Test:
  * - No two players on one square
  * - Cannot move on wall
  * - Cannot leave grid

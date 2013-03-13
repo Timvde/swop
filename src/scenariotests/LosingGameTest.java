@@ -7,15 +7,23 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import player.PlayerDatabase;
 import controllers.GUIDataController;
-import controllers.NewGameController;
+import controllers.MoveController;
+import controllers.PickUpItemController;
 
 /**
+ * Test if a player loses the game in correct circumstances.
+ * 
+ * To Test:
+ * - Player trapped (not by grenade): lose
+ * - Player's opponent wins: lose
  * 
  * @author Tom
  */
 public class LosingGameTest {
 	
 	private static GUIDataController	guiDataCont;
+	private static PickUpItemController	pickUpCont;
+	private static MoveController		moveCont;
 	private static Grid					grid;
 	private static PlayerDatabase		playerDB;
 	
@@ -25,10 +33,17 @@ public class LosingGameTest {
 		Game game = new Game();
 		game.start();
 		guiDataCont = new GUIDataController(playerDB, grid);
+		pickUpCont = new PickUpItemController(playerDB);
+		moveCont = new MoveController(playerDB);
 	}
 	
 	@Test
-	public void testNoTwoPlayersOnOneSquare() {
+	public void testPlayerTrappedButNotLosing() {
+		
+	}
+	
+	@Test
+	public void testPlayerTrappedAndLosing() {
 		
 	}
 }

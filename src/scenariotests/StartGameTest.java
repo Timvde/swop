@@ -6,6 +6,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import controllers.NewGameController;
 
+/**
+ * Test if the game starts correctly, and all preconditions are respected.
+ * 
+ * To Test:
+ * - Minimum grid size: 10x10
+ * 
+ * @author tom
+ *
+ */
 public class StartGameTest {
 	
 	private static NewGameController	newGameCont;

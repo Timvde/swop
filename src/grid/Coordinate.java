@@ -1,7 +1,6 @@
 package grid;
 
 import java.util.Random;
-import notnullcheckweaver.NotNull;
 
 /**
  * A immutable Cartesian coordinate in a two dimensional plane. Each coordinate
@@ -66,7 +65,7 @@ public class Coordinate {
 	 * @return a new coordinate relative to this coordinate
 	 */
 	
-	public Coordinate getCoordinateInDirection(@NotNull Direction direction) {
+	public Coordinate getCoordinateInDirection(Direction direction) {
 		switch (direction) {
 			case NORTH:
 				return new Coordinate(x, y - 1);

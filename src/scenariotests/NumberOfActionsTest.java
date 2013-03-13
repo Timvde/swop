@@ -11,14 +11,16 @@ import controllers.MoveController;
 import controllers.PickUpItemController;
 
 /**
- * Test if the pick up action works correctly.
+ * Test if the number of actions mechanics work correctly.
  * 
  * To Test: 
- * - Player can carry maximum 6 items
+ * - Player enters a power failed square and a light grenade explodes.
+ * - Player starts on a square with a power failure.
+ * - Player stands on a square and a light grenade explodes.
  * 
  * @author Tom
  */
-public class PickUpTest {
+public class NumberOfActionsTest {
 	
 	private static GUIDataController	guiDataCont;
 	private static PickUpItemController	pickUpCont;
@@ -38,7 +40,17 @@ public class PickUpTest {
 	}
 	
 	@Test
-	public void testPlayerCanCarryMaximum6Items() {
+	public void testPlayerEntersPowerFailedSquareWithLightGrenadeExplosion() {
+		
+	}
+	
+	@Test
+	public void testPlayerStartsOnPowerFailedSquare() {
+		
+	}
+	
+	@Test
+	public void testPlayerSquareLightGrenade() {
 		
 	}
 }

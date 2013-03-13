@@ -107,6 +107,11 @@ public class LightGrenade extends Item implements ILightGrenade {
 		 */
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
 	}
+	
+	public void addToEffect(Effect effect) {
+		if (this.getState().equals(LightGrenadeState.ACTIVE))
+			effect.addLightGrenade();
+	}
 
 	/** 
 	 * TODO
