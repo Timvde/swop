@@ -1,11 +1,9 @@
 package player;
 
-import grid.Coordinate;
 import grid.Square;
 import item.LightGrenade;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -23,7 +21,8 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	public static final int NUMBER_OF_PLAYERS = 2;
 
 	@NotNull
-	private ArrayList<Player> playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
+	private ArrayList<Player> playerList = new ArrayList<Player>(
+			NUMBER_OF_PLAYERS);
 	private int currentPlayerIndex; // index in playerList
 
 	/**
@@ -31,7 +30,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * <code>createNewDB()</code> method to fill it initially with new
 	 * {@link Player}s.
 	 */
-	public PlayerDataBase(Map<Player, Coordinate> playerCoordinateMap) {
+	public PlayerDataBase() {
 		this.createNewDB();
 	}
 
@@ -55,9 +54,9 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	/**
 	 * Returns the player who is currently allowed to play.
 	 * 
-	 * @return the player who is currently allowed to play.
+	 * @return the {@link IPlayer} who is currently allowed to play.
 	 */
-	public Player getCurrentPlayer() {
+	public IPlayer getCurrentPlayer() {
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 
@@ -66,18 +65,20 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * notifies the database. A Player notifies the database to indicate he
 	 * wants to end his turn. This happens if <li>he has no actions left</li>
 	 * <li>he enters a {@link Square} with no power left and no active
-	 * {@link LightGrenade}</li> <li>if the user expl * A {@link PlayerDataBase}
-	 * stores PlayerDataBase.NUMBER_OF_PLAYERS {@link Player}s and appoints the
-	 * current player allowed to play. The {@link PlayerDataBase} will observe
-	 * his players. A Player notifies the database to indicate he wants to end
-	 * his turn. icitly asks to end the player's turn.</li> <br>
+	 * {@link LightGrenade}</li> <li>if the user explicitly asks to end the
+	 * player's turn.</li> <br>
+	 * 
+	 * A {@link PlayerDataBase} stores PlayerDataBase.NUMBER_OF_PLAYERS
+	 * {@link Player}s and appoints the current player allowed to play. The
+	 * {@link PlayerDataBase} will observe his players. A Player notifies the
+	 * database to indicate he wants to end his turn. 
 	 * 
 	 * The database will only switch players if the player asking to end his
 	 * turn is the current player ( <code>this.getCurrentPlayer</code>).
 	 * 
 	 */
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(Observable o, Object arg) {		
 		if (o instanceof Player) {
 			Player player = (Player) o;
 
@@ -92,7 +93,6 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			 */
 			if (player.equals(this.getCurrentPlayer())) {
 				this.endCurrentPlayerTurn();
-				//FIXME: hier weg? player.increaseAllowedNumberOfActions();
 			}
 		}
 	}
@@ -107,5 +107,4 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		else
 			this.currentPlayerIndex = 0;
 	}
-
 }

@@ -18,6 +18,6 @@ public interface IPlayerDataBase {
 	 * 
 	 * @return the player who is currently allowed to play.
 	 */
-	public Player getCurrentPlayer();
+	public IPlayer getCurrentPlayer();
 
 }

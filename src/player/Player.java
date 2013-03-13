@@ -8,7 +8,6 @@ import item.Item;
 
 import java.util.List;
 import java.util.Observable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import notnullcheckweaver.NotNull;
 
@@ -24,10 +23,6 @@ public class Player extends Observable implements IPlayer {
 	public static final int MAX_NUMBER_OF_ACTIONS_PER_TURN = 3;
 
 	@NotNull
-	private int id; // TODO: hebben we id wel nodig??
-	@NotNull
-	private static AtomicInteger nextID = new AtomicInteger();
-	@NotNull
 	private Coordinate targetPosition; // TODO waar zetten?
 	@NotNull
 	private Inventory inventory = new Inventory();
@@ -42,20 +37,17 @@ public class Player extends Observable implements IPlayer {
 	// FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
 	@Deprecated
 	public Player(@NotNull Coordinate targetPosition) {
-		this.id = nextID.incrementAndGet();
 		this.targetPosition = targetPosition;
 	}
 
 	/**
-	 * Creates a new Player object with a unique id.
+	 * Creates a new Player object, with an empty inventory and who
+	 * has not yet moved and has an allowed nb of actions of
+	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}
 	 */
 	public Player() {
-		this.id = nextID.incrementAndGet();
-	}
-
-	@Override
-	public int getID() {
-		return id;
+		this.hasMoved = false;
+		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 	}
 
 	@Override
@@ -72,13 +64,8 @@ public class Player extends Observable implements IPlayer {
 
 	/**
 	 * This method will increase the allowed number of actions left with
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN} .
-	 * 
-	 * FIXME: mss al direct aanroepen bij endTurn, i.p.v. aan te roepen als
-	 * appointed door PlayerDB ??
-	 * 
-	 * <> It is called when a Player is appointed the current Player by the
-	 * {@link PlayerDataBase}.
+	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. It is called when a Player calls
+	 * {@link #endTurn()} to reset his turn related fields.
 	 */
 	private void increaseAllowedNumberOfActions() {
 		this.allowedNumberOfActionsLeft = allowedNumberOfActionsLeft
@@ -104,13 +91,17 @@ public class Player extends Observable implements IPlayer {
 		}
 	}
 
-	/**
-	 * Return whether or not this player has already done a move action during
-	 * this turn.
-	 * 
-	 * @return whether or not this player has already done a move action during
-	 *         this turn.
-	 */
+	@Override
+	public int getAllowedNumberOfActions() {
+		return this.allowedNumberOfActionsLeft;
+	}
+	
+	@Override
+	public void skipNumberOfActions(int numberOfActionsToSkip) {
+		this.allowedNumberOfActionsLeft -= numberOfActionsToSkip;
+	}
+
+	@Override
 	public boolean hasMovedYet() {
 		return this.hasMoved;
 	}
@@ -135,16 +126,7 @@ public class Player extends Observable implements IPlayer {
 
 	/* #################### User methods #################### */
 
-	/**
-	 * This method ends the turn of this player. This player will lose the game
-	 * if this method is called before he did a move action, (i.e. if
-	 * <code>this.hasMovedYet()</code> is false when calling this method, this
-	 * player loses the game).
-	 * 
-	 * @throws IllegalStateException
-	 *             The end turn preconditions must be satisfied, i.e.
-	 *             {@link #isPreconditionEndTurnSatisfied()}
-	 */
+	@Override
 	public void endTurn() throws IllegalStateException {
 		if (!isPreconditionEndTurnSatisfied()) {
 			throw new IllegalStateException(
@@ -154,6 +136,7 @@ public class Player extends Observable implements IPlayer {
 		if (this.hasMovedYet()) {
 			// this player's turn will end; reset the turn-related properties
 			this.resetHasMoved();
+			this.allowedNumberOfActionsLeft = 0;
 			this.increaseAllowedNumberOfActions();
 
 			// notify the PlayerDataBase to ask to end this player's turn
@@ -162,30 +145,16 @@ public class Player extends Observable implements IPlayer {
 		} else {
 			// this player loses the game
 			// FIXME de player moet nu aan de game vragen om te verliezen ??
-			// dus een verwijzing naar Game ??
+			// dus een verwijzing naar Game ?? of observers
 		}
 	}
 
-	/**
-	 * Returns whether this player is allowed to perform an end turn action.
-	 * 
-	 * @return whether this player has performed less then
-	 *         {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn.
-	 */
+	@Override
 	public boolean isPreconditionEndTurnSatisfied() {
 		return this.allowedNumberOfActionsLeft > 0;
 	}
 
-	/**
-	 * This method moves the player one square in the specified
-	 * {@link Direction}.
-	 * 
-	 * @param direction
-	 *            the direction to move in
-	 * @throws IllegalStateException
-	 *             The move preconditions must be satisfied, i.e. this.
-	 *             {@link #isPreconditionMoveSatisfied()}
-	 */
+	@Override
 	public void moveInDirection(Direction direction)
 			throws IllegalStateException {
 		if (!isPreconditionMoveSatisfied()) {
@@ -199,19 +168,15 @@ public class Player extends Observable implements IPlayer {
 		this.decreaseAllowedNumberOfActions();
 	}
 
-	/**
-	 * Returns whether this player is allowed to perform a move action.
-	 * 
-	 * @return whether this player has performed less then
-	 *         {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn.
-	 */
+	@Override
 	public boolean isPreconditionMoveSatisfied() {
 		return this.allowedNumberOfActionsLeft > 0;
 	}
 
+	@Override
 	public void pickUpItem(Item item) {
 		Square playerSq = this.grid.getSquareOfPlayer(this);
-		playerSq.removeItem(item);
+		// playerSq.removeItem(item);
 	}
-	
+
 }

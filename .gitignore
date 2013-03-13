@@ -3,10 +3,6 @@
 
 bin/
 .settings/
-.vpprefdata/
-*.vpp.working*
-*.vpp.working~*
-
 .metadata/*
 
 # Package Files #
