@@ -1,6 +1,7 @@
 package game;
 
 import grid.Grid;
+import grid.GridBuilder;
 import gui.GUI;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class Game {
 		players.add(p2);
 		
 		System.out.println("Creating new game with grid width "+width+" and height "+height);
-		this.grid = new Grid.Builder(this, players).setGridWidth(width).setGridHeigth(height)
+		this.grid = new GridBuilder(this, players).setGridWidth(width).setGridHeigth(height)
 				.build();
 		
 		setGrid(this.grid);

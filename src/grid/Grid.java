@@ -19,8 +19,7 @@ public class Grid implements IGrid {
 	private Map<IPlayer, Coordinate>	players;
 	
 	/**
-	 * Create a new grid with a specified builder. This will automatically place
-	 * random wall on the board
+	 * Create a new grid with a specified grid and player map.
 	 * 
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
