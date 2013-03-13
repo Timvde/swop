@@ -1,21 +1,22 @@
-package tests;
+package unittests;
 
 import static org.junit.Assert.*;
 import item.Item;
 import item.LightGrenade;
 import grid.Coordinate;
 import grid.Square;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 
 
+@SuppressWarnings("javadoc")
 public class SquareTest {
 	
 	private static Square square;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
+	@Before
+	public static void setUp() {
 		square = new Square();
 	}
 	

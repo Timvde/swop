@@ -27,4 +27,13 @@ public interface IItem {
 	 * @return whether or not this item can be picked up by a {@link Player}.
 	 */
 	public boolean isCarriable();
+	
+	/**
+	 * This method instructs an Item to tell an Effect if it results in a
+	 * penalty for stepping on it.
+	 * 
+	 * @param effect
+	 *        The Effect which will be used to calculate the penalty
+	 */
+	public void addToEffect(Effect effect);
 }
