@@ -5,7 +5,7 @@ import game.Game;
 import grid.Grid;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -13,7 +13,7 @@ import controllers.PickUpItemController;
 /**
  * Test if the pick up action works correctly.
  * 
- * To Test: 
+ * Tests: 
  * - Player can carry maximum 6 items
  * 
  * @author Tom
@@ -24,7 +24,7 @@ public class PickUpTest {
 	private static PickUpItemController	pickUpCont;
 	private static MoveController		moveCont;
 	private static Grid					grid;
-	private static PlayerDatabase		playerDB;
+	private static PlayerDataBase		playerDB;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {

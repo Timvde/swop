@@ -1,17 +1,21 @@
 package controllers;
 
-import player.PlayerDatabase;
+import player.IPlayer;
+import player.PlayerDataBase;
 
 public class EndTurnController {
 	
-	private PlayerDatabase	playerDB;
+	private PlayerDataBase	playerDB;
 	
-	public EndTurnController(PlayerDatabase db) {
+	public EndTurnController(PlayerDataBase db) {
 		this.playerDB = db;
 	}
 	
 	public void endTurn() {
-		//TODO
+		IPlayer currentPlayer = playerDB.getCurrentPlayer();
+		
+		int actionsLeft = currentPlayer.getAllowedNumberOfActions();
+		currentPlayer.skipNumberOfActions(actionsLeft);
 	}
 	
 }
