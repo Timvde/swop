@@ -8,7 +8,7 @@ import player.Player;
  * unique ID. Some Items can be picked up by a {@link Player}.
  */
 public interface IItem {
-
+	
 	/**
 	 * Returns the unique ID of this item
 	 * 
@@ -17,10 +17,14 @@ public interface IItem {
 	public int getId();
 	
 	/**
-	 * TODO
+	 * use the this item on a specified square. The implementation of
+	 * use(Square) will be different for each subclass of item.
+	 * 
+	 * @param square
+	 *        the square on which the item was used.
 	 */
-	public void use();
-
+	public void use(Square square);
+	
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.
 	 * 

@@ -66,6 +66,8 @@ public class Coordinate {
 	 */
 	
 	public Coordinate getCoordinateInDirection(Direction direction) {
+		if (direction == null)
+			throw new IllegalArgumentException();
 		switch (direction) {
 			case NORTH:
 				return new Coordinate(x, y - 1);
@@ -85,7 +87,7 @@ public class Coordinate {
 				return new Coordinate(x - 1, y + 1);
 			default:
 				// this can never happen
-				throw new IllegalStateException();
+				throw new IllegalArgumentException();
 		}
 	}
 	
