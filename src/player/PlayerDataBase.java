@@ -101,7 +101,6 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * appoints a next current player (circular shift).
 	 */
 	private void endCurrentPlayerTurn() {
-		this.currentPlayerIndex++;
-		this.currentPlayerIndex = this.currentPlayerIndex % this.playerList.size();
+		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 	}
 }
