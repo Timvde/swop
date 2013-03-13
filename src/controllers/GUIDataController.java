@@ -40,7 +40,7 @@ public class GUIDataController {
 	 * Return a list of items in the inventory of the current player.
 	 */
 	public List<IItem> getCurrentPlayerInventoryItems() {
-		return getCurrentPlayer().getInventory().getItems();
+		return getCurrentPlayer().getInventoryContent();
 	}
 	
 	/**

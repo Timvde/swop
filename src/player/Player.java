@@ -69,7 +69,7 @@ public class Player extends Observable implements IPlayer {
 	}
 	
 	@Override
-	public List<IItem> getInventory() {
+	public List<IItem> getInventoryContent() {
 		return inventory.getItems();
 	}
 	

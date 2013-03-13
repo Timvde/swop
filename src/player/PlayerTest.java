@@ -21,7 +21,7 @@ public class PlayerTest {
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		//chk empty inventory
-		assertEquals(0, player.getInventory().size());
+		assertEquals(0, player.getInventoryContent().size());
 		Assert.assertNotNull(player.getTargetPosition());
 	}
 
