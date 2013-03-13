@@ -23,7 +23,7 @@ import controllers.UseItemController;
  */
 public class Game {
 	
-	private Grid			grid = null;
+	private Grid			grid;
 	private PlayerDatabase	playerDB;
 	private GUI				gui;
 	private GUIDataController guiDataCont;
@@ -46,7 +46,8 @@ public class Game {
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
 		this.guiDataCont = new GUIDataController(this.playerDB, this.grid);
 		
-		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, this.guiDataCont);
+		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
+				this.guiDataCont);
 		
 		java.awt.EventQueue.invokeLater(gui);
 	}
@@ -76,9 +77,8 @@ public class Game {
 		players.add(p1);
 		players.add(p2);
 		
-		System.out.println("Creating new game with grid width "+width+" and height "+height);
-		this.grid = new GridBuilder(this, players).setGridWidth(width).setGridHeigth(height)
-				.build();
+		System.out.println("Creating new game with grid width " + width + " and height " + height);
+		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
 		

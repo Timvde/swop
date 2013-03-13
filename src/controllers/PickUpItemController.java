@@ -12,7 +12,7 @@ public class PickUpItemController {
 	}
 	
 	public void pickUpItem(IItem item) {
-		// TODO
+		playerDB.getCurrentPlayer().pickUpItem(item);
 	}
 	
 }

@@ -1,6 +1,5 @@
 package grid;
 
-import game.Game;
 import grid.Wall.WallPart;
 import item.LightGrenade;
 import java.util.ArrayList;
@@ -30,12 +29,10 @@ public class GridBuilder {
 	/**
 	 * Create a new builder for the grid
 	 * 
-	 * @param game
-	 *        the game object in which the grid is situated
 	 * @param players
 	 *        the players who need to be placed on the board
 	 */
-	public GridBuilder(Game game, List<IPlayer> players) {
+	public GridBuilder(List<IPlayer> players) {
 		this.maximalLengthOfWall = 0.50;
 		this.maximumNumberOfWalls = 0.20;
 		this.width = 10;
@@ -338,5 +335,65 @@ public class GridBuilder {
 			return false;
 		else
 			return true;
+	}
+	
+	/* -------------------- GRID FOR TESTING --------------------- */
+	
+	/**
+	 * This function should ONLY be used by getPredefinedGrid(), to get a
+	 * deterministic grid we can use to test. This should not be used in
+	 * gameplay.
+	 */
+	private Grid build(int width, int height, List<Wall> walls, List<IPlayer> players) {
+		this.walls = new ArrayList<Wall>();
+		grid = new HashMap<Coordinate, ASquare>();
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++) {
+				Square sq = new Square();
+				grid.put(new Coordinate(i, j), sq);
+			}
+		if (players.size() == 2)
+			placePlayersOnBoard(players);
+		
+		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
+		
+		((Square) grid.get(new Coordinate(2, 7))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(6, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(7, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(8, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
+		
+		return new Grid(grid, playerMap);
+	}
+	
+	/**
+	 * This function returns a predefined grid which we can use to test. This
+	 * should not be used in gameplay.
+	 * 
+	 * <pre>
+	 *   ____________________
+	 *  | | | | | | | | | |2|
+	 *  | | | | | | | | | | |
+	 *  | | | | | | | |o| | |
+	 *  | | | | | | | | | | |
+	 *  | | | | | | | | | | |
+	 *  | | | | |x|x|x|x|x| |
+	 *  | | | | | | | | | | |
+	 *  | | |o| | | | | |o| |
+	 *  | | | | | |o|o|o|o| |
+	 *  |1| | | | | | | | | |
+	 * </pre>
+	 * 
+	 * @param players
+	 *        the players for this game
+	 * @return the new prediefined grid
+	 */
+	public Grid getPredefinedTestGrid(List<IPlayer> players) {
+		List<Wall> walls = new ArrayList<Wall>();
+		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
+		
+		return build(10, 10, walls, players);
 	}
 }

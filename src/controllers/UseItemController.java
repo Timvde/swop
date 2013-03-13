@@ -12,6 +12,6 @@ public class UseItemController {
 	}
 	
 	public void useItem(IItem item) {
-		// TODO
+		playerDB.getCurrentPlayer().useItem(item);
 	}
 }

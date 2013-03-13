@@ -36,7 +36,7 @@ public interface IPlayer {
 	 * 
 	 * @return the Inventory associated with this player.
 	 */
-	public List<IItem> getInventory();
+	public List<IItem> getInventoryContent();
 	
 	/* ############## ActionHistory related methods ############## */
 	
