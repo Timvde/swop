@@ -50,7 +50,7 @@ public class UseItemTest {
 	}
 	
 	@Test
-	public void testCanNotUseMultipleLightGrenadesOnOneSquare() {
+	public void testCanNotUseMultipleLightGrenadesOnOneSquare() { 
 		
 	}
 }
