@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 
-
 @SuppressWarnings("javadoc")
 public class SquareTest {
 	

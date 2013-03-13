@@ -7,6 +7,7 @@ import org.junit.Test;
 import player.IPlayer;
 import player.Player;
 
+@SuppressWarnings("javadoc")
 public class EffectTest {
 	
 	private IPlayer	player;
