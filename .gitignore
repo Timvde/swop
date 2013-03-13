@@ -14,3 +14,4 @@ bin/
 notnullcheckweaver-1.3/
 bin/
 .vpprefdata/*
+tmp/
