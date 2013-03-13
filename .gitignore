@@ -13,3 +13,4 @@ bin/
 # Folders
 notnullcheckweaver-1.3/
 bin/
+.vpprefdata/*
