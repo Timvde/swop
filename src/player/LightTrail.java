@@ -32,7 +32,7 @@ public class LightTrail {
 	/**
 	 * Update the lightTrail to a specified coordinate. This method will trim
 	 * the lightTrail if this appears to be necessary. When the method returns
-	 * the lightTrail will cover an square with the specified coordinate if the
+	 * the lightTrail will cover a square with the specified coordinate if the
 	 * previous length of the square was less than three, otherwise the
 	 * lightTrail will have shifted to cover the new Coordinate and the last
 	 * coordinate of the square will be cleared of this lightTrail. This method
