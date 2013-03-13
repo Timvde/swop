@@ -121,7 +121,7 @@ public class Grid implements IGrid {
 	
 	@Override
 	public Coordinate getPlayerCoordinate(IPlayer player) {
-		return this.players.get(player.getID());
+		return this.players.get(player);
 	}
 	
 	@Override
