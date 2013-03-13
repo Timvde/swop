@@ -1,16 +1,17 @@
 package unittests;
 
-import static org.junit.Assert.*;
-import java.util.ArrayList;
-import game.Game;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
+import grid.Wall.WallPart;
+import java.util.ArrayList;
 import org.junit.Test;
 import player.IPlayer;
 import player.Player;
-import grid.Wall.WallPart;
 
+@SuppressWarnings("javadoc")
 public class GridTest {
 	
 	@Test
