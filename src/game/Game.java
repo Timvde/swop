@@ -66,19 +66,26 @@ public class Game {
 	 * @param height
 	 */
 	public void newGame(int width, int height) {
-		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
+		ArrayList<Player> players = new ArrayList<Player>();
+		
 		
 		// TODO target positions in constructor:
-		IPlayer p1 = new Player(null);
-		IPlayer p2 = new Player(null);
+		Player p1 = new Player(null);
+		Player p2 = new Player(null);
 		
 		players.add(p1);
 		players.add(p2);
 		
+		ArrayList<IPlayer> iplayers = new ArrayList<IPlayer>(players);
+		playerDB.setPlayers(players);
+		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
+		this.grid = new GridBuilder(iplayers).setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
+		
+		p1.setGrid(grid);
+		p2.setGrid(grid);
 		
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);

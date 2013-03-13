@@ -43,10 +43,11 @@ public class Player extends Observable implements IPlayer {
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
 	
-	
 	/**
 	 * Create a new player with is specified target position
-	 * @param targetPosition the position which the player will try to reach
+	 * 
+	 * @param targetPosition
+	 *        the position which the player will try to reach
 	 */
 	// FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
 	public Player(@NotNull Coordinate targetPosition) {
@@ -205,15 +206,15 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public void pickUpItem(IItem item) {
 		Square currentSquare = (Square) this.grid.getSquareOfPlayer(this);
-		if (!currentSquare.hasItemWithID(item.getId()))
+		if (item == null || !currentSquare.hasItemWithID(item.getId()))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
 		// remove the item from the square
 		currentSquare.removeItem(item);
-		// add the item to the inventory 
+		// add the item to the inventory
 		inventory.addItem(item);
 		
-		//reduce the actions left
+		// reduce the actions left
 		skipNumberOfActions(1);
 	}
 	
@@ -221,11 +222,33 @@ public class Player extends Observable implements IPlayer {
 	public void useItem(IItem i) {
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
-		//TODO are there any other exceptions?
+		// TODO are there any other exceptions?
 		ASquare currentSquare = this.grid.getSquareOfPlayer(this);
 		inventory.removeItem(i);
 		i.use(currentSquare);
 		
 		this.skipNumberOfActions(1);
+	}
+	
+	/**
+	 * resets the player for a new game. The inventory and the lightTrail will
+	 * be reinitialized. The number of actions left is set to
+	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
+	 * return false.
+	 */
+	public void reset() {
+		inventory = new Inventory();
+		lightTrail = new LightTrail();
+		
+		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		hasMoved = false;
+	}
+
+	/**
+	 * sets the grid
+	 * @param grid the grid for this player
+	 */
+	public void setGrid(Grid grid) {
+		this.grid = grid;
 	}
 }
