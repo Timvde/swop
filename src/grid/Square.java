@@ -1,18 +1,28 @@
 package grid;
 
+import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import notnullcheckweaver.NotNull;
 import player.IPlayer;
 
+/**
+ * A Square represents a place on a grid, which a player can stand on, as long
+ * as it is not prevented by the square's internal state. Moving to another
+ * Square can have side effects.
+ */
 public class Square extends ASquare implements Observer {
 	
 	private List<IItem>	itemList	= new ArrayList<IItem>();
 	private IPlayer		player;
 	private int			lightTrail;
 	
+	/**
+	 * Default constructor.
+	 */
 	public Square() {
 		
 	}
@@ -27,22 +37,34 @@ public class Square extends ASquare implements Observer {
 		itemList.add(item);
 	}
 	
+	/**
+	 * Remove an item from the square
+	 * 
+	 * @param item
+	 *        The item to remove
+	 */
 	public void removeItem(IItem item) {
 		itemList.remove(item);
 	}
 	
 	/**
 	 * TODO
+	 * 
 	 * @return
 	 */
 	public boolean hasPowerFailure() {
 		return false;
 	}
 	
+	private List<IItem> getAllItems() {
+		// Encapsulation isn't required, as this is a private method.
+		return itemList;
+	}
+	
 	@Override
 	public List<IItem> getCarryableItems() {
 		List<IItem> result = new ArrayList<IItem>();
-		for (IItem item : itemList)
+		for (IItem item : getAllItems())
 			if (item.isCarriable())
 				result.add(item);
 		return result;
@@ -68,7 +90,7 @@ public class Square extends ASquare implements Observer {
 	
 	@Override
 	public IItem pickupItem(int ID) {
-		for (IItem itemOnSquare : this.itemList)
+		for (IItem itemOnSquare : this.getAllItems())
 			if (ID == itemOnSquare.getId())
 				return itemOnSquare;
 		// if not yet returned --> not on square
@@ -77,7 +99,7 @@ public class Square extends ASquare implements Observer {
 	
 	@Override
 	public boolean hasItemWithID(int ID) {
-		for (IItem itemOnSquare : this.itemList)
+		for (IItem itemOnSquare : this.getAllItems())
 			if (ID == itemOnSquare.getId())
 				return true;
 		return false;
@@ -93,10 +115,30 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
-	 * Set an IPlayer on this square.
+	 * Move an IPlayer on this square. This might cause a penalty to the player,
+	 * depending on the square's current power state and the items it contains.
 	 */
-	public void setPlayer(IPlayer player) {
+	public void setPlayer(@NotNull IPlayer player) {
 		this.player = player;
+		penalty(player);
+	}
+	
+	/**
+	 * This method will set up an Effect object with the right parameters and
+	 * execute it.
+	 * 
+	 * @param player
+	 *        The Player which will feel the consequences.
+	 */
+	private void penalty(IPlayer player) {
+		Effect effect = new Effect(player);
+		
+		if (hasPowerFailure())
+			effect.addPowerFailure();
+		for (IItem item : getAllItems())
+			item.addToEffect(effect);
+		
+		effect.execute();
 	}
 	
 	/**
