@@ -4,6 +4,7 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
+import grid.Square;
 import item.IItem;
 import java.util.List;
 import java.util.Observable;
@@ -19,6 +20,7 @@ import notnullcheckweaver.NotNull;
  */
 public class Player extends Observable implements IPlayer {
 	
+	/** the maximum number of actions a player can make during one turn */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN	= 3;
 	
 	private int						id;
@@ -202,8 +204,17 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		// Square playerSq = this.grid.getSquareOfPlayer(this); TODO implement
-		// playerSq.removeItem(item);
+		Square currentSquare = (Square) this.grid.getSquareOfPlayer(this);
+		if (!currentSquare.hasItemWithID(item.getId()))
+			throw new IllegalArgumentException("The item does not exist on the square");
+		
+		// remove the item from the square
+		currentSquare.removeItem(item);
+		// add the item to the inventory 
+		inventory.addItem(item);
+		
+		//reduce the actions left
+		skipNumberOfActions(1);
 	}
 	
 	@Override
@@ -211,7 +222,7 @@ public class Player extends Observable implements IPlayer {
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		//TODO are there any other exceptions?
-		ASquare currentSquare = grid.getSquareAt(grid.getPlayerCoordinate(this));
+		ASquare currentSquare = this.grid.getSquareOfPlayer(this);
 		inventory.removeItem(i);
 		i.use(currentSquare);
 		
