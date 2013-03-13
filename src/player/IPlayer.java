@@ -95,8 +95,12 @@ public interface IPlayer {
 	 * @throws IllegalStateException
 	 *         The move preconditions must be satisfied, i.e. this.
 	 *         {@link #isPreconditionMoveSatisfied()}
+	 * @throws IllegalArgumentException
+	 *         The specified direction must be a valid direction for this player
+	 *         to try to move in
 	 */
-	public void moveInDirection(Direction direction) throws IllegalStateException;
+	public void moveInDirection(Direction direction) throws IllegalStateException,
+			IllegalArgumentException;
 	
 	/**
 	 * Returns whether this player is allowed to perform a move action. A player
@@ -107,6 +111,18 @@ public interface IPlayer {
 	 * @return whether this player is allowed to perform a move action
 	 */
 	public boolean isPreconditionMoveSatisfied();
+	
+	/**
+	 * Returns whether a specified direction is a valid direction for this
+	 * player to try to move in. A player can try to move in every non-null
+	 * direction.
+	 * 
+	 * @param direction
+	 *        the given direction
+	 * @return whether a specified direction is a valid direction for this
+	 *         player to try to move in
+	 */
+	public boolean isValidDirection(Direction direction);
 	
 	/**
 	 * TODO

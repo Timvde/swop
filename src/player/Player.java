@@ -3,6 +3,7 @@ package player;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
+import grid.Square;
 import item.IItem;
 import java.util.List;
 import java.util.Observable;
@@ -39,6 +40,9 @@ public class Player extends Observable implements IPlayer {
 																							
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
+	
+	@NotNull
+	private Coordinate				currentCoord;
 	
 	// FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
 	@Deprecated
@@ -172,10 +176,31 @@ public class Player extends Observable implements IPlayer {
 		if (!isPreconditionMoveSatisfied()) {
 			throw new IllegalStateException("The move-preconditions are not satisfied.");
 		}
-		Coordinate updatedCoordinate = this.grid.movePlayerInDirection(this, direction);
-		this.lightTrail.updateLightTrail(updatedCoordinate);
+		if (!isValidDirection(direction)) {
+			throw new IllegalArgumentException("The specified direction is not valid.");
+		}
+		
+		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
+			throw new IllegalStateException("The player cannot move in given direction.");
+		}
+		
+		// remove this player form his current square
+		((Square) this.grid.getSquareAt(this.currentCoord)).removePlayer();
+		
+		// set new position
+		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
+		Square newSquare = (Square) this.grid.getSquareAt(this.currentCoord);
+		newSquare.setPlayer(this);
+		
+		// update fields
+		this.lightTrail.updateLightTrail(this.currentCoord);
 		this.setHasMoved();
 		this.decreaseAllowedNumberOfActions();
+	}
+	
+	@Override
+	public boolean isValidDirection(Direction direction) {
+		return direction != null;
 	}
 	
 	@Override

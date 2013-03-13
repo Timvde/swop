@@ -55,4 +55,12 @@ public abstract class ASquare {
 	 * @return whether or not this square holds the item with a given ID.
 	 */
 	public abstract boolean hasItemWithID(int ID);
+	
+	/**
+	 * Returns whether or not this ASquare holds currently a {@link Player}
+	 * 
+	 * @return Whether this square has a Player.
+	 */
+	public abstract boolean hasPlayer();
+
 }

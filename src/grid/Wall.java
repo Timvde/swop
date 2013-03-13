@@ -4,6 +4,7 @@ import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import player.IPlayer;
+import player.Player;
 
 /**
  * This class exists to enforce the wall restrictions as class invariants. - A
@@ -129,6 +130,14 @@ public class Wall {
 		
 		@Override
 		public boolean hasItemWithID(int ID) {
+			return false;
+		}
+		
+		/**
+		 * Always returns false; A wall cannot hold a {@link Player}.
+		 */
+		@Override
+		public boolean hasPlayer() {
 			return false;
 		}
 	}
