@@ -1,15 +1,21 @@
 package item;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
 import com.sun.istack.internal.NotNull;
 
+/**
+ * an abstract implementation of the item interface. This class offers some 
+ * basic functionality for most Items (e.g. ID). 
+ * @author Bavo Mees
+ */
 public abstract class Item implements IItem {
-	
+
 	@NotNull
-	private int						id;
+	private int id;
 	@NotNull
-	private static AtomicInteger	nextID	= new AtomicInteger();
-	
+	private static AtomicInteger nextID = new AtomicInteger();
+
 	public int getId() {
 		return this.id;
 	}

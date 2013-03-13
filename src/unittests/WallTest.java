@@ -1,13 +1,15 @@
 package unittests;
 
-import static org.junit.Assert.*;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import grid.Coordinate;
 import grid.Wall;
 import grid.WallPart;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+@SuppressWarnings("javadoc")
 public class WallTest {
 	
 	private static Coordinate	start;

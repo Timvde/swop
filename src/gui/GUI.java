@@ -4,7 +4,7 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
-import grid.Wall;
+import grid.WallPart;
 import item.IItem;
 import item.Item;
 import item.LightGrenade;
@@ -34,7 +34,7 @@ import controllers.UseItemController;
 public class GUI implements Runnable {
 	
 	private AGUI					gui;
-	private Grid					grid = null;
+	private Grid					grid				= null;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -132,9 +132,10 @@ public class GUI implements Runnable {
 					graphics.drawString("items on square:", 10, 236);
 					graphics.drawString("items in inventory:", 10, 364);
 					graphics.drawString("CURRENT PLAYER:", 550, 19);
-					graphics.drawString("1", 666, 19);
+					graphics.drawString(guiDataController.getCurrentPlayer().getID() + "", 666, 19);
 					graphics.drawString("ACTIONS LEFT:", 550, 32);
-					graphics.drawString("3", 646, 32);
+					graphics.drawString(guiDataController.getCurrentPlayer()
+							.getAllowedNumberOfActions() + "", 646, 32);
 					
 					// Adjust the grid dimensions and GUI size:
 					gridHeight = guiDataController.getGridHeight();
@@ -192,7 +193,7 @@ public class GUI implements Runnable {
 						}
 						
 						// Draw wall if necessary
-						if (square.getClass() == Wall.WallPart.class) {
+						if (square.getClass() == WallPart.class) {
 							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}

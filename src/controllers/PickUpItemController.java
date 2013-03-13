@@ -1,13 +1,13 @@
 package controllers;
 
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 import item.IItem;
 
 public class PickUpItemController {
 	
-	private PlayerDatabase	playerDB;
+	private PlayerDataBase	playerDB;
 	
-	public PickUpItemController(PlayerDatabase db) {
+	public PickUpItemController(PlayerDataBase db) {
 		this.playerDB = db;
 	}
 	
