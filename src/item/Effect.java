@@ -1,7 +1,6 @@
 package item;
 
 import player.IPlayer;
-import player.Player;
 
 /**
  * A class to calculate the consequences of a Player entering a Square, which
