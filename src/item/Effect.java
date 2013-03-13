@@ -44,11 +44,11 @@ public class Effect {
 		if (!hasLightGrenade) {
 			if (hasPowerFailure)
 				player.endTurn();
-			return;
 		}
-		
-		// The square the player stepped on has a light grenade and should
-		// always cause a decrease of at least three actions at this point.
-		player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
+		else {
+			// The square the player stepped on has a light grenade and should
+			// always cause a decrease of at least three actions at this point.
+			player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
+		}
 	}
 }
