@@ -93,16 +93,10 @@ public class Wall {
 	}
 	
 	/**
-<<<<<<< HEAD
-	 * Get a WallPart. This will always be the same instance.
-	 * 
-	 * @return A wall part
-=======
 	 * Returns a WallPart. As all WallParts are actually the same, this will be
 	 * a reference to the same object every time.
 	 * 
 	 * @return A WallPart
->>>>>>> master
 	 */
 	public WallPart getWallPart() {
 		if (wallPart == null)
@@ -112,10 +106,6 @@ public class Wall {
 	
 	/**
 	 * A class that represents a part of a wall.
-<<<<<<< HEAD
-	 * 
-=======
->>>>>>> master
 	 */
 	public class WallPart extends ASquare {
 		
