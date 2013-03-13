@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import grid.Coordinate;
 import grid.Wall;
-import grid.Wall.WallPart;
+import grid.WallPart;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

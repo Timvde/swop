@@ -103,37 +103,4 @@ public class Wall {
 			wallPart = new WallPart();
 		return wallPart;
 	}
-	
-	/**
-	 * A class that represents a part of a wall.
-	 */
-	public class WallPart extends ASquare {
-		
-		private WallPart() {}
-		
-		@Override
-		public List<IItem> getCarryableItems() {
-			return new ArrayList<IItem>();
-		}
-		
-		@Override
-		public IPlayer getPlayer() {
-			return null;
-		}
-		
-		@Override
-		public boolean hasLightTrail() {
-			return false;
-		}
-		
-		@Override
-		public IItem pickupItem(int ID) throws IllegalArgumentException {
-			throw new IllegalArgumentException("Walls do not contain items");
-		}
-		
-		@Override
-		public boolean hasItemWithID(int ID) {
-			return false;
-		}
-	}
 }

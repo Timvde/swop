@@ -1,7 +1,5 @@
 package grid;
 
-import game.Game;
-import grid.Wall.WallPart;
 import item.IItem;
 import item.LightGrenade;
 import java.util.ArrayList;
