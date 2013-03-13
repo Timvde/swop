@@ -22,7 +22,7 @@ public class GridTest {
 		IPlayer p2 = new Player(new Coordinate(0,9));
 		players.add(p1);
 		players.add(p2);
-		Grid grid = new Grid.Builder(game, players).build();
+		Grid grid = new Grid.Builder(players).build();
 		int numberOfWalls = 2;
 		for (ASquare sq : grid.getGrid().values()) 
 			if(sq.getClass() == WallPart.class)

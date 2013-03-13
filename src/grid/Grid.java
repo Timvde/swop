@@ -61,6 +61,62 @@ public class Grid implements IGrid {
 	}
 	
 	/**
+	 * This function should ONLY be used by getPredefinedGrid(), to get a
+	 * deterministic grid we can use to test. This should not be used in
+	 * gameplay.
+	 */
+	private Grid(int width, int height, List<Wall> walls, List<IPlayer> players) {
+		this.width = width;
+		this.height = height;
+		this.walls = walls;
+		grid = new HashMap<Coordinate, ASquare>();
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++) {
+				Square sq = new Square();
+				grid.put(new Coordinate(i, j), sq);
+			}
+		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
+		if (players.size() == 2)
+			placePlayersOnBoard(players);
+		
+		((Square) grid.get(new Coordinate(2, 7))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(6, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(7, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(8, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
+	}
+	
+	/**
+	 * This function returns a predefined grid which we can use to test. This
+	 * should not be used in gameplay.
+	 * 
+	 * <pre>
+	 *   ____________________
+	 *  | | | | | | | | | |2|
+	 *  | | | | | | | | | | |
+	 *  | | | | | | | |o| | |
+	 *  | | | | | | | | | | |
+	 *  | | | | | | | | | | |
+	 *  | | | | |x|x|x|x|x| |
+	 *  | | | | | | | | | | |
+	 *  | | |o| | | | | |o| |
+	 *  | | | | | |o|o|o|o| |
+	 *  |1| | | | | | | | | |
+	 * </pre>
+	 * 
+	 * @return
+	 */
+	public static Grid getPredefinedTestGrid(List<IPlayer> players) {
+		List<Wall> walls = new ArrayList<Wall>();
+		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
+		
+		Grid grid = new Grid(10, 10, walls, players);
+		return grid;
+	}
+	
+	/**
 	 * TODO
 	 * 
 	 * @param p
@@ -342,15 +398,13 @@ public class Grid implements IGrid {
 		private double			maximumNumberOfWalls;
 		private int				width;
 		private int				height;
-		private Game			game;
 		
-		public Builder(Game game, List<IPlayer> players) {
+		public Builder(List<IPlayer> players) {
 			this.minimalLengthOfWall = 2;
 			this.maximalLengthOfWall = 0.50;
 			this.maximumNumberOfWalls = 0.20;
 			this.width = 10;
 			this.height = 10;
-			this.game = game;
 			this.players = players;
 		}
 		
