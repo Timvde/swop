@@ -4,6 +4,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.sun.istack.internal.NotNull;
 
+/**
+ * an abstract implementation of the item interface. This class offers some 
+ * basic functionality for most Items (e.g. ID). 
+ * @author Bavo Mees
+ */
 public abstract class Item implements IItem{
 
 	@NotNull

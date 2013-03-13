@@ -1,10 +1,8 @@
 package player;
 
-import java.util.List;
 import grid.Coordinate;
 import grid.Direction;
 import item.IItem;
-import item.Item;
 
 /**
  * A Player is the main actor of the game. It can move round, pick up objects

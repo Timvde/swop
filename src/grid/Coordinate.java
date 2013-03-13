@@ -86,7 +86,7 @@ public class Coordinate {
 				return new Coordinate(x - 1, y + 1);
 			default:
 				// this can never happen
-				throw new IllegalStateException();
+				throw new IllegalArgumentException();
 		}
 	}
 	
