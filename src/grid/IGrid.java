@@ -5,19 +5,20 @@ import java.util.List;
 import java.util.Set;
 import player.IPlayer;
 
-
 public interface IGrid {
 	
 	/**
 	 * TODO
+	 * 
 	 * @param p
 	 * @param d
-	 * @return 
+	 * @return
 	 */
 	public Coordinate movePlayerInDirection(IPlayer p, Direction d);
 	
 	/**
 	 * TODO
+	 * 
 	 * @param p
 	 * @return
 	 */
@@ -57,10 +58,10 @@ public interface IGrid {
 	
 	/**
 	 * Return the coordinate of the player with the given id.
+	 * 
 	 * @param playerId
-	 * 			The id of the player we need the coordinate from.
-	 * @return
-	 * 			The coordinate as a Coordinate object of the given player.
+	 *        The id of the player we need the coordinate from.
+	 * @return The coordinate as a Coordinate object of the given player.
 	 */
 	public Coordinate getPlayerCoordinate(IPlayer player);
 	
@@ -68,9 +69,8 @@ public interface IGrid {
 	 * Return the square of the grid that has a specific coordinate.
 	 * 
 	 * @param coordinate
-	 * 			The coordinate of the square.
-	 * @return
-	 * 			The square at that coordinate.
+	 *        The coordinate of the square.
+	 * @return The square at that coordinate.
 	 */
 	public ASquare getSquareAt(Coordinate coordinate);
 	

@@ -2,29 +2,28 @@ package player;
 
 import grid.Square;
 import item.LightGrenade;
-
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
 import com.sun.istack.internal.NotNull;
 
 /**
- * A class to store PlayerDataBase.NUMBER_OF_PLAYERS {@link Player}s and to
- * appoint the current player allowed to play. The {@link PlayerDataBase} will
- * observe his players. A Player notifies the database (by calling
- * <code>notifyObsrvers</code>) to indicate he wants to end his turn.
+ * A class to store {@link PlayerDataBase#NUMBER_OF_PLAYERS}{@link Player}s and
+ * to appoint the current player allowed to play. The {@link PlayerDataBase}
+ * will observe his players. A Player notifies the database (by calling
+ * <code>notifyObservers</code>) to indicate he wants to end his turn.
  * 
  */
 public class PlayerDataBase implements Observer, IPlayerDataBase {
-
-	public static final int NUMBER_OF_PLAYERS = 2;
-
+	
+	public static final int		NUMBER_OF_PLAYERS	= 2;
+	
 	@NotNull
-	private ArrayList<Player> playerList = new ArrayList<Player>(
-			NUMBER_OF_PLAYERS);
-	private int currentPlayerIndex; // index in playerList
-
+	private ArrayList<Player>	playerList			= new ArrayList<Player>(NUMBER_OF_PLAYERS);
+	private int					currentPlayerIndex;											// index
+																								// in
+																								// playerList
+																								
 	/**
 	 * Creates a new PlayerManager-object and calls the
 	 * <code>createNewDB()</code> method to fill it initially with new
@@ -33,7 +32,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	public PlayerDataBase() {
 		this.createNewDB();
 	}
-
+	
 	/**
 	 * This method first clears the current database and then re-fills the
 	 * database with PlayerDataBase.NUMBER_OF_PLAYERS newly created
@@ -50,7 +49,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		}
 		this.currentPlayerIndex = 0;
 	}
-
+	
 	/**
 	 * Returns the player who is currently allowed to play.
 	 * 
@@ -59,7 +58,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	public IPlayer getCurrentPlayer() {
 		return this.playerList.get(this.currentPlayerIndex);
 	}
-
+	
 	/**
 	 * This method is called whenever an observed object (i.e. a {@link Player})
 	 * notifies the database. A Player notifies the database to indicate he
@@ -71,17 +70,17 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * A {@link PlayerDataBase} stores PlayerDataBase.NUMBER_OF_PLAYERS
 	 * {@link Player}s and appoints the current player allowed to play. The
 	 * {@link PlayerDataBase} will observe his players. A Player notifies the
-	 * database to indicate he wants to end his turn. 
+	 * database to indicate he wants to end his turn.
 	 * 
 	 * The database will only switch players if the player asking to end his
 	 * turn is the current player ( <code>this.getCurrentPlayer</code>).
 	 * 
 	 */
 	@Override
-	public void update(Observable o, Object arg) {		
+	public void update(Observable o, Object arg) {
 		if (o instanceof Player) {
 			Player player = (Player) o;
-
+			
 			/*
 			 * If a player for example enters a square with no power left and no
 			 * active lightgrenade, he will ask the database to switch players.
@@ -96,15 +95,13 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			}
 		}
 	}
-
+	
 	/**
 	 * Ends the turn of the current player (this.getCurrentPlayer()) and
 	 * appoints a next current player (circular shift).
 	 */
 	private void endCurrentPlayerTurn() {
-		if (this.currentPlayerIndex < this.playerList.size())
-			this.currentPlayerIndex++;
-		else
-			this.currentPlayerIndex = 0;
+		this.currentPlayerIndex++;
+		this.currentPlayerIndex = this.currentPlayerIndex % this.playerList.size();
 	}
 }

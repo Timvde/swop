@@ -57,8 +57,6 @@ public class PlayerDBTest {
 			IPlayer curPlayer = (Player) playerDB.getCurrentPlayer();
 			result.add(curPlayer);
 
-			// curPlayer.endTurn(); //requires hasMoved() TODO
-
 			// simulate a notifyObserves from curPlayer to indicate he wants to
 			// end his turn
 			playerDB.update((Player) curPlayer, null);
