@@ -1,17 +1,19 @@
 package game;
 
+import grid.Grid;
+import gui.GUI;
+
 import java.util.ArrayList;
+
+import player.IPlayer;
+import player.Player;
+import player.PlayerDatabase;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.NewGameController;
 import controllers.PickUpItemController;
 import controllers.UseItemController;
-import grid.Grid;
-import gui.GUI;
-import player.IPlayer;
-import player.Player;
-import player.PlayerDatabase;
 
 /**
  * TODO

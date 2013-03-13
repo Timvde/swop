@@ -1,8 +1,9 @@
 *.class
 .classpath
 
+bin/
 .settings/
-.vpprefdata/
+.metadata/*
 
 # Package Files #
 *.jar
@@ -12,3 +13,5 @@
 # Folders
 notnullcheckweaver-1.3/
 bin/
+.vpprefdata/*
+tmp/
