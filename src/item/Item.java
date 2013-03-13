@@ -9,7 +9,7 @@ import com.sun.istack.internal.NotNull;
  * basic functionality for most Items (e.g. ID). 
  * @author Bavo Mees
  */
-public abstract class Item implements IItem{
+public abstract class Item implements IItem {
 
 	@NotNull
 	private int id;

@@ -3,9 +3,7 @@ package game;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
-
 import java.util.ArrayList;
-
 import player.IPlayer;
 import player.Player;
 import player.PlayerDatabase;
@@ -23,10 +21,10 @@ import controllers.UseItemController;
  */
 public class Game {
 	
-	private Grid			grid;
-	private PlayerDatabase	playerDB;
-	private GUI				gui;
-	private GUIDataController guiDataCont;
+	private Grid				grid;
+	private PlayerDatabase		playerDB;
+	private GUI					gui;
+	private GUIDataController	guiDataCont;
 	
 	public static void main(String[] args) {
 		Game game = new Game();

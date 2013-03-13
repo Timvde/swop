@@ -22,11 +22,11 @@ public class Inventory implements IInventory {
 	 * @param item
 	 *        the item to be added to the inventory
 	 * @throws IllegalArgumentException
-	 *         when an item {@link #canAddItem(Item) cannot} be added to this
+	 *         when an item {@link #canAddItem(IItem) cannot} be added to this
 	 *         inventory
 	 */
 	public void addItem(IItem item) throws IllegalArgumentException {
-		if (contents.size() >= this.getMaxNumberOfItems())
+		if (!canAddItem(item))
 			throw new IllegalArgumentException(
 					"The specified item could not be added to this inventory");
 		
@@ -43,7 +43,7 @@ public class Inventory implements IInventory {
 	 *        the item to test
 	 * @return true if the item can be added, else false
 	 */
-	public boolean canAddItem(Item item) {
+	public boolean canAddItem(IItem item) {
 		if (contents.size() >= this.getMaxNumberOfItems())
 			return false;
 		else if (item == null)
@@ -60,7 +60,7 @@ public class Inventory implements IInventory {
 	
 	@Override
 	public List<IItem> getItems() {
-		return contents;
+		return new ArrayList<IItem>(contents);
 	}
 	
 	@Override

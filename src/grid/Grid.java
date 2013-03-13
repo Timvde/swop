@@ -29,7 +29,7 @@ public class Grid implements IGrid {
 	 * 
 	 * 
 	 */
-	public Grid(Map<Coordinate, ASquare> grid, Map<IPlayer, Coordinate> players) {
+	Grid(Map<Coordinate, ASquare> grid, Map<IPlayer, Coordinate> players) {
 		if (grid == null || players == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		
