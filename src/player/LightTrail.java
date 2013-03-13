@@ -32,7 +32,11 @@ public class LightTrail {
 	/**
 	 * Update the lightTrail to a specified coordinate. This method will trim
 	 * the lightTrail if this appears to be necessary. When the method returns
+<<<<<<< HEAD
 	 * the lightTrail will cover a square with the specified coordinate if the
+=======
+	 * the lightTrail will cover an square with the specified coordinate if the
+>>>>>>> origin/master
 	 * previous length of the square was less than three, otherwise the
 	 * lightTrail will have shifted to cover the new Coordinate and the last
 	 * coordinate of the square will be cleared of this lightTrail. This method
@@ -68,11 +72,17 @@ public class LightTrail {
 	 *         lightTrail
 	 */
 	public boolean isValidNewCoordinate(Coordinate coordinate) {
+		// null cannot be added to the list
+		if (coordinate == null)
+			return false;
+		// if the lightTrail is empty, any coordinate is valid
+		if (lightTrail.isEmpty())
+			return true;
 		// test whether the lightTrail already contains the coordinate
-		if (lightTrail.contains(coordinate))
+		else if (lightTrail.contains(coordinate))
 			return false;
 		// test whether the coordinate is a neighbor of the first coordinate
-		else if (lightTrail.getFirst().isNeighbor(coordinate))
+		else if (!lightTrail.getFirst().isNeighbor(coordinate))
 			return false;
 		else
 			return true;

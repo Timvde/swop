@@ -3,11 +3,11 @@ package player;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
-import grid.Square;
-import item.Item;
+import item.IItem;
 
 import java.util.List;
 import java.util.Observable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import notnullcheckweaver.NotNull;
 
@@ -21,6 +21,10 @@ import notnullcheckweaver.NotNull;
 public class Player extends Observable implements IPlayer {
 
 	public static final int MAX_NUMBER_OF_ACTIONS_PER_TURN = 3;
+
+	private int id;
+
+	private static AtomicInteger nextID = new AtomicInteger();
 
 	@NotNull
 	private Coordinate targetPosition; // TODO waar zetten?
@@ -38,16 +42,23 @@ public class Player extends Observable implements IPlayer {
 	@Deprecated
 	public Player(@NotNull Coordinate targetPosition) {
 		this.targetPosition = targetPosition;
+		this.id = nextID.incrementAndGet();
 	}
 
 	/**
-	 * Creates a new Player object, with an empty inventory and who
-	 * has not yet moved and has an allowed nb of actions of
+	 * Creates a new Player object, with an empty inventory and who has not yet
+	 * moved and has an allowed nb of actions of
 	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}
 	 */
 	public Player() {
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		this.id = nextID.incrementAndGet();
+	}
+
+	@Override
+	public int getID() {
+		return id;
 	}
 
 	@Override
@@ -56,7 +67,7 @@ public class Player extends Observable implements IPlayer {
 	}
 
 	@Override
-	public List<Item> getInventory() {
+	public List<IItem> getInventory() {
 		return inventory.getItems();
 	}
 
@@ -95,7 +106,7 @@ public class Player extends Observable implements IPlayer {
 	public int getAllowedNumberOfActions() {
 		return this.allowedNumberOfActionsLeft;
 	}
-	
+
 	@Override
 	public void skipNumberOfActions(int numberOfActionsToSkip) {
 		this.allowedNumberOfActionsLeft -= numberOfActionsToSkip;
@@ -174,9 +185,14 @@ public class Player extends Observable implements IPlayer {
 	}
 
 	@Override
-	public void pickUpItem(Item item) {
-		Square playerSq = this.grid.getSquareOfPlayer(this);
+	public void pickUpItem(IItem item) {
+		// Square playerSq = this.grid.getSquareOfPlayer(this);
 		// playerSq.removeItem(item);
 	}
 
+	@Override
+	public void useItem(IItem i) {
+		// TODO Auto-generated method stub
+
+	}
 }

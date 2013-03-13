@@ -15,6 +15,11 @@ public interface IItem {
 	 * @return The unique ID of this item
 	 */
 	public int getId();
+	
+	/**
+	 * TODO
+	 */
+	public void use();
 
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.

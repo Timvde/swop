@@ -1,11 +1,15 @@
 package grid;
 
-import java.util.ArrayList;
 import java.util.Random;
 import notnullcheckweaver.NotNull;
 
 /**
- * an immutable coordinate class
+ * A immutable Cartesian coordinate in a two dimensional plane. Each coordinate
+ * is represented by an X- and Y-coordinate. {@code Position.ORIGIN} represents
+ * a position in the upper left corner of the screen. If {@code x} represents an
+ * {@code Integer} then {@code new Coordinate(x, 0)} is a coordinate at the top
+ * of the screen. Similarly, if {@code y} represents an {@code Integer} then
+ * {@code new Coordinate(0, y)} is a coordinate on the left of the screen.
  * 
  * @author Bavo Mees
  */
@@ -116,6 +120,17 @@ public class Coordinate {
 		return true;
 	}
 	
+	/**
+	 * returns a new pseudorandom coordinate uniformly distributed between
+	 * {@code new Coordinate(0,0)} (included) and {@code new Coordinate(x, y)}
+	 * (excluded) within specified dimensions. The equality of the distribution
+	 * is guaranteed by the the randomness of the {@link Random#nextInt(int n)
+	 * nextInt(int)} mehtod.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public static Coordinate random(int x, int y) {
 		return new Coordinate(new Random().nextInt(x), new Random().nextInt(y));
 	}
@@ -137,19 +152,22 @@ public class Coordinate {
 		}
 	}
 	
-	
 	/**
-	 * returns whether a specified coordinate is a neighbor of this coordinate. More formally a coordinate is 
-	 * a neighbor of an other coordinate if and only if
+	 * returns whether a specified coordinate is a neighbor of this coordinate.
+	 * More formally a coordinate is a neighbor of an other coordinate if and
+	 * only if
+	 * 
 	 * <pre>
-	 * {@code 
-	 * Math.abs(coord1.getX() - coord2.getX()) <= 1 
-	 * 		&& Math.abs(coord1.getY() - coord2.getY()) <= 1
+	 * {@code
+	 * Math.abs(coord1.getX() - coord2.getX()) <= 1
+	 * && Math.abs(coord1.getY() - coord2.getY()) <= 1
 	 * }
-	 * </pre> 
+	 * </pre>
+	 * 
 	 * @param coordinate
-	 * 		the coordinate to test
-	 * @return True if the specified coordinate is a neighbor of this coordinate, otherwise false
+	 *        the coordinate to test
+	 * @return True if the specified coordinate is a neighbor of this
+	 *         coordinate, otherwise false
 	 */
 	public boolean isNeighbor(Coordinate coordinate) {
 		for (Direction direction : Direction.values())

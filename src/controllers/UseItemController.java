@@ -1,15 +1,17 @@
 package controllers;
 
-import java.util.List;
+import player.PlayerDatabase;
+import item.IItem;
 
 public class UseItemController {
 	
-	public List<Integer> getInventoryList() {
-		return null;
+	private PlayerDatabase	playerDB;
+	
+	public UseItemController(PlayerDatabase db) {
+		this.playerDB = db;
 	}
 	
-	public void use(int id) {
-		
+	public void useItem(IItem item) {
+		// TODO
 	}
-	
 }

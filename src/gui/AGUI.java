@@ -8,11 +8,11 @@ import java.awt.MediaTracker;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public abstract class AGUI {
 	
@@ -51,6 +51,10 @@ public abstract class AGUI {
 		return this.panel;
 	}
 	
+	public JFrame getFrame() {
+		return this.frame;
+	}
+	
 	public abstract void paint(Graphics2D graphics);
 	
 	public void handleMouseClick(int x, int y, boolean doubleClick) {
@@ -70,6 +74,7 @@ public abstract class AGUI {
 		return b;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public final List createList(int x, int y, int width, int height, Runnable clickHandler) {
 		JList list = new JList();
 		list.setLocation(x, y);
@@ -79,6 +84,15 @@ public abstract class AGUI {
 		l.setClickHandler(clickHandler);
 		
 		return l;
+	}
+	
+	public final TextField createTextField(int x, int y, int width, int height) {
+		JTextField textfield = new JTextField();
+		textfield.setLocation(x, y);
+		textfield.setSize(width, height);
+		panel.add(textfield);
+		TextField t = new TextField(textfield);
+		return t;
 	}
 	
 	public final Image loadImage(String url, int width, int height) {

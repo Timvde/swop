@@ -1,9 +1,8 @@
-package tests;
+package unittests;
 
 import static org.junit.Assert.*;
 import grid.Coordinate;
 import grid.Direction;
-import notnullcheckweaver.NotNullCheckException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class CoordinateTest {
 		assertEquals(-5, coord.getY());
 	}
 	
-	@Test (expected = NotNullCheckException.class)
+	@Test (expected = IllegalStateException.class)
 	public void testGetCoordinateInDirection_nullArgument() {
 		Coordinate.ORIGIN.getCoordinateInDirection(null);
 	}

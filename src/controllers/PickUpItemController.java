@@ -1,16 +1,18 @@
 package controllers;
 
-import java.util.List;
+import player.PlayerDatabase;
+import item.IItem;
 
 public class PickUpItemController {
 	
-	public void pickup(int id) {
-		
+	private PlayerDatabase	playerDB;
+	
+	public PickUpItemController(PlayerDatabase db) {
+		this.playerDB = db;
 	}
 	
-	public List<Integer> getItemList() {
-		return null;
-		
+	public void pickUpItem(IItem item) {
+		// TODO
 	}
 	
 }

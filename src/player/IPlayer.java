@@ -2,7 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Direction;
-import item.Item;
+import item.IItem;
 
 import java.util.List;
 
@@ -19,6 +19,13 @@ import java.util.List;
 public interface IPlayer {
 
 	/**
+	 * Returns the unique ID-number associated with this player.
+	 * 
+	 * @return the unique ID-number associated with this player.
+	 */
+	public int getID(); //TODO gaan we dit nog gebruiken??
+
+	/**
 	 * Returns the coordinate this player has to reach to win the game.
 	 * 
 	 * @return the coordinate this player has to reach to win the game.
@@ -26,11 +33,11 @@ public interface IPlayer {
 	public Coordinate getTargetPosition();
 
 	/**
-	 * Returns the Inventory-content associated with this player.
+	 * Returns the Inventory associated with this player.
 	 * 
-	 * @return the Inventory-content associated with this player.
+	 * @return the Inventory associated with this player.
 	 */
-	public List<Item> getInventory();
+	public List<IItem> getInventory();
 
 	/* ############## ActionHistory related methods ############## */
 
@@ -47,7 +54,7 @@ public interface IPlayer {
 	 * @return The number of actions this player will skip
 	 */
 	public void skipNumberOfActions(int numberOfActionsToSkip);
-	
+
 	/**
 	 * Return whether or not this player has already done a move action during
 	 * this turn.
@@ -107,5 +114,12 @@ public interface IPlayer {
 	 * 
 	 * @param item
 	 */
-	public void pickUpItem(Item item);
+	public void pickUpItem(IItem item);
+
+	/**
+	 * TODO
+	 * 
+	 * @param i
+	 */
+	public void useItem(IItem i);
 }
