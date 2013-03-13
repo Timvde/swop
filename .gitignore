@@ -9,10 +9,7 @@ bin/
 *.jar
 *.war
 *.ear
-<<<<<<< HEAD
-=======
 
 # Folders
 notnullcheckweaver-1.3/
 bin/
->>>>>>> origin/master
