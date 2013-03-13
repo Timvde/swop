@@ -78,8 +78,8 @@ public interface IPlayer {
 	
 	/**
 	 * Returns whether this player is allowed to perform an end turn action. A
-	 * player is allowed to perform an endturn action if he has performed less
-	 * then {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
+	 * player is allowed to perform an end turn action if he has performed less
+	 * then {@link Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
 	 * {@link #getAllowedNumberOfActions()} > 0.
 	 * 
 	 * @return whether this player is allowed to perform an end turn action.

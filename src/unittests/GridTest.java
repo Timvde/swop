@@ -1,16 +1,18 @@
 package unittests;
 
-import static org.junit.Assert.*;
-import java.util.ArrayList;
-import game.Game;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
+import grid.GridBuilder;
+import grid.Wall.WallPart;
+import java.util.ArrayList;
 import org.junit.Test;
 import player.IPlayer;
 import player.Player;
-import grid.Wall.WallPart;
 
+@SuppressWarnings("javadoc")
 public class GridTest {
 	
 	@Test
@@ -20,7 +22,7 @@ public class GridTest {
 		IPlayer p2 = new Player(new Coordinate(0, 9));
 		players.add(p1);
 		players.add(p2);
-		Grid grid = new Grid.Builder(players).build();
+		Grid grid = new GridBuilder(players).build();
 		int numberOfWalls = 2;
 		for (ASquare sq : grid.getGrid().values())
 			if (sq.getClass() == WallPart.class)
@@ -38,7 +40,7 @@ public class GridTest {
 		IPlayer p2 = new Player(new Coordinate(0, 9));
 		players.add(p1);
 		players.add(p2);
-		Grid grid = Grid.getPredefinedTestGrid(players);
+		Grid grid = new GridBuilder(players).getPredefinedTestGrid(players);
 		
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
