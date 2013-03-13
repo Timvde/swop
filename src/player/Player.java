@@ -1,5 +1,6 @@
 package player;
 
+import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
@@ -40,8 +41,12 @@ public class Player extends Observable implements IPlayer {
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
 	
+	
+	/**
+	 * Create a new player with is specified target position
+	 * @param targetPosition the position which the player will try to reach
+	 */
 	// FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
-	@Deprecated
 	public Player(@NotNull Coordinate targetPosition) {
 		this.targetPosition = targetPosition;
 		this.id = nextID.incrementAndGet();
@@ -203,7 +208,13 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void useItem(IItem i) {
-		// TODO Auto-generated method stub
+		if (!inventory.hasItem(i))
+			throw new IllegalArgumentException("The item is not in the inventory");
+		//TODO are there any other exceptions?
+		ASquare currentSquare = grid.getSquareAt(grid.getPlayerCoordinate(this));
+		inventory.removeItem(i);
+		i.use(currentSquare);
 		
+		this.skipNumberOfActions(1);
 	}
 }
