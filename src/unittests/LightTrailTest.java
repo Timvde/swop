@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import player.LightTrail;
 
+@SuppressWarnings("javadoc")
 public class LightTrailTest {
 	
 	LightTrail	lightTrail;
