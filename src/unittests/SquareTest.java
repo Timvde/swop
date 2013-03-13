@@ -16,7 +16,7 @@ public class SquareTest {
 	private static Square square;
 	
 	@Before
-	public static void setUp() {
+	public void setUp() {
 		square = new Square();
 	}
 	
