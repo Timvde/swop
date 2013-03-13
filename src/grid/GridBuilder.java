@@ -74,7 +74,7 @@ public class GridBuilder {
 	 */
 	// @Requires("width > 0")
 	public GridBuilder setGridWidth(int width) {
-		if (width >= 3 && height >= 3)
+		if (width <= 3 && height <= 3)
 			throw new IllegalArgumentException("height and width cannot be less than three!");
 		this.width = width;
 		return this;
@@ -89,7 +89,7 @@ public class GridBuilder {
 	 */
 	// @Requires("height > 0")
 	public GridBuilder setGridHeigth(int height) {
-		if (width >= 3 && height >= 3)
+		if (width <= 3 && height <= 3)
 			throw new IllegalArgumentException("height and width cannot be less than three!");
 		this.height = height;
 		return this;
