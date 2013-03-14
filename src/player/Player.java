@@ -2,7 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Direction;
-import grid.Grid;
+import grid.IGrid;
 import grid.Square;
 import item.IItem;
 import java.util.List;
@@ -19,48 +19,53 @@ import notnullcheckweaver.NotNull;
  */
 public class Player extends Observable implements IPlayer {
 	
+	/**
+	 * The maximum number of actions a Player is allowed to do in one turn.
+	 */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN	= 3;
 	
 	private int						id;
-	
 	private static AtomicInteger	nextID							= new AtomicInteger();
 	
-	//TODO targetpos weg bij player?
-	@NotNull
-	private Coordinate				targetPosition;
-	@NotNull
-	private Inventory				inventory;
-	private LightTrail				lightTrail;
-	//TODO IGrid
-	@NotNull
-	private Grid					grid;
-																							
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
-	
 	@NotNull
 	private Coordinate				currentCoord;
 	
-	// FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
-	@Deprecated
-	public Player(@NotNull Coordinate targetPosition) {
-		this.targetPosition = targetPosition;
-		this.id = nextID.incrementAndGet();
-		this.inventory = new Inventory();
-		this.lightTrail = new LightTrail();
-	}
+	@NotNull
+	private Inventory				inventory;
+	private LightTrail				lightTrail;
+	@NotNull
+	private IGrid					grid;
+	
+	// TODO targetpos weg bij player?
+	// @NotNull
+	private Coordinate				targetPosition;
+	
+	/*
+	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
+	 * 
+	 * @Deprecated public Player(@NotNull Coordinate targetPosition) {
+	 * this.targetPosition = targetPosition; this.id = nextID.incrementAndGet();
+	 * this.inventory = new Inventory(); this.lightTrail = new LightTrail(); }
+	 */
 	
 	/**
-	 * Creates a new Player object, with an empty inventory and who has not yet
+	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed nb of actions of
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}
+	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
+	 * starting position of the player.
+	 * 
+	 * @param startCoordinate
+	 *        The starting position of the player
 	 */
-	public Player() {
-		this.hasMoved = false;
-		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+	public Player(@NotNull Coordinate startCoordinate) throws IllegalArgumentException{
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
+		this.hasMoved = false;
+		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		this.currentCoord = startCoordinate;
 	}
 	
 	@Override
@@ -194,7 +199,8 @@ public class Player extends Observable implements IPlayer {
 		}
 		
 		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
-			throw new IllegalStateException("The player cannot move in given direction on the grid.");
+			throw new IllegalStateException(
+					"The player cannot move in given direction on the grid.");
 		}
 		
 		// remove this player form his current square
