@@ -19,11 +19,11 @@ public class GridTest {
 	public void testConstructor() {
 		for (int i = 0; i < 10; i++) {
 			ArrayList<IPlayer> players = new ArrayList<IPlayer>();
-			IPlayer p1 = new Player(new Coordinate(9, 0));
-			IPlayer p2 = new Player(new Coordinate(0, 9));
+			IPlayer p1 = new Player(new Coordinate(9, 0), new GridBuilder().getPredefinedTestGrid());
+			IPlayer p2 = new Player(new Coordinate(0, 9), new GridBuilder().getPredefinedTestGrid());
 			players.add(p1);
 			players.add(p2);
-			Grid grid = new GridBuilder(players).build();
+			Grid grid = new GridBuilder().build();
 			int numberOfWalls = 2;
 			for (ASquare sq : grid.getGrid().values())
 				if (sq.getClass() == WallPart.class)
@@ -37,15 +37,9 @@ public class GridTest {
 	
 	@Test
 	public void testStaticGrid() {
-		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
-		IPlayer p1 = new Player(new Coordinate(9, 0));
-		IPlayer p2 = new Player(new Coordinate(0, 9));
-		players.add(p1);
-		players.add(p2);
-		Grid grid = new GridBuilder(players).getPredefinedTestGrid(players);
-		
-		System.out.println(grid);
-		
+
+		Grid grid = new GridBuilder().getPredefinedTestGrid();
+				
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s w w w w w s \n" + "s s s s s s s l s s \n" + "s s l s s s s s l s \n"

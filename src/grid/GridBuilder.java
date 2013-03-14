@@ -144,12 +144,11 @@ public class GridBuilder {
 	 *        The maximum percentage of walls on the grid
 	 */
 	private void placeWall(double maxPercentage, double maximalLengthOfWall) {
-		int wallLength = MINIMUM_WALL_SIZE
-				+ new Random().nextInt(getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall)
-						- MINIMUM_WALL_SIZE);
+		// generate random number between a minimum and a maximum
+		int max = getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall);
+		int wallLength = new Random().nextInt(max - MINIMUM_WALL_SIZE + 1) + MINIMUM_WALL_SIZE;
 		
 		Coordinate start, end;
-		
 		do {
 			start = Coordinate.random(width, height);
 			end = start.getRandomCoordinateWithDistance(wallLength);
@@ -375,13 +374,14 @@ public class GridBuilder {
 	
 	/**
 	 * Returns a randomly created coordinate that exists on the grid specified
-	 * by {@link GridBuilder#getPredefinedTestGrid()}. Used for testing purposes.
+	 * by {@link GridBuilder#getPredefinedTestGrid()}. Used for testing
+	 * purposes.
 	 * 
 	 * @return A random coord on the testgrid.
 	 */
 	public static Coordinate getRandomCoordOnTestGrid() {
-		return new Coordinate(Math.abs(new Random().nextInt() % PREDIFINED_GRID_SIZE),
-				Math.abs(new Random().nextInt() % PREDIFINED_GRID_SIZE));
+		return new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
+				new Random().nextInt(PREDIFINED_GRID_SIZE));
 	}
 	
 	/**
