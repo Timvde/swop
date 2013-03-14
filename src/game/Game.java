@@ -71,11 +71,13 @@ public class Game {
 
 		List<IPlayer> players = playerDB.createNewDB();
 		
+		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
 		
+
 		for (IPlayer player : players) 
 			player.setGrid(grid);
 		
