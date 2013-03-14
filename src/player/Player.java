@@ -212,6 +212,7 @@ public class Player extends Observable implements IPlayer {
 		newSquare.setPlayer(this);
 		
 		// update fields
+		// FIXME hasLightTrail() van square...
 		this.lightTrail.updateLightTrail(this.currentCoord);
 		this.setHasMoved();
 		this.decreaseAllowedNumberOfActions();
