@@ -4,9 +4,11 @@ import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
 import java.util.ArrayList;
+import java.util.List;
 import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
+import player.PlayerDatabase;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -66,19 +68,18 @@ public class Game {
 	 * @param height
 	 */
 	public void newGame(int width, int height) {
-		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
+
+		List<IPlayer> players = playerDB.createNewDB();
 		
-		// TODO target positions in constructor:
-		IPlayer p1 = new Player(null);
-		IPlayer p2 = new Player(null);
-		
-		players.add(p1);
-		players.add(p2);
 		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
+		
+
+		for (IPlayer player : players) 
+			player.setGrid(grid);
 		
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);

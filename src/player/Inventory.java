@@ -79,4 +79,18 @@ public class Inventory implements IInventory {
 		return contents.size();
 	}
 	
+	/**
+	 * returns whether this inventory contains the specified element. More
+	 * formally this method returns <tt>true</tt> if and only if this inventory
+	 * contains at least one item <tt>i</tt> such that
+	 * <tt> item.equals(i) </tt>
+	 * 
+	 * @param item
+	 *        the item whose presence in this inventory is to be tested
+	 * @return true if this inventory contains the specified item, else false
+	 */
+	public boolean hasItem(IItem item) {
+		return contents.contains(item);
+	}
+	
 }

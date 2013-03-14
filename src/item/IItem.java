@@ -1,5 +1,6 @@
 package item;
 
+import grid.ASquare;
 import grid.Square;
 import player.Player;
 
@@ -23,7 +24,7 @@ public interface IItem {
 	 * @param square
 	 *        the square on which the item was used.
 	 */
-	public void use(Square square);
+	public void use(ASquare square);
 	
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.

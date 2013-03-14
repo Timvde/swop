@@ -50,7 +50,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		}
 		this.currentPlayerIndex = 0;
 		
-		return (List<IPlayer>) this.playerList.clone();
+		return new ArrayList<IPlayer>(playerList);
 	}
 	
 	/**
