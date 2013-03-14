@@ -25,18 +25,15 @@ public class Player extends Observable implements IPlayer {
 	
 	private static AtomicInteger	nextID							= new AtomicInteger();
 	
+	//TODO targetpos weg bij player?
 	@NotNull
-	private Coordinate				targetPosition;										// TODO
-																							// waar
-																							// zetten?
+	private Coordinate				targetPosition;
 	@NotNull
-	private Inventory				inventory						= new Inventory();
+	private Inventory				inventory;
+	private LightTrail				lightTrail;
+	//TODO IGrid
 	@NotNull
-	private LightTrail				lightTrail						= new LightTrail();
-	@NotNull
-	private Grid					grid;													// TODO
-																							// IGrid
-																							// ofzo
+	private Grid					grid;
 																							
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
@@ -49,6 +46,8 @@ public class Player extends Observable implements IPlayer {
 	public Player(@NotNull Coordinate targetPosition) {
 		this.targetPosition = targetPosition;
 		this.id = nextID.incrementAndGet();
+		this.inventory = new Inventory();
+		this.lightTrail = new LightTrail();
 	}
 	
 	/**
@@ -60,6 +59,8 @@ public class Player extends Observable implements IPlayer {
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.id = nextID.incrementAndGet();
+		this.inventory = new Inventory();
+		this.lightTrail = new LightTrail();
 	}
 	
 	@Override

@@ -14,7 +14,14 @@ public class Inventory implements IInventory {
 	// At this moment the number of items is the same for all inventories.
 	private static final int	MAX_NUMBER_OF_ITEMS	= 6;
 	
-	private List<IItem>			contents			= new ArrayList<IItem>();
+	private List<IItem>			contents;
+	
+	/**
+	 * Creates a new empty inventory
+	 */
+	public Inventory() {
+		this.contents = new ArrayList<IItem>(MAX_NUMBER_OF_ITEMS);
+	}
 	
 	/**
 	 * add an item to this inventory
