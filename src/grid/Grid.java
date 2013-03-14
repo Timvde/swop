@@ -54,7 +54,7 @@ public class Grid implements IGrid {
 	 * @return returns the grid
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
-		return grid;
+		return grid; //FIXME clone ofzo?
 	}
 	
 	@Override

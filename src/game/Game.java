@@ -43,6 +43,8 @@ public class Game {
 		UseItemController useItemCont = new UseItemController(this.playerDB);
 		NewGameController newGameCont = new NewGameController(this);
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
+		
+		// Here grid is still null
 		this.guiDataCont = new GUIDataController(this.playerDB, this.grid);
 		
 		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
@@ -66,8 +68,7 @@ public class Game {
 	 * @param width
 	 * @param height
 	 */
-	public void newGame(int width, int height) {
-		
+	public void newGame(int width, int height) {		
 		List<IPlayer> players = playerDB.createNewDB(new Coordinate[] {
 				new Coordinate(width - 1, 0), new Coordinate(0, height - 1) });
 		

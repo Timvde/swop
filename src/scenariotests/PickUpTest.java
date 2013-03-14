@@ -6,13 +6,16 @@ import java.util.List;
 import game.Game;
 import grid.Direction;
 import grid.Grid;
+import grid.GridBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import player.IPlayer;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
+import controllers.UseItemController;
 
 /**
  * Test if the pick up action works correctly.
@@ -23,27 +26,39 @@ import controllers.PickUpItemController;
  */
 public class PickUpTest {
 	
-	private static GUIDataController	guiDataCont;
 	private static PickUpItemController	pickUpCont;
 	private static EndTurnController	endTurnCont;
 	private static MoveController		moveCont;
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		// TODO set up playerDB en predefined grid, en bij Game doe setGrid
+	private void newGame() {
 		Game game = new Game();
-		game.start();
 		
-		guiDataCont = new GUIDataController(playerDB, grid);
-		pickUpCont = new PickUpItemController(playerDB);
+		playerDB = new PlayerDataBase();
+		List<IPlayer> playerList = playerDB.createNewDB();
+		
+		
+		GridBuilder builder = new GridBuilder(playerList);
+		grid = builder.getPredefinedTestGrid(playerList);
+		
+		for (IPlayer p : playerList) {
+			p.setGrid(grid);
+		}
+		
+		game.setGrid(grid);
+		
+		game.start();
+
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
+		pickUpCont = new PickUpItemController(playerDB);
 	}
 	
 	@Test
 	public void testPlayerCanCarryMaximum6Items() {
+		newGame();
+		
 		// Player 1 actions
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.EAST);

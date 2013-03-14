@@ -1,14 +1,19 @@
 package scenariotests;
 
 import static org.junit.Assert.*;
+import java.util.List;
 import game.Game;
 import grid.Grid;
+import grid.GridBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import player.IPlayer;
 import player.PlayerDataBase;
+import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
+import controllers.UseItemController;
 
 /**
  * Test if the turns end correctly in the game.
@@ -26,19 +31,31 @@ public class EndTurnTest {
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		// TODO set up playerDB en predefined grid, en bij Game doe setGrid
+	private void newGame() {
 		Game game = new Game();
-		game.start();
 		
-		guiDataCont = new GUIDataController(playerDB, grid);
-		pickUpCont = new PickUpItemController(playerDB);
+		playerDB = new PlayerDataBase();
+		List<IPlayer> playerList = playerDB.createNewDB();
+		
+		
+		GridBuilder builder = new GridBuilder(playerList);
+		grid = builder.getPredefinedTestGrid(playerList);
+		
+		for (IPlayer p : playerList) {
+			p.setGrid(grid);
+		}
+		
+		game.setGrid(grid);
+		
+		game.start();
+
 		moveCont = new MoveController(playerDB);
+		pickUpCont = new PickUpItemController(playerDB);
 	}
 	
 	@Test
 	public void testPlayerEnterPowerFailedSquare() {
+		newGame();
 		
 	}
 }

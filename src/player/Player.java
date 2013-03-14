@@ -61,7 +61,7 @@ public class Player extends Observable implements IPlayer {
 	 * @param startCoordinate
 	 *        The starting position of the player
 	 */
-	public Player(@NotNull Coordinate startCoordinate) throws IllegalArgumentException{
+	public Player(@NotNull Coordinate startCoordinate) throws IllegalArgumentException {
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
@@ -133,6 +133,9 @@ public class Player extends Observable implements IPlayer {
 		if (getAllowedNumberOfActions() <= 0) {
 			this.setChanged();
 			this.notifyObservers();
+			// We need to increase it again to prepare for this player's next
+			// turn.
+			this.increaseAllowedNumberOfActions();
 		}
 	}
 	
@@ -171,9 +174,6 @@ public class Player extends Observable implements IPlayer {
 			// this player's turn will end; reset the turn-related properties
 			this.resetHasMoved();
 			resetNumberOfActionsLeft();
-			// The previous method will make the player lose its turn. We need
-			// to increase it again to prepare for this player's next turn.
-			this.increaseAllowedNumberOfActions();
 			
 		}
 		else {
@@ -274,12 +274,18 @@ public class Player extends Observable implements IPlayer {
 		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		hasMoved = false;
 	}
-
+	
 	/**
 	 * sets the grid
-	 * @param grid the grid for this player
+	 * 
+	 * @param grid
+	 *        the grid for this player
 	 */
 	public void setGrid(Grid grid) {
 		this.grid = grid;
+		// TODO remove deze? is tijdelijk een oplossing dat players hun grid
+		// niet
+		// hebben.
+		// Ik had dat nodig voor de tests.
 	}
 }
