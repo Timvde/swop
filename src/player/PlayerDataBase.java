@@ -1,5 +1,6 @@
 package player;
 
+import grid.Coordinate;
 import grid.Square;
 import item.LightGrenade;
 import java.util.ArrayList;
@@ -9,29 +10,33 @@ import java.util.Observer;
 import com.sun.istack.internal.NotNull;
 
 /**
- * A class to store {@link PlayerDataBase#NUMBER_OF_PLAYERS}{@link Player}s and
- * to appoint the current player allowed to play. The {@link PlayerDataBase}
- * will observe his players. A Player notifies the database (by calling
- * <code>notifyObservers</code>) to indicate he wants to end his turn.
+ * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
+ * the current player allowed to play. The {@link PlayerDataBase} will observe
+ * his players. A Player notifies the database (by calling
+ * <code>notifyObservers()</code>) to indicate he wants to end his turn.
  * 
  */
 public class PlayerDataBase implements Observer, IPlayerDataBase {
 	
+	/**
+	 * The number of players involved in the game.
+	 */
 	public static final int		NUMBER_OF_PLAYERS	= 2;
 	
 	@NotNull
-	private ArrayList<Player>	playerList			= new ArrayList<Player>(NUMBER_OF_PLAYERS);
-	private int					currentPlayerIndex;											// index
-																								// in
-																								// playerList
-																								
+	private ArrayList<Player>	playerList;
+	private int					currentPlayerIndex;
+	
 	/**
-	 * Creates a new PlayerManager-object and calls the
-	 * <code>createNewDB()</code> method to fill it initially with new
-	 * {@link Player}s.
+	 * Creates a new empty PlayerDataBase. to fill the database with players,
+	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[])}. Until
+	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
+	 * exception.
+	 * 
 	 */
 	public PlayerDataBase() {
-		this.createNewDB();
+		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
+		// this.createNewDB(playerStartingPositions);
 	}
 	
 	/**
@@ -39,12 +44,31 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * database with PlayerDataBase.NUMBER_OF_PLAYERS newly created
 	 * {@link Player} which it will observe.
 	 * 
-	 * The player allowed to play, is the player first created .
+	 * The order of the players is determined by the specified starting
+	 * positions array. The first player allowed to play, is the player with the
+	 * first starting position in the specified array.
+	 * 
+	 * @param playerStartingPositions
+	 *        The specified starting coordinates for the players to create
+	 * 
+	 * @throws IllegalArgumentException
+	 *         The lenght of the specified playerStartingCoordinates array must
+	 *         be {@value #NUMBER_OF_PLAYERS} and no two given coordinates can
+	 *         be the same.
 	 */
-	public List<IPlayer> createNewDB() {
+	public List<IPlayer> createNewDB(Coordinate[] playerStartingPositions)
+			throws IllegalArgumentException {
+		if (playerStartingPositions.length != NUMBER_OF_PLAYERS) {
+			throw new IllegalArgumentException("The number of player-starting-coordinates is wrong");
+		}
+		if (!allDifferent(playerStartingPositions)) {
+			throw new IllegalArgumentException(
+					"The specified player-starting-coordinates must all be different");
+		}
+		
 		this.playerList.clear();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player();
+			Player newPlayer = new Player(playerStartingPositions[i]);
 			this.playerList.add(newPlayer);
 			newPlayer.addObserver(this);
 		}
@@ -52,7 +76,20 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		// Set the left downmost player as starting player.
 		this.currentPlayerIndex = 1;
 		
-		return (List<IPlayer>) this.playerList.clone();
+		return new ArrayList<IPlayer>(playerList);
+	}
+	
+	private boolean allDifferent(Coordinate[] playerStartingPositions) {
+		for (int i = 0; i < playerStartingPositions.length - 1; i++) {
+			Coordinate c1 = playerStartingPositions[i];
+			for (int j = i + 1; j < playerStartingPositions.length; j++) {
+				Coordinate c2 = playerStartingPositions[j];
+				if (c1.equals(c2)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -61,6 +98,9 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * @return the {@link IPlayer} who is currently allowed to play.
 	 */
 	public IPlayer getCurrentPlayer() {
+		if (this.playerList.size() == 0) {
+			throw new IllegalStateException("The PlayerDatabase is empy.");
+		}
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 	

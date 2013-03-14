@@ -21,7 +21,7 @@ public class CoordinateTest {
 		assertEquals(-5, coord.getY());
 	}
 	
-	@Test (expected = IllegalStateException.class)
+	@Test (expected = IllegalArgumentException.class)
 	public void testGetCoordinateInDirection_nullArgument() {
 		Coordinate.ORIGIN.getCoordinateInDirection(null);
 	}

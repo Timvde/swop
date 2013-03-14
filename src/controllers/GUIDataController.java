@@ -47,7 +47,7 @@ public class GUIDataController {
 	 * Return a list of items that are located on the square that the current player resides on.
 	 */
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
-		ASquare currSq = this.grid.getSquareAt(this.grid.getPlayerCoordinate(getCurrentPlayer()));
+		ASquare currSq = grid.getSquareAt(getCurrentPlayer().getCurrentLocation());
 		return currSq.getCarryableItems();
 	}
 	

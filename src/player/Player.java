@@ -1,8 +1,11 @@
 package player;
 
+import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
+import grid.IGrid;
+import grid.Square;
 import item.IItem;
 import java.util.List;
 import java.util.Observable;
@@ -18,44 +21,53 @@ import notnullcheckweaver.NotNull;
  */
 public class Player extends Observable implements IPlayer {
 	
+	/**
+	 * The maximum number of actions a Player is allowed to do in one turn.
+	 */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN	= 3;
 	
 	private int						id;
-	
 	private static AtomicInteger	nextID							= new AtomicInteger();
 	
-	@NotNull
-	private Coordinate				targetPosition;										// TODO
-																							// waar
-																							// zetten?
-	@NotNull
-	private Inventory				inventory						= new Inventory();
-	@NotNull
-	private LightTrail				lightTrail						= new LightTrail();
-	@NotNull
-	private Grid					grid;													// TODO
-																							// IGrid
-																							// ofzo
-																							
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
+	@NotNull
+	private Coordinate				currentCoord;
 	
-	// FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
-	@Deprecated
-	public Player(@NotNull Coordinate targetPosition) {
-		this.targetPosition = targetPosition;
-		this.id = nextID.incrementAndGet();
-	}
+	@NotNull
+	private Inventory				inventory;
+	private LightTrail				lightTrail;
+	@NotNull
+	private IGrid					grid;
+	
+	// TODO targetpos weg bij player?
+	// @NotNull
+	private Coordinate				targetPosition;
+	
+	/*
+	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
+	 * 
+	 * @Deprecated public Player(@NotNull Coordinate targetPosition) {
+	 * this.targetPosition = targetPosition; this.id = nextID.incrementAndGet();
+	 * this.inventory = new Inventory(); this.lightTrail = new LightTrail(); }
+	 */
 	
 	/**
-	 * Creates a new Player object, with an empty inventory and who has not yet
+	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed nb of actions of
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}
+	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
+	 * starting position of the player.
+	 * 
+	 * @param startCoordinate
+	 *        The starting position of the player
 	 */
-	public Player() {
+	public Player(@NotNull Coordinate startCoordinate) throws IllegalArgumentException {
+		this.id = nextID.incrementAndGet();
+		this.inventory = new Inventory();
+		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		this.id = nextID.incrementAndGet();
+		this.currentCoord = startCoordinate;
 	}
 	
 	@Override
@@ -66,6 +78,11 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public Coordinate getTargetPosition() {
 		return this.targetPosition;
+	}
+	
+	@Override
+	public Coordinate getCurrentLocation() {
+		return this.currentCoord;
 	}
 	
 	@Override
@@ -183,10 +200,32 @@ public class Player extends Observable implements IPlayer {
 		if (!isPreconditionMoveSatisfied()) {
 			throw new IllegalStateException("The move-preconditions are not satisfied.");
 		}
-		Coordinate updatedCoordinate = this.grid.movePlayerInDirection(this, direction);
-		this.lightTrail.updateLightTrail(updatedCoordinate);
+		if (!isValidDirection(direction)) {
+			throw new IllegalArgumentException("The specified direction is not valid.");
+		}
+		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
+			throw new IllegalStateException(
+					"The player cannot move in given direction on the grid.");
+		}
+		
+		// remove this player form his current square
+		((Square) this.grid.getSquareAt(this.currentCoord)).removePlayer();
+		
+		// set new position
+		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
+		Square newSquare = (Square) this.grid.getSquareAt(this.currentCoord);
+		newSquare.setPlayer(this);
+		
+		// update fields
+		// FIXME hasLightTrail() van square...
+		this.lightTrail.updateLightTrail(this.currentCoord);
 		this.setHasMoved();
 		this.decreaseAllowedNumberOfActions();
+	}
+	
+	@Override
+	public boolean isValidDirection(Direction direction) {
+		return direction != null;
 	}
 	
 	@Override
@@ -196,21 +235,56 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		// Square playerSq = this.grid.getSquareOfPlayer(this); TODO implement
-		// playerSq.removeItem(item);
+		Square currentSquare = (Square) this.grid.getSquareAt(currentCoord);
+		if (item == null || !currentSquare.hasItemWithID(item.getId()))
+			throw new IllegalArgumentException("The item does not exist on the square");
+		
+		// remove the item from the square
+		currentSquare.removeItem(item);
+		// add the item to the inventory
+		inventory.addItem(item);
+		
+		// reduce the actions left
+		skipNumberOfActions(1);
 	}
 	
 	@Override
 	public void useItem(IItem i) {
-		// TODO Auto-generated method stub
+		if (!inventory.hasItem(i))
+			throw new IllegalArgumentException("The item is not in the inventory");
+		// TODO are there any other exceptions?
+		ASquare currentSquare = this.grid.getSquareAt(currentCoord);
+		inventory.removeItem(i);
+		i.use(currentSquare);
 		
+		this.skipNumberOfActions(1);
 	}
 	
-	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
-	// hebben.
-	// Ik had dat nodig voor de tests.
-	@Override
-	public void setGrid(Grid g) {
-		this.grid = g;
+	/**
+	 * resets the player for a new game. The inventory and the lightTrail will
+	 * be reinitialized. The number of actions left is set to
+	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
+	 * return false.
+	 */
+	public void reset() {
+		inventory = new Inventory();
+		lightTrail = new LightTrail();
+		
+		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		hasMoved = false;
 	}
+	
+	/**
+	 * sets the grid
+	 * 
+	 * @param grid
+	 *        the grid for this player
+	 */
+	public void setGrid(Grid grid) {
+		this.grid = grid;
+	}
+		// TODO remove deze? is tijdelijk een oplossing dat players hun grid
+		// niet
+		// hebben.
+		// Ik had dat nodig voor de tests.
 }

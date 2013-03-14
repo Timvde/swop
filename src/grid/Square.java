@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import player.IPlayer;
+import player.Player;
 
 /**
  * A Square represents a place on a grid, which a player can stand on, as long
@@ -114,8 +115,19 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
+	 * Returns whether or not this Square has currently a {@link Player}, i.e. <code>{@link #getPlayer()}!= null</code>.
+	 * @return Whether this square has a Player.
+	 */
+	@Override
+	public boolean hasPlayer() {
+		return player != null;
+	}
+	
+	/**
 	 * Move an IPlayer on this square. This might cause a penalty to the player,
 	 * depending on the square's current power state and the items it contains.
+	 * 
+	 * FIXME null
 	 */
 	public void setPlayer(IPlayer player) {
 		this.player = player;
@@ -128,6 +140,8 @@ public class Square extends ASquare implements Observer {
 	 * 
 	 * @param player
 	 *        The Player which will feel the consequences.
+	 *        
+	 *        TODO null
 	 */
 	private void penalty(IPlayer player) {
 		Effect effect = new Effect(player);
