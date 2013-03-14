@@ -3,7 +3,7 @@ package game;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
-import java.util.ArrayList;
+import java.util.List;
 import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
@@ -42,6 +42,8 @@ public class Game {
 		UseItemController useItemCont = new UseItemController(this.playerDB);
 		NewGameController newGameCont = new NewGameController(this);
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
+		
+		// Here grid is still null
 		this.guiDataCont = new GUIDataController(this.playerDB, this.grid);
 		
 		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
@@ -66,14 +68,7 @@ public class Game {
 	 * @param height
 	 */
 	public void newGame(int width, int height) {
-		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
-		
-		// TODO target positions in constructor:
-		IPlayer p1 = new Player(null);
-		IPlayer p2 = new Player(null);
-		
-		players.add(p1);
-		players.add(p2);
+		List<IPlayer> players = playerDB.createNewDB();
 		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();

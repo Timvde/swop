@@ -119,8 +119,8 @@ public class Grid implements IGrid {
 		else if (players.containsValue(players.get(player).getCoordinateInDirection(direction)))
 			return false;
 		// players cannot move through light trails
-		else if (grid.get(players.get(player).getCoordinateInDirection(direction)).hasLightTrail())
-			return false;
+	else if (grid.get(players.get(player).getCoordinateInDirection(direction)).hasLightTrail())
+		return false;
 		// else if (direction.getPrimeryDirections().size() == 2
 		// && grid.get(
 		// players.get(playerID).getCoordinateInDirection(

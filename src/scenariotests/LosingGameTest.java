@@ -1,16 +1,20 @@
 package scenariotests;
 
 import static org.junit.Assert.*;
+import java.util.List;
 import game.Game;
 import grid.Direction;
 import grid.Grid;
+import grid.GridBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import player.IPlayer;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
+import controllers.UseItemController;
 
 /**
  * Test if a player loses the game in correct circumstances.
@@ -22,31 +26,44 @@ import controllers.PickUpItemController;
  */
 public class LosingGameTest {
 	
-	private static GUIDataController	guiDataCont;
 	private static PickUpItemController	pickUpCont;
 	private static MoveController		moveCont;
 	private static EndTurnController	endTurnCont;
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		// TODO set up playerDB en predefined grid, en bij Game doe setGrid
+	private void newGame() {
 		Game game = new Game();
+		
+		playerDB = new PlayerDataBase();
+		List<IPlayer> playerList = playerDB.createNewDB();
+		
+		
+		GridBuilder builder = new GridBuilder(playerList);
+		grid = builder.getPredefinedTestGrid(playerList);
+		
+		for (IPlayer p : playerList) {
+			p.setGrid(grid);
+		}
+		
+		game.setGrid(grid);
+		
 		game.start();
-		guiDataCont = new GUIDataController(playerDB, grid);
-		pickUpCont = new PickUpItemController(playerDB);
+
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
+		pickUpCont = new PickUpItemController(playerDB);
 	}
 	
 	@Test
 	public void testPlayerTrappedButNotLosing() {
-		
+		newGame();
 	}
 	
 	@Test
 	public void testPlayerTrappedAndLosing() {
+		newGame();
+		
 		// Player 1 actions
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
@@ -67,6 +84,7 @@ public class LosingGameTest {
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
+		
 		// TODO test if player 2 lost
 	}
 }

@@ -48,7 +48,9 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			this.playerList.add(newPlayer);
 			newPlayer.addObserver(this);
 		}
-		this.currentPlayerIndex = 0;
+		
+		// Set the left downmost player as starting player.
+		this.currentPlayerIndex = 1;
 		
 		return (List<IPlayer>) this.playerList.clone();
 	}

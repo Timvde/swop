@@ -116,6 +116,8 @@ public class Player extends Observable implements IPlayer {
 		if (getAllowedNumberOfActions() <= 0) {
 			this.setChanged();
 			this.notifyObservers();
+			// We need to increase it again to prepare for this player's next turn.
+			this.increaseAllowedNumberOfActions();
 		}
 	}
 	
@@ -154,9 +156,6 @@ public class Player extends Observable implements IPlayer {
 			// this player's turn will end; reset the turn-related properties
 			this.resetHasMoved();
 			resetNumberOfActionsLeft();
-			// The previous method will make the player lose its turn. We need
-			// to increase it again to prepare for this player's next turn.
-			this.increaseAllowedNumberOfActions();
 			
 		}
 		else {
@@ -207,7 +206,8 @@ public class Player extends Observable implements IPlayer {
 		
 	}
 	
-	//TODO remove deze? is tijdelijk een oplossing dat players hun grid niet hebben.
+	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
+	// hebben.
 	// Ik had dat nodig voor de tests.
 	@Override
 	public void setGrid(Grid g) {

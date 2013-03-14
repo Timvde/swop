@@ -6,8 +6,10 @@ import java.util.List;
 import game.Game;
 import grid.Direction;
 import grid.Grid;
+import grid.GridBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import player.IPlayer;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
@@ -26,7 +28,6 @@ import controllers.UseItemController;
  */
 public class NumberOfActionsTest {
 	
-	private static GUIDataController	guiDataCont;
 	private static PickUpItemController	pickUpCont;
 	private static UseItemController	useItemCont;
 	private static MoveController		moveCont;
@@ -34,31 +35,46 @@ public class NumberOfActionsTest {
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		// TODO set up playerDB en predefined grid, en bij Game doe setGrid
+	private void newGame() {
 		Game game = new Game();
-		game.start();
 		
-		guiDataCont = new GUIDataController(playerDB, grid);
-		pickUpCont = new PickUpItemController(playerDB);
+		playerDB = new PlayerDataBase();
+		List<IPlayer> playerList = playerDB.createNewDB();
+		
+		
+		GridBuilder builder = new GridBuilder(playerList);
+		grid = builder.getPredefinedTestGrid(playerList);
+		
+		for (IPlayer p : playerList) {
+			p.setGrid(grid);
+		}
+		
+		game.setGrid(grid);
+		
+		game.start();
+
 		moveCont = new MoveController(playerDB);
-		useItemCont = new UseItemController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
+		pickUpCont = new PickUpItemController(playerDB);
+		useItemCont = new UseItemController(playerDB);
 	}
 	
 	@Test
 	public void testPlayerEntersPowerFailedSquareWithLightGrenadeExplosion() {
+		newGame();
 		
 	}
 	
 	@Test
 	public void testPlayerStartsOnPowerFailedSquare() {
+		newGame();
 		
 	}
 	
 	@Test
 	public void testPlayerSquareLightGrenade() {
+		newGame();
+		
 		// Player 1 actions
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.NORTH);

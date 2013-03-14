@@ -15,7 +15,7 @@ import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.MoveController;
 
-/** TODO in this class: catch exceptions / do assertions
+/**
  * This class will test scenarios concerning the movement of players.
  * 
  * Tests: - No two players on one square - Cannot move on wall - Cannot leave
@@ -30,13 +30,13 @@ public class MovePlayerTest {
 	private static EndTurnController	endTurnCont;
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
-	
-	@BeforeClass
-	public static void setUpBeforeClass() {
+
+	private void newGame() {
 		Game game = new Game();
 		
 		playerDB = new PlayerDataBase();
 		List<IPlayer> playerList = playerDB.createNewDB();
+		
 		
 		GridBuilder builder = new GridBuilder(playerList);
 		grid = builder.getPredefinedTestGrid(playerList);
@@ -53,8 +53,10 @@ public class MovePlayerTest {
 		endTurnCont = new EndTurnController(playerDB);
 	}
 	
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void testNoTwoPlayersOnOneSquare() {
+		newGame();
+		
 		// Player 1 actions
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.NORTH);
@@ -78,47 +80,60 @@ public class MovePlayerTest {
 		// Player 2 actions
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
+		
+		// This causes two players to be on the same square:
 		moveCont.move(Direction.WEST);
 	}
 	
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void testCannotMoveOnWall() {
+		newGame();
+		
 		// Player 1 actions
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.NORTH);
 		// Player 2 actions
 		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
+		endTurnCont.endTurn();
 		// Player 1 actions
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
 		// Player 2 actions
 		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
+		endTurnCont.endTurn();
 		// Player 1 actions
+		// This is a move on a wall:
 		moveCont.move(Direction.NORTHEAST);
+		
 	}
 	
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void testCannotLeaveGrid() {
+		newGame();
+		
 		// Player 1 actions
-		moveCont.move(Direction.SOUTH);
+			moveCont.move(Direction.SOUTH);
+		
 	}
 	
-	@Test
+	// TODO specifieker specifiëren
+	@Test(expected = Exception.class)
 	public void testCannotCrossLightrail() {
+		newGame();
+		
 		// Player 1 actions
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.SOUTHEAST);
 	}
 	
-	@Test
+	// TODO specifieker specifiëren
+	@Test(expected = Exception.class)
 	public void testAlwaysMoveActionInTurn() {
+		newGame();
+		
 		// Player 1 actions
 		endTurnCont.endTurn();
 	}
