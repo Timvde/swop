@@ -28,8 +28,10 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	private int					currentPlayerIndex;
 	
 	/**
-	 * Creates a new empty PlayerDataBase. to fill the database with players, one
-	 * has to call {@link PlayerDataBase#createNewDB(Coordinate[])}. Until then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an exception.
+	 * Creates a new empty PlayerDataBase. to fill the database with players,
+	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[])}. Until
+	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
+	 * exception.
 	 * 
 	 */
 	public PlayerDataBase() {
@@ -93,7 +95,10 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * 
 	 * @return the {@link IPlayer} who is currently allowed to play.
 	 */
-	public IPlayer getCurrentPlayer() { // FIXME indexoutofbounds
+	public IPlayer getCurrentPlayer() {
+		if (this.playerList.size() == 0) {
+			throw new IllegalStateException("The PlayerDatabase is empy.");
+		}
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 	
