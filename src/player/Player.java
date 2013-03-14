@@ -236,7 +236,7 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		Square currentSquare = (Square) this.grid.getSquareOfPlayer(this);
+		Square currentSquare = (Square) this.grid.getSquareAt(currentCoord);
 		if (item == null || !currentSquare.hasItemWithID(item.getId()))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
@@ -254,7 +254,7 @@ public class Player extends Observable implements IPlayer {
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
-		ASquare currentSquare = this.grid.getSquareOfPlayer(this);
+		ASquare currentSquare = this.grid.getSquareAt(currentCoord);
 		inventory.removeItem(i);
 		i.use(currentSquare);
 		
