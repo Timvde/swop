@@ -20,6 +20,9 @@ import controllers.UseItemController;
  * Test if the use item mechanics work correctly.
  * 
  * Tests:
+ * - Cannot place light grenade on wall
+ * - Place maximum one lightgrenade on a square
+ * - Cannot place light grenade on start positions
  * 
  * @author Tom
  */
@@ -52,4 +55,18 @@ public class UseItemTest {
 		pickUpCont = new PickUpItemController(playerDB);
 	}
 	
+	@Test
+	public void testCannotPlaceLightGrenadeOnWall() {
+		
+	}
+	
+	@Test
+	public void testMaximumOneLightGrenadePerSquare() {
+		
+	}
+	
+	@Test
+	public void testCannotPlaceLightGrenadeOnStartPositions() {
+		
+	}
 }
