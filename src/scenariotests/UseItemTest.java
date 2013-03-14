@@ -1,23 +1,17 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
-import item.IItem;
-import java.util.List;
 import game.Game;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
-import org.junit.BeforeClass;
+import item.IItem;
+import java.util.List;
 import org.junit.Test;
-import player.IPlayer;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
-import controllers.GUIDataController;
 import controllers.MoveController;
-import controllers.NewGameController;
 import controllers.PickUpItemController;
-import controllers.UseItemController;
 
 /**
  * Test if the use item mechanics work correctly.
@@ -27,6 +21,7 @@ import controllers.UseItemController;
  * 
  * @author Tom
  */
+@SuppressWarnings("javadoc")
 public class UseItemTest {
 	
 	private static PickUpItemController	pickUpCont;
@@ -47,11 +42,7 @@ public class UseItemTest {
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
 		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
 		
-		List<IPlayer> playerList = playerDB.createNewDB(startingCoords);
-		
-		for (IPlayer p : playerList) {
-			p.setGrid(grid);
-		}
+		playerDB.createNewDB(startingCoords, grid);
 		
 		game.setGrid(grid);
 		
@@ -94,7 +85,7 @@ public class UseItemTest {
 		// Player 1 actions
 		// TODO twee keer onmiddelijk droppen? niet rond lopen
 	}
-	
+
 	@Test
 	public void testCannotPlaceLightGrenadeOnStartPositions() {
 		// Player 1 actions

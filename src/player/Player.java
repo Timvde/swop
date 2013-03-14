@@ -288,4 +288,9 @@ public class Player extends Observable implements IPlayer {
 		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		hasMoved = false;
 	}
+	
+	@Override
+	public String toString() {
+		return "ID = " + this.id;
+	}
 }

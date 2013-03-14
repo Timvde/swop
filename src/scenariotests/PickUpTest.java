@@ -1,22 +1,17 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
-import item.IItem;
-import java.util.List;
 import game.Game;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
-import org.junit.BeforeClass;
+import item.IItem;
+import java.util.List;
 import org.junit.Test;
-import player.IPlayer;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
-import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
-import controllers.UseItemController;
 
 /**
  * Test if the pick up action works correctly.
@@ -25,6 +20,7 @@ import controllers.UseItemController;
  * 
  * @author Tom
  */
+@SuppressWarnings("javadoc")
 public class PickUpTest {
 	
 	private static PickUpItemController	pickUpCont;
@@ -45,11 +41,7 @@ public class PickUpTest {
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
 		startingCoords[1] = new Coordinate(0, grid.getHeight()-1);
 		
-		List<IPlayer> playerList = playerDB.createNewDB(startingCoords);
-		
-		for (IPlayer p : playerList) {
-			p.setGrid(grid);
-		}
+		playerDB.createNewDB(startingCoords, grid);
 		
 		game.setGrid(grid);
 		

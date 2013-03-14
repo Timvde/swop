@@ -2,6 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Direction;
+import grid.Grid;
 import item.IItem;
 import java.util.List;
 
@@ -57,7 +58,8 @@ public interface IPlayer {
 	/**
 	 * This method lets the player lose a specified number of actions.
 	 * 
-	 * @param numberOfActionsToSkip The number of actions this player will skip
+	 * @param numberOfActionsToSkip
+	 *        The number of actions this player will skip
 	 */
 	public void skipNumberOfActions(int numberOfActionsToSkip);
 	
@@ -101,10 +103,15 @@ public interface IPlayer {
 	 *        the direction to move in
 	 * @throws IllegalStateException
 	 *         The move preconditions must be satisfied, i.e. this.
-	 *         {@link #isPreconditionMoveSatisfied()}
+	 *         {@link #isPreconditionMoveSatisfied()}. The grid must allow the
+	 *         player to do the move, i.e.
+	 *         {@link Grid#canMoveFromCoordInDirection(Coordinate, Direction)
+	 *         <code>canMoveFromCoordInDirection(this.getCurrentLocation(),
+	 *         direction)</code>}
 	 * @throws IllegalArgumentException
 	 *         The specified direction must be a valid direction for this player
-	 *         to try to move in
+	 *         to try to move in, i.e.
+	 *         <code>{@link #isValidDirection(Direction)}</code>.
 	 */
 	public void moveInDirection(Direction direction) throws IllegalStateException,
 			IllegalArgumentException;

@@ -16,4 +16,4 @@ bin/
 .vpprefdata/*
 tmp/
 
-.teamworkUser.xml
+teamworkUser.xml
