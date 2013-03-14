@@ -68,9 +68,14 @@ public class Game {
 	 * @param width
 	 * @param height
 	 */
+<<<<<<< .merge_file_Qxpb0f
 	public void newGame(int width, int height) {		
 		List<IPlayer> players = playerDB.createNewDB(new Coordinate[] {
 				new Coordinate(width - 1, 0), new Coordinate(0, height - 1) });
+=======
+	public void newGame(int width, int height) {
+		List<IPlayer> players = playerDB.createNewDB();
+>>>>>>> .merge_file_k812Sb
 		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		this.grid = new GridBuilder().setGridWidth(width).setGridHeigth(height).build();

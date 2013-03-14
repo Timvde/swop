@@ -72,6 +72,12 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			this.playerList.add(newPlayer);
 			newPlayer.addObserver(this);
 		}
+<<<<<<< .merge_file_NSKIot
+=======
+		
+		// Set the left downmost player as starting player.
+		this.currentPlayerIndex = 1;
+>>>>>>> .merge_file_LEAbFu
 		
 		// Set the left downmost player as starting player.
 		this.currentPlayerIndex = 1;

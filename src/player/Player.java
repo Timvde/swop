@@ -133,8 +133,12 @@ public class Player extends Observable implements IPlayer {
 		if (getAllowedNumberOfActions() <= 0) {
 			this.setChanged();
 			this.notifyObservers();
+<<<<<<< .merge_file_Uur4Lo
 			// We need to increase it again to prepare for this player's next
 			// turn.
+=======
+			// We need to increase it again to prepare for this player's next turn.
+>>>>>>> .merge_file_rAoPhp
 			this.increaseAllowedNumberOfActions();
 		}
 	}
@@ -261,6 +265,7 @@ public class Player extends Observable implements IPlayer {
 		this.skipNumberOfActions(1);
 	}
 	
+<<<<<<< .merge_file_Uur4Lo
 	/**
 	 * resets the player for a new game. The inventory and the lightTrail will
 	 * be reinitialized. The number of actions left is set to
@@ -287,5 +292,13 @@ public class Player extends Observable implements IPlayer {
 		// niet
 		// hebben.
 		// Ik had dat nodig voor de tests.
+=======
+	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
+	// hebben.
+	// Ik had dat nodig voor de tests.
+	@Override
+	public void setGrid(Grid g) {
+		this.grid = g;
+>>>>>>> .merge_file_rAoPhp
 	}
 }
