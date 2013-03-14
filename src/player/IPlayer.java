@@ -118,7 +118,7 @@ public interface IPlayer {
 	 * direction.
 	 * 
 	 * @param direction
-	 *        the given direction
+	 *        the direction the player wants to check
 	 * @return whether a specified direction is a valid direction for this
 	 *         player to try to move in
 	 */

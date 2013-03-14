@@ -3,48 +3,27 @@ package grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import player.IPlayer;
+import notnullcheckweaver.NotNull;
 
 public interface IGrid {
 	
 	/**
-	 * TODO
+	 * Returns whether or not one is allowed to move one Square from a specified
+	 * {@link Coordinate} in a specified {@link Direction}. One can only move to
+	 * coordinates that exists on the grid (i.e.
+	 * <code>fromCoordinate.getCoordinateInDirection(direction)</code> must
+	 * exist on the grid). One cannot move through walls or light trails. No two players can be
+	 * on the same Square.
 	 * 
-	 * @param p
-	 * @param d
-	 * @return
-	 */
-	public Coordinate movePlayerInDirection(IPlayer p, Direction d);
-	
-	/**
-	 * TODO
-	 * 
-	 * @param p
-	 * @return
-	 */
-	public ASquare getSquareOfPlayer(IPlayer p);
-	
-	/**
-	 * returns whether a specified player can move in a specific direction
-	 * 
-	 * @param player
-	 *        the player who wants to move
+	 * @param fromCoordinate
+	 *        The coordinate one wants to leave.
 	 * @param direction
-	 *        the direction the player wants to move in
-	 * @return returns whether a specified player can move in a specific
-	 *         direction.
+	 *        The direction one wants to move in.
+	 * @return whether one is allowed to move one Square from a specified
+	 *         {@link Coordinate} in a specified {@link Direction}.
 	 */
-	public boolean canMovePlayer(IPlayer player, Direction direction);
-	
-	/**
-	 * Move a specified player to a new coordinate in a given direction
-	 * 
-	 * @param player
-	 *        the player who wants to move
-	 * @param direction
-	 *        the direction the player wants to move in.
-	 */
-	public void movePlayer(IPlayer player, Direction direction);
+	public abstract boolean canMoveFromCoordInDirection(Coordinate fromCoordinate,
+			Direction direction);
 	
 	/**
 	 * returns the list of items on a square, when there are no items on the
@@ -54,25 +33,22 @@ public interface IGrid {
 	 *        the coordinate of the square where the items are located
 	 * @return a list of items on a square
 	 */
-	public List<IItem> getItemList(Coordinate coordinate);
+	public List<IItem> getItemList(@NotNull Coordinate coordinate);
+	
+	// FIXME check null
 	
 	/**
-	 * Return the coordinate of the player with the given id.
-	 * 
-	 * @param player
-	 *        the player we need the coordinate from.
-	 * @return The coordinate as a Coordinate object of the given player.
-	 */
-	public Coordinate getPlayerCoordinate(IPlayer player);
-	
-	/**
-	 * Return the square of the grid that has a specific coordinate.
+	 * Return the square of the grid that has a specific coordinate. This method
+	 * returns null if the location doesn't exists on the grid.
 	 * 
 	 * @param coordinate
 	 *        The coordinate of the square.
-	 * @return The square at that coordinate.
+	 * @return The square at that coordinate or null if the location doesn't
+	 *         exists.
 	 */
-	public ASquare getSquareAt(Coordinate coordinate);
+	public ASquare getSquareAt(@NotNull Coordinate coordinate);
+	
+	// FIXME check null
 	
 	/**
 	 * Return all the possible coordinates in the grid.

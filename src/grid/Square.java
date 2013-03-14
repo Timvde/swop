@@ -127,7 +127,7 @@ public class Square extends ASquare implements Observer {
 	 * Move an IPlayer on this square. This might cause a penalty to the player,
 	 * depending on the square's current power state and the items it contains.
 	 * 
-	 * TODO null
+	 * FIXME null
 	 */
 	public void setPlayer(IPlayer player) {
 		this.player = player;

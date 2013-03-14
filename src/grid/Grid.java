@@ -19,7 +19,7 @@ public class Grid implements IGrid {
 	private List<Wall>					walls;
 	private int							width;
 	private int							height;
-	private static final int			MINIMUM_WALL_SIZE			= 2;
+	private static final int			MINIMUM_WALL_SIZE	= 2;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -55,53 +55,6 @@ public class Grid implements IGrid {
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
 		return grid;
-	}
-	
-	@Override
-	public boolean canMovePlayer(IPlayer player, Direction direction) {
-		// player and direction must exist
-		
-		/*
-		 * if (!players.containsKey(playerID) || direction == null) return
-		 * false; // next coordinate must be on the grid else if
-		 * (!grid.containsKey
-		 * (players.get(playerID).getCoordinateInDirection(direction))) return
-		 * false; // players cannot move through walls else if
-		 * (grid.get(players.
-		 * get(playerID).getCoordinateInDirection(direction)).getClass() ==
-		 * WallPart.class) return false; // players cannot occupy the same
-		 * position else if
-		 * (players.containsValue(players.get(playerID).getCoordinateInDirection
-		 * (direction))) return false; // players cannot move through light
-		 * trails else if
-		 * (grid.get(players.get(playerID).getCoordinateInDirection(direction))
-		 * .hasLightTrail()) return false;
-		 */
-
-		// else if (direction.getPrimeryDirections().size() == 2
-		// && grid.get(
-		// players.get(playerID).getCoordinateInDirection(
-		// direction.getPrimeryDirections().get(0))).hasLightTrail()
-		// && grid.get(
-		// players.get(playerID).getCoordinateInDirection(
-		// direction.getPrimeryDirections().get(1))).hasLightTrail())
-		// return false;
-		return true;
-	}
-	
-	@Override
-	public void movePlayer(IPlayer player, Direction direction) {
-		if (!canMovePlayer(player, direction))
-			throw new IllegalArgumentException("Player can not be moved in that direction!");
-		Coordinate newCoord = players.get(player).getCoordinateInDirection(direction);
-		Coordinate oldCoord = players.get(player);
-		// update the squares
-		((Square) grid.get(newCoord)).setPlayer(grid.get(oldCoord).getPlayer());
-		((Square) grid.get(oldCoord)).setPlayer(null);
-		// set a new position in the list of players
-		players.put(player, newCoord);
-		// set the ligh trail on a previous square
-		((Square) grid.get(oldCoord)).placeLightTrail();
 	}
 	
 	@Override
@@ -179,33 +132,10 @@ public class Grid implements IGrid {
 		return this.grid.keySet();
 	}
 	
-	/**
-	 * This method moves a specified
-	 * 
-	 * 
-	 * TODO
-	 * 
-	 * @return
-	 */
 	@Override
-	public Coordinate movePlayerInDirection(IPlayer p, Direction d) {
-		return null;
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 * TODO
-	 */
-	@Override
-	public ASquare getSquareOfPlayer(IPlayer p) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	public boolean canMoveFromCoordInDirection(Coordinate fromCoord, Direction direction) {
-		// direction must exist
-		if (direction == null)
+		// direction and fromCoord must exist
+		if (direction == null || fromCoord == null)
 			return false;
 		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
 		// next coordinate must be on the grid
@@ -226,15 +156,21 @@ public class Grid implements IGrid {
 	}
 	
 	/**
-	 * TODO document
+	 * This method returns whether or not one crosses or ends in a lightTrail if
+	 * he moves one square from a specified coordinate in a specified direction.
 	 * 
 	 * @param fromCoord
+	 *        The coordinate one wants to leave.
+	 * 
 	 * @param direction
-	 * @return
+	 *        he direction one wants to move in.
+	 * @return whether one crosses or ends in a lightTrail if he moves
+	 *         one square from a specified coordinate in a specified direction.
 	 */
 	private boolean crossesLightTrail(Coordinate fromCoord, Direction direction) {
-		// direction must exist and toCoordinate must exist on grid
-		if (direction == null || !grid.containsKey(fromCoord.getCoordinateInDirection(direction)))
+		// direction must exist and coordinates must exist on grid
+		if (fromCoord == null || direction == null
+				|| !grid.containsKey(fromCoord.getCoordinateInDirection(direction)))
 			return false;
 		
 		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
@@ -257,7 +193,7 @@ public class Grid implements IGrid {
 			return false;
 		}
 		
-		// players cannot cross lighttrails diagonally
+		// players cannot cross light trails diagonally
 		if ((diagSquare1.hasLightTrail() || diagSquare1.hasPlayer())
 				&& (diagSquare2.hasLightTrail() || diagSquare2.hasPlayer())) {
 			return true;

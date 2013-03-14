@@ -194,7 +194,7 @@ public class Player extends Observable implements IPlayer {
 		}
 		
 		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
-			throw new IllegalStateException("The player cannot move in given direction.");
+			throw new IllegalStateException("The player cannot move in given direction on the grid.");
 		}
 		
 		// remove this player form his current square
