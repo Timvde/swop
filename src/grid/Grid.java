@@ -54,54 +54,7 @@ public class Grid implements IGrid {
 	 * @return returns the grid
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
-<<<<<<< .merge_file_aJjznj
 		return grid; //FIXME clone ofzo?
-=======
-		return grid;
-	}
-	
-	@Override
-	public boolean canMovePlayer(IPlayer player, Direction direction) {
-		// player and direction must exist
-		if (!players.containsKey(player) || direction == null)
-			return false;
-		// next coordinate must be on the grid
-		else if (!grid.containsKey(players.get(player).getCoordinateInDirection(direction)))
-			return false;
-		// players cannot move through walls
-		else if (grid.get(players.get(player).getCoordinateInDirection(direction)).getClass() == WallPart.class)
-			return false;
-		// players cannot occupy the same position
-		else if (players.containsValue(players.get(player).getCoordinateInDirection(direction)))
-			return false;
-		// players cannot move through light trails
-	else if (grid.get(players.get(player).getCoordinateInDirection(direction)).hasLightTrail())
-		return false;
-		// else if (direction.getPrimeryDirections().size() == 2
-		// && grid.get(
-		// players.get(playerID).getCoordinateInDirection(
-		// direction.getPrimeryDirections().get(0))).hasLightTrail()
-		// && grid.get(
-		// players.get(playerID).getCoordinateInDirection(
-		// direction.getPrimeryDirections().get(1))).hasLightTrail())
-		// return false;
-		return true;
-	}
-	
-	@Override
-	public void movePlayer(IPlayer player, Direction direction) {
-		if (!canMovePlayer(player, direction))
-			throw new IllegalArgumentException("Player can not be moved in that direction!");
-		Coordinate newCoord = players.get(player).getCoordinateInDirection(direction);
-		Coordinate oldCoord = players.get(player);
-		// update the squares
-		((Square) grid.get(newCoord)).setPlayer(grid.get(oldCoord).getPlayer());
-		((Square) grid.get(oldCoord)).setPlayer(null);
-		// set a new position in the list of players
-		players.put(player, newCoord);
-		// set the ligh trail on a previous square
-		((Square) grid.get(oldCoord)).placeLightTrail();
->>>>>>> .merge_file_f8rKxh
 	}
 	
 	@Override
