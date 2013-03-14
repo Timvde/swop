@@ -61,7 +61,7 @@ public class Player extends Observable implements IPlayer {
 	 * @param startCoordinate
 	 *        The starting position of the player
 	 */
-	public Player(@NotNull Coordinate startCoordinate) throws IllegalArgumentException {
+	public Player(@NotNull Coordinate startCoordinate) {
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();

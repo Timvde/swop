@@ -58,7 +58,7 @@ public interface IPlayer {
 	/**
 	 * This method lets the player lose a specified number of actions.
 	 * 
-	 * @return The number of actions this player will skip
+	 * @param numberOfActionsToSkip The number of actions this player will skip
 	 */
 	public void skipNumberOfActions(int numberOfActionsToSkip);
 	
@@ -113,7 +113,7 @@ public interface IPlayer {
 	/**
 	 * Returns whether this player is allowed to perform a move action. A player
 	 * is allowed to perform an move action if he has performedless then
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
+	 * {@link Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
 	 * {@link #getAllowedNumberOfActions()} > 0.
 	 * 
 	 * @return whether this player is allowed to perform a move action

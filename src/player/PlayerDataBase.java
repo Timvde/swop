@@ -49,14 +49,19 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * 
 	 * @param playerStartingPositions
 	 *        The specified starting coordinates for the players to create
+	 *        
+	 * @return A list of the newly created Players.
 	 * 
 	 * @throws IllegalArgumentException
 	 *         The lenght of the specified playerStartingCoordinates array must
 	 *         be {@value #NUMBER_OF_PLAYERS} and no two given coordinates can
 	 *         be the same.
 	 */
-	public List<IPlayer> createNewDB(Coordinate[] playerStartingPositions)
+	public List<IPlayer> createNewDB(@NotNull Coordinate[] playerStartingPositions)
 			throws IllegalArgumentException {
+		if (playerStartingPositions == null) {
+			throw new IllegalArgumentException("the given coordinates cannot be null");
+		}
 		if (playerStartingPositions.length != NUMBER_OF_PLAYERS) {
 			throw new IllegalArgumentException("The number of player-starting-coordinates is wrong");
 		}
@@ -73,7 +78,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		}
 		
 		// Set the left downmost player as starting player.
-		this.currentPlayerIndex = 1;
+		this.currentPlayerIndex = 0;
 		
 		return new ArrayList<IPlayer>(playerList);
 	}
@@ -91,12 +96,8 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		return true;
 	}
 	
-	/**
-	 * Returns the player who is currently allowed to play.
-	 * 
-	 * @return the {@link IPlayer} who is currently allowed to play.
-	 */
-	public IPlayer getCurrentPlayer() {
+	@Override
+	public IPlayer getCurrentPlayer() throws IllegalStateException{
 		if (this.playerList.size() == 0) {
 			throw new IllegalStateException("The PlayerDatabase is empy.");
 		}

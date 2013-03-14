@@ -16,8 +16,11 @@ public interface IPlayerDataBase {
 	/**
 	 * Returns the player who is currently allowed to play.
 	 * 
-	 * @return the player who is currently allowed to play.
+	 * @return the {@link IPlayer} who is currently allowed to play.
+	 * 
+	 * @throws IllegalStateException
+	 *         When the database is empty.
 	 */
-	public IPlayer getCurrentPlayer();
-
+	public IPlayer getCurrentPlayer() throws IllegalStateException;
+	
 }
