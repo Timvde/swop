@@ -1,5 +1,6 @@
 package game;
 
+import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
@@ -64,13 +65,17 @@ public class Game {
 	 * @param width
 	 * @param height
 	 */
-	public void newGame(int width, int height) {
-		List<IPlayer> players = playerDB.createNewDB();
+	public void newGame(int width, int height) {		
+		List<IPlayer> players = playerDB.createNewDB(new Coordinate[] {
+				new Coordinate(width - 1, 0), new Coordinate(0, height - 1) });
 		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
+		this.grid = new GridBuilder().setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
+		
+		for (IPlayer player : players)
+			player.setGrid(grid);
 		
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);

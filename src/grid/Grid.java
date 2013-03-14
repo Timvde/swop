@@ -16,7 +16,10 @@ import player.Player;
 public class Grid implements IGrid {
 	
 	private Map<Coordinate, ASquare>	grid;
-	private Map<IPlayer, Coordinate>	players;
+	private List<Wall>					walls;
+	private int							width;
+	private int							height;
+	private static final int			MINIMUM_WALL_SIZE	= 2;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -29,60 +32,10 @@ public class Grid implements IGrid {
 	 * 
 	 * 
 	 */
-	Grid(Map<Coordinate, ASquare> grid, Map<IPlayer, Coordinate> players) {
-		if (grid == null || players == null)
+	Grid(Map<Coordinate, ASquare> grid) {
+		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
-		
 		this.grid = grid;
-		this.players = players;
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param p
-	 * @param d
-	 */
-	private void updatePlayerLocation(IPlayer p, Direction d) {
-		Coordinate currCoord = this.players.get(p);
-		int currCoordX = currCoord.getX();
-		int currCoordY = currCoord.getY();
-		
-		if (d == Direction.NORTH) {
-			Coordinate newCoord = new Coordinate(currCoordX, currCoordY - 1);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.NORTHEAST) {
-			Coordinate newCoord = new Coordinate(currCoordX + 1, currCoordY - 1);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.EAST) {
-			Coordinate newCoord = new Coordinate(currCoordX + 1, currCoordY);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.SOUTHEAST) {
-			Coordinate newCoord = new Coordinate(currCoordX + 1, currCoordY + 1);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.SOUTH) {
-			Coordinate newCoord = new Coordinate(currCoordX, currCoordY + 1);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.SOUTHWEST) {
-			Coordinate newCoord = new Coordinate(currCoordX - 1, currCoordY + 1);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.WEST) {
-			Coordinate newCoord = new Coordinate(currCoordX - 1, currCoordY);
-			this.players.put(p, newCoord);
-		}
-		else if (d == Direction.NORTHWEST) {
-			Coordinate newCoord = new Coordinate(currCoordX - 1, currCoordY - 1);
-			this.players.put(p, newCoord);
-		}
-		else {
-			throw new IllegalArgumentException("Not a valid direction!");
-		}
 	}
 	
 	/**
@@ -101,50 +54,7 @@ public class Grid implements IGrid {
 	 * @return returns the grid
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
-		return grid;
-	}
-	
-	@Override
-	public boolean canMovePlayer(IPlayer player, Direction direction) {
-		// player and direction must exist
-		if (!players.containsKey(player) || direction == null)
-			return false;
-		// next coordinate must be on the grid
-		else if (!grid.containsKey(players.get(player).getCoordinateInDirection(direction)))
-			return false;
-		// players cannot move through walls
-		else if (grid.get(players.get(player).getCoordinateInDirection(direction)).getClass() == WallPart.class)
-			return false;
-		// players cannot occupy the same position
-		else if (players.containsValue(players.get(player).getCoordinateInDirection(direction)))
-			return false;
-		// players cannot move through light trails
-	else if (grid.get(players.get(player).getCoordinateInDirection(direction)).hasLightTrail())
-		return false;
-		// else if (direction.getPrimeryDirections().size() == 2
-		// && grid.get(
-		// players.get(playerID).getCoordinateInDirection(
-		// direction.getPrimeryDirections().get(0))).hasLightTrail()
-		// && grid.get(
-		// players.get(playerID).getCoordinateInDirection(
-		// direction.getPrimeryDirections().get(1))).hasLightTrail())
-		// return false;
-		return true;
-	}
-	
-	@Override
-	public void movePlayer(IPlayer player, Direction direction) {
-		if (!canMovePlayer(player, direction))
-			throw new IllegalArgumentException("Player can not be moved in that direction!");
-		Coordinate newCoord = players.get(player).getCoordinateInDirection(direction);
-		Coordinate oldCoord = players.get(player);
-		// update the squares
-		((Square) grid.get(newCoord)).setPlayer(grid.get(oldCoord).getPlayer());
-		((Square) grid.get(oldCoord)).setPlayer(null);
-		// set a new position in the list of players
-		players.put(player, newCoord);
-		// set the ligh trail on a previous square
-		((Square) grid.get(oldCoord)).placeLightTrail();
+		return grid; //FIXME clone ofzo?
 	}
 	
 	@Override
@@ -155,11 +65,6 @@ public class Grid implements IGrid {
 	@Override
 	public ASquare getSquareAt(Coordinate coordinate) {
 		return grid.get(coordinate);
-	}
-	
-	@Override
-	public Coordinate getPlayerCoordinate(IPlayer player) {
-		return this.players.get(player.getID());
 	}
 	
 	@Override
@@ -222,32 +127,72 @@ public class Grid implements IGrid {
 		return this.grid.keySet();
 	}
 	
-	/**
-	 * TODO
-	 * 
-	 * @return
-	 */
 	@Override
-	public Coordinate movePlayerInDirection(IPlayer p, Direction d) {
-		if (!canMovePlayer(p, d))
-			throw new IllegalStateException("Cannot move the player in this direction!");
-		
-		ASquare oldSquare = this.grid.get(this.players.get(p));
-		updatePlayerLocation(p, d);
-		ASquare newSquare = this.grid.get(this.players.get(p));
-		
-		oldSquare.removePlayer();
-		newSquare.setPlayer(p);
-		
-		return this.players.get(p);
+	public boolean canMoveFromCoordInDirection(Coordinate fromCoord, Direction direction) {
+		// direction and fromCoord must exist
+		if (direction == null || fromCoord == null)
+			return false;
+		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
+		// next coordinate must be on the grid
+		if (!grid.containsKey(toCoord))
+			return false;
+		// players cannot move through walls
+		if (grid.get(toCoord) instanceof WallPart)
+			return false;
+		// players cannot occupy the same position
+		Square toSquare = (Square) grid.get(toCoord);
+		if (toSquare.hasPlayer())
+			return false;
+		// players cannot move through light trails
+		if (this.crossesLightTrail(fromCoord, direction)) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
-	 * TODO
+	 * This method returns whether or not one crosses or ends in a lightTrail if
+	 * he moves one square from a specified coordinate in a specified direction.
+	 * 
+	 * @param fromCoord
+	 *        The coordinate one wants to leave.
+	 * 
+	 * @param direction
+	 *        he direction one wants to move in.
+	 * @return whether one crosses or ends in a lightTrail if he moves one
+	 *         square from a specified coordinate in a specified direction.
 	 */
-	@Override
-	public ASquare getSquareOfPlayer(IPlayer p) {
-		// TODO Auto-generated method stub
-		return null;
+	private boolean crossesLightTrail(Coordinate fromCoord, Direction direction) {
+		// direction must exist and coordinates must exist on grid
+		if (fromCoord == null || direction == null
+				|| !grid.containsKey(fromCoord.getCoordinateInDirection(direction)))
+			return false;
+		
+		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
+		// the diagonal squares must exist both on the grid (the grid is always
+		// a square)
+		if (!grid.containsKey(direction.getCrossingCoordinateOnYAxis(toCoord))
+				|| !grid.containsKey(direction.getCrossingCoordinateOnYAxis(toCoord))) {
+			return false;
+		}
+		
+		// players cannot move on light trails
+		if (grid.get(toCoord).hasLightTrail()) {
+			return true;
+		}
+		
+		ASquare diagSquare1 = grid.get(direction.getCrossingCoordinateOnXAxis(toCoord));
+		ASquare diagSquare2 = grid.get(direction.getCrossingCoordinateOnYAxis(toCoord));
+		
+		if (diagSquare1.equals(diagSquare2)) {
+			return false;
+		}
+		
+		// players cannot cross light trails diagonally
+		if ((diagSquare1.hasLightTrail() || diagSquare1.hasPlayer())
+				&& (diagSquare2.hasLightTrail() || diagSquare2.hasPlayer())) {
+			return true;
+		}
+		return false;
 	}
 }

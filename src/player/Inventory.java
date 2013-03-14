@@ -14,7 +14,14 @@ public class Inventory implements IInventory {
 	// At this moment the number of items is the same for all inventories.
 	private static final int	MAX_NUMBER_OF_ITEMS	= 6;
 	
-	private List<IItem>			contents			= new ArrayList<IItem>();
+	private List<IItem>			contents;
+	
+	/**
+	 * Creates a new empty inventory
+	 */
+	public Inventory() {
+		this.contents = new ArrayList<IItem>(MAX_NUMBER_OF_ITEMS);
+	}
 	
 	/**
 	 * add an item to this inventory
@@ -77,6 +84,20 @@ public class Inventory implements IInventory {
 	 */
 	public int size() {
 		return contents.size();
+	}
+	
+	/**
+	 * returns whether this inventory contains the specified element. More
+	 * formally this method returns <tt>true</tt> if and only if this inventory
+	 * contains at least one item <tt>i</tt> such that
+	 * <tt> item.equals(i) </tt>
+	 * 
+	 * @param item
+	 *        the item whose presence in this inventory is to be tested
+	 * @return true if this inventory contains the specified item, else false
+	 */
+	public boolean hasItem(IItem item) {
+		return contents.contains(item);
 	}
 	
 }

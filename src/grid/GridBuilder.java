@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import player.IPlayer;
 
 /**
  * A builder used for building the grid. This builder contains all the
@@ -20,7 +19,6 @@ public class GridBuilder {
 	private static final double	NUMBER_OF_ITEMS_ON_BOARD	= 0.05;
 	private static final int	MINIMUM_WALL_SIZE			= 2;
 	
-	private List<IPlayer>		players;
 	private double				maximalLengthOfWall;
 	private double				maximumNumberOfWalls;
 	private int					width;
@@ -28,16 +26,12 @@ public class GridBuilder {
 	
 	/**
 	 * Create a new builder for the grid
-	 * 
-	 * @param players
-	 *        the players who need to be placed on the board
 	 */
-	public GridBuilder(List<IPlayer> players) {
+	public GridBuilder() {
 		this.maximalLengthOfWall = 0.50;
 		this.maximumNumberOfWalls = 0.20;
 		this.width = 10;
 		this.height = 10;
-		this.players = players;
 	}
 	
 	/**
@@ -97,7 +91,6 @@ public class GridBuilder {
 	
 	private HashMap<Coordinate, ASquare>	grid;
 	private ArrayList<Wall>					walls;
-	private HashMap<IPlayer, Coordinate>	playerMap;
 	
 	/**
 	 * Build a new grid object. The grid will be build with the parameters set
@@ -123,13 +116,9 @@ public class GridBuilder {
 		while (maximumNumberOfWalls >= getNumberOfWallParts())
 			placeWall(maximumNumberOfWalls, maximalLengthOfWall);
 		
-		// if there are players in the builder, place them on the board
-		if (players.size() == 2)
-			placePlayersOnBoard(players);
-		
 		// place the items on the board
 		placeItemsOnBoard();
-		return new Grid(grid, playerMap);
+		return new Grid(grid);
 	}
 	
 	/* -------------------- grid building methods ------------------------ */
@@ -243,19 +232,6 @@ public class GridBuilder {
 		return true;
 	}
 	
-	/**
-	 * put the specified players on the board
-	 * 
-	 * @param players
-	 *        players to be put on the board
-	 */
-	private void placePlayersOnBoard(List<IPlayer> players) {
-		this.playerMap = new HashMap<IPlayer, Coordinate>();
-		((Square) grid.get(new Coordinate(width - 1, 0))).setPlayer(players.get(0));
-		this.playerMap.put(players.get(0), new Coordinate(width - 1, 0));
-		((Square) grid.get(new Coordinate(0, height - 1))).setPlayer(players.get(1));
-		this.playerMap.put(players.get(1), new Coordinate(0, height - 1));
-	}
 	
 	/**
 	 * Return all the coordinates of a wall that starts and ends at two certain
@@ -344,7 +320,7 @@ public class GridBuilder {
 	 * deterministic grid we can use to test. This should not be used in
 	 * gameplay.
 	 */
-	private Grid build(int width, int height, List<Wall> walls, List<IPlayer> players) {
+	private Grid build(int width, int height, List<Wall> walls) {
 		this.walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
@@ -352,8 +328,6 @@ public class GridBuilder {
 				Square sq = new Square();
 				grid.put(new Coordinate(i, j), sq);
 			}
-		if (players.size() == 2)
-			placePlayersOnBoard(players);
 		
 		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
 		
@@ -361,13 +335,13 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(6, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 8))).addItem(new LightGrenade());
-		((Square) grid.get(new Coordinate(7, 7))).addItem(new LightGrenade());
+		//((Square) grid.get(new Coordinate(7, 7))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 6))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
 		
-		return new Grid(grid, playerMap);
+		return new Grid(grid);
 	}
 	
 	/**
@@ -382,20 +356,18 @@ public class GridBuilder {
 	 *  | | | | | | | | | | |
 	 *  | | | | | | | | | | |
 	 *  | | | | |x|x|x|x|x| |
-	 *  | | | | | | | | | | |
-	 *  | | |o| | | |o|o|o| |
+	 *  | | | | | | | |o| | |
+	 *  | | |o| | | | | |o| |
 	 *  | | | | | |o|o|o|o| |
 	 *  |1| | | | | | | | | |
 	 * </pre>
 	 * 
-	 * @param players
-	 *        the players for this game
 	 * @return the new prediefined grid
 	 */
-	public Grid getPredefinedTestGrid(List<IPlayer> players) {
+	public Grid getPredefinedTestGrid() {
 		List<Wall> walls = new ArrayList<Wall>();
 		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
 		
-		return build(10, 10, walls, players);
+		return build(10, 10, walls);
 	}
 }

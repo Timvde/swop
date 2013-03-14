@@ -3,12 +3,12 @@ package item;
 import item.LightGrenade.LightGrenadeState;
 
 /**
- * A lightgrenade always is in a {@link LightGrenadeState}. Initially in the
+ * A light grenade always is in a {@link LightGrenadeState}. Initially in the
  * INACTIVE state. Only inactive grenades can be carried.
  * 
- * A player may only 'trigger' a lightgrenade, which means the grenade will
+ * A player may only 'trigger' a light grenade, which means the grenade will
  * become 'active', once the player leaves the square. When a player enters a
- * square with an active lightgrenade, it will go in the 'exploded' state.
+ * square with an active light grenade, it will go in the 'exploded' state.
  */
 public interface ILightGrenade extends IItem {
 

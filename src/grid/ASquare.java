@@ -57,6 +57,13 @@ public abstract class ASquare {
 	public abstract boolean hasItemWithID(int ID);
 	
 	/**
+	 * Returns whether or not this ASquare holds currently a {@link Player}
+	 * 
+	 * @return Whether this square has a Player.
+	 */
+	public abstract boolean hasPlayer();
+
+	/**
 	 * TODO
 	 */
 	public abstract void setPlayer(IPlayer p);
