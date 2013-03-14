@@ -1,13 +1,12 @@
 package game;
 
 import grid.Grid;
+import grid.GridBuilder;
 import gui.GUI;
-
 import java.util.ArrayList;
-
 import player.IPlayer;
 import player.Player;
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -22,10 +21,10 @@ import controllers.UseItemController;
  */
 public class Game {
 	
-	private Grid			grid = null;
-	private PlayerDatabase	playerDB;
-	private GUI				gui;
-	private GUIDataController guiDataCont;
+	private Grid				grid	= null;
+	private PlayerDataBase		playerDB;
+	private GUI					gui;
+	private GUIDataController	guiDataCont;
 	
 	public static void main(String[] args) {
 		Game game = new Game();
@@ -36,7 +35,7 @@ public class Game {
 		// TODO initialise stuff
 		
 		// TODO playerDB contstr?
-		this.playerDB = new PlayerDatabase();
+		this.playerDB = new PlayerDataBase();
 		
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
@@ -45,7 +44,8 @@ public class Game {
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
 		this.guiDataCont = new GUIDataController(this.playerDB, this.grid);
 		
-		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, this.guiDataCont);
+		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
+				this.guiDataCont);
 		
 		java.awt.EventQueue.invokeLater(gui);
 	}
@@ -75,9 +75,8 @@ public class Game {
 		players.add(p1);
 		players.add(p2);
 		
-		System.out.println("Creating new game with grid width "+width+" and height "+height);
-		this.grid = new Grid.Builder(this, players).setGridWidth(width).setGridHeigth(height)
-				.build();
+		System.out.println("Creating new game with grid width " + width + " and height " + height);
+		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
 		

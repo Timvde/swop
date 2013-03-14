@@ -6,7 +6,7 @@ import grid.Direction;
 import org.junit.Before;
 import org.junit.Test;
 
-
+@SuppressWarnings("javadoc")
 public class CoordinateTest {
 	
 	@Before

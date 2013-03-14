@@ -9,14 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 
-
 @SuppressWarnings("javadoc")
 public class SquareTest {
 	
 	private static Square square;
 	
 	@Before
-	public static void setUp() {
+	public void setUp() {
 		square = new Square();
 	}
 	

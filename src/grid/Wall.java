@@ -14,8 +14,8 @@ import player.Player;
  */
 public class Wall {
 	
-	Coordinate				start;
-	Coordinate				end;
+	private Coordinate		start;
+	private Coordinate		end;
 	
 	private static WallPart	wallPart;
 	
@@ -52,11 +52,15 @@ public class Wall {
 		}
 	}
 	
-	private Coordinate getStart() {
+	/*
+	 * The following methods are package private, since they can be accessed by
+	 * Grid, to create a predefined test grid.
+	 */
+	Coordinate getStart() {
 		return start;
 	}
 	
-	private Coordinate getEnd() {
+	Coordinate getEnd() {
 		return end;
 	}
 	

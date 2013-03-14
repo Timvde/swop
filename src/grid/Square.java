@@ -129,7 +129,7 @@ public class Square extends ASquare implements Observer {
 	 * 
 	 * TODO null
 	 */
-	public void setPlayer( IPlayer player) {
+	public void setPlayer(IPlayer player) {
 		this.player = player;
 		penalty(player);
 	}

@@ -3,6 +3,7 @@ package player;
 import grid.Square;
 import item.LightGrenade;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import com.sun.istack.internal.NotNull;
@@ -40,7 +41,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * 
 	 * The player allowed to play, is the player first created .
 	 */
-	public void createNewDB() {
+	public List<IPlayer> createNewDB() {
 		this.playerList.clear();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
 			Player newPlayer = new Player();
@@ -48,6 +49,8 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			newPlayer.addObserver(this);
 		}
 		this.currentPlayerIndex = 0;
+		
+		return (List<IPlayer>) this.playerList.clone();
 	}
 	
 	/**

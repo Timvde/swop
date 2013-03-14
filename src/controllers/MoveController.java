@@ -1,18 +1,18 @@
 package controllers;
 
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 import grid.Direction;
 
 public class MoveController {
 	
-	private PlayerDatabase playerDB;
+	private PlayerDataBase playerDB;
 	
-	public MoveController(PlayerDatabase db) {
+	public MoveController(PlayerDataBase db) {
 		this.playerDB = db;
 	}
 	
 	public void move(Direction direction) {
-		// TODO
+		playerDB.getCurrentPlayer().moveInDirection(direction);
 	}
 	
 }

@@ -1,14 +1,13 @@
 package unittests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import item.Item;
 import item.LightGrenade;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import player.Inventory;
 
-
+@SuppressWarnings("javadoc")
 public class InventoryTest {
 	
 	private static Inventory inventory;

@@ -85,8 +85,8 @@ public class Player extends Observable implements IPlayer {
 	 * {@link #endTurn()} to reset his turn related fields.
 	 */
 	private void increaseAllowedNumberOfActions() {
-		this.allowedNumberOfActionsLeft = allowedNumberOfActionsLeft
-				+ MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
+				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	
 	/**
@@ -98,14 +98,7 @@ public class Player extends Observable implements IPlayer {
 	 * indicate he wants to end his turn.
 	 */
 	private void decreaseAllowedNumberOfActions() {
-		this.allowedNumberOfActionsLeft--;
-		
-		// If no more actions left, notify the PlayerDataBase to ask to end this
-		// player's turn
-		if (allowedNumberOfActionsLeft <= 0) {
-			this.setChanged();
-			this.notifyObservers();
-		}
+		skipNumberOfActions(1);
 	}
 	
 	@Override
@@ -116,6 +109,18 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public void skipNumberOfActions(int numberOfActionsToSkip) {
 		this.allowedNumberOfActionsLeft -= numberOfActionsToSkip;
+		checkEndTurn();
+	}
+	
+	/**
+	 * This method checks if a player has any actions left. If not, it ends its
+	 * turn.
+	 */
+	private void checkEndTurn() {
+		if (getAllowedNumberOfActions() <= 0) {
+			this.setChanged();
+			this.notifyObservers();
+		}
 	}
 	
 	@Override
@@ -152,12 +157,11 @@ public class Player extends Observable implements IPlayer {
 		if (this.hasMovedYet()) {
 			// this player's turn will end; reset the turn-related properties
 			this.resetHasMoved();
-			this.allowedNumberOfActionsLeft = 0;
+			resetNumberOfActionsLeft();
+			// The previous method will make the player lose its turn. We need
+			// to increase it again to prepare for this player's next turn.
 			this.increaseAllowedNumberOfActions();
 			
-			// notify the PlayerDataBase to ask to end this player's turn
-			this.setChanged();
-			this.notifyObservers();
 		}
 		else {
 			// this player loses the game
@@ -166,9 +170,17 @@ public class Player extends Observable implements IPlayer {
 		}
 	}
 	
+	/**
+	 * This sets the number of actions a player has left to zero. This will end
+	 * a player's turn.
+	 */
+	private void resetNumberOfActionsLeft() {
+		skipNumberOfActions(getAllowedNumberOfActions());
+	}
+	
 	@Override
 	public boolean isPreconditionEndTurnSatisfied() {
-		return this.allowedNumberOfActionsLeft > 0;
+		return getAllowedNumberOfActions() > 0;
 	}
 	
 	@Override
@@ -205,7 +217,7 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public boolean isPreconditionMoveSatisfied() {
-		return this.allowedNumberOfActionsLeft > 0;
+		return getAllowedNumberOfActions() > 0;
 	}
 	
 	@Override

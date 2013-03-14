@@ -1,17 +1,17 @@
 package controllers;
 
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 import item.IItem;
 
 public class UseItemController {
 	
-	private PlayerDatabase	playerDB;
+	private PlayerDataBase	playerDB;
 	
-	public UseItemController(PlayerDatabase db) {
+	public UseItemController(PlayerDataBase db) {
 		this.playerDB = db;
 	}
 	
 	public void useItem(IItem item) {
-		// TODO
+		playerDB.getCurrentPlayer().useItem(item);
 	}
 }

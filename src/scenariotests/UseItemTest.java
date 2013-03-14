@@ -5,7 +5,7 @@ import game.Game;
 import grid.Grid;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.NewGameController;
@@ -14,7 +14,7 @@ import controllers.PickUpItemController;
 /**
  * Test if the use item mechanics work correctly.
  * 
- * To Test:
+ * Tests:
  * - Light grenade can not be placed on wall.
  * - Light grenade can not be placed on start positions.
  * - Multiple light grenades can not be used on one square.
@@ -27,7 +27,7 @@ public class UseItemTest {
 	private static PickUpItemController	pickUpCont;
 	private static MoveController		moveCont;
 	private static Grid					grid;
-	private static PlayerDatabase		playerDB;
+	private static PlayerDataBase		playerDB;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
