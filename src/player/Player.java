@@ -206,4 +206,11 @@ public class Player extends Observable implements IPlayer {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//TODO remove deze? is tijdelijk een oplossing dat players hun grid niet hebben.
+	// Ik had dat nodig voor de tests.
+	@Override
+	public void setGrid(Grid g) {
+		this.grid = g;
+	}
 }

@@ -15,9 +15,6 @@ import controllers.PickUpItemController;
  * Test if the use item mechanics work correctly.
  * 
  * Tests:
- * - Light grenade can not be placed on wall.
- * - Light grenade can not be placed on start positions.
- * - Multiple light grenades can not be used on one square.
  * 
  * @author Tom
  */
@@ -39,18 +36,4 @@ public class UseItemTest {
 		moveCont = new MoveController(playerDB);
 	}
 	
-	@Test
-	public void testLightGrenadeCanNotBePlacedOnWall() {
-		
-	}
-	
-	@Test
-	public void testLightGrenadeCanNotBePlacedOnStartPositions() {
-		
-	}
-	
-	@Test
-	public void testCanNotUseMultipleLightGrenadesOnOneSquare() { 
-		
-	}
 }

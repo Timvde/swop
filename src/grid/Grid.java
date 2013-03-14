@@ -43,8 +43,46 @@ public class Grid implements IGrid {
 	 * @param p
 	 * @param d
 	 */
-	private void updatePlayerLocation(Player p, Direction d) {
+	private void updatePlayerLocation(IPlayer p, Direction d) {
+		Coordinate currCoord = this.players.get(p);
+		int currCoordX = currCoord.getX();
+		int currCoordY = currCoord.getY();
 		
+		if (d == Direction.NORTH) {
+			Coordinate newCoord = new Coordinate(currCoordX, currCoordY - 1);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.NORTHEAST) {
+			Coordinate newCoord = new Coordinate(currCoordX + 1, currCoordY - 1);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.EAST) {
+			Coordinate newCoord = new Coordinate(currCoordX + 1, currCoordY);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.SOUTHEAST) {
+			Coordinate newCoord = new Coordinate(currCoordX + 1, currCoordY + 1);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.SOUTH) {
+			Coordinate newCoord = new Coordinate(currCoordX, currCoordY + 1);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.SOUTHWEST) {
+			Coordinate newCoord = new Coordinate(currCoordX - 1, currCoordY + 1);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.WEST) {
+			Coordinate newCoord = new Coordinate(currCoordX - 1, currCoordY);
+			this.players.put(p, newCoord);
+		}
+		else if (d == Direction.NORTHWEST) {
+			Coordinate newCoord = new Coordinate(currCoordX - 1, currCoordY - 1);
+			this.players.put(p, newCoord);
+		}
+		else {
+			throw new IllegalArgumentException("Not a valid direction!");
+		}
 	}
 	
 	/**
@@ -191,9 +229,17 @@ public class Grid implements IGrid {
 	 */
 	@Override
 	public Coordinate movePlayerInDirection(IPlayer p, Direction d) {
-		return null;
-		// TODO Auto-generated method stub
+		if (!canMovePlayer(p, d))
+			throw new IllegalStateException("Cannot move the player in this direction!");
 		
+		ASquare oldSquare = this.grid.get(this.players.get(p));
+		updatePlayerLocation(p, d);
+		ASquare newSquare = this.grid.get(this.players.get(p));
+		
+		oldSquare.removePlayer();
+		newSquare.setPlayer(p);
+		
+		return this.players.get(p);
 	}
 	
 	/**

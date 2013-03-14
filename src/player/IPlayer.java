@@ -2,6 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Direction;
+import grid.Grid;
 import item.IItem;
 import java.util.List;
 
@@ -121,4 +122,9 @@ public interface IPlayer {
 	 * @param i
 	 */
 	public void useItem(IItem i);
+	
+	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
+	// hebben.
+	// Ik had dat nodig voor de tests.
+	public void setGrid(Grid g);
 }
