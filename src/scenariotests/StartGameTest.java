@@ -9,7 +9,7 @@ import controllers.NewGameController;
 /**
  * Test if the game starts correctly, and all preconditions are respected.
  * 
- * To Test:
+ * Tests:
  * - Minimum grid size: 10x10
  * 
  * @author tom

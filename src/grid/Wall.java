@@ -135,5 +135,16 @@ public class Wall {
 		public boolean hasItemWithID(int ID) {
 			return false;
 		}
+		
+		@Override
+		public void setPlayer(IPlayer p) {
+			throw new IllegalStateException("Can not set a player on a wallpart!");
+		}
+		
+		@Override
+		public void removePlayer() {
+			throw new IllegalStateException(
+					"Can not remove a player on a wallpart! No players are supposed to be on it.");
+		}
 	}
 }

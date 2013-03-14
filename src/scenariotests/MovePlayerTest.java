@@ -1,62 +1,125 @@
 package scenariotests;
 
 import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
 import game.Game;
+import grid.Direction;
 import grid.Grid;
+import grid.GridBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import player.PlayerDatabase;
-import controllers.GUIDataController;
-import controllers.NewGameController;
+import player.IPlayer;
+import player.Player;
+import player.PlayerDataBase;
+import controllers.EndTurnController;
+import controllers.MoveController;
 
-/**
+/** TODO in this class: catch exceptions / do assertions
  * This class will test scenarios concerning the movement of players.
  * 
- * To Test:
- * - No two players on one square
- * - Cannot move on wall
- * - Cannot leave grid
- * - Cannot cross lightrail
- * - Player must always do a move action in turn
+ * Tests: - No two players on one square - Cannot move on wall - Cannot leave
+ * grid - Cannot cross lightrail - Player must always do a move action in turn
  * 
  * @author Tom
  */
+@SuppressWarnings("javadoc")
 public class MovePlayerTest {
 	
-	private static GUIDataController	guiDataCont;
+	private static MoveController		moveCont;
+	private static EndTurnController	endTurnCont;
 	private static Grid					grid;
-	private static PlayerDatabase		playerDB;
+	private static PlayerDataBase		playerDB;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
-		// TODO set up playerDB en predefined grid, en bij Game doe setGrid
 		Game game = new Game();
+		
+		playerDB = new PlayerDataBase();
+		List<IPlayer> playerList = playerDB.createNewDB();
+		
+		GridBuilder builder = new GridBuilder(playerList);
+		grid = builder.getPredefinedTestGrid(playerList);
+		
+		for (IPlayer p : playerList) {
+			p.setGrid(grid);
+		}
+		
+		game.setGrid(grid);
+		
 		game.start();
-		guiDataCont = new GUIDataController(playerDB, grid);
+
+		moveCont = new MoveController(playerDB);
+		endTurnCont = new EndTurnController(playerDB);
 	}
 	
 	@Test
 	public void testNoTwoPlayersOnOneSquare() {
-		
+		// Player 1 actions
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		// Player 2 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		// Player 1 actions
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		// Player 2 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		// Player 1 actions
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		// Player 2 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
 	}
 	
 	@Test
 	public void testCannotMoveOnWall() {
-		
+		// Player 1 actions
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		// Player 2 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		// Player 1 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		// Player 2 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		// Player 1 actions
+		moveCont.move(Direction.NORTHEAST);
 	}
 	
 	@Test
 	public void testCannotLeaveGrid() {
-		
+		// Player 1 actions
+		moveCont.move(Direction.SOUTH);
 	}
 	
 	@Test
 	public void testCannotCrossLightrail() {
-		
+		// Player 1 actions
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.SOUTHEAST);
 	}
 	
 	@Test
 	public void testAlwaysMoveActionInTurn() {
-		
+		// Player 1 actions
+		endTurnCont.endTurn();
 	}
 }

@@ -7,14 +7,14 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import player.IPlayer;
-import player.PlayerDatabase;
+import player.PlayerDataBase;
 
 public class GUIDataController {
 	
-	private PlayerDatabase	playerDB;
+	private PlayerDataBase	playerDB;
 	private Grid			grid;
 	
-	public GUIDataController(PlayerDatabase playerDB, Grid grid) {
+	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
 		this.playerDB = playerDB;
 		this.grid = grid;
 	}

@@ -361,6 +361,8 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(6, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 8))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(7, 7))).addItem(new LightGrenade());
+		((Square) grid.get(new Coordinate(7, 6))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
@@ -381,7 +383,7 @@ public class GridBuilder {
 	 *  | | | | | | | | | | |
 	 *  | | | | |x|x|x|x|x| |
 	 *  | | | | | | | | | | |
-	 *  | | |o| | | | | |o| |
+	 *  | | |o| | | |o|o|o| |
 	 *  | | | | | |o|o|o|o| |
 	 *  |1| | | | | | | | | |
 	 * </pre>

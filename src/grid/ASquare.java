@@ -55,4 +55,14 @@ public abstract class ASquare {
 	 * @return whether or not this square holds the item with a given ID.
 	 */
 	public abstract boolean hasItemWithID(int ID);
+	
+	/**
+	 * TODO
+	 */
+	public abstract void setPlayer(IPlayer p);
+	
+	/**
+	 * TODO
+	 */
+	public abstract void removePlayer();
 }
