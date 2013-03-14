@@ -1,6 +1,8 @@
 package item;
 
+import grid.ASquare;
 import grid.Square;
+import grid.Wall;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -61,9 +63,12 @@ public class LightGrenade extends Item implements ILightGrenade {
 	}
 	
 	@Override
-	public void use(Square square) {
+	public void use(ASquare square) {
+		if (square instanceof Wall.WallPart)
+			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
 		this.trigger();
-		square.addItem(this);
+		//TODO this should not be a cast! Asquare should provide this method!
+		((Square) square).addItem(this);
 	}
 	
 	/************************* LigthGrenadeEnum *************************/

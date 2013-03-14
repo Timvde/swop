@@ -6,6 +6,7 @@ import java.util.List;
 import game.Game;
 import grid.Direction;
 import grid.Grid;
+import grid.GridBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import player.IPlayer;
@@ -37,7 +38,13 @@ public class MovePlayerTest {
 		playerDB = new PlayerDataBase();
 		List<IPlayer> playerList = playerDB.createNewDB();
 		
-		grid = Grid.getPredefinedTestGrid(playerList);
+		GridBuilder builder = new GridBuilder(playerList);
+		grid = builder.getPredefinedTestGrid(playerList);
+		
+		for (IPlayer p : playerList) {
+			p.setGrid(grid);
+		}
+		
 		game.setGrid(grid);
 		
 		game.start();

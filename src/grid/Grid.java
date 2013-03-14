@@ -67,11 +67,6 @@ public class Grid implements IGrid {
 		return grid.get(coordinate);
 	}
 	
-	/*
-	 * @Override public Coordinate getPlayerCoordinate(IPlayer player) { return
-	 * this.players.get(player.getID()); }
-	 */
-	
 	@Override
 	public String toString() {
 		String str = "";
@@ -164,8 +159,8 @@ public class Grid implements IGrid {
 	 * 
 	 * @param direction
 	 *        he direction one wants to move in.
-	 * @return whether one crosses or ends in a lightTrail if he moves
-	 *         one square from a specified coordinate in a specified direction.
+	 * @return whether one crosses or ends in a lightTrail if he moves one
+	 *         square from a specified coordinate in a specified direction.
 	 */
 	private boolean crossesLightTrail(Coordinate fromCoord, Direction direction) {
 		// direction must exist and coordinates must exist on grid

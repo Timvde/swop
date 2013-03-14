@@ -1,9 +1,10 @@
 package game;
 
+import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
-import java.util.ArrayList;
+import java.util.List;
 import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
@@ -28,14 +29,15 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.start();
+		game.start(10,10);
 	}
 	
-	public void start() {
+	public void start(int width, int height) {
 		// TODO initialise stuff
 		
 		// TODO playerDB contstr?
-		this.playerDB = new PlayerDataBase();
+		this.playerDB = new PlayerDataBase(new Coordinate[] { new Coordinate(width - 1, 0),
+				new Coordinate(0, height - 1) });
 		
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
@@ -66,19 +68,17 @@ public class Game {
 	 * @param height
 	 */
 	public void newGame(int width, int height) {
-		ArrayList<IPlayer> players = new ArrayList<IPlayer>();
 		
-		// TODO target positions in constructor:
-		IPlayer p1 = new Player(null);
-		IPlayer p2 = new Player(null);
-		
-		players.add(p1);
-		players.add(p2);
+		List<IPlayer> players = playerDB.createNewDB(new Coordinate[] {
+				new Coordinate(width - 1, 0), new Coordinate(0, height - 1) });
 		
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
+		this.grid = new GridBuilder().setGridWidth(width).setGridHeigth(height).build();
 		
 		setGrid(this.grid);
+		
+		for (IPlayer player : players)
+			player.setGrid(grid);
 		
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);

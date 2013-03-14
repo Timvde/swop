@@ -1,7 +1,9 @@
 package player;
 
+import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
+import grid.Grid;
 import grid.IGrid;
 import grid.Square;
 import item.IItem;
@@ -76,6 +78,11 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public Coordinate getTargetPosition() {
 		return this.targetPosition;
+	}
+	
+	@Override
+	public Coordinate getCurrentLocation() {
+		return this.currentCoord;
 	}
 	
 	@Override
@@ -197,7 +204,6 @@ public class Player extends Observable implements IPlayer {
 		if (!isValidDirection(direction)) {
 			throw new IllegalArgumentException("The specified direction is not valid.");
 		}
-		
 		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
 			throw new IllegalStateException(
 					"The player cannot move in given direction on the grid.");
@@ -230,13 +236,50 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		// Square playerSq = this.grid.getSquareOfPlayer(this); TODO implement
-		// playerSq.removeItem(item);
+		Square currentSquare = (Square) this.grid.getSquareOfPlayer(this);
+		if (item == null || !currentSquare.hasItemWithID(item.getId()))
+			throw new IllegalArgumentException("The item does not exist on the square");
+		
+		// remove the item from the square
+		currentSquare.removeItem(item);
+		// add the item to the inventory
+		inventory.addItem(item);
+		
+		// reduce the actions left
+		skipNumberOfActions(1);
 	}
 	
 	@Override
 	public void useItem(IItem i) {
-		// TODO Auto-generated method stub
+		if (!inventory.hasItem(i))
+			throw new IllegalArgumentException("The item is not in the inventory");
+		// TODO are there any other exceptions?
+		ASquare currentSquare = this.grid.getSquareOfPlayer(this);
+		inventory.removeItem(i);
+		i.use(currentSquare);
 		
+		this.skipNumberOfActions(1);
+	}
+	
+	/**
+	 * resets the player for a new game. The inventory and the lightTrail will
+	 * be reinitialized. The number of actions left is set to
+	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
+	 * return false.
+	 */
+	public void reset() {
+		inventory = new Inventory();
+		lightTrail = new LightTrail();
+		
+		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		hasMoved = false;
+	}
+
+	/**
+	 * sets the grid
+	 * @param grid the grid for this player
+	 */
+	public void setGrid(Grid grid) {
+		this.grid = grid;
 	}
 }

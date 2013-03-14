@@ -163,6 +163,9 @@ public class Square extends ASquare implements Observer {
 		this.player = null;
 	}
 	
+	/**
+	 * TODO
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		if (lightTrail > 0)

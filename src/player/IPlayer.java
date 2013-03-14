@@ -2,6 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Direction;
+import grid.Grid;
 import item.IItem;
 import java.util.List;
 
@@ -30,6 +31,13 @@ public interface IPlayer {
 	 * @return the coordinate this player has to reach to win the game.
 	 */
 	public Coordinate getTargetPosition();
+	
+	/**
+	 * Returns the coordinate this player currently stands on.
+	 * 
+	 * @return the coordinate this player currently stands on.
+	 */
+	public Coordinate getCurrentLocation();
 	
 	/**
 	 * Returns the {@link Inventory}-content associated with this player.
@@ -137,4 +145,10 @@ public interface IPlayer {
 	 * @param i
 	 */
 	public void useItem(IItem i);
+	
+	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
+	// hebben.
+	// Ik had dat nodig voor de tests.
+	public void setGrid(Grid g);
+
 }

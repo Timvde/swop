@@ -63,4 +63,13 @@ public abstract class ASquare {
 	 */
 	public abstract boolean hasPlayer();
 
+	/**
+	 * TODO
+	 */
+	public abstract void setPlayer(IPlayer p);
+	
+	/**
+	 * TODO
+	 */
+	public abstract void removePlayer();
 }
