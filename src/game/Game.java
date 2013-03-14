@@ -29,15 +29,14 @@ public class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.start(10,10);
+		game.start();
 	}
 	
-	public void start(int width, int height) {
+	public void start() {
 		// TODO initialise stuff
 		
 		// TODO playerDB contstr?
-		this.playerDB = new PlayerDataBase(new Coordinate[] { new Coordinate(width - 1, 0),
-				new Coordinate(0, height - 1) });
+		this.playerDB = new PlayerDataBase();
 		
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);

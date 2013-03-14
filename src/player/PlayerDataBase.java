@@ -28,17 +28,13 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	private int					currentPlayerIndex;
 	
 	/**
-	 * Creates a new PlayerManager-object and calls the
-	 * <code>{@link #createNewDB(playerStartingPositions)}</code> method to fill
-	 * it initially with new {@link Player}s with specified starting
-	 * coordinates.
+	 * Creates a new empty PlayerDataBase. to fill the database with players, one
+	 * has to call {@link PlayerDataBase#createNewDB(Coordinate[])}. Until then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an exception.
 	 * 
-	 * @param playerStartingPositions
-	 *        The specified starting coordinates for the players to create
 	 */
-	public PlayerDataBase(Coordinate[] playerStartingPositions) {
+	public PlayerDataBase() {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
-		this.createNewDB(playerStartingPositions);
+		// this.createNewDB(playerStartingPositions);
 	}
 	
 	/**
@@ -97,7 +93,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * 
 	 * @return the {@link IPlayer} who is currently allowed to play.
 	 */
-	public IPlayer getCurrentPlayer() { //FIXME indexoutofbounds
+	public IPlayer getCurrentPlayer() { // FIXME indexoutofbounds
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 	
