@@ -31,7 +31,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * {@link Player}s.
 	 */
 	public PlayerDataBase() {
-		this.createNewDB();
+		
 	}
 	
 	/**

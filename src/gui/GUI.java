@@ -215,18 +215,18 @@ public class GUI implements Runnable {
 						
 					}
 					
-					// Show the items in the list that the current player can
-					// interact with
-					Vector<IItem> itemsSquare = new Vector<IItem>();
-					List<IItem> itemsOfSquare = guiDataController.getItemsOnSquareOfCurrentPlayer();
-					
-					// add them into a Vector, because setListData of our list
-					// doesn't accept a List object.
-					for (IItem i : itemsOfSquare) {
-						itemsSquare.add((Item) i);
-					}
-					
-					itemList.setListData(itemsSquare);
+//					// Show the items in the list that the current player can
+//					// interact with
+//					Vector<IItem> itemsSquare = new Vector<IItem>();
+//					List<IItem> itemsOfSquare = guiDataController.getItemsOnSquareOfCurrentPlayer();
+//					
+//					// add them into a Vector, because setListData of our list
+//					// doesn't accept a List object.
+//					for (IItem i : itemsOfSquare) {
+//						itemsSquare.add((Item) i);
+//					}
+//					
+//					itemList.setListData(itemsSquare);
 					
 					// Show the player's inventory items in the inventory list
 					Vector<Item> itemsInventory = new Vector<Item>();

@@ -32,9 +32,6 @@ public class Game {
 	}
 	
 	public void start() {
-		// TODO initialise stuff
-		
-		// TODO playerDB contstr?
 		this.playerDB = new PlayerDataBase();
 		
 		MoveController moveCont = new MoveController(this.playerDB);
