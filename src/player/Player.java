@@ -275,16 +275,15 @@ public class Player extends Observable implements IPlayer {
 	}
 	
 	/**
-	 * sets the grid
-	 * 
-	 * @param grid
-	 *        the grid for this player
+	 * @param g
 	 */
-	public void setGrid(Grid grid) {
-		this.grid = grid;
+	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
+	// hebben.
+	// Ik had dat nodig voor de tests.
+	public void setGrid(@NotNull Grid g) throws IllegalArgumentException{
+		if (g == null) {
+			throw new IllegalArgumentException("the grid cannot be null");
+		}
+		this.grid = g;
 	}
-		// TODO remove deze? is tijdelijk een oplossing dat players hun grid
-		// niet
-		// hebben.
-		// Ik had dat nodig voor de tests.
 }

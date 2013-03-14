@@ -1,24 +1,28 @@
 package unittests;
 
 import static org.junit.Assert.assertEquals;
+import grid.Coordinate;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
+import player.IPlayer;
 import player.Player;
 
 @SuppressWarnings("javadoc")
 public class PlayerTest {
-	private Player player;
+	private IPlayer player;
+	private Coordinate randomCoord;
 
 	@Before
 	public void setUp() {
-		player = new Player();
+		int random = (int) Math.random();
+		randomCoord = new Coordinate(random, random);
+		player = new Player(randomCoord);
 	}
 
 	@Test
 	public void testConstructor() {
-		player = new Player();
+		assertEquals(player.getCurrentLocation(), randomCoord);
 		assertEquals(false, player.hasMovedYet());
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
@@ -38,7 +42,7 @@ public class PlayerTest {
 		assertEquals(false, isIllegalStateExceptionThrown);
 		assertEquals(true, areTurnRelatedFieldsReset());
 
-		// test with no actions left
+		// skip a turn
 		isIllegalStateExceptionThrown = false;
 		player.skipNumberOfActions(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 		try {
@@ -46,8 +50,8 @@ public class PlayerTest {
 		} catch (Exception e) {
 			isIllegalStateExceptionThrown = true;
 		}
-		assertEquals(true, isIllegalStateExceptionThrown);
-		assertEquals(false, areTurnRelatedFieldsReset());
+		assertEquals(false, isIllegalStateExceptionThrown);
+		assertEquals(true, areTurnRelatedFieldsReset());
 
 		// TODO player.hasMoved --> loses the game
 	}
