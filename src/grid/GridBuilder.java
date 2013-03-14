@@ -232,7 +232,6 @@ public class GridBuilder {
 		return true;
 	}
 	
-	
 	/**
 	 * Return all the coordinates of a wall that starts and ends at two certain
 	 * points.
@@ -335,7 +334,8 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(6, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 8))).addItem(new LightGrenade());
-		//((Square) grid.get(new Coordinate(7, 7))).addItem(new LightGrenade());
+		// ((Square) grid.get(new Coordinate(7, 7))).addItem(new
+		// LightGrenade());
 		((Square) grid.get(new Coordinate(7, 6))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
@@ -343,6 +343,8 @@ public class GridBuilder {
 		
 		return new Grid(grid);
 	}
+	
+	/*----------- Predefined testGrid methods -----------*/
 	
 	/**
 	 * This function returns a predefined grid which we can use to test. This
@@ -370,4 +372,23 @@ public class GridBuilder {
 		
 		return build(10, 10, walls);
 	}
+	
+	/**
+	 * Returns a randomly created coordinate that exists on the grid specified
+	 * by {@link GridBuilder#getPredefinedTestGrid()}. Used for testing purposes.
+	 * 
+	 * @return A random coord on the testgrid.
+	 */
+	public static Coordinate getRandomCoordOnTestGrid() {
+		return new Coordinate(Math.abs(new Random().nextInt() % PREDIFINED_GRID_SIZE),
+				Math.abs(new Random().nextInt() % PREDIFINED_GRID_SIZE));
+	}
+	
+	/**
+	 * The size of the grid returned by
+	 * {@link GridBuilder#getPredefinedTestGrid()} Used for testing purposes,
+	 * should not be used in gameplay.
+	 */
+	public static final int	PREDIFINED_GRID_SIZE	= 10;
+	
 }

@@ -1,8 +1,8 @@
 package player;
 
 /*
- * NOTE: Only Game holds a reference to the PlayerDB-object (for the NewGame use case). The controllers
- * hold references to an IPlayerDB (and thus can only ask the current
+ * NOTE: Only Game holds a reference to the PlayerDB-object (for the NewGame use case). 
+ * The controllers hold references to an IPlayerDB (and thus can only ask the current
  * player)
  */
 
