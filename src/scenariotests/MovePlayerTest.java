@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 import game.Game;
+import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
@@ -35,11 +36,15 @@ public class MovePlayerTest {
 		Game game = new Game();
 		
 		playerDB = new PlayerDataBase();
-		List<IPlayer> playerList = playerDB.createNewDB();
 		
+		GridBuilder builder = new GridBuilder();
+		grid = builder.getPredefinedTestGrid();
 		
-		GridBuilder builder = new GridBuilder(playerList);
-		grid = builder.getPredefinedTestGrid(playerList);
+		Coordinate[] startingCoords = new Coordinate[2];
+		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
+		startingCoords[1] = new Coordinate(0, grid.getHeight()-1);
+		
+		List<IPlayer> playerList = playerDB.createNewDB(startingCoords);
 		
 		for (IPlayer p : playerList) {
 			p.setGrid(grid);

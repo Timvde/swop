@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import item.IItem;
 import java.util.List;
 import game.Game;
+import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
@@ -38,10 +39,15 @@ public class UseItemTest {
 		Game game = new Game();
 		
 		playerDB = new PlayerDataBase();
-		List<IPlayer> playerList = playerDB.createNewDB();
 		
-		GridBuilder builder = new GridBuilder(playerList);
-		grid = builder.getPredefinedTestGrid(playerList);
+		GridBuilder builder = new GridBuilder();
+		grid = builder.getPredefinedTestGrid();
+		
+		Coordinate[] startingCoords = new Coordinate[2];
+		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
+		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
+		
+		List<IPlayer> playerList = playerDB.createNewDB(startingCoords);
 		
 		for (IPlayer p : playerList) {
 			p.setGrid(grid);
@@ -73,12 +79,12 @@ public class UseItemTest {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		// Player 1 actions
-		List<IItem> items1 = grid.getSquareOfPlayer(playerDB.getCurrentPlayer())
+		List<IItem> items1 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		moveCont.move(Direction.EAST);
-		List<IItem> items2 = grid.getSquareOfPlayer(playerDB.getCurrentPlayer())
+		List<IItem> items2 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
@@ -94,7 +100,7 @@ public class UseItemTest {
 		// Player 1 actions
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
-		List<IItem> items1 = grid.getSquareOfPlayer(playerDB.getCurrentPlayer())
+		List<IItem> items1 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
