@@ -57,6 +57,6 @@ public class Effect {
 			// always cause a decrease of at least three actions at this point.
 			player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
 		}
-		return true;
+		return false;
 	}
 }
