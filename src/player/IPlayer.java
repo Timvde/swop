@@ -114,7 +114,7 @@ public interface IPlayer {
 	 *         to try to move in, i.e.
 	 *         <code>{@link #isValidDirection(Direction)}</code>.
 	 * @throws IllegalMoveException
-	 * TODO
+	 *         TODO
 	 */
 	public void moveInDirection(Direction direction) throws IllegalStateException,
 			IllegalArgumentException, IllegalMoveException;
@@ -142,16 +142,19 @@ public interface IPlayer {
 	public boolean isValidDirection(Direction direction);
 	
 	/**
-	 * TODO
+	 * Pick up the given item. The item must be on the square the player is
+	 * currently on.
 	 * 
 	 * @param item
+	 *        The item to pick yp.
 	 */
 	public void pickUpItem(IItem item);
 	
 	/**
-	 * TODO
+	 * Use the given item. The item must be in the inventory of the player.
 	 * 
 	 * @param i
+	 *        The item that will be used.
 	 */
 	public void useItem(IItem i);
 }
