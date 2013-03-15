@@ -84,6 +84,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 					"The specified player-starting-coordinates must all be different");
 		}
 		
+		Player.resetUniqueIdcounter();
 		this.playerList.clear();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
 			Player newPlayer = new Player(playerStartingPositions[i], grid);

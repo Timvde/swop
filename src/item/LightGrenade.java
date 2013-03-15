@@ -83,8 +83,10 @@ public class LightGrenade extends Item implements ILightGrenade {
 	
 	@Override
 	public void addToEffect(Effect effect) {
-		if (this.getState() == LightGrenadeState.ACTIVE)
+		if (this.getState() == LightGrenadeState.ACTIVE) {
+			this.state = LightGrenadeState.EXPLODED;
 			effect.addLightGrenade();
+		}
 	}
 	
 	/************************* LigthGrenadeEnum *************************/
