@@ -64,7 +64,7 @@ public class LightGrenadeTest {
 		lightGrenade.use(sq);
 		
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
-		sq.hasItemWithID(lightGrenade.getId());
+		sq.contains(lightGrenade);
 	}
 	
 	@Test (expected = IllegalArgumentException.class)

@@ -298,7 +298,7 @@ public class Player extends Observable implements IPlayer {
 	 * resets the player for a new game. The inventory and the lightTrail will
 	 * be reinitialized. The number of actions left is set to
 	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
-	 * return false.
+	 * return false.oldSquare
 	 */
 	public void reset() {
 		inventory = new Inventory();
