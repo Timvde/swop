@@ -70,8 +70,9 @@ public abstract class ASquare {
 	 * 
 	 * @param p
 	 *        the new player
+	 * @throws IllegalStateException 
 	 */
-	public abstract void setPlayer(IPlayer p);
+	public abstract void setPlayer(IPlayer p) throws IllegalStateException;
 	
 	/**
 	 * TODO
