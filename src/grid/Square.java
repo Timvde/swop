@@ -18,7 +18,7 @@ public class Square extends ASquare {
 	
 	private List<IItem>		itemList	= new ArrayList<IItem>();
 	private IPlayer			player;
-	private int				lightTrail;
+	private boolean			lightTrail;
 	// Having one PowerFailure object at this moment is enough. Since they all
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
@@ -77,7 +77,7 @@ public class Square extends ASquare {
 	
 	@Override
 	public boolean hasLightTrail() {
-		return lightTrail > 0;
+		return lightTrail;
 	}
 	
 	/**
@@ -86,10 +86,20 @@ public class Square extends ASquare {
 	 * 
 	 * 
 	 * @note <b>Do NOT use this method.</b> The light trail is automatically
-	 *       updated as the player (and its light trail) moves around the grid.
+	 *       updated by the light trail as the player moves around the grid.
 	 */
 	public void placeLightTrail() {
-		lightTrail = 4;
+		lightTrail = true;
+	}
+	
+	/**
+	 * Remove the light trail from this square.
+	 * 
+	 * @note <b>Do NOT use this method.</b> The light trail is automatically
+	 *       updated by the light trail as the player moves around the grid.
+	 */
+	public void removeLightTrail() {
+		lightTrail = false;
 	}
 	
 	@Override

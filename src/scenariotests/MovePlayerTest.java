@@ -85,6 +85,7 @@ public class MovePlayerTest {
 		Assert.assertEquals(true, exceptionThrown);
 	}
 	
+	@Test
 	public void testCannotMoveOnWall() {
 		newGame();
 		
@@ -128,14 +129,5 @@ public class MovePlayerTest {
 		moveCont.move(Direction.SOUTHWEST);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.NORTHWEST);
-	}
-	
-	// TODO specifieker specifiëren
-	@Test(expected = Exception.class)
-	public void testAlwaysMoveActionInTurn() {
-		newGame();
-		
-		// Player 1 actions
-		endTurnCont.endTurn();
 	}
 }

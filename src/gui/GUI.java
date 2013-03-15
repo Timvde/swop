@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
@@ -70,6 +71,8 @@ public class GUI implements Runnable {
 	private Image					lightTrailImage;
 	private Image					finishBlue;
 	private Image					finishRed;
+	private Image					powerfailure;
+	private Image					greenBackground;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -161,14 +164,6 @@ public class GUI implements Runnable {
 						}
 					}
 					
-					// Draw the two finish squares:
-					Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
-					Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
-					graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-							guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-					graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
-							guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-					
 					// Populate the grid squares with the correct images:
 					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
 					
@@ -177,14 +172,28 @@ public class GUI implements Runnable {
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
+						// // Draw powerfailures if necessary
+						// if (square.hasPowerFailure()) {
+						// graphics.drawImage(powerfailure, guiCoord.getX(),
+						// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						// }
+						
 						// Draw players if necessary
 						if (player != null) {
 							switch (player.getID()) {
 								case 1:
+									if (guiDataController.getCurrentPlayer().getID() == 1) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
 									graphics.drawImage(playerBlueImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									break;
 								case 2:
+									if (guiDataController.getCurrentPlayer().getID() == 2) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
 									graphics.drawImage(playerRedImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									break;
@@ -204,6 +213,14 @@ public class GUI implements Runnable {
 							graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
+						
+						// Draw the two finish squares:
+						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
+						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
+						graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
+								guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
+								guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						
 						// Draw items if necessary
 						List<IItem> itemList = guiDataController.getItemList(c);
@@ -253,6 +270,8 @@ public class GUI implements Runnable {
 		this.lightTrailImage = gui.loadImage("cell_lighttrail.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.powerfailure = gui.loadImage("powerfailure.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.greenBackground = gui.loadImage("green_background.jpg", SQUARE_SIZE, SQUARE_SIZE);
 		
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
@@ -270,7 +289,12 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.NORTH);
+						try {
+							moveController.move(Direction.NORTH);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						
 						gui.repaint();
 					}
@@ -281,7 +305,12 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.WEST);
+						try {
+							moveController.move(Direction.WEST);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						
 						gui.repaint();
 					}
@@ -292,7 +321,12 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.EAST);
+						try {
+							moveController.move(Direction.EAST);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						
 						gui.repaint();
 					}
@@ -303,7 +337,12 @@ public class GUI implements Runnable {
 				40, new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.SOUTH);
+						try {
+							moveController.move(Direction.SOUTH);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						
 						gui.repaint();
 					}
@@ -314,7 +353,12 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.NORTHEAST);
+						try {
+							moveController.move(Direction.NORTHEAST);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						gui.repaint();
 					}
 				});
@@ -324,7 +368,12 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.SOUTHEAST);
+						try {
+							moveController.move(Direction.SOUTHEAST);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						
 						gui.repaint();
 					}
@@ -335,7 +384,12 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.SOUTHWEST);
+						try {
+							moveController.move(Direction.SOUTHWEST);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						gui.repaint();
 					}
 				});
@@ -345,7 +399,12 @@ public class GUI implements Runnable {
 				new Runnable() {
 					
 					public void run() {
-						moveController.move(Direction.NORTHWEST);
+						try {
+							moveController.move(Direction.NORTHWEST);
+						}
+						catch (IllegalMoveException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
+						}
 						gui.repaint();
 					}
 				});
@@ -378,7 +437,7 @@ public class GUI implements Runnable {
 		pickItemUpButton.setText("Pick up item");
 		// ----
 		Button useItemButton = gui.createButton(actionButtonsOffsetX + 270, actionButtonsOffsetY,
-				120, 30, new Runnable() { 
+				120, 30, new Runnable() {
 					
 					public void run() {
 						// Use the inventoryListSelected to access the Item that

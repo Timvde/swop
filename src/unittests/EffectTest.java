@@ -12,6 +12,7 @@ import item.LightGrenade;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
+import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
 import player.Player;
 
@@ -20,7 +21,7 @@ public class EffectTest {
 	
 	private IPlayer	player;
 	private Effect	effect;
-	private Grid grid;
+	private Grid	grid;
 	
 	@Before
 	public void setUp() {
@@ -49,7 +50,12 @@ public class EffectTest {
 		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
 		// a player always has already done a move-action when it hits a
 		// power failure. This is necessary to do a successful endTurn().
-		player.moveInDirection(Direction.NORTH);
+		try {
+			player.moveInDirection(Direction.NORTH);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		assertEquals(player.getAllowedNumberOfActions(), 0 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	
@@ -57,8 +63,13 @@ public class EffectTest {
 	public void testLightGrenadeAndPowerFailure() {
 		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
 		Item lightGrenade = new LightGrenade();
-		lightGrenade.use(grid.getSquareAt(new Coordinate(0,8)));
-		player.moveInDirection(Direction.NORTH);
+		lightGrenade.use(grid.getSquareAt(new Coordinate(0, 8)));
+		try {
+			player.moveInDirection(Direction.NORTH);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		assertEquals(player.getAllowedNumberOfActions(), -2 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	
