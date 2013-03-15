@@ -32,6 +32,7 @@ public abstract class Item implements IItem {
 	 */
 	public abstract String toString();
 	
+	@Override
 	public void addToEffect(Effect effect) {
 		// Do nothing by default. This shouldn't be abstract though, some items
 		// really don't have to do anything.

@@ -45,6 +45,7 @@ public class GUIDataController {
 	/**
 	 * Return the current player in the game.
 	 */
+	@SuppressWarnings("javadoc")
 	public IPlayer getCurrentPlayer() {
 		return this.playerDB.getCurrentPlayer();
 	}
@@ -52,6 +53,7 @@ public class GUIDataController {
 	/**
 	 * Return a list of items in the inventory of the current player.
 	 */
+	@SuppressWarnings("javadoc")
 	public List<IItem> getCurrentPlayerInventoryItems() {
 		return getCurrentPlayer().getInventoryContent();
 	}
@@ -59,6 +61,7 @@ public class GUIDataController {
 	/**
 	 * Return a list of items that are located on the square that the current player resides on.
 	 */
+	@SuppressWarnings("javadoc")
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
 		ASquare currSq = grid.getSquareAt(getCurrentPlayer().getCurrentLocation());
 		return currSq.getCarryableItems();
@@ -70,6 +73,7 @@ public class GUIDataController {
 	 * @param c
 	 *        The coordinate of the square we want the items of.
 	 */
+	@SuppressWarnings("javadoc")
 	public List<IItem> getItemList(Coordinate c) {
 		return grid.getItemList(c);
 	}
@@ -98,6 +102,7 @@ public class GUIDataController {
 	/**
 	 * Return the width of the grid.
 	 */
+	@SuppressWarnings("javadoc")
 	public int getGridWidth() {
 		return this.grid.getWidth();
 	}
@@ -105,6 +110,7 @@ public class GUIDataController {
 	/**
 	 * Return the height of the grid.
 	 */
+	@SuppressWarnings("javadoc")
 	public int getGridHeight() {
 		return this.grid.getHeight();
 	}

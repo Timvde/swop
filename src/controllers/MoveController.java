@@ -1,8 +1,8 @@
 package controllers;
 
-import ObjectronExceptions.IllegalMoveException;
-import player.PlayerDataBase;
 import grid.Direction;
+import player.IPlayerDataBase;
+import ObjectronExceptions.IllegalMoveException;
 
 /**
  * This class will handle the move actions of the GUI.
@@ -12,14 +12,14 @@ import grid.Direction;
  */
 public class MoveController {
 	
-	private PlayerDataBase	playerDB;
-	
+
+	private IPlayerDataBase playerDB;
 	/**
 	 * Create a new move controller with a reference to a given player database.
 	 * 
 	 * @param db
 	 */
-	public MoveController(PlayerDataBase db) {
+	public MoveController(IPlayerDataBase db) {
 		this.playerDB = db;
 	}
 	

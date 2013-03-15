@@ -1,7 +1,7 @@
 package controllers;
 
-import player.PlayerDataBase;
 import item.IItem;
+import player.IPlayerDataBase;
 
 /**
  * A controller for handling the use actions of the GUI.
@@ -11,7 +11,7 @@ import item.IItem;
  */
 public class UseItemController {
 	
-	private PlayerDataBase	playerDB;
+	private IPlayerDataBase	playerDB;
 	
 	/**
 	 * Create a new use item controller with a given player database.
@@ -19,7 +19,7 @@ public class UseItemController {
 	 * @param db
 	 * 			The player database.
 	 */
-	public UseItemController(PlayerDataBase db) {
+	public UseItemController(IPlayerDataBase db) {
 		this.playerDB = db;
 	}
 	

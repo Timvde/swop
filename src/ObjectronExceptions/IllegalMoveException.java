@@ -8,9 +8,6 @@ package ObjectronExceptions;
  */
 public class IllegalMoveException extends Exception {
 	
-	/**
-	 * 
-	 */
 	private static final long	serialVersionUID	= -4958248113296080339L;
 	private String message;
 	

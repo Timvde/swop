@@ -25,19 +25,28 @@ public class Game {
 	private GUI					gui;
 	private GUIDataController	guiDataCont;
 	
+	/**
+	 * Start the program by creating a new Game.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Game game = new Game();
 		game.start();
 	}
 	
+	/**
+	 * Start the initialisation and run the GUI.
+	 */
 	public void start() {
-		this.playerDB = new PlayerDataBase(grid);
+		this.playerDB = new PlayerDataBase(grid);  
 		
+		// create all the controllers, giving them the IPlayerDB
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
 		UseItemController useItemCont = new UseItemController(this.playerDB);
-		NewGameController newGameCont = new NewGameController(this);
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
+		NewGameController newGameCont = new NewGameController(this);
 		
 		// Here grid is still null
 		this.guiDataCont = new GUIDataController(this.playerDB, this.grid);
@@ -74,7 +83,6 @@ public class Game {
 		Coordinate[] playerStartingCoordinates = new Coordinate[] { new Coordinate(width - 1, 0),
 				new Coordinate(0, height - 1) };
 		playerDB.createNewDB(playerStartingCoordinates, grid);
-		
 	}
 	
 	/**

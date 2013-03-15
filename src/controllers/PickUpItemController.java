@@ -1,16 +1,16 @@
 package controllers;
 
-import player.PlayerDataBase;
 import item.IItem;
+import player.IPlayerDataBase;
 
 /**
  * A controller that will handle the GUI pick up commands.
  * @author tom
  *
  */
-public class PickUpItemController {
+public class PickUpItemController { 
 	
-	private PlayerDataBase	playerDB;
+	private IPlayerDataBase	playerDB;
 	
 	/**
 	 * Create a new pick up item controller with a given player database.
@@ -18,7 +18,7 @@ public class PickUpItemController {
 	 * @param db
 	 * 			The playerdatabase the controller uses.
 	 */
-	public PickUpItemController(PlayerDataBase db) {
+	public PickUpItemController(IPlayerDataBase db) {
 		this.playerDB = db;
 	}
 	
