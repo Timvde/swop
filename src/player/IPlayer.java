@@ -31,7 +31,7 @@ public interface IPlayer {
 	 * 
 	 * @return the coordinate this player has to reach to win the game.
 	 */
-	public Coordinate getTargetPosition();
+	public Coordinate getStartingPosition();
 	
 	/**
 	 * Returns the coordinate this player currently stands on.
