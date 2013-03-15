@@ -218,8 +218,7 @@ public class Player extends Observable implements IPlayer {
 			throw new IllegalMoveException("The specified direction is not valid.");
 		}
 		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
-			throw new IllegalMoveException(
-					"The player cannot move in given direction on the grid.");
+			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
 		}
 		
 		// remove this player form his current square
@@ -292,5 +291,14 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public String toString() {
 		return "ID = " + this.id;
+	}
+	
+	/**
+	 * Resets the uniqe Id counter. The next newly created player will have an
+	 * ID of 0. This method should be caleed form the PlayerDb when ir re-fills
+	 * the database (package access).
+	 */
+	static void resetUniqueIdcounter() {
+		nextID = new AtomicInteger();
 	}
 }
