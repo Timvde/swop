@@ -53,7 +53,7 @@ public abstract class ASquare {
 	 * Returns whether or not this square holds the item with a given ID.
 	 * 
 	 * @param ID
-	 *        The ID of the querried Item
+	 *        The ID of the queried Item
 	 * @return whether or not this square holds the item with a given ID.
 	 */
 	public abstract boolean hasItemWithID(int ID);
@@ -71,11 +71,33 @@ public abstract class ASquare {
 	 * @param p
 	 *        the new player
 	 * @throws IllegalStateException 
+	 * @return 
 	 */
-	public abstract void setPlayer(IPlayer p) throws IllegalStateException;
+	public abstract boolean setPlayer(IPlayer p);
 	
 	/**
 	 * TODO
 	 */
 	public abstract void removePlayer();
+	
+	/**
+	 * @return Whether or not this ASquare has a power failure.
+	 */
+	public abstract boolean hasPowerFailure();
+	
+	/**
+	 * Adds a power failure to this ASquare
+	 * 
+	 * @param powerFailure
+	 *        The power failure to add
+	 */
+	abstract void addPowerFailure(PowerFailure powerFailure);
+	
+	/**
+	 * Remove a power failure from this ASquare
+	 * 
+	 * @param powerFailure
+	 *        The power failure to remove
+	 */
+	abstract void removePowerFailure(PowerFailure powerFailure);
 }

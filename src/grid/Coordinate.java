@@ -1,5 +1,7 @@
 package grid;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -126,16 +128,26 @@ public class Coordinate {
 	 * {@code new Coordinate(0,0)} (included) and {@code new Coordinate(x, y)}
 	 * (excluded) within specified dimensions. The equality of the distribution
 	 * is guaranteed by the the randomness of the {@link Random#nextInt(int n)
-	 * nextInt(int)} mehtod.
+	 * nextInt(int)} method.
 	 * 
 	 * @param x
+	 *        The maximum x value
 	 * @param y
-	 * @return
+	 *        The maximum y value
+	 * @return A random Coordinate between (0,0) and (x,y)
 	 */
 	public static Coordinate random(int x, int y) {
 		return new Coordinate(new Random().nextInt(x), new Random().nextInt(y));
 	}
 	
+	/**
+	 * Get a random Coordinate with the specified distance from this Coordinate.
+	 * This is used to build random walls in a grid.
+	 * 
+	 * @param distance
+	 *        The distance the new Coordinate has to have from this Coordinate
+	 * @return A Coordinate on the specified distance.
+	 */
 	public Coordinate getRandomCoordinateWithDistance(int distance) {
 		Direction[] directions = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
 		Direction direction = directions[new Random().nextInt(directions.length)];
@@ -170,10 +182,23 @@ public class Coordinate {
 	 * @return True if the specified coordinate is a neighbor of this
 	 *         coordinate, otherwise false
 	 */
-	public boolean isNeighbor(Coordinate coordinate) {
+	public boolean isNeighbour(Coordinate coordinate) {
 		for (Direction direction : Direction.values())
 			if (this.getCoordinateInDirection(direction).equals(coordinate))
 				return true;
 		return false;
+	}
+	
+	/**
+	 * Returns a list of all the neighbours of this square. A square
+	 * 
+	 * @return A list of neighbours: all Coordinates in this list will have
+	 *         {@link #isNeighbour(this)} == true
+	 */
+	public List<Coordinate> getAllNeighbours() {
+		List<Coordinate> neighbours = new ArrayList<Coordinate>();
+		for (Direction direction : Direction.values())
+			neighbours.add(getCoordinateInDirection(direction));
+		return neighbours;
 	}
 }

@@ -85,6 +85,10 @@ public class Player extends Observable implements IPlayer {
 		this.grid = grid;
 	}
 	
+	private IGrid getGrid() {
+		return grid;
+	}
+	
 	@Override
 	public int getID() {
 		return id;
@@ -107,10 +111,13 @@ public class Player extends Observable implements IPlayer {
 	
 	/* ############## ActionHistory related methods ############## */
 	
+	// TODO: change the literal 2 into something better.
 	/**
-	 * This method will increase the allowed number of actions left with
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. It is called when a Player calls
-	 * {@link #endTurn()} to reset his turn related fields.
+	 * This method will under normal circumstances increase the allowed number
+	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. When the
+	 * Player is on a power failured square, the number of actions lost will be
+	 * 2. It is called when a Player calls {@link #endTurn()} to reset his turn
+	 * related fields.
 	 */
 	private void increaseAllowedNumberOfActions() {
 		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
@@ -217,7 +224,7 @@ public class Player extends Observable implements IPlayer {
 		if (!isValidDirection(direction)) {
 			throw new IllegalMoveException("The specified direction is not valid.");
 		}
-		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
+		if (!getGrid().canMoveFromCoordInDirection(this.currentCoord, direction)) {
 			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
 		}
 		
@@ -227,14 +234,17 @@ public class Player extends Observable implements IPlayer {
 		
 		// set new position
 		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
-		Square newSquare = (Square) this.grid.getSquareAt(this.currentCoord);
-		newSquare.setPlayer(this);
+		Square newSquare = (Square) getGrid().getSquareAt(this.currentCoord);
 		
-		// update fields
+		// This should happen before the player is set on the next square,
+		// because then the effects will be calculated.
+		this.setHasMoved();
+		boolean endTurn = newSquare.setPlayer(this);
+		if (!endTurn)
+			this.decreaseAllowedNumberOfActions();
+		
 		// FIXME hasLightTrail() van square... (i'm trying, hold on ... )
 		this.lightTrail.updateLightTrail(oldSquare);
-		this.setHasMoved();
-		this.decreaseAllowedNumberOfActions();
 	}
 	
 	@Override
@@ -249,7 +259,7 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		Square currentSquare = (Square) this.grid.getSquareAt(currentCoord);
+		Square currentSquare = (Square) getGrid().getSquareAt(currentCoord);
 		if (item == null || !currentSquare.hasItemWithID(item.getId()))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		

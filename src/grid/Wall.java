@@ -1,11 +1,5 @@
 package grid;
 
-import item.IItem;
-import java.util.ArrayList;
-import java.util.List;
-import player.IPlayer;
-import player.Player;
-
 /**
  * This class exists to enforce the wall restrictions as class invariants. - A
  * wall needs to be straight (i.e. either horizontally or vertically aligned) -
@@ -104,56 +98,5 @@ public class Wall {
 			wallPart = new WallPart();
 		return wallPart;
 	}
-	
-	/**
-	 * A class that represents a part of a wall.
-	 */
-	public class WallPart extends ASquare {
-		
-		private WallPart() {}
-		
-		@Override
-		public List<IItem> getCarryableItems() {
-			return new ArrayList<IItem>();
-		}
-		
-		@Override
-		public IPlayer getPlayer() {
-			return null;
-		}
-		
-		@Override
-		public boolean hasLightTrail() {
-			return false;
-		}
-		
-		@Override
-		public IItem pickupItem(int ID) throws IllegalArgumentException {
-			throw new IllegalArgumentException("Walls do not contain items");
-		}
-		
-		@Override
-		public boolean hasItemWithID(int ID) {
-			return false;
-		}
-		
-		/**
-		 * Always returns false; A wall cannot hold a {@link Player}.
-		 */
-		@Override
-		public boolean hasPlayer() {
-			return false;
-		}
-		
-		@Override
-		public void setPlayer(IPlayer p) {
-			throw new IllegalStateException("Can not set a player on a wallpart!");
-		}
-		
-		@Override
-		public void removePlayer() {
-			throw new IllegalStateException(
-					"Can not remove a player on a wallpart! No players are supposed to be on it.");
-		}
-	}
+
 }

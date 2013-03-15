@@ -13,9 +13,11 @@ import scenariotests.UseItemTest;
 
 @SuppressWarnings("javadoc")
 @RunWith(Suite.class)
-@SuiteClasses({ CoordinateTest.class, GridTest.class, WallTest.class, SquareTest.class,
-		InventoryTest.class, LightTrailTest.class, EndTurnTest.class, MovePlayerTest.class,
-		PickUpTest.class, StartGameTest.class, UseItemTest.class })
+		
+@SuiteClasses({ CoordinateTest.class, EffectTest.class, GridTest.class, InventoryTest.class,
+		LightTrailTest.class, PlayerDBTest.class, PlayerTest.class, SquareTest.class,
+		WallTest.class, EndTurnTest.class, MovePlayerTest.class, PickUpTest.class,
+		StartGameTest.class, UseItemTest.class, LightGrenadeTest.class })
 public class TestSuite {
 	
 	@BeforeClass

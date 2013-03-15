@@ -15,6 +15,10 @@ import com.sun.istack.internal.NotNull;
  * his players. A Player notifies the database (by calling
  * <code>notifyObservers()</code>) to indicate he wants to end his turn.
  * 
+ * At the same time, Squares will observe the PlayerDataBase, which will notify
+ * them at each player change, to calculate how long they should stay power
+ * failured.
+ * 
  */
 public class PlayerDataBase implements Observer, IPlayerDataBase {
 	
@@ -27,15 +31,23 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	private ArrayList<Player>	playerList;
 	private int					currentPlayerIndex;
 	
+	// The player database should not know the grid, but at this point it is
+	// necessary to let it know that player switch has taken place.
+	// TODO: fix this at some point.
+	private Grid				grid;
+	
 	/**
 	 * Creates a new empty PlayerDataBase. to fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid) createNewDB}. Until
-	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
-	 * exception.
+	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid)
+	 * createNewDB}. Until then the {@link PlayerDataBase#getCurrentPlayer()}
+	 * method will throw an exception.
 	 * 
+	 * @param grid
+	 *        The grid we will play with.
 	 */
-	public PlayerDataBase() {
+	public PlayerDataBase(Grid grid) {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
+		this.grid = grid;
 	}
 	
 	/**
@@ -148,5 +160,19 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 */
 	private void endCurrentPlayerTurn() {
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
+		updatePowerFailures();
+		
+		// If the player is on a square with a power failure, it can do one
+		// action less.
+		if (grid.getSquareAt(getCurrentPlayer().getCurrentLocation()).hasPowerFailure())
+			getCurrentPlayer().skipNumberOfActions(1);
+	}
+	
+	/**
+	 * This method will notify the grid that a new turn started and it should
+	 * upgrade power failures.
+	 */
+	private void updatePowerFailures() {
+		grid.updatePowerFailures();
 	}
 }

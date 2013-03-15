@@ -2,7 +2,7 @@ package item;
 
 import grid.ASquare;
 import grid.Square;
-import grid.Wall;
+import grid.WallPart;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -73,7 +73,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	
 	@Override
 	public void use(ASquare square) {
-		if (square instanceof Wall.WallPart)
+		if (square instanceof WallPart)
 			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
 		this.enable();
 		

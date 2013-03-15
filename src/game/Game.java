@@ -31,7 +31,7 @@ public class Game {
 	}
 	
 	public void start() {
-		this.playerDB = new PlayerDataBase();
+		this.playerDB = new PlayerDataBase(grid);
 		
 		// create all the controllers, giving them the IPlayerDB
 		MoveController moveCont = new MoveController(this.playerDB);
