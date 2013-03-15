@@ -6,8 +6,8 @@ import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
-import org.junit.Before;
 import org.junit.Test;
+import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.MoveController;
@@ -21,7 +21,7 @@ import controllers.MoveController;
  * @author Tom
  */
 @SuppressWarnings("javadoc")
-public class MovePlayerTest {
+public class MovePlayerTest { 
 	
 	private static MoveController		moveCont;
 	private static EndTurnController	endTurnCont;
@@ -46,29 +46,30 @@ public class MovePlayerTest {
 		endTurnCont = new EndTurnController(playerDB);
 	}
 	
-	/*
-	 * NOTE: the used coord axis are defined by {@link Coordinate} (origin upper
-	 * left)
-	 * 
-	 * FIXME: @Tom: verbeter dit in alle scenario test (of overleg om het
-	 * assenstelsel te veranderen?); de test hieronder is al aangepast, maar nog
-	 * errors met lighttrails...
-	 */
 	@Test
-	public void testNoTwoPlayersOnOneSquare() {
+	public void testNoTwoPlayersOnOneSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.WEST);
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.WEST);
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
 		// Player 2 actions
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTH);
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTH);
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTHEAST);
 		// Player 1 actions
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
+		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
 		
 		// Player 2 actions
@@ -78,7 +79,7 @@ public class MovePlayerTest {
 		try {
 			// This causes two players to be on the same square:
 			moveCont.move(Direction.NORTHEAST);
-		}
+		} 
 		catch (IllegalStateException e) {
 			exceptionThrown = true;
 		}
@@ -86,7 +87,7 @@ public class MovePlayerTest {
 	}
 	
 	@Test
-	public void testCannotMoveOnWall() {
+	public void testCannotMoveOnWall() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
@@ -113,7 +114,7 @@ public class MovePlayerTest {
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void testCannotLeaveGrid() {
+	public void testCannotLeaveGrid() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
@@ -122,7 +123,7 @@ public class MovePlayerTest {
 	
 	// TODO specifieker specifiëren, ook met try catch
 	@Test(expected = Exception.class)
-	public void testCannotCrossLightrail() {
+	public void testCannotCrossLightrail() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
