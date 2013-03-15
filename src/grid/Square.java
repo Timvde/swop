@@ -155,8 +155,7 @@ public class Square extends ASquare {
 	private void penalty(IPlayer player) {
 		Effect effect = new Effect(player);
 		
-		if (hasPowerFailure())
-			effect.addPowerFailure();
+		effect.addPowerFailure(powerFailure);
 		for (IItem item : getAllItems())
 			item.addToEffect(effect);
 		

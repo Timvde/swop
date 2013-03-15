@@ -3,6 +3,7 @@ package unittests;
 import static org.junit.Assert.assertEquals;
 import grid.Direction;
 import grid.GridBuilder;
+import grid.PowerFailure;
 import item.Effect;
 import java.util.Random;
 import org.junit.Before;
@@ -44,7 +45,7 @@ public class EffectTest {
 		// powerfailure. This is necessary to do a sucessfull endTurn
 		player.moveInDirection(Direction.NORTH);
 		
-		effect.addPowerFailure();
+		effect.addPowerFailure(new PowerFailure(null));
 		effect.execute();
 		assertEquals(player.getAllowedNumberOfActions(), 0 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 		
@@ -58,7 +59,7 @@ public class EffectTest {
 	@Test
 	public void testLightGrenadeAndPowerFailure() {
 		effect.addLightGrenade();
-		effect.addPowerFailure();
+		effect.addPowerFailure(new PowerFailure(null));
 		effect.execute();
 		assertEquals(player.getAllowedNumberOfActions(), -2 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}

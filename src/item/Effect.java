@@ -1,5 +1,6 @@
 package item;
 
+import grid.PowerFailure;
 import player.IPlayer;
 
 /**
@@ -31,9 +32,9 @@ public class Effect {
 	}
 	
 	/**
-	 * Tell the Effect to take a power failure into calculation.
+	 * Tell the Effect to take the specified power failure into calculation.
 	 */
-	public void addPowerFailure() {
+	public void addPowerFailure(PowerFailure powerfailure) {
 		this.hasPowerFailure = true;
 	}
 	
