@@ -378,7 +378,7 @@ public class GUI implements Runnable {
 		pickItemUpButton.setText("Pick up item");
 		// ----
 		Button useItemButton = gui.createButton(actionButtonsOffsetX + 270, actionButtonsOffsetY,
-				120, 30, new Runnable() {
+				120, 30, new Runnable() { 
 					
 					public void run() {
 						// Use the inventoryListSelected to access the Item that
