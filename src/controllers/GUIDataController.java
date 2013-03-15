@@ -9,11 +9,24 @@ import grid.Grid;
 import player.IPlayer;
 import player.PlayerDataBase;
 
+/**
+ * The gui data controller that will fetch data from the game, for creating the GUI visuals.
+ * @author tom
+ *
+ */
 public class GUIDataController {
 	
 	private PlayerDataBase	playerDB;
 	private Grid			grid;
 	
+	/**
+	 * Create a new gui data controller.
+	 * 
+	 * @param playerDB
+	 * 			The player database the controller will use.
+	 * @param grid
+	 * 			The grid the controller will use.
+	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
 		this.playerDB = playerDB;
 		this.grid = grid;

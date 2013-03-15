@@ -107,9 +107,9 @@ public class GUI implements Runnable {
 	 * @param useitemCont
 	 *        The use item controller.
 	 * @param newGameCont
-	 * 		The new game controller.
-	 * @param guiDataCont 
-	 * 		The GUI data controller.
+	 *        The new game controller.
+	 * @param guiDataCont
+	 *        The GUI data controller.
 	 */
 	public GUI(MoveController moveCont, PickUpItemController pickupCont,
 			UseItemController useitemCont, NewGameController newGameCont,
@@ -176,11 +176,11 @@ public class GUI implements Runnable {
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
-						// // Draw powerfailures if necessary
-						// if (square.hasPowerFailure()) {
-						// graphics.drawImage(powerfailure, guiCoord.getX(),
-						// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						// }
+						// Draw powerfailures if necessary
+						if (square.hasPowerFailure()) {
+							graphics.drawImage(powerfailure, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
 						
 						// Draw players if necessary
 						if (player != null) {
@@ -219,8 +219,10 @@ public class GUI implements Runnable {
 						}
 						
 						// Draw the two finish squares:
-						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
-						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
+						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0,
+								gridHeight - 1));
+						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(
+								gridWidth - 1, 0));
 						graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
 								guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
