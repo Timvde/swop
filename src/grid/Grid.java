@@ -207,11 +207,9 @@ public class Grid implements IGrid {
 			failure.decreaseTimeToLive();
 		
 		Random rand = new Random();
-		for (Coordinate coord : getGrid().keySet()) {
+		for (Coordinate coordinate : getGrid().keySet()) {
 			if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
-				List<Coordinate> coordinates = coord.getAllNeighbours();
-				for (Coordinate coordinate : coordinates)
-					addPowerFailureAtCoordinate(coordinate);
+				addPowerFailureAtCoordinate(coordinate);
 			}
 		}
 	}

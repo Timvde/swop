@@ -1,6 +1,7 @@
 package grid;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,12 +29,13 @@ public class PowerFailure {
 		// not that bad at all, as PowerFailure objects should never get to the
 		// outside.
 		
-		for (ASquare square : squares) {
+		for (Iterator<ASquare> it = squares.iterator(); it.hasNext(); ) {
+			ASquare square = it.next();
 			try {
 				square.addPowerFailure(this);
 			}
 			catch (IllegalStateException e) {
-				squares.remove(square);
+				it.remove();
 			}
 		}
 		

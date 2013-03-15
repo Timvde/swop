@@ -176,7 +176,7 @@ public class Square extends ASquare {
 	
 	@Override
 	void removePowerFailure(PowerFailure powerFailure) {
-		if (this.powerFailure.equals(powerFailure))
+		if (this.powerFailure != null && this.powerFailure.equals(powerFailure))
 			this.powerFailure = null;
 	}
 	

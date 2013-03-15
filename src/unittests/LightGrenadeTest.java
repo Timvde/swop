@@ -3,14 +3,13 @@ package unittests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import grid.Coordinate;
 import grid.Square;
+import grid.Wall;
 import item.LightGrenade;
 import item.LightGrenade.LightGrenadeState;
 import org.junit.Before;
 import org.junit.Test;
-import grid.Coordinate;
-import grid.Wall;
-
 
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {

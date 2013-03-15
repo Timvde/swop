@@ -1,11 +1,14 @@
 package ObjectronExceptions;
 
 /**
- * this does not seem to do very much ... 
+ * This class is an exception to represent an illegal numbers of players.
+ * 
+ * @author tom
  *
  */
 public class IllegalNumberOfPlayersException extends Exception {
 
-	private static final long	serialVersionUID	= 1L;
+
+	private static final long	serialVersionUID	= 4638777733644933016L;
 
 }
