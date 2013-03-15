@@ -85,7 +85,7 @@ public class MovePlayerTest {
 		}
 		Assert.assertEquals(true, exceptionThrown);
 	}
-	
+	 
 	@Test
 	public void testCannotMoveOnWall() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
