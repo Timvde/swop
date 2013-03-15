@@ -1,14 +1,14 @@
 package controllers;
 
-import ObjectronExceptions.IllegalMoveException;
-import player.PlayerDataBase;
 import grid.Direction;
+import player.IPlayerDataBase;
+import ObjectronExceptions.IllegalMoveException;
 
 public class MoveController {
 	
-	private PlayerDataBase playerDB;
+	private IPlayerDataBase playerDB;
 	
-	public MoveController(PlayerDataBase db) {
+	public MoveController(IPlayerDataBase db) {
 		this.playerDB = db;
 	}
 	

@@ -46,7 +46,7 @@ public class EffectTest {
 	}
 	
 	@Test
-	public void testPowerFailure() {
+	public void testPowerFailure() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
 		// a player always has already done a move-action when it hits a
 		// power failure. This is necessary to do a successful endTurn().

@@ -1,13 +1,13 @@
 package controllers;
 
-import player.PlayerDataBase;
 import item.IItem;
+import player.IPlayerDataBase;
 
 public class UseItemController {
 	
-	private PlayerDataBase	playerDB;
+	private IPlayerDataBase	playerDB;
 	
-	public UseItemController(PlayerDataBase db) {
+	public UseItemController(IPlayerDataBase db) {
 		this.playerDB = db;
 	}
 	

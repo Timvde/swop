@@ -1,13 +1,13 @@
 package controllers;
 
 import player.IPlayer;
-import player.PlayerDataBase;
+import player.IPlayerDataBase;
 
 public class EndTurnController {
 	
-	private PlayerDataBase	playerDB;
+	private IPlayerDataBase	playerDB;
 	
-	public EndTurnController(PlayerDataBase db) {
+	public EndTurnController(IPlayerDataBase db) {
 		this.playerDB = db;
 	}
 	
