@@ -1,5 +1,6 @@
 package item;
 
+import grid.PowerFailure;
 import player.IPlayer;
 
 /**
@@ -31,25 +32,31 @@ public class Effect {
 	}
 	
 	/**
-	 * Tell the Effect to take a power failure into calculation.
+	 * Tell the Effect to take the specified power failure into calculation.
 	 */
-	public void addPowerFailure() {
-		this.hasPowerFailure = true;
+	public void addPowerFailure(PowerFailure powerFailure) {
+		if (powerFailure != null)
+			this.hasPowerFailure = true;
 	}
 	
 	/**
 	 * Calculate the resulting penalty for the player and execute it.
+	 * 
+	 * @return True when the effect has ended the player's turn.
 	 * @throws IllegalStateException 
 	 */
-	public void execute() throws IllegalStateException {
+	public boolean execute() throws IllegalStateException {
 		if (!hasLightGrenade) {
-			if (hasPowerFailure)
+			if (hasPowerFailure) {
 				player.endTurn();
+				return true;
+			}
 		}
 		else {
 			// The square the player stepped on has a light grenade and should
 			// always cause a decrease of at least three actions at this point.
 			player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
 		}
+		return true;
 	}
 }

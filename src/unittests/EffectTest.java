@@ -1,9 +1,14 @@
 package unittests;
 
 import static org.junit.Assert.assertEquals;
+import grid.Coordinate;
 import grid.Direction;
+import grid.Grid;
 import grid.GridBuilder;
+import grid.PowerFailure;
 import item.Effect;
+import item.Item;
+import item.LightGrenade;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +21,12 @@ public class EffectTest {
 	
 	private IPlayer	player;
 	private Effect	effect;
+	private Grid	grid;
 	
 	@Before
 	public void setUp() {
-		Random randomgen = new Random();
-		player = new Player(GridBuilder.getRandomCoordOnTestGrid(), new GridBuilder().getPredefinedTestGrid());
+		grid = new GridBuilder().getPredefinedTestGrid();
+		player = new Player(new Coordinate(0, 9), grid);
 		// Set the number of actions left at 2 initially to get a different
 		// result from the light grenade and the power failure
 		player.skipNumberOfActions(1);
@@ -31,7 +37,7 @@ public class EffectTest {
 	public void testLightGrenade() {
 		effect.addLightGrenade();
 		effect.execute();
-		// this will result in a negative number of actions left (i.e. the
+		// This will result in a negative number of actions left (i.e. the
 		// penalty for his next turn) The player will see he has no actions left
 		// and notify the database (to end his turn) and give himself again 3
 		// actions for his next
@@ -41,26 +47,29 @@ public class EffectTest {
 	
 	@Test
 	public void testPowerFailure() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
 		// a player always has already done a move-action when it hits a
-		// powerfailure. This is necessary to do a sucessfull endTurn
-		player.moveInDirection(Direction.NORTH);
-		
-		effect.addPowerFailure();
-		effect.execute();
+		// power failure. This is necessary to do a successful endTurn().
+		try {
+			player.moveInDirection(Direction.NORTH);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		assertEquals(player.getAllowedNumberOfActions(), 0 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
-		
-		// TODO: The above number is wrong: it should obviously be 0 instead of
-		// 2. At this moment, a player can't move yet, so we can't let it know
-		// it has moved in any way (this will always be the case when it hits a
-		// power failure). Add a player.moveInDirection(direction) as soon as
-		// possible and fix the test.
 	}
 	
 	@Test
 	public void testLightGrenadeAndPowerFailure() {
-		effect.addLightGrenade();
-		effect.addPowerFailure();
-		effect.execute();
+		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
+		Item lightGrenade = new LightGrenade();
+		lightGrenade.use(grid.getSquareAt(new Coordinate(0, 8)));
+		try {
+			player.moveInDirection(Direction.NORTH);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		assertEquals(player.getAllowedNumberOfActions(), -2 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	
