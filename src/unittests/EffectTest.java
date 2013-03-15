@@ -7,6 +7,7 @@ import item.Effect;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
+import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
 import player.Player;
 
@@ -39,7 +40,7 @@ public class EffectTest {
 	}
 	
 	@Test
-	public void testPowerFailure() {
+	public void testPowerFailure() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		// a player always has already done a move-action when it hits a
 		// powerfailure. This is necessary to do a sucessfull endTurn
 		player.moveInDirection(Direction.NORTH);

@@ -13,6 +13,8 @@ public abstract class ASquare {
 	/**
 	 * Returns the items on this square that can be picked up by a
 	 * {@link Player}
+	 * 
+	 * @return a list of all the carryable items on the square
 	 */
 	public abstract List<IItem> getCarryableItems();
 	
@@ -62,10 +64,12 @@ public abstract class ASquare {
 	 * @return Whether this square has a Player.
 	 */
 	public abstract boolean hasPlayer();
-
+	
 	/**
-	 * TODO
-	 * @throws HasNotYetMovedException 
+	 * set a specified player on this square
+	 * 
+	 * @param p
+	 *        the new player
 	 * @throws IllegalStateException 
 	 */
 	public abstract void setPlayer(IPlayer p) throws IllegalStateException;

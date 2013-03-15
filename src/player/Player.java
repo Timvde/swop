@@ -9,6 +9,7 @@ import item.IItem;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
+import ObjectronExceptions.IllegalMoveException;
 import notnullcheckweaver.NotNull;
 
 /**
@@ -209,20 +210,21 @@ public class Player extends Observable implements IPlayer {
 	}
 	
 	@Override
-	public void moveInDirection(Direction direction) throws IllegalStateException {
+	public void moveInDirection(Direction direction) throws IllegalMoveException {
 		if (!isPreconditionMoveSatisfied()) {
-			throw new IllegalStateException("The move-preconditions are not satisfied.");
+			throw new IllegalMoveException("The move-preconditions are not satisfied.");
 		}
 		if (!isValidDirection(direction)) {
-			throw new IllegalArgumentException("The specified direction is not valid.");
+			throw new IllegalMoveException("The specified direction is not valid.");
 		}
 		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
-			throw new IllegalStateException(
+			throw new IllegalMoveException(
 					"The player cannot move in given direction on the grid.");
 		}
 		
 		// remove this player form his current square
-		((Square) this.grid.getSquareAt(this.currentCoord)).removePlayer();
+		Square oldSquare = ((Square) this.grid.getSquareAt(this.currentCoord));
+		oldSquare.removePlayer();
 		
 		// set new position
 		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
@@ -230,8 +232,8 @@ public class Player extends Observable implements IPlayer {
 		newSquare.setPlayer(this);
 		
 		// update fields
-		// FIXME hasLightTrail() van square...
-		this.lightTrail.updateLightTrail(this.currentCoord);
+		// FIXME hasLightTrail() van square... (i'm trying, hold on ... )
+		this.lightTrail.updateLightTrail(oldSquare);
 		this.setHasMoved();
 		this.decreaseAllowedNumberOfActions();
 	}
