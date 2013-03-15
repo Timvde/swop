@@ -17,6 +17,7 @@ public class Grid implements IGrid {
 	
 	private Map<Coordinate, ASquare>	grid;
 	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
+	private static boolean				ENABLE_POWER_FAILURE;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -33,6 +34,8 @@ public class Grid implements IGrid {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;
+		
+		ENABLE_POWER_FAILURE = true;
 	}
 	
 	/**
@@ -206,10 +209,12 @@ public class Grid implements IGrid {
 		for (PowerFailure failure : getAllPowerFailures())
 			failure.decreaseTimeToLive();
 		
-		Random rand = new Random();
-		for (Coordinate coordinate : getGrid().keySet()) {
-			if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
-				addPowerFailureAtCoordinate(coordinate);
+		if (ENABLE_POWER_FAILURE) {
+			Random rand = new Random();
+			for (Coordinate coordinate : getGrid().keySet()) {
+				if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
+					addPowerFailureAtCoordinate(coordinate);
+				}
 			}
 		}
 	}
@@ -238,5 +243,17 @@ public class Grid implements IGrid {
 				failures.add(((Square) square).getPowerFailure());
 		}
 		return failures;
+	}
+	
+	/**
+	 * Enable or disable power failures.
+	 * 
+	 * @param enabled
+	 *        True if we want power failures in the game, false otherwise. By
+	 *        default, power failures will exist. This has been added for
+	 *        debugging purposes.
+	 */
+	public void enablePowerFailures(boolean enabled) {
+		this.ENABLE_POWER_FAILURE = enabled;
 	}
 }

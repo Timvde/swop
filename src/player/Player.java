@@ -32,6 +32,8 @@ public class Player extends Observable implements IPlayer {
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
 	@NotNull
+	private final Coordinate		startingCoord;
+	@NotNull
 	private Coordinate				currentCoord;
 	
 	@NotNull
@@ -39,10 +41,6 @@ public class Player extends Observable implements IPlayer {
 	private LightTrail				lightTrail;
 	@NotNull
 	private IGrid					grid;
-	
-	// TODO targetpos weg bij player?
-	// @NotNull
-	private Coordinate				targetPosition;
 	
 	/*
 	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
@@ -81,6 +79,7 @@ public class Player extends Observable implements IPlayer {
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		this.startingCoord = startCoordinate;
 		this.currentCoord = startCoordinate;
 		this.grid = grid;
 	}
@@ -95,8 +94,8 @@ public class Player extends Observable implements IPlayer {
 	}
 	
 	@Override
-	public Coordinate getTargetPosition() {
-		return this.targetPosition;
+	public Coordinate getStartingPosition() {
+		return this.startingCoord;
 	}
 	
 	@Override
