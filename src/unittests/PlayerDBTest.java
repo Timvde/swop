@@ -21,15 +21,15 @@ public class PlayerDBTest {
 	
 	@Before
 	public void setUp() {
-		playerDB = new PlayerDataBase();
-		exampleCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
 		grid = new GridBuilder().getPredefinedTestGrid();
+		playerDB = new PlayerDataBase(grid);
+		exampleCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
 		playerDB.createNewDB(exampleCoords, grid);
 	}
 	
 	@Test
-	public void testContstructor() {
-		playerDB = new PlayerDataBase();
+	public void testConstructor() {
+		playerDB = new PlayerDataBase(grid);
 		
 		// an empty DB should throw an exception
 		boolean exceptionThrown = false;

@@ -4,14 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import grid.Square;
-import item.Effect;
 import item.LightGrenade;
 import item.LightGrenade.LightGrenadeState;
 import org.junit.Before;
 import org.junit.Test;
 import grid.Coordinate;
 import grid.Wall;
-import grid.Wall.WallPart;
 
 
 @SuppressWarnings("javadoc")
