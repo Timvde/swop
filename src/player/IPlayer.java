@@ -112,6 +112,7 @@ public interface IPlayer {
 	 *         The specified direction must be a valid direction for this player
 	 *         to try to move in, i.e.
 	 *         <code>{@link #isValidDirection(Direction)}</code>.
+	 * @throws HasNotYetMovedException 
 	 */
 	public void moveInDirection(Direction direction) throws IllegalStateException,
 			IllegalArgumentException;

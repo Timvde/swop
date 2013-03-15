@@ -128,8 +128,9 @@ public class Square extends ASquare implements Observer {
 	 * depending on the square's current power state and the items it contains.
 	 * 
 	 * FIXME null
+	 * @throws IllegalStateException 
 	 */
-	public void setPlayer(IPlayer player) {
+	public void setPlayer(IPlayer player) throws IllegalStateException {
 		this.player = player;
 		penalty(player);
 	}
@@ -142,8 +143,9 @@ public class Square extends ASquare implements Observer {
 	 *        The Player which will feel the consequences.
 	 *        
 	 *        TODO null
+	 * @throws IllegalStateException 
 	 */
-	private void penalty(IPlayer player) {
+	private void penalty(IPlayer player) throws IllegalStateException {
 		Effect effect = new Effect(player);
 		
 		if (hasPowerFailure())

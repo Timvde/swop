@@ -11,7 +11,7 @@ public class MoveController {
 		this.playerDB = db;
 	}
 	
-	public void move(Direction direction) {
+	public void move(Direction direction) throws IllegalStateException, IllegalArgumentException {
 		playerDB.getCurrentPlayer().moveInDirection(direction);
 	}
 	

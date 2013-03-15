@@ -11,11 +11,10 @@ public class EndTurnController {
 		this.playerDB = db;
 	}
 	
-	public void endTurn() {
+	public void endTurn() throws IllegalStateException {
 		IPlayer currentPlayer = playerDB.getCurrentPlayer();
 		
-		int actionsLeft = currentPlayer.getAllowedNumberOfActions();
-		currentPlayer.skipNumberOfActions(actionsLeft);
+		currentPlayer.endTurn();
 	}
 	
 }
