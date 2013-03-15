@@ -40,7 +40,7 @@ public class UseItemTest {
 		playerDB = new PlayerDataBase(grid);
 		
 		GridBuilder builder = new GridBuilder();
-		grid = builder.getPredefinedTestGrid();
+		grid = builder.getPredefinedTestGrid(false);
 		
 		Coordinate[] startingCoords = new Coordinate[2];
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
@@ -58,7 +58,7 @@ public class UseItemTest {
 		useItemCont = new UseItemController(playerDB);
 	}
 	
-	@Test
+	@Test 
 	public void testMaximumOneLightGrenadePerSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
@@ -101,7 +101,6 @@ public class UseItemTest {
 		}
 		catch (Exception e) {
 			assertionThrown = true;
-			e.printStackTrace();
 		}
 		assertTrue(assertionThrown);
 	}

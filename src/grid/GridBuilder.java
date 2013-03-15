@@ -25,8 +25,8 @@ public class GridBuilder {
 	private int					height;
 	
 	// Constraints
-	private int					minimumGridWidth = 10;
-	private int					minimumGridHeight = 10;
+	private int					minimumGridWidth			= 10;
+	private int					minimumGridHeight			= 10;
 	
 	/**
 	 * Create a new builder for the grid
@@ -323,7 +323,7 @@ public class GridBuilder {
 	 * deterministic grid we can use to test. This should not be used in
 	 * gameplay.
 	 */
-	private Grid build(int width, int height, List<Wall> walls) {
+	private Grid build(int width, int height, List<Wall> walls, boolean usePowerfailure) {
 		this.walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
@@ -346,7 +346,10 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
 		
 		Grid final_grid = new Grid(grid);
-		final_grid.addPowerFailureAtCoordinate(new Coordinate(1, 1));
+		
+		if (usePowerfailure)
+		final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
+		
 		final_grid.enablePowerFailures(false);
 		
 		return final_grid;
@@ -360,9 +363,9 @@ public class GridBuilder {
 	 * 
 	 * <pre>
 	 *   ____________________
-	 *  | | | | | | | | | |2|
-	 *  | | | | | | | | | | |
-	 *  | | | | | | | |o| | |
+	 *  | | | |F|F|F| | | |2|
+	 *  | | | |F|F|F| | | | |
+	 *  | | | |F|F|F| |o| | |
 	 *  | | | | | | | | | | |
 	 *  | | | | | | | | | | |
 	 *  | | | | |x|x|x|x|x| |
@@ -371,14 +374,17 @@ public class GridBuilder {
 	 *  | | | | | |o|o|o|o| |
 	 *  |1| | | | | | | | | |
 	 * </pre>
+	 * @param usePowerfailure 
+	 * 			Boolean to express if there must be a powerfailure in the
+	 *          test grid. Shown by F in the map above.
 	 * 
 	 * @return the new prediefined grid
 	 */
-	public Grid getPredefinedTestGrid() {
+	public Grid getPredefinedTestGrid(boolean usePowerfailure) {
 		List<Wall> walls = new ArrayList<Wall>();
 		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
 		
-		return build(10, 10, walls);
+		return build(10, 10, walls, usePowerfailure);
 	}
 	
 	/**

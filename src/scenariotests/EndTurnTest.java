@@ -1,28 +1,28 @@
 package scenariotests;
 
+import static org.junit.Assert.*;
 import game.Game;
 import grid.Coordinate;
+import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
 import org.junit.Test;
+import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
-import controllers.GUIDataController;
+import controllers.EndTurnController;
 import controllers.MoveController;
-import controllers.PickUpItemController;
 
 /**
  * Test if the turns end correctly in the game.
  * 
- * Tests: 
- * - Player enters power failed square with no grenade: end turn
+ * Tests: - Player enters power failed square with no grenade: end turn
  * 
  * @author Tom
  */
 @SuppressWarnings("javadoc")
 public class EndTurnTest {
 	
-	private static GUIDataController	guiDataCont;
-	private static PickUpItemController	pickUpCont;
+	private static EndTurnController	endTurnCont;
 	private static MoveController		moveCont;
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
@@ -33,25 +33,38 @@ public class EndTurnTest {
 		playerDB = new PlayerDataBase(grid);
 		
 		GridBuilder builder = new GridBuilder();
-		grid = builder.getPredefinedTestGrid();
+		grid = builder.getPredefinedTestGrid(true);
 		
 		Coordinate[] startingCoords = new Coordinate[2];
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight()-1);
+		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
 		
 		playerDB.createNewDB(startingCoords, grid);
 		
 		game.setGrid(grid);
 		
 		game.start();
-
+		
 		moveCont = new MoveController(playerDB);
-		pickUpCont = new PickUpItemController(playerDB);
+		endTurnCont = new EndTurnController(playerDB);
 	}
 	
 	@Test
-	public void testPlayerEnterPowerFailedSquare() {
+	public void testPlayerEnterPowerFailedSquare() throws IllegalStateException,
+			IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
+		// Player 1 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		// Player 2 actions
+		moveCont.move(Direction.EAST);
+		endTurnCont.endTurn();
+		// Player 1 actions
+		moveCont.move(Direction.WEST);
+		
+		// Check if player 1 his turn ended because of the power failure.
+		assertSame(2, playerDB.getCurrentPlayer().getID());
 	}
 }

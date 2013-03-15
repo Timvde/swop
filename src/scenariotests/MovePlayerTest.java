@@ -31,7 +31,7 @@ public class MovePlayerTest {
 	public void newGame() {
 		Game game = new Game();
 		playerDB = new PlayerDataBase(grid);
-		grid = new GridBuilder().getPredefinedTestGrid();
+		grid = new GridBuilder().getPredefinedTestGrid(false);
 		
 		Coordinate[] startingCoords = new Coordinate[2];
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
@@ -51,25 +51,17 @@ public class MovePlayerTest {
 		newGame();
 		
 		// Player 1 actions
-		System.out.println(playerDB.getCurrentPlayer());
+
 		moveCont.move(Direction.WEST);
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.WEST);
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
 		// Player 2 actions
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTH);
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTH);
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTHEAST);
 		// Player 1 actions
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
-		System.out.println(playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
 		
 		// Player 2 actions
@@ -80,7 +72,7 @@ public class MovePlayerTest {
 			// This causes two players to be on the same square:
 			moveCont.move(Direction.NORTHEAST);
 		} 
-		catch (IllegalStateException e) {
+		catch (IllegalMoveException e) {
 			exceptionThrown = true;
 		}
 		Assert.assertEquals(true, exceptionThrown);
@@ -107,13 +99,13 @@ public class MovePlayerTest {
 			// This is a move on a wall:
 			moveCont.move(Direction.NORTHEAST);
 		}
-		catch (IllegalStateException e) {
+		catch (IllegalMoveException e) {
 			exceptionThrown = true;
 		}
 		Assert.assertEquals(true, exceptionThrown);
 	}
 	
-	@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalMoveException.class)
 	public void testCannotLeaveGrid() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
