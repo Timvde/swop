@@ -64,7 +64,7 @@ public class LightTrail {
 	 * Test whether a coordinate is valid as a new part of the lightTrail. This
 	 * will return false if the lightTrail already contains the specified
 	 * coordinate or if the specified coordinate is not a
-	 * {@link Coordinate#isNeighbor(Coordinate) neighbor} of the first
+	 * {@link Coordinate#isNeighbour(Coordinate) neighbor} of the first
 	 * coordinate of this lightTrail.
 	 * 
 	 * @param square

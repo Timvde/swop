@@ -16,9 +16,13 @@ import player.Player;
  */
 public class Square extends ASquare {
 	
-	private List<IItem>	itemList	= new ArrayList<IItem>();
-	private IPlayer		player;
-	private boolean		lightTrail;
+	private List<IItem>		itemList	= new ArrayList<IItem>();
+	private IPlayer			player;
+	private boolean			lightTrail;
+	// Having one PowerFailure object at this moment is enough. Since they all
+	// have the same time to live, the last one added will be the one which will
+	// live the longest. If this changes, we'd want to change this into a List.
+	private PowerFailure	powerFailure;
 	
 	/**
 	 * Default constructor.
@@ -48,12 +52,13 @@ public class Square extends ASquare {
 	}
 	
 	/**
-	 * TODO
+	 * This method will check if a Square has a power failure. This depends on
+	 * both the state of the Square itself, as on its neighbours.
 	 * 
-	 * @return
+	 * @return whether or not it has a power failure.
 	 */
 	public boolean hasPowerFailure() {
-		return false;
+		return powerFailure != null;
 	}
 	
 	private List<IItem> getAllItems() {
@@ -78,6 +83,8 @@ public class Square extends ASquare {
 	/**
 	 * This method sets the haslightTrail for this square.
 	 * 
+	 * 
+	 * 
 	 * @note <b>Do NOT use this method.</b> The light trail is automatically
 	 *       updated by the light trail as the player moves around the grid.
 	 */
@@ -86,7 +93,7 @@ public class Square extends ASquare {
 	}
 	
 	/**
-	 * Remove the light trail from this square. 
+	 * Remove the light trail from this square.
 	 * 
 	 * @note <b>Do NOT use this method.</b> The light trail is automatically
 	 *       updated by the light trail as the player moves around the grid.
@@ -136,12 +143,14 @@ public class Square extends ASquare {
 	 * Move an IPlayer on this square. This might cause a penalty to the player,
 	 * depending on the square's current power state and the items it contains.
 	 * 
-	 * FIXME null
-	 * @throws IllegalStateException 
+	 * @throws IllegalStateException
+	 * @return True if the move of the player has caused him to end his turn.
 	 */
-	public void setPlayer(IPlayer player) throws IllegalStateException {
+	public boolean setPlayer(IPlayer player) throws IllegalStateException {
+		if (player == null)
+			throw new IllegalArgumentException();
 		this.player = player;
-		penalty(player);
+		return penalty(player);
 	}
 	
 	/**
@@ -150,19 +159,16 @@ public class Square extends ASquare {
 	 * 
 	 * @param player
 	 *        The Player which will feel the consequences.
-	 * 
-	 *        TODO null
-	 * @throws IllegalStateException 
+	 * @return True when the penalty has caused the player to end his turn.
 	 */
-	private void penalty(IPlayer player) throws IllegalStateException {
+	private boolean penalty(IPlayer player) throws IllegalStateException {
 		Effect effect = new Effect(player);
 		
-		if (hasPowerFailure())
-			effect.addPowerFailure();
+		effect.addPowerFailure(powerFailure);
 		for (IItem item : getAllItems())
 			item.addToEffect(effect);
 		
-		effect.execute();
+		return effect.execute();
 	}
 	
 	/**
@@ -172,6 +178,34 @@ public class Square extends ASquare {
 	 */
 	public void removePlayer() {
 		this.player = null;
+	}
+	
+	/**
+	 * This method removes a power failure from a square. It is called from
+	 * within the PowerFailure class.
+	 * 
+	 * @param powerFailure
+	 *        The power failure to remove
+	 */
+	void removePowerFailure(PowerFailure powerFailure) {
+		if (this.powerFailure.equals(powerFailure))
+			this.powerFailure = null;
+	}
+	
+	PowerFailure getPowerFailure() {
+		return this.powerFailure;
+	}
+	
+	/**
+	 * Add a power failure to this square.
+	 * 
+	 * @param powerFailure
+	 *        The power failure to add.
+	 */
+	public void addPowerFailure(PowerFailure powerFailure) {
+		// We can just override this. The last power failure added will
+		// currently always be the one with the longest time to live.
+		this.powerFailure = powerFailure;
 	}
 	
 }

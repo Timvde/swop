@@ -6,7 +6,7 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
-import grid.Wall.WallPart;
+import grid.WallPart;
 import java.util.ArrayList;
 import org.junit.Test;
 import player.IPlayer;

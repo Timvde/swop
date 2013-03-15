@@ -1,6 +1,6 @@
 package grid;
 
-import grid.Wall.WallPart;
+import grid.WallPart;
 import item.LightGrenade;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -345,7 +345,10 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
 		
-		return new Grid(grid);
+		Grid final_grid = new Grid(grid);
+		final_grid.addPowerFailureAtCoordinate(new Coordinate(7, 2));
+		
+		return final_grid;
 	}
 	
 	/*----------- Predefined testGrid methods -----------*/
