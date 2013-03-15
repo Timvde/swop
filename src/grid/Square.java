@@ -114,9 +114,9 @@ public class Square extends ASquare {
 	}
 	
 	@Override
-	public boolean hasItemWithID(int ID) {
+	public boolean contains(IItem item) {
 		for (IItem itemOnSquare : this.getAllItems())
-			if (ID == itemOnSquare.getId())
+			if (item.equals(itemOnSquare))
 				return true;
 		return false;
 	}

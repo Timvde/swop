@@ -34,7 +34,7 @@ public class WallPart extends ASquare {
 	}
 	
 	@Override
-	public boolean hasItemWithID(int ID) {
+	public boolean contains(IItem item) {
 		return false;
 	}
 	

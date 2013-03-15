@@ -3,6 +3,7 @@ package unittests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import item.LightGrenade;
 import grid.Coordinate;
 import grid.Wall;
 import grid.WallPart;
@@ -86,7 +87,7 @@ public class WallTest {
 		assertEquals(part.getCarryableItems().size(), 0);
 		assertEquals(part.getPlayer(), null);
 		assertFalse(part.hasLightTrail());
-		assertFalse(part.hasItemWithID(0));
+		assertFalse(part.contains(new LightGrenade()));
 		assertFalse(part.hasPlayer());
 		
 		boolean hasThrown = false;

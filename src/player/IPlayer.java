@@ -146,15 +146,20 @@ public interface IPlayer {
 	 * currently on.
 	 * 
 	 * @param item
-	 *        The item to pick yp.
+	 *        The item to pick up.
+	 * @throws IllegalArgumentException
+	 *         The item must be on the square the player is currently on and
+	 *         cannot be null.
 	 */
-	public void pickUpItem(IItem item);
+	public void pickUpItem(IItem item) throws IllegalArgumentException;
 	
 	/**
 	 * Use the given item. The item must be in the inventory of the player.
 	 * 
 	 * @param i
 	 *        The item that will be used.
+	 * @throws IllegalArgumentException
+	 *         The item is not in the inventory
 	 */
-	public void useItem(IItem i);
+	public void useItem(IItem i) throws IllegalArgumentException;
 }

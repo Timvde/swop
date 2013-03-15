@@ -26,7 +26,7 @@ public class SquareTest {
 		Item item = new LightGrenade();
 		square.addItem(item);
 		assertTrue(square.getCarryableItems().contains(item));
-		assertTrue(square.hasItemWithID(item.getId()));
+		assertTrue(square.contains(item));
 		square.removeItem(item);
 		assertEquals(square.getCarryableItems().size(), 0);
 	}
