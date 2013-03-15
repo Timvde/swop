@@ -36,7 +36,7 @@ public class EffectTest {
 	public void testLightGrenade() {
 		effect.addLightGrenade();
 		effect.execute();
-		// this will result in a negative number of actions left (i.e. the
+		// This will result in a negative number of actions left (i.e. the
 		// penalty for his next turn) The player will see he has no actions left
 		// and notify the database (to end his turn) and give himself again 3
 		// actions for his next

@@ -41,15 +41,16 @@ public class Effect {
 	
 	/**
 	 * Calculate the resulting penalty for the player and execute it.
-	 * @return True when a penalty was given to the player.
+	 * 
+	 * @return True when the effect has ended the player's turn.
 	 * @throws IllegalStateException 
 	 */
 	public boolean execute() throws IllegalStateException {
 		if (!hasLightGrenade) {
-			if (hasPowerFailure)
+			if (hasPowerFailure) {
 				player.endTurn();
-			else
-				return false;
+				return true;
+			}
 		}
 		else {
 			// The square the player stepped on has a light grenade and should

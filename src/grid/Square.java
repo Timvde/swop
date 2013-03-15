@@ -134,7 +134,7 @@ public class Square extends ASquare {
 	 * depending on the square's current power state and the items it contains.
 	 * 
 	 * @throws IllegalStateException
-	 * @return True if the move of the player has caused a penalty.
+	 * @return True if the move of the player has caused him to end his turn.
 	 */
 	public boolean setPlayer(IPlayer player) throws IllegalStateException {
 		if (player == null)
@@ -149,8 +149,7 @@ public class Square extends ASquare {
 	 * 
 	 * @param player
 	 *        The Player which will feel the consequences.
-<<<<<<< HEAD
-	 * @return True when a penalty was given to the player.
+	 * @return True when the penalty has caused the player to end his turn.
 	 */
 	private boolean penalty(IPlayer player) throws IllegalStateException {
 		Effect effect = new Effect(player);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -15,6 +16,7 @@ import java.util.Set;
 public class Grid implements IGrid {
 	
 	private Map<Coordinate, ASquare>	grid;
+	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -191,9 +193,27 @@ public class Grid implements IGrid {
 		return false;
 	}
 	
+	/**
+	 * This method updates all power failure related things.
+	 * 
+	 * <pre>
+	 * - Current power failures will lose a TTL counter and be removed
+	 *   if it drops to zero
+	 * - Each Square has a 5% chance to become power failured
+	 * </pre>
+	 */
 	public void updatePowerFailures() {
 		for (PowerFailure failure : getAllPowerFailures())
 			failure.decreaseTimeToLive();
+		
+		Random rand = new Random();
+		for (Coordinate coord : getGrid().keySet()) {
+			if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
+				List<Coordinate> coordinates = coord.getAllNeighbours();
+				for (Coordinate coordinate : coordinates)
+					addPowerFailureAtCoordinate(coordinate);
+			}
+		}
 	}
 	
 	/**

@@ -238,8 +238,8 @@ public class Player extends Observable implements IPlayer {
 		// This should happen before the player is set on the next square,
 		// because then the effects will be calculated.
 		this.setHasMoved();
-		boolean gotPenalty = newSquare.setPlayer(this);
-		if (!gotPenalty)
+		boolean endTurn = newSquare.setPlayer(this);
+		if (!endTurn)
 			this.decreaseAllowedNumberOfActions();
 		
 		// FIXME hasLightTrail() van square...
