@@ -14,11 +14,11 @@ import player.Player;
  * as it is not prevented by the square's internal state. Moving to another
  * Square can have side effects.
  */
-public class Square extends ASquare implements Observer {
+public class Square extends ASquare {
 	
 	private List<IItem>	itemList	= new ArrayList<IItem>();
 	private IPlayer		player;
-	private int			lightTrail;
+	private boolean		lightTrail;
 	
 	/**
 	 * Default constructor.
@@ -72,19 +72,27 @@ public class Square extends ASquare implements Observer {
 	
 	@Override
 	public boolean hasLightTrail() {
-		return lightTrail > 0;
+		return lightTrail;
 	}
 	
 	/**
 	 * This method sets the haslightTrail for this square.
 	 * 
-	 * 
-	 * 
 	 * @note <b>Do NOT use this method.</b> The light trail is automatically
-	 *       updated as the player (and its light trail) moves around the grid.
+	 *       updated by the light trail as the player moves around the grid.
 	 */
 	public void placeLightTrail() {
-		lightTrail = 4;
+		lightTrail = true;
+	}
+	
+	/**
+	 * Remove the light trail from this square. 
+	 * 
+	 * @note <b>Do NOT use this method.</b> The light trail is automatically
+	 *       updated by the light trail as the player moves around the grid.
+	 */
+	public void removeLightTrail() {
+		lightTrail = false;
 	}
 	
 	@Override
@@ -114,7 +122,9 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
-	 * Returns whether or not this Square has currently a {@link Player}, i.e. <code>{@link #getPlayer()}!= null</code>.
+	 * Returns whether or not this Square has currently a {@link Player}, i.e.
+	 * <code>{@link #getPlayer()}!= null</code>.
+	 * 
 	 * @return Whether this square has a Player.
 	 */
 	@Override
@@ -140,7 +150,7 @@ public class Square extends ASquare implements Observer {
 	 * 
 	 * @param player
 	 *        The Player which will feel the consequences.
-	 *        
+	 * 
 	 *        TODO null
 	 * @throws IllegalStateException 
 	 */
@@ -162,15 +172,6 @@ public class Square extends ASquare implements Observer {
 	 */
 	public void removePlayer() {
 		this.player = null;
-	}
-	
-	/**
-	 * TODO
-	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		if (lightTrail > 0)
-			lightTrail--;
 	}
 	
 }
