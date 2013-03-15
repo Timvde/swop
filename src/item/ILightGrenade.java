@@ -20,17 +20,17 @@ public interface ILightGrenade extends IItem {
 	 */
 	public LightGrenadeState getState();
 
-	/**
-	 * This method sets the state of the grenade to {@link LightGrenadeState}
-	 * .TRIGGERED
-	 * 
-	 * @throws IllegalStateException
-	 *             The transition to the TRIGGERED state must be valid from the
-	 *             current state:
-	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.WAITING_FOR_PLAYER_LEAVE)</code>
-	 * 
-	 */
-	public void trigger() throws IllegalStateException;
+//	/**
+//	 * This method sets the state of the grenade to {@link LightGrenadeState}
+//	 * .TRIGGERED
+//	 * 
+//	 * @throws IllegalStateException
+//	 *             The transition to the TRIGGERED state must be valid from the
+//	 *             current state:
+//	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.WAITING_FOR_PLAYER_LEAVE)</code>
+//	 * 
+//	 */
+//	public void trigger() throws IllegalStateException;
 
 	/**
 	 * This method sets the state of the grenade to {@link LightGrenadeState}

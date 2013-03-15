@@ -6,7 +6,16 @@ import grid.Wall;
 import com.sun.istack.internal.NotNull;
 
 /**
- * Light grenades are items that can be picked up and used by a player.
+ * Light grenades are items that can be picked up and used by a player. There
+ * are three states for a light grenade: {@link LightGrenadeState#ACTIVE ACTIVE}
+ * , {@link LightGrenadeState#INACTIVE INACTIVE},
+ * {@link LightGrenadeState#EXPLODED EXPLODED}. A light grenade always starts in
+ * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
+ * then gets used by a player the internal state of this item will be changed to
+ * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode
+ * whenever the {@link #explode()} method is called. After exploding the light
+ * grenade converts to it's last state {@link LightGrenadeState#EXPLODED
+ * EXPLODED}, this will convert the item to a immutable object.
  * 
  * @author Bavo Mees
  */
@@ -28,13 +37,13 @@ public class LightGrenade extends Item implements ILightGrenade {
 		return this.state;
 	}
 	
-	@Override
-	public void trigger() throws IllegalStateException {
-		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
-			throw new IllegalStateException("Illegal transition from " + this.state.toString()
-					+ " to 'triggered'");
-		this.state = LightGrenadeState.TRIGGERED;
-	}
+//	@Override
+//	public void trigger() throws IllegalStateException {
+//		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
+//			throw new IllegalStateException("Illegal transition from " + this.state.toString()
+//					+ " to TRIGGERED");
+//		this.state = LightGrenadeState.TRIGGERED;
+//	}
 	
 	@Override
 	public void enable() throws IllegalStateException {
@@ -66,13 +75,20 @@ public class LightGrenade extends Item implements ILightGrenade {
 	public void use(ASquare square) {
 		if (square instanceof Wall.WallPart)
 			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
-		this.trigger();
-		//TODO this should not be a cast! Asquare should provide this method!
+		this.enable();
+		
+		// TODO this should not be a cast! Asquare should provide this method!
 		((Square) square).addItem(this);
 	}
 	
-	/************************* LigthGrenadeEnum *************************/
+	@Override
+	public void addToEffect(Effect effect) {
+		if (this.getState() == LightGrenadeState.ACTIVE)
+			effect.addLightGrenade();
+	}
 	
+	/************************* LigthGrenadeEnum *************************/
+
 	/**
 	 * An enumeration of the states a {@link LightGrenade} can have and the
 	 * allowed transitions between them.
@@ -86,20 +102,21 @@ public class LightGrenade extends Item implements ILightGrenade {
 			
 			@Override
 			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return (toState == this) || (toState == TRIGGERED);
-			}
-		},
-		/**
-		 * The grenade is dropped on a square by a player and will become active
-		 * once the player leaves the square
-		 */
-		TRIGGERED {
-			
-			@Override
-			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
 				return (toState == this) || (toState == ACTIVE);
 			}
 		},
+		// /**
+		// * The grenade is dropped on a square by a player and will become
+		// active
+		// * once the player leaves the square
+		// */
+		// TRIGGERED {
+		//
+		// @Override
+		// public boolean isAllowedTransistionTo(LightGrenadeState toState) {
+		// return (toState == this) || (toState == ACTIVE);
+		// }
+		// },
 		/**
 		 * the grenade is armed
 		 */
@@ -122,19 +139,14 @@ public class LightGrenade extends Item implements ILightGrenade {
 		};
 		
 		/**
-		 * Returns whether or not a transistion from this state to a give state
+		 * Returns whether or not a transition from this state to a give state
 		 * is allowed.
 		 * 
 		 * @param toState
 		 *        the given other state
-		 * @return whether or not a transistion from this state to a give state
+		 * @return whether or not a transition from this state to a give state
 		 *         is allowed.
 		 */
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
-	}
-	
-	public void addToEffect(Effect effect) {
-		if (this.getState().equals(LightGrenadeState.ACTIVE))
-			effect.addLightGrenade();
 	}
 }
