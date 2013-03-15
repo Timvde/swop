@@ -224,7 +224,8 @@ public class Player extends Observable implements IPlayer {
 		}
 		
 		// remove this player form his current square
-		((Square) this.grid.getSquareAt(this.currentCoord)).removePlayer();
+		Square oldSquare = ((Square) this.grid.getSquareAt(this.currentCoord));
+		oldSquare.removePlayer();
 		
 		// set new position
 		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
@@ -232,8 +233,8 @@ public class Player extends Observable implements IPlayer {
 		newSquare.setPlayer(this);
 		
 		// update fields
-		// FIXME hasLightTrail() van square...
-		this.lightTrail.updateLightTrail(this.currentCoord);
+		// FIXME hasLightTrail() van square... (i'm trying, hold on ... )
+		this.lightTrail.updateLightTrail(oldSquare);
 		this.setHasMoved();
 		this.decreaseAllowedNumberOfActions();
 	}
