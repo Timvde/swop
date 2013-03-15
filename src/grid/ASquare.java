@@ -66,17 +66,21 @@ public abstract class ASquare {
 	public abstract boolean hasPlayer();
 	
 	/**
-	 * set a specified player on this square
+	 * set a specified player on this square. This method returns whether the
+	 * turn of the player has been ended by an effect of the square or items on
+	 * that square
 	 * 
 	 * @param p
 	 *        the new player
-	 * @throws IllegalStateException 
-	 * @return 
+	 * @return whether the turn has been ended.
+	 * @throws IllegalStateException
 	 */
 	public abstract boolean setPlayer(IPlayer p);
 	
 	/**
-	 * TODO
+	 * This method removes a player from a square. This method is enforced:
+	 * setPlayer(null) will throw. This is for both readability's sake and to
+	 * prevent errors.
 	 */
 	public abstract void removePlayer();
 	
@@ -94,7 +98,8 @@ public abstract class ASquare {
 	abstract void addPowerFailure(PowerFailure powerFailure);
 	
 	/**
-	 * Remove a power failure from this ASquare
+	 * This method removes a power failure from a square. It is called from
+	 * within the PowerFailure class.
 	 * 
 	 * @param powerFailure
 	 *        The power failure to remove

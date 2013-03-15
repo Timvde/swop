@@ -14,7 +14,7 @@ import controllers.PickUpItemController;
 import controllers.UseItemController;
 
 /**
- * TODO
+ * Game controls and initializes a game
  * 
  * @author tom
  */
@@ -25,11 +25,20 @@ public class Game {
 	private GUI					gui;
 	private GUIDataController	guiDataCont;
 	
+	/**
+	 * main method
+	 * 
+	 * @param args
+	 *        arguments are ignored
+	 */
 	public static void main(String[] args) {
 		Game game = new Game();
 		game.start();
 	}
 	
+	/**
+	 * start a new game
+	 */
 	public void start() {
 		this.playerDB = new PlayerDataBase(grid);
 		
@@ -61,9 +70,12 @@ public class Game {
 	}
 	
 	/**
+	 * Start a new game with specified board dimensions
 	 * 
 	 * @param width
+	 *        the height of the new board
 	 * @param height
+	 *        the width of the new board
 	 */
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
@@ -78,8 +90,10 @@ public class Game {
 	}
 	
 	/**
+	 * end the current game
 	 * 
 	 * @param p
+	 *        the player who wins/loses the game
 	 */
 	public void endGame(Player p) {
 		// TODO Auto-generated method stub

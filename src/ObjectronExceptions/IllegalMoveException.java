@@ -8,12 +8,18 @@ package ObjectronExceptions;
  */
 public class IllegalMoveException extends Exception {
 	
+	private static final long	serialVersionUID	= 1L;
 	private String message;
 	
+	/**
+	 * make a new {@link IllegalMoveException}
+	 * @param message
+	 */
 	public IllegalMoveException(String message) {
 		this.message = message;
 	}
 	
+	@Override
 	public String getMessage() {
 		return this.message;
 	}

@@ -2,8 +2,6 @@ package grid;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * This class represents a power failure. This is a state a square can be in

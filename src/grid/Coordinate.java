@@ -193,7 +193,7 @@ public class Coordinate {
 	 * Returns a list of all the neighbours of this square. A square
 	 * 
 	 * @return A list of neighbours: all Coordinates in this list will have
-	 *         {@link #isNeighbour(this)} == true
+	 *         {@link #isNeighbour(Coordinate) isNeighbour(this)} == true
 	 */
 	public List<Coordinate> getAllNeighbours() {
 		List<Coordinate> neighbours = new ArrayList<Coordinate>();
