@@ -119,13 +119,8 @@ public class Player extends Observable implements IPlayer {
 	 * related fields.
 	 */
 	private void increaseAllowedNumberOfActions() {
-		int turnsToSkip = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		
-		if (getGrid().getSquareAt(getCurrentLocation()).hasPowerFailure())
-			turnsToSkip = 2;
-		
-		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft + turnsToSkip,
-				MAX_NUMBER_OF_ACTIONS_PER_TURN);
+		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
+				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	
 	/**
@@ -241,13 +236,16 @@ public class Player extends Observable implements IPlayer {
 		// set new position
 		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
 		Square newSquare = (Square) getGrid().getSquareAt(this.currentCoord);
-		newSquare.setPlayer(this);
 		
-		// update fields
+		// This should happen before the player is set on the next square,
+		// because then the effects will be calculated.
+		this.setHasMoved();
+		boolean gotPenalty = newSquare.setPlayer(this);
+		if (!gotPenalty)
+			this.decreaseAllowedNumberOfActions();
+		
 		// FIXME hasLightTrail() van square...
 		this.lightTrail.updateLightTrail(this.currentCoord);
-		this.setHasMoved();
-		this.decreaseAllowedNumberOfActions();
 	}
 	
 	@Override

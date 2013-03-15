@@ -7,6 +7,8 @@ import grid.Grid;
 import grid.GridBuilder;
 import grid.PowerFailure;
 import item.Effect;
+import item.Item;
+import item.LightGrenade;
 import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,9 +55,10 @@ public class EffectTest {
 	
 	@Test
 	public void testLightGrenadeAndPowerFailure() {
-		effect.addLightGrenade();
-		effect.addPowerFailure(new PowerFailure(null));
-		effect.execute();
+		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
+		Item lightGrenade = new LightGrenade();
+		lightGrenade.use(grid.getSquareAt(new Coordinate(0,8)));
+		player.moveInDirection(Direction.NORTH);
 		assertEquals(player.getAllowedNumberOfActions(), -2 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	

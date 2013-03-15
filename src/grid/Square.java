@@ -133,13 +133,13 @@ public class Square extends ASquare {
 	 * Move an IPlayer on this square. This might cause a penalty to the player,
 	 * depending on the square's current power state and the items it contains.
 	 * 
-	 * FIXME null
+	 * @return True if the move of the player has caused a penalty.
 	 */
-	public void setPlayer(IPlayer player) {
+	public boolean setPlayer(IPlayer player) {
 		if (player == null)
 			throw new IllegalArgumentException();
 		this.player = player;
-		penalty(player);
+		return penalty(player);
 	}
 	
 	/**
@@ -148,17 +148,16 @@ public class Square extends ASquare {
 	 * 
 	 * @param player
 	 *        The Player which will feel the consequences.
-	 * 
-	 *        TODO null
+	 * @return True when a penalty was given to the player.
 	 */
-	private void penalty(IPlayer player) {
+	private boolean penalty(IPlayer player) {
 		Effect effect = new Effect(player);
 		
 		effect.addPowerFailure(powerFailure);
 		for (IItem item : getAllItems())
 			item.addToEffect(effect);
 		
-		effect.execute();
+		return effect.execute();
 	}
 	
 	/**

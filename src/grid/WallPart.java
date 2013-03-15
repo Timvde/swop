@@ -47,7 +47,7 @@ public class WallPart extends ASquare {
 	}
 	
 	@Override
-	public void setPlayer(IPlayer p) {
+	public boolean setPlayer(IPlayer p) {
 		throw new IllegalStateException("Can not set a player on a wallpart!");
 	}
 	

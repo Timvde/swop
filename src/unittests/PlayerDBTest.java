@@ -21,9 +21,9 @@ public class PlayerDBTest {
 	
 	@Before
 	public void setUp() {
+		grid = new GridBuilder().getPredefinedTestGrid();
 		playerDB = new PlayerDataBase(grid);
 		exampleCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
-		grid = new GridBuilder().getPredefinedTestGrid();
 		playerDB.createNewDB(exampleCoords, grid);
 	}
 	

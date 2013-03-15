@@ -34,22 +34,27 @@ public class Effect {
 	/**
 	 * Tell the Effect to take the specified power failure into calculation.
 	 */
-	public void addPowerFailure(PowerFailure powerfailure) {
-		this.hasPowerFailure = true;
+	public void addPowerFailure(PowerFailure powerFailure) {
+		if (powerFailure != null)
+			this.hasPowerFailure = true;
 	}
 	
 	/**
 	 * Calculate the resulting penalty for the player and execute it.
+	 * @return True when a penalty was given to the player.
 	 */
-	public void execute() {
+	public boolean execute() {
 		if (!hasLightGrenade) {
 			if (hasPowerFailure)
 				player.endTurn();
+			else
+				return false;
 		}
 		else {
 			// The square the player stepped on has a light grenade and should
 			// always cause a decrease of at least three actions at this point.
 			player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
 		}
+		return true;
 	}
 }

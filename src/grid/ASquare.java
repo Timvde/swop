@@ -65,8 +65,9 @@ public abstract class ASquare {
 	
 	/**
 	 * TODO
+	 * @return 
 	 */
-	public abstract void setPlayer(IPlayer p);
+	public abstract boolean setPlayer(IPlayer p);
 	
 	/**
 	 * TODO
