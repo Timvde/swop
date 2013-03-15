@@ -13,10 +13,10 @@ import java.util.Observer;
  */
 public class PowerFailure {
 	
-	private List<ASquare>	squares		= new ArrayList<ASquare>();
+	private List<ASquare>	squares	= new ArrayList<ASquare>();
 	
 	// The time to live is 3 on creation
-	private int				timeToLive	= 3;
+	private int				timeToLive;
 	
 	/**
 	 * Create a power failure for a given list of Squares.
@@ -40,6 +40,7 @@ public class PowerFailure {
 		}
 		
 		this.squares = squares;
+		timeToLive = 3;
 	}
 	
 	/**
