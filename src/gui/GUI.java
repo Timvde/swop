@@ -42,8 +42,8 @@ public class GUI implements Runnable {
 	 * The following values are not final and will be updated with each redraw,
 	 * depending on the Grid object dimension. These are just temp start values.
 	 */
-	private int						gridHeight			= 4;
-	private int						gridWidth			= 4;
+	private int						gridHeight			= 10;
+	private int						gridWidth			= 10;
 	
 	/**
 	 * This variable is the size of a square on the GUI. If modified, the grid
@@ -102,10 +102,14 @@ public class GUI implements Runnable {
 	 *        The move controller.
 	 * @param pickupCont
 	 *        The pickup item controller.
-	 * @param endturnCont
+	 * @param endTurnCont
 	 *        The end of turn controller.
 	 * @param useitemCont
 	 *        The use item controller.
+	 * @param newGameCont
+	 *        The new game controller.
+	 * @param guiDataCont
+	 *        The GUI data controller.
 	 */
 	public GUI(MoveController moveCont, PickUpItemController pickupCont,
 			UseItemController useitemCont, NewGameController newGameCont,
@@ -172,11 +176,11 @@ public class GUI implements Runnable {
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
-						// // Draw powerfailures if necessary
-						// if (square.hasPowerFailure()) {
-						// graphics.drawImage(powerfailure, guiCoord.getX(),
-						// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						// }
+						// Draw powerfailures if necessary
+						if (square.hasPowerFailure()) {
+							graphics.drawImage(powerfailure, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
 						
 						// Draw players if necessary
 						if (player != null) {
@@ -215,8 +219,10 @@ public class GUI implements Runnable {
 						}
 						
 						// Draw the two finish squares:
-						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
-						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
+						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0,
+								gridHeight - 1));
+						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(
+								gridWidth - 1, 0));
 						graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
 								guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						graphics.drawImage(finishRed, guiCoordFinishRed.getX(),

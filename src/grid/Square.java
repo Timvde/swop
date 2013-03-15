@@ -4,8 +4,6 @@ import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import player.IPlayer;
 import player.Player;
 
@@ -171,24 +169,14 @@ public class Square extends ASquare {
 		return effect.execute();
 	}
 	
-	/**
-	 * This method removes a player from a square. This method is enforced:
-	 * setPlayer(null) will throw. This is for both readability's sake and to
-	 * prevent errors.
-	 */
+	@Override
 	public void removePlayer() {
 		this.player = null;
 	}
 	
-	/**
-	 * This method removes a power failure from a square. It is called from
-	 * within the PowerFailure class.
-	 * 
-	 * @param powerFailure
-	 *        The power failure to remove
-	 */
+	@Override
 	void removePowerFailure(PowerFailure powerFailure) {
-		if (this.powerFailure.equals(powerFailure))
+		if (this.powerFailure != null && this.powerFailure.equals(powerFailure))
 			this.powerFailure = null;
 	}
 	
@@ -196,12 +184,7 @@ public class Square extends ASquare {
 		return this.powerFailure;
 	}
 	
-	/**
-	 * Add a power failure to this square.
-	 * 
-	 * @param powerFailure
-	 *        The power failure to add.
-	 */
+	@Override
 	public void addPowerFailure(PowerFailure powerFailure) {
 		// We can just override this. The last power failure added will
 		// currently always be the one with the longest time to live.

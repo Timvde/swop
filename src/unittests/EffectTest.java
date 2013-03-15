@@ -5,16 +5,14 @@ import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
-import grid.PowerFailure;
 import item.Effect;
 import item.Item;
 import item.LightGrenade;
-import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
-import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
 import player.Player;
+import ObjectronExceptions.IllegalMoveException;
 
 @SuppressWarnings("javadoc")
 public class EffectTest {

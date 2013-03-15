@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Set;
 import notnullcheckweaver.NotNull;
 
+/**
+ * A grid that consists of abstract {@link ASquare squares}.
+ * 
+ */
 public interface IGrid {
 	
 	/**
@@ -12,8 +16,8 @@ public interface IGrid {
 	 * {@link Coordinate} in a specified {@link Direction}. One can only move to
 	 * coordinates that exists on the grid (i.e.
 	 * <code>fromCoordinate.getCoordinateInDirection(direction)</code> must
-	 * exist on the grid). One cannot move through walls or light trails. No two players can be
-	 * on the same Square.
+	 * exist on the grid). One cannot move through walls or light trails. No two
+	 * players can be on the same Square.
 	 * 
 	 * @param fromCoordinate
 	 *        The coordinate one wants to leave.
@@ -52,6 +56,8 @@ public interface IGrid {
 	
 	/**
 	 * Return all the possible coordinates in the grid.
+	 * 
+	 * @return all coordinates in the grid 
 	 */
 	public Set<Coordinate> getAllGridCoordinates();
 }

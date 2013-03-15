@@ -1,9 +1,8 @@
 package grid;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * This class represents a power failure. This is a state a square can be in
@@ -30,12 +29,13 @@ public class PowerFailure {
 		// not that bad at all, as PowerFailure objects should never get to the
 		// outside.
 		
-		for (ASquare square : squares) {
+		for (Iterator<ASquare> it = squares.iterator(); it.hasNext(); ) {
+			ASquare square = it.next();
 			try {
 				square.addPowerFailure(this);
 			}
 			catch (IllegalStateException e) {
-				squares.remove(square);
+				it.remove();
 			}
 		}
 		

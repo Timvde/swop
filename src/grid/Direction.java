@@ -10,6 +10,8 @@ import java.util.List;
  * 
  */
 public enum Direction {
+	
+	@SuppressWarnings("javadoc")
 	NORTH {
 		
 		@Override
@@ -22,6 +24,8 @@ public enum Direction {
 			return coord;
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	SOUTH {
 		
 		@Override
@@ -34,6 +38,8 @@ public enum Direction {
 			return coord;
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	EAST {
 		
 		@Override
@@ -46,6 +52,8 @@ public enum Direction {
 			return coord;
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	WEST {
 		
 		@Override
@@ -58,6 +66,8 @@ public enum Direction {
 			return coord;
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	NORTHEAST {
 		
 		@Override
@@ -70,6 +80,8 @@ public enum Direction {
 			return coord.getCoordinateInDirection(SOUTH);
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	NORTHWEST {
 		
 		@Override
@@ -82,6 +94,8 @@ public enum Direction {
 			return coord.getCoordinateInDirection(SOUTH);
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	SOUTHEAST {
 		
 		@Override
@@ -94,6 +108,8 @@ public enum Direction {
 			return coord.getCoordinateInDirection(NORTH);
 		}
 	},
+	
+	@SuppressWarnings("javadoc")
 	SOUTHWEST {
 		
 		@Override
@@ -111,7 +127,8 @@ public enum Direction {
 	private List<Direction>	primaryDirections;
 	
 	/**
-	 * Get a list of the primary directions.
+	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST. 
+	 * @return the primary directions
 	 */
 	public List<Direction> getPrimeryDirections() {
 		return primaryDirections;

@@ -1,11 +1,12 @@
 package unittests;
 
-import static org.junit.Assert.*;
-import item.Item;
-import item.LightGrenade;
-import grid.Coordinate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import grid.GridBuilder;
 import grid.Square;
+import item.Item;
+import item.LightGrenade;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;

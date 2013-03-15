@@ -33,6 +33,9 @@ public class Effect {
 	
 	/**
 	 * Tell the Effect to take the specified power failure into calculation.
+	 * 
+	 * @param powerFailure
+	 *        the power failure to be added
 	 */
 	public void addPowerFailure(PowerFailure powerFailure) {
 		if (powerFailure != null)
@@ -43,7 +46,7 @@ public class Effect {
 	 * Calculate the resulting penalty for the player and execute it.
 	 * 
 	 * @return True when the effect has ended the player's turn.
-	 * @throws IllegalStateException 
+	 * @throws IllegalStateException
 	 */
 	public boolean execute() throws IllegalStateException {
 		if (!hasLightGrenade) {
@@ -57,6 +60,6 @@ public class Effect {
 			// always cause a decrease of at least three actions at this point.
 			player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
 		}
-		return true;
+		return false;
 	}
 }
