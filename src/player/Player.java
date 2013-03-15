@@ -200,7 +200,6 @@ public class Player extends Observable implements IPlayer {
 		else {
 			// TODO player loses the game
 			System.out.println("Player "+getID()+" loses the game!");
-			System.exit(0);
 		}
 	}
 	

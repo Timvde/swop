@@ -163,7 +163,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	private void endCurrentPlayerTurn() {
 		if (getCurrentPlayer().getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
 			System.out.println("Gewonnen!");
-			System.out.println("[notify game here]");
+			// TODO: Notify game
 		}
 		
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
