@@ -30,7 +30,7 @@ public class MovePlayerTest {
 	
 	public void newGame() {
 		Game game = new Game();
-		playerDB = new PlayerDataBase();
+		playerDB = new PlayerDataBase(grid);
 		grid = new GridBuilder().getPredefinedTestGrid();
 		
 		Coordinate[] startingCoords = new Coordinate[2];
