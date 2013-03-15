@@ -198,9 +198,7 @@ public class Player extends Observable implements IPlayer {
 			
 		}
 		else {
-			// this player loses the game
-			// FIXME de player moet nu aan de game vragen om te verliezen ??
-			// dus een verwijzing naar Game ?? of observers
+			// TODO player loses the game
 		}
 	}
 	

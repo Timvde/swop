@@ -13,6 +13,7 @@ import java.awt.Image;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import player.IPlayer;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
@@ -256,8 +257,8 @@ public class GUI implements Runnable {
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
 		gridHeightTextField = gui.createTextField(75, 20, 25, 20);
-		gridWidthTextField.setText("15");
-		gridHeightTextField.setText("15");
+		gridWidthTextField.setText("12");
+		gridHeightTextField.setText("12");
 		
 		/* ---- ---- ---- ---- MOVE ARROWS ---- ---- ---- ---- */
 		
@@ -363,20 +364,34 @@ public class GUI implements Runnable {
 					public void run() {
 						// Use the itemListSelected to access the Item that is
 						// selected in the items on square list!
-						pickUpController.pickUpItem((IItem) itemListSelected);
-						gui.repaint();
+						if (itemListSelected != null) {
+							pickUpController.pickUpItem((IItem) itemListSelected);
+							itemListSelected = null;
+							gui.repaint();
+						}
+						else {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please select an item to pick up.");
+						}
 					}
 				});
 		pickItemUpButton.setText("Pick up item");
 		// ----
 		Button useItemButton = gui.createButton(actionButtonsOffsetX + 270, actionButtonsOffsetY,
-				120, 30, new Runnable() {
+				120, 30, new Runnable() { 
 					
 					public void run() {
 						// Use the inventoryListSelected to access the Item that
 						// is selected in the inventory!
-						useItemController.useItem((IItem) inventoryListSelected);
-						gui.repaint();
+						if (inventoryListSelected != null) {
+							useItemController.useItem((IItem) inventoryListSelected);
+							inventoryListSelected = null;
+							gui.repaint();
+						}
+						else {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please select an item to use.");
+						}
 					}
 				});
 		useItemButton.setText("Use item");
@@ -397,7 +412,18 @@ public class GUI implements Runnable {
 				120, 30, new Runnable() {
 					
 					public void run() {
-						endTurnController.endTurn();
+						// Custom button text
+						Object[] options = { "Yes", "No" };
+						int response = JOptionPane.showOptionDialog(gui.getFrame(),
+								"Are you sure? If you have not moved yet, you will lose the game.",
+								"Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+								null, options, options[1]);
+						
+						if (response == 0) {
+							endTurnController.endTurn();
+						}
+						
+						gui.repaint();
 					}
 				});
 		endTurnButton.setText("End Turn");

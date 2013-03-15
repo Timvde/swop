@@ -65,6 +65,8 @@ public abstract class ASquare {
 	
 	/**
 	 * TODO
+	 * @throws HasNotYetMovedException 
+	 * @throws IllegalStateException 
 	 * @return 
 	 */
 	public abstract boolean setPlayer(IPlayer p);

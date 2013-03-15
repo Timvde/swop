@@ -42,8 +42,9 @@ public class Effect {
 	/**
 	 * Calculate the resulting penalty for the player and execute it.
 	 * @return True when a penalty was given to the player.
+	 * @throws IllegalStateException 
 	 */
-	public boolean execute() {
+	public boolean execute() throws IllegalStateException {
 		if (!hasLightGrenade) {
 			if (hasPowerFailure)
 				player.endTurn();
