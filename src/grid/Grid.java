@@ -17,7 +17,7 @@ public class Grid implements IGrid {
 	
 	private Map<Coordinate, ASquare>	grid;
 	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
-	private static boolean				ENABLE_POWER_FAILURE;
+	private boolean						ENABLE_POWER_FAILURE;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
