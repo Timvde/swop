@@ -58,7 +58,8 @@ public interface IPlayer {
 	/**
 	 * This method lets the player lose a specified number of actions.
 	 * 
-	 * @return The number of actions this player will skip
+	 * @param numberOfActionsToSkip
+	 *        The number of actions this player will skip
 	 */
 	public void skipNumberOfActions(int numberOfActionsToSkip);
 	
@@ -102,10 +103,15 @@ public interface IPlayer {
 	 *        the direction to move in
 	 * @throws IllegalStateException
 	 *         The move preconditions must be satisfied, i.e. this.
-	 *         {@link #isPreconditionMoveSatisfied()}
+	 *         {@link #isPreconditionMoveSatisfied()}. The grid must allow the
+	 *         player to do the move, i.e.
+	 *         {@link Grid#canMoveFromCoordInDirection(Coordinate, Direction)
+	 *         <code>canMoveFromCoordInDirection(this.getCurrentLocation(),
+	 *         direction)</code>}
 	 * @throws IllegalArgumentException
 	 *         The specified direction must be a valid direction for this player
-	 *         to try to move in
+	 *         to try to move in, i.e.
+	 *         <code>{@link #isValidDirection(Direction)}</code>.
 	 */
 	public void moveInDirection(Direction direction) throws IllegalStateException,
 			IllegalArgumentException;
@@ -113,7 +119,7 @@ public interface IPlayer {
 	/**
 	 * Returns whether this player is allowed to perform a move action. A player
 	 * is allowed to perform an move action if he has performedless then
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
+	 * {@link Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
 	 * {@link #getAllowedNumberOfActions()} > 0.
 	 * 
 	 * @return whether this player is allowed to perform a move action
@@ -145,10 +151,4 @@ public interface IPlayer {
 	 * @param i
 	 */
 	public void useItem(IItem i);
-	
-	// TODO remove deze? is tijdelijk een oplossing dat players hun grid niet
-	// hebben.
-	// Ik had dat nodig voor de tests.
-	public void setGrid(Grid g);
-
 }

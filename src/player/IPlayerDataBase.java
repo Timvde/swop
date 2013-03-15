@@ -1,8 +1,8 @@
 package player;
 
 /*
- * NOTE: Only Game holds a reference to the PlayerDB-object (for the NewGame use case). The controllers
- * hold references to an IPlayerDB (and thus can only ask the current
+ * NOTE: Only Game holds a reference to the PlayerDB-object (for the NewGame use case). 
+ * The controllers hold references to an IPlayerDB (and thus can only ask the current
  * player)
  */
 
@@ -16,8 +16,11 @@ public interface IPlayerDataBase {
 	/**
 	 * Returns the player who is currently allowed to play.
 	 * 
-	 * @return the player who is currently allowed to play.
+	 * @return the {@link IPlayer} who is currently allowed to play.
+	 * 
+	 * @throws IllegalStateException
+	 *         When the database is empty.
 	 */
-	public IPlayer getCurrentPlayer();
-
+	public IPlayer getCurrentPlayer() throws IllegalStateException;
+	
 }

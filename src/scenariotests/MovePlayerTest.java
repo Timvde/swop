@@ -1,17 +1,13 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
-import java.util.ArrayList;
-import java.util.List;
+import junit.framework.Assert;
 import game.Game;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import player.IPlayer;
-import player.Player;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.MoveController;
@@ -31,87 +27,88 @@ public class MovePlayerTest {
 	private static EndTurnController	endTurnCont;
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
-
-	private void newGame() {
+	
+	public void newGame() {
 		Game game = new Game();
-		
 		playerDB = new PlayerDataBase();
-		
-		GridBuilder builder = new GridBuilder();
-		grid = builder.getPredefinedTestGrid();
+		grid = new GridBuilder().getPredefinedTestGrid();
 		
 		Coordinate[] startingCoords = new Coordinate[2];
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight()-1);
+		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
 		
-		List<IPlayer> playerList = playerDB.createNewDB(startingCoords);
-		
-		for (IPlayer p : playerList) {
-			p.setGrid(grid);
-		}
-		
+		playerDB.createNewDB(startingCoords, grid);
 		game.setGrid(grid);
 		
 		game.start();
-
+		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
 	}
 	
-	@Test(expected = IllegalStateException.class)
+	/*
+	 * NOTE: the used coord axis are defined by {@link Coordinate} (origin upper
+	 * left)
+	 * 
+	 * FIXME: @Tom: verbeter dit in alle scenario test (of overleg om het
+	 * assenstelsel te veranderen?); de test hieronder is al aangepast, maar nog
+	 * errors met lighttrails...
+	 */
+	@Test
 	public void testNoTwoPlayersOnOneSquare() {
 		newGame();
 		
 		// Player 1 actions
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.SOUTHWEST);
 		// Player 2 actions
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTHEAST);
 		// Player 1 actions
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.SOUTHWEST);
+		moveCont.move(Direction.SOUTHWEST);
+		moveCont.move(Direction.SOUTHWEST);
+		
 		// Player 2 actions
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		// Player 1 actions
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		// Player 2 actions
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-
-		// This causes two players to be on the same square:
-		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.NORTHEAST);
+		
+		boolean exceptionThrown = false;
+		try {
+			// This causes two players to be on the same square:
+			moveCont.move(Direction.NORTHEAST);
+		}
+		catch (IllegalStateException e) {
+			exceptionThrown = true;
+		}
+		Assert.assertEquals(true, exceptionThrown);
 	}
 	
-	@Test(expected = IllegalStateException.class)
 	public void testCannotMoveOnWall() {
 		newGame();
 		
 		// Player 1 actions
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		// Player 2 actions
-		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
-		// Player 1 actions
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
 		// Player 2 actions
-		moveCont.move(Direction.WEST);
-		endTurnCont.endTurn();
-		// Player 1 actions
-		// This is a move on a wall:
 		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
+		// Player 1 actions
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
 		
+		// Player 2 actions
+		boolean exceptionThrown = false;
+		try {
+			// This is a move on a wall:
+			moveCont.move(Direction.NORTHEAST);
+		}
+		catch (IllegalStateException e) {
+			exceptionThrown = true;
+		}
+		Assert.assertEquals(true, exceptionThrown);
 	}
 	
 	@Test(expected = IllegalStateException.class)
@@ -119,19 +116,18 @@ public class MovePlayerTest {
 		newGame();
 		
 		// Player 1 actions
-			moveCont.move(Direction.SOUTH);
-		
+		moveCont.move(Direction.NORTH);
 	}
 	
-	// TODO specifieker specifiëren
+	// TODO specifieker specifiëren, ook met try catch
 	@Test(expected = Exception.class)
 	public void testCannotCrossLightrail() {
 		newGame();
 		
 		// Player 1 actions
-		moveCont.move(Direction.NORTHEAST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.SOUTHEAST);
+		moveCont.move(Direction.SOUTHWEST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.NORTHWEST);
 	}
 	
 	// TODO specifieker specifiëren

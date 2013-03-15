@@ -1,22 +1,18 @@
 package scenariotests;
 
 import static org.junit.Assert.*;
-import item.IItem;
-import java.util.List;
 import game.Game;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
-import org.junit.BeforeClass;
+import item.IItem;
+import java.util.List;
 import org.junit.Test;
-import player.IPlayer;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
-import controllers.GUIDataController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
-import controllers.UseItemController;
 
 /**
  * Test if the pick up action works correctly.
@@ -25,6 +21,7 @@ import controllers.UseItemController;
  * 
  * @author Tom
  */
+@SuppressWarnings("javadoc")
 public class PickUpTest {
 	
 	private static PickUpItemController	pickUpCont;
@@ -43,18 +40,14 @@ public class PickUpTest {
 		
 		Coordinate[] startingCoords = new Coordinate[2];
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight()-1);
+		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
 		
-		List<IPlayer> playerList = playerDB.createNewDB(startingCoords);
-		
-		for (IPlayer p : playerList) {
-			p.setGrid(grid);
-		}
+		playerDB.createNewDB(startingCoords, grid);
 		
 		game.setGrid(grid);
 		
 		game.start();
-
+		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
 		pickUpCont = new PickUpItemController(playerDB);
@@ -65,20 +58,23 @@ public class PickUpTest {
 		newGame();
 		
 		// Player 1 actions
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		// Player 2 actions
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
-		// Player 2 actions
+		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
-		// Player 1 actions
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
 		// Player 2 actions
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
-		// Player 1 actions
+		// Player 2 actions
 		List<IItem> items1 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
@@ -88,20 +84,20 @@ public class PickUpTest {
 				.getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
-		// Player 2 actions
+		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
-		// Player 1 actions
+		// Player 2 actions
 		moveCont.move(Direction.EAST);
 		List<IItem> items3 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade3 = items3.get(0);
 		pickUpCont.pickUpItem(lightGrenade3);
 		moveCont.move(Direction.EAST);
-		// Player 2 actions
+		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
-		// Player 1 actions
+		// Player 2 actions
 		List<IItem> items4 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade4 = items4.get(0);
@@ -111,25 +107,39 @@ public class PickUpTest {
 				.getCarryableItems();
 		IItem lightGrenade5 = items5.get(0);
 		pickUpCont.pickUpItem(lightGrenade5);
-		// Player 2 actions
+		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
-		// Player 1 actions
-		moveCont.move(Direction.WEST);
+		// Player 2 actions
+		moveCont.move(Direction.NORTHWEST);
 		List<IItem> items6 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade6 = items6.get(0);
 		pickUpCont.pickUpItem(lightGrenade6);
 		moveCont.move(Direction.WEST);
-		// Player 2 actions
+		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
+		// Player 2 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
 		// Player 1 actions
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		// Player 2 actions
+		moveCont.move(Direction.SOUTHWEST);
 		List<IItem> items7 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
 				.getCarryableItems();
 		IItem lightGrenade7 = items7.get(0);
-		pickUpCont.pickUpItem(lightGrenade7);
 		
-		// TODO check if inventory full error
+		boolean assertionThrown = false;
+		try {
+			pickUpCont.pickUpItem(lightGrenade7);
+		}
+		catch (IllegalArgumentException e) {
+			assertionThrown = true;
+		}
+		assertTrue(assertionThrown);
 	}
 }

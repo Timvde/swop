@@ -4,8 +4,6 @@ import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
-import java.util.List;
-import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
@@ -58,6 +56,7 @@ public class Game {
 	 */
 	public void setGrid(Grid grid) {
 		this.grid = grid;
+		// TODO is this method used for testing purposes??
 	}
 	
 	/**
@@ -65,20 +64,17 @@ public class Game {
 	 * @param width
 	 * @param height
 	 */
-	public void newGame(int width, int height) {		
-		List<IPlayer> players = playerDB.createNewDB(new Coordinate[] {
-				new Coordinate(width - 1, 0), new Coordinate(0, height - 1) });
-		
+	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		this.grid = new GridBuilder().setGridWidth(width).setGridHeigth(height).build();
-		
-		setGrid(this.grid);
-		
-		for (IPlayer player : players)
-			player.setGrid(grid);
-		
+		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
+		
+		Coordinate[] playerStartingCoordinates = new Coordinate[] { new Coordinate(width - 1, 0),
+				new Coordinate(0, height - 1) };
+		playerDB.createNewDB(playerStartingCoordinates, grid);
+		
 	}
 	
 	/**

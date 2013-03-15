@@ -3,7 +3,6 @@ package player;
 import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
-import grid.Grid;
 import grid.IGrid;
 import grid.Square;
 import item.IItem;
@@ -60,14 +59,29 @@ public class Player extends Observable implements IPlayer {
 	 * 
 	 * @param startCoordinate
 	 *        The starting position of the player
+	 * @param grid
+	 *        The grid the player will move on
+	 * @throws IllegalArgumentException
+	 *         The given arguments cannot be null.
+	 * @throws IllegalStateException
+	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(@NotNull Coordinate startCoordinate) throws IllegalArgumentException {
+	public Player(@NotNull Coordinate startCoordinate, @NotNull IGrid grid)
+			throws IllegalArgumentException, IllegalStateException {
+		if (startCoordinate == null || grid == null) {
+			throw new IllegalArgumentException("The given arguements cannot be null");
+		}
+		if (grid.getSquareAt(startCoordinate) == null) {
+			throw new IllegalStateException("The given coordinate must exist on the given grid");
+		}
+		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.currentCoord = startCoordinate;
+		this.grid = grid;
 	}
 	
 	@Override
@@ -133,7 +147,8 @@ public class Player extends Observable implements IPlayer {
 		if (getAllowedNumberOfActions() <= 0) {
 			this.setChanged();
 			this.notifyObservers();
-			// We need to increase it again to prepare for this player's next turn.
+			// We need to increase it again to prepare for this player's next
+			// turn.
 			this.increaseAllowedNumberOfActions();
 		}
 	}
@@ -274,17 +289,8 @@ public class Player extends Observable implements IPlayer {
 		hasMoved = false;
 	}
 	
-	/**
-	 * sets the grid
-	 * 
-	 * @param grid
-	 *        the grid for this player
-	 */
-	public void setGrid(Grid grid) {
-		this.grid = grid;
+	@Override
+	public String toString() {
+		return "ID = " + this.id;
 	}
-		// TODO remove deze? is tijdelijk een oplossing dat players hun grid
-		// niet
-		// hebben.
-		// Ik had dat nodig voor de tests.
 }

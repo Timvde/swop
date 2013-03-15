@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import item.Item;
 import item.LightGrenade;
 import grid.Coordinate;
+import grid.GridBuilder;
 import grid.Square;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import player.Player;
 @SuppressWarnings("javadoc")
 public class SquareTest {
 	
-	private static Square square;
+	private static Square	square;
 	
 	@Before
 	public void setUp() {
@@ -31,7 +32,8 @@ public class SquareTest {
 	
 	@Test
 	public void testPlayer() {
-		Player player = new Player(new Coordinate(0,0));
+		Player player = new Player(GridBuilder.getRandomCoordOnTestGrid(),
+				new GridBuilder().getPredefinedTestGrid());
 		square.setPlayer(player);
 		assertEquals(square.getPlayer(), player);
 		square.removePlayer();

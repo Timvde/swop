@@ -24,6 +24,10 @@ public class GridBuilder {
 	private int					width;
 	private int					height;
 	
+	// Constraints
+	private int					minimumGridWidth = 10;
+	private int					minimumGridHeight = 10;
+	
 	/**
 	 * Create a new builder for the grid
 	 */
@@ -60,7 +64,8 @@ public class GridBuilder {
 	}
 	
 	/**
-	 * set the width of the grid. This must be a strictly positive integer
+	 * set the width of the grid. This must be a strictly positive integer, and
+	 * at least 10.
 	 * 
 	 * @param width
 	 *        the width of the grid
@@ -68,8 +73,8 @@ public class GridBuilder {
 	 */
 	// @Requires("width > 0")
 	public GridBuilder setGridWidth(int width) {
-		if (width <= 3 && height <= 3)
-			throw new IllegalArgumentException("height and width cannot be less than three!");
+		if ((width <= 3 && height <= 3) || width < minimumGridWidth)
+			throw new IllegalArgumentException("False grid dimensions!");
 		this.width = width;
 		return this;
 	}
@@ -83,8 +88,8 @@ public class GridBuilder {
 	 */
 	// @Requires("height > 0")
 	public GridBuilder setGridHeigth(int height) {
-		if (width <= 3 && height <= 3)
-			throw new IllegalArgumentException("height and width cannot be less than three!");
+		if ((width <= 3 && height <= 3) || height < minimumGridHeight)
+			throw new IllegalArgumentException("False grid dimensions!");
 		this.height = height;
 		return this;
 	}
@@ -144,12 +149,11 @@ public class GridBuilder {
 	 *        The maximum percentage of walls on the grid
 	 */
 	private void placeWall(double maxPercentage, double maximalLengthOfWall) {
-		int wallLength = MINIMUM_WALL_SIZE
-				+ new Random().nextInt(getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall)
-						- MINIMUM_WALL_SIZE);
+		// generate random number between a minimum and a maximum
+		int max = getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall);
+		int wallLength = new Random().nextInt(max - MINIMUM_WALL_SIZE + 1) + MINIMUM_WALL_SIZE;
 		
 		Coordinate start, end;
-		
 		do {
 			start = Coordinate.random(width, height);
 			end = start.getRandomCoordinateWithDistance(wallLength);
@@ -231,7 +235,6 @@ public class GridBuilder {
 				return false;
 		return true;
 	}
-	
 	
 	/**
 	 * Return all the coordinates of a wall that starts and ends at two certain
@@ -335,7 +338,8 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(5, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(6, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(7, 8))).addItem(new LightGrenade());
-		//((Square) grid.get(new Coordinate(7, 7))).addItem(new LightGrenade());
+		// ((Square) grid.get(new Coordinate(7, 7))).addItem(new
+		// LightGrenade());
 		((Square) grid.get(new Coordinate(7, 6))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 8))).addItem(new LightGrenade());
 		((Square) grid.get(new Coordinate(8, 7))).addItem(new LightGrenade());
@@ -343,6 +347,8 @@ public class GridBuilder {
 		
 		return new Grid(grid);
 	}
+	
+	/*----------- Predefined testGrid methods -----------*/
 	
 	/**
 	 * This function returns a predefined grid which we can use to test. This
@@ -370,4 +376,24 @@ public class GridBuilder {
 		
 		return build(10, 10, walls);
 	}
+	
+	/**
+	 * Returns a randomly created coordinate that exists on the grid specified
+	 * by {@link GridBuilder#getPredefinedTestGrid()}. Used for testing
+	 * purposes.
+	 * 
+	 * @return A random coord on the testgrid.
+	 */
+	public static Coordinate getRandomCoordOnTestGrid() {
+		return new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
+				new Random().nextInt(PREDIFINED_GRID_SIZE));
+	}
+	
+	/**
+	 * The size of the grid returned by
+	 * {@link GridBuilder#getPredefinedTestGrid()} Used for testing purposes,
+	 * should not be used in gameplay.
+	 */
+	public static final int	PREDIFINED_GRID_SIZE	= 10;
+	
 }
