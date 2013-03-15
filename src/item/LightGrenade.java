@@ -29,14 +29,6 @@ public class LightGrenade extends Item implements ILightGrenade {
 	}
 	
 	@Override
-	public void trigger() throws IllegalStateException {
-		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
-			throw new IllegalStateException("Illegal transition from " + this.state.toString()
-					+ " to 'triggered'");
-		this.state = LightGrenadeState.TRIGGERED;
-	}
-	
-	@Override
 	public void enable() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
@@ -66,7 +58,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	public void use(ASquare square) {
 		if (square instanceof Wall.WallPart)
 			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
-		this.trigger();
+		this.enable();
 		//TODO this should not be a cast! Asquare should provide this method!
 		((Square) square).addItem(this);
 	}
@@ -86,20 +78,20 @@ public class LightGrenade extends Item implements ILightGrenade {
 			
 			@Override
 			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return (toState == this) || (toState == TRIGGERED);
-			}
-		},
-		/**
-		 * The grenade is dropped on a square by a player and will become active
-		 * once the player leaves the square
-		 */
-		TRIGGERED {
-			
-			@Override
-			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
 				return (toState == this) || (toState == ACTIVE);
 			}
 		},
+//		/**
+//		 * The grenade is dropped on a square by a player and will become active
+//		 * once the player leaves the square
+//		 */
+//		TRIGGERED {
+//			
+//			@Override
+//			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
+//				return (toState == this) || (toState == ACTIVE);
+//			}
+//		},
 		/**
 		 * the grenade is armed
 		 */

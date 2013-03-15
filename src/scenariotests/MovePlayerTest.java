@@ -85,7 +85,7 @@ public class MovePlayerTest {
 		// Player 2 actions
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		
+
 		// This causes two players to be on the same square:
 		moveCont.move(Direction.WEST);
 	}
