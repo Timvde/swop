@@ -346,7 +346,7 @@ public class GridBuilder {
 		((Square) grid.get(new Coordinate(7, 2))).addItem(new LightGrenade());
 		
 		Grid final_grid = new Grid(grid);
-		final_grid.addPowerFailureAtCoordinate(new Coordinate(7, 2));
+		final_grid.addPowerFailureAtCoordinate(new Coordinate(1, 1));
 		
 		return final_grid;
 	}
