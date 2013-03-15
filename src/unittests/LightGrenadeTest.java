@@ -11,7 +11,6 @@ import item.LightGrenade.LightGrenadeState;
 import org.junit.Before;
 import org.junit.Test;
 
-
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {
 	
