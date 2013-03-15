@@ -8,8 +8,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @SuppressWarnings("javadoc")
 @RunWith(Suite.class)
-@SuiteClasses({ CoordinateTest.class, GridTest.class, WallTest.class, SquareTest.class,
-		InventoryTest.class, LightTrailTest.class })
+@SuiteClasses({ CoordinateTest.class, EffectTest.class, GridTest.class, InventoryTest.class,
+		LightTrailTest.class, PlayerDBTest.class, PlayerTest.class, SquareTest.class,
+		WallTest.class })
 public class TestSuite {
 	
 	@BeforeClass

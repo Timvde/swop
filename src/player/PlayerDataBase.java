@@ -20,7 +20,7 @@ import com.sun.istack.internal.NotNull;
  * failured.
  * 
  */
-public class PlayerDataBase extends Observable implements Observer, IPlayerDataBase {
+public class PlayerDataBase implements Observer, IPlayerDataBase {
 	
 	/**
 	 * The number of players involved in the game.
@@ -31,15 +31,23 @@ public class PlayerDataBase extends Observable implements Observer, IPlayerDataB
 	private ArrayList<Player>	playerList;
 	private int					currentPlayerIndex;
 	
+	// The player database should not know the grid, but at this point it is
+	// necessary to let it know that player switch has taken place.
+	// TODO: fix this at some point.
+	private Grid				grid;
+	
 	/**
 	 * Creates a new empty PlayerDataBase. to fill the database with players,
 	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid)
 	 * createNewDB}. Until then the {@link PlayerDataBase#getCurrentPlayer()}
 	 * method will throw an exception.
 	 * 
+	 * @param grid
+	 *        The grid we will play with.
 	 */
-	public PlayerDataBase() {
+	public PlayerDataBase(Grid grid) {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
+		this.grid = grid;
 	}
 	
 	/**
@@ -151,8 +159,14 @@ public class PlayerDataBase extends Observable implements Observer, IPlayerDataB
 	 */
 	private void endCurrentPlayerTurn() {
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
-		// The current player's turn ended, all observers (i.e. power failures)
-		// should be notified.
-		notifyObservers();
+		updatePowerFailures();
+	}
+	
+	/**
+	 * This method will notify the grid that a new turn started and it should
+	 * upgrade power failures.
+	 */
+	private void updatePowerFailures() {
+		grid.updatePowerFailures();
 	}
 }

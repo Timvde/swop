@@ -1,12 +1,11 @@
 package grid;
 
-import grid.Wall.WallPart;
 import item.IItem;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import player.IPlayer;
-import player.Player;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -16,10 +15,6 @@ import player.Player;
 public class Grid implements IGrid {
 	
 	private Map<Coordinate, ASquare>	grid;
-	private List<Wall>					walls;
-	private int							width;
-	private int							height;
-	private static final int			MINIMUM_WALL_SIZE	= 2;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -54,7 +49,7 @@ public class Grid implements IGrid {
 	 * @return returns the grid
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
-		return grid; //FIXME clone ofzo?
+		return grid; // FIXME clone ofzo?
 	}
 	
 	@Override
@@ -194,5 +189,36 @@ public class Grid implements IGrid {
 			return true;
 		}
 		return false;
+	}
+	
+	public void updatePowerFailures() {
+		for (PowerFailure failure : getAllPowerFailures())
+			failure.decreaseTimeToLive();
+	}
+	
+	/**
+	 * Add a power failure at a given coordinate. This method will also make
+	 * sure the surrounding squares are power failured.
+	 * 
+	 * @param coordinate
+	 *        The coordinate to receive the power failure.
+	 */
+	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
+		List<Coordinate> coords = coordinate.getAllNeighbours();
+		List<ASquare> squares = new ArrayList<ASquare>();
+		coords.add(coordinate);
+		for (Coordinate coord : coords)
+			if (getSquareAt(coord) != null)
+				squares.add(getSquareAt(coord));
+		new PowerFailure(squares);
+	}
+	
+	private Set<PowerFailure> getAllPowerFailures() {
+		Set<PowerFailure> failures = new HashSet<PowerFailure>();
+		for (ASquare square : getGrid().values()) {
+			if (square.hasPowerFailure())
+				failures.add(((Square) square).getPowerFailure());
+		}
+		return failures;
 	}
 }

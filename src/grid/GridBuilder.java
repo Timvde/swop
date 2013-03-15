@@ -1,6 +1,6 @@
 package grid;
 
-import grid.Wall.WallPart;
+import grid.WallPart;
 import item.LightGrenade;
 import java.util.ArrayList;
 import java.util.Collection;

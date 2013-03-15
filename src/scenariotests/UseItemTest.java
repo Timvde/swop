@@ -33,7 +33,7 @@ public class UseItemTest {
 	private void newGame() {
 		Game game = new Game();
 		
-		playerDB = new PlayerDataBase();
+		playerDB = new PlayerDataBase(grid);
 		
 		GridBuilder builder = new GridBuilder();
 		grid = builder.getPredefinedTestGrid();

@@ -172,14 +172,31 @@ public class Square extends ASquare {
 	}
 	
 	/**
-	 * This method removes a power failure from a square.
+	 * This method removes a power failure from a square. It is called from
+	 * within the PowerFailure class.
 	 * 
 	 * @param powerFailure
 	 *        The power failure to remove
 	 */
-	public void removePowerFailure(PowerFailure powerFailure) {
+	void removePowerFailure(PowerFailure powerFailure) {
 		if (this.powerFailure.equals(powerFailure))
 			this.powerFailure = null;
+	}
+	
+	PowerFailure getPowerFailure() {
+		return this.powerFailure;
+	}
+	
+	/**
+	 * Add a power failure to this square.
+	 * 
+	 * @param powerFailure
+	 *        The power failure to add.
+	 */
+	public void addPowerFailure(PowerFailure powerFailure) {
+		// We can just override this. The last power failure added will
+		// currently always be the one with the longest time to live.
+		this.powerFailure = powerFailure;
 	}
 	
 }

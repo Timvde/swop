@@ -118,7 +118,7 @@ public interface IPlayer {
 	
 	/**
 	 * Returns whether this player is allowed to perform a move action. A player
-	 * is allowed to perform an move action if he has performedless then
+	 * is allowed to perform an move action if he has performed less then
 	 * {@link Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
 	 * {@link #getAllowedNumberOfActions()} > 0.
 	 * 

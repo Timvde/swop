@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import grid.Coordinate;
 import grid.Wall;
-import grid.Wall.WallPart;
+import grid.WallPart;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

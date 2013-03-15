@@ -11,9 +11,9 @@ import java.util.Observer;
  * neighbours are, too -
  * 
  */
-public class PowerFailure implements Observer {
+public class PowerFailure {
 	
-	private List<Square>	squares		= new ArrayList<Square>();
+	private List<ASquare>	squares		= new ArrayList<ASquare>();
 	
 	// The time to live is 3 on creation
 	private int				timeToLive	= 3;
@@ -24,25 +24,34 @@ public class PowerFailure implements Observer {
 	 * @param squares
 	 *        The squares that are impacted by this power failure.
 	 */
-	public PowerFailure(List<Square> squares) {
+	public PowerFailure(List<ASquare> squares) {
 		// We have no way to check if the right conditions are met (i.e. the
 		// squares are neighbours), so we just have to trust the system. This is
 		// not that bad at all, as PowerFailure objects should never get to the
 		// outside.
+		
+		for (ASquare square : squares) {
+			try {
+				square.addPowerFailure(this);
+			}
+			catch (IllegalStateException e) {
+				squares.remove(square);
+			}
+		}
+		
 		this.squares = squares;
 	}
 	
 	/**
-	 * A Square observes the PlayerDatabase to find out when it changes player.
-	 * It then has to decrease the number of turns left it is power failured.
-	 * When it is set to zero, the power failure will be released.
+	 * When a turn ends, a PowerFailure has to decrease the number of turns left
+	 * it is power failured. When it is set to zero, the power failure will be
+	 * released.
 	 */
-	@Override
-	public void update(Observable o, Object arg) {
+	public void decreaseTimeToLive() {
 		if (timeToLive > 0)
 			timeToLive--;
 		if (timeToLive == 0)
-			for (Square square : squares)
+			for (ASquare square : squares)
 				square.removePowerFailure(this);
 	}
 }

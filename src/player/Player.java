@@ -84,6 +84,10 @@ public class Player extends Observable implements IPlayer {
 		this.grid = grid;
 	}
 	
+	private IGrid getGrid() {
+		return grid;
+	}
+	
 	@Override
 	public int getID() {
 		return id;
@@ -106,14 +110,22 @@ public class Player extends Observable implements IPlayer {
 	
 	/* ############## ActionHistory related methods ############## */
 	
+	// TODO: change the literal 2 into something better.
 	/**
-	 * This method will increase the allowed number of actions left with
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. It is called when a Player calls
-	 * {@link #endTurn()} to reset his turn related fields.
+	 * This method will under normal circumstances increase the allowed number
+	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. When the
+	 * Player is on a power failured square, the number of actions lost will be
+	 * 2. It is called when a Player calls {@link #endTurn()} to reset his turn
+	 * related fields.
 	 */
 	private void increaseAllowedNumberOfActions() {
-		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
-				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
+		int turnsToSkip = MAX_NUMBER_OF_ACTIONS_PER_TURN;
+		
+		if (getGrid().getSquareAt(getCurrentLocation()).hasPowerFailure())
+			turnsToSkip = 2;
+		
+		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft + turnsToSkip,
+				MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
 	
 	/**
@@ -218,17 +230,17 @@ public class Player extends Observable implements IPlayer {
 		if (!isValidDirection(direction)) {
 			throw new IllegalArgumentException("The specified direction is not valid.");
 		}
-		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
+		if (!getGrid().canMoveFromCoordInDirection(this.currentCoord, direction)) {
 			throw new IllegalStateException(
 					"The player cannot move in given direction on the grid.");
 		}
 		
 		// remove this player form his current square
-		((Square) this.grid.getSquareAt(this.currentCoord)).removePlayer();
+		((Square) getGrid().getSquareAt(this.currentCoord)).removePlayer();
 		
 		// set new position
 		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
-		Square newSquare = (Square) this.grid.getSquareAt(this.currentCoord);
+		Square newSquare = (Square) getGrid().getSquareAt(this.currentCoord);
 		newSquare.setPlayer(this);
 		
 		// update fields
@@ -250,7 +262,7 @@ public class Player extends Observable implements IPlayer {
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		Square currentSquare = (Square) this.grid.getSquareAt(currentCoord);
+		Square currentSquare = (Square) getGrid().getSquareAt(currentCoord);
 		if (item == null || !currentSquare.hasItemWithID(item.getId()))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
