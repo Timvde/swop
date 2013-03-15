@@ -9,6 +9,7 @@ import item.IItem;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
+import ObjectronExceptions.IllegalMoveException;
 import notnullcheckweaver.NotNull;
 
 /**
@@ -209,15 +210,15 @@ public class Player extends Observable implements IPlayer {
 	}
 	
 	@Override
-	public void moveInDirection(Direction direction) throws IllegalStateException {
+	public void moveInDirection(Direction direction) throws IllegalMoveException {
 		if (!isPreconditionMoveSatisfied()) {
-			throw new IllegalStateException("The move-preconditions are not satisfied.");
+			throw new IllegalMoveException("The move-preconditions are not satisfied.");
 		}
 		if (!isValidDirection(direction)) {
-			throw new IllegalArgumentException("The specified direction is not valid.");
+			throw new IllegalMoveException("The specified direction is not valid.");
 		}
 		if (!grid.canMoveFromCoordInDirection(this.currentCoord, direction)) {
-			throw new IllegalStateException(
+			throw new IllegalMoveException(
 					"The player cannot move in given direction on the grid.");
 		}
 		

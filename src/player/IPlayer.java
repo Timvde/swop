@@ -5,6 +5,7 @@ import grid.Direction;
 import grid.Grid;
 import item.IItem;
 import java.util.List;
+import ObjectronExceptions.IllegalMoveException;
 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 
@@ -112,10 +113,11 @@ public interface IPlayer {
 	 *         The specified direction must be a valid direction for this player
 	 *         to try to move in, i.e.
 	 *         <code>{@link #isValidDirection(Direction)}</code>.
-	 * @throws HasNotYetMovedException 
+	 * @throws IllegalMoveException
+	 * TODO
 	 */
 	public void moveInDirection(Direction direction) throws IllegalStateException,
-			IllegalArgumentException;
+			IllegalArgumentException, IllegalMoveException;
 	
 	/**
 	 * Returns whether this player is allowed to perform a move action. A player

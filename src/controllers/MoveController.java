@@ -1,5 +1,6 @@
 package controllers;
 
+import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
 import grid.Direction;
 
@@ -11,7 +12,7 @@ public class MoveController {
 		this.playerDB = db;
 	}
 	
-	public void move(Direction direction) throws IllegalStateException, IllegalArgumentException {
+	public void move(Direction direction) throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		playerDB.getCurrentPlayer().moveInDirection(direction);
 	}
 	
