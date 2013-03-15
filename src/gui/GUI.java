@@ -4,7 +4,7 @@ import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
-import grid.Wall;
+import grid.WallPart;
 import item.IItem;
 import item.Item;
 import item.LightGrenade;
@@ -207,7 +207,7 @@ public class GUI implements Runnable {
 						}
 						
 						// Draw wall if necessary
-						if (square.getClass() == Wall.WallPart.class) {
+						if (square.getClass() == WallPart.class) {
 							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}

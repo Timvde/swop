@@ -31,7 +31,7 @@ public class Game {
 	}
 	
 	public void start() {
-		this.playerDB = new PlayerDataBase();
+		this.playerDB = new PlayerDataBase(grid);
 		
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
