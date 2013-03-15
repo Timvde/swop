@@ -161,6 +161,11 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * appoints a next current player (circular shift).
 	 */
 	private void endCurrentPlayerTurn() {
+		if (getCurrentPlayer().getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
+			System.out.println("Gewonnen!");
+			System.out.println("[notify game here]");
+		}
+		
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 		updatePowerFailures();
 		
@@ -176,5 +181,24 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 */
 	private void updatePowerFailures() {
 		grid.updatePowerFailures();
+	}
+	
+	/**
+	 * Gets the other player
+	 * 
+	 * @return The other player
+	 */
+	private Player getOtherPlayer() {
+		return playerList.get((currentPlayerIndex + 1) % 2);
+	}
+	
+	/**
+	 * Returns the finish square of the current player, i.e. the starting square
+	 * of the other player.
+	 * 
+	 * @return
+	 */
+	private Coordinate getFinishOfCurrentPlayer() {
+		return getOtherPlayer().getStartingPosition();
 	}
 }

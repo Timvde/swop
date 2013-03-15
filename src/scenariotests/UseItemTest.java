@@ -9,6 +9,7 @@ import grid.GridBuilder;
 import item.IItem;
 import java.util.List;
 import org.junit.Test;
+import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
 import controllers.EndTurnController;
 import controllers.MoveController;
@@ -58,7 +59,7 @@ public class UseItemTest {
 	}
 	
 	@Test
-	public void testMaximumOneLightGrenadePerSquare() {
+	public void testMaximumOneLightGrenadePerSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
@@ -106,7 +107,7 @@ public class UseItemTest {
 	}
 	
 	@Test
-	public void testCannotPlaceLightGrenadeOnStartPositions() {
+	public void testCannotPlaceLightGrenadeOnStartPositions() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions

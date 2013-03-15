@@ -20,7 +20,7 @@ import controllers.UseItemController;
  */
 public class Game {
 	
-	private Grid				grid	= null;
+	private Grid				grid;
 	private PlayerDataBase		playerDB;
 	private GUI					gui;
 	private GUIDataController	guiDataCont;
