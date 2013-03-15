@@ -37,7 +37,7 @@ public class PickUpTest {
 		playerDB = new PlayerDataBase(grid);
 		
 		GridBuilder builder = new GridBuilder();
-		grid = builder.getPredefinedTestGrid();
+		grid = builder.getPredefinedTestGrid(false);
 		
 		Coordinate[] startingCoords = new Coordinate[2];
 		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);

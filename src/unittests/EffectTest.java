@@ -23,7 +23,7 @@ public class EffectTest {
 	
 	@Before
 	public void setUp() {
-		grid = new GridBuilder().getPredefinedTestGrid();
+		grid = new GridBuilder().getPredefinedTestGrid(false);
 		player = new Player(new Coordinate(0, 9), grid);
 		// Set the number of actions left at 2 initially to get a different
 		// result from the light grenade and the power failure

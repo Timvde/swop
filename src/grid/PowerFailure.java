@@ -51,6 +51,7 @@ public class PowerFailure {
 	public void decreaseTimeToLive() {
 		if (timeToLive > 0)
 			timeToLive--;
+		// No else if, timeToLive could be 1 before and 0 now.
 		if (timeToLive == 0)
 			for (ASquare square : squares)
 				square.removePowerFailure(this);

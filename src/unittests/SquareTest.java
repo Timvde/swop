@@ -34,7 +34,7 @@ public class SquareTest {
 	@Test
 	public void testPlayer() {
 		Player player = new Player(GridBuilder.getRandomCoordOnTestGrid(),
-				new GridBuilder().getPredefinedTestGrid());
+				new GridBuilder().getPredefinedTestGrid(false));
 		square.setPlayer(player);
 		assertEquals(square.getPlayer(), player);
 		square.removePlayer();

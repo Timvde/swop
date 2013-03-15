@@ -18,7 +18,7 @@ public class PlayerTest {
 	@Before
 	public void setUp() {
 		randomCoord = GridBuilder.getRandomCoordOnTestGrid();
-		player = new Player(randomCoord, new GridBuilder().getPredefinedTestGrid());
+		player = new Player(randomCoord, new GridBuilder().getPredefinedTestGrid(false));
 	}
 	
 	@Test
