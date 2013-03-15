@@ -15,8 +15,12 @@ import com.sun.istack.internal.NotNull;
  * his players. A Player notifies the database (by calling
  * <code>notifyObservers()</code>) to indicate he wants to end his turn.
  * 
+ * At the same time, Squares will observe the PlayerDataBase, which will notify
+ * them at each player change, to calculate how long they should stay power
+ * failured.
+ * 
  */
-public class PlayerDataBase implements Observer, IPlayerDataBase {
+public class PlayerDataBase extends Observable implements Observer, IPlayerDataBase {
 	
 	/**
 	 * The number of players involved in the game.
@@ -29,9 +33,9 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	
 	/**
 	 * Creates a new empty PlayerDataBase. to fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid) createNewDB}. Until
-	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
-	 * exception.
+	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid)
+	 * createNewDB}. Until then the {@link PlayerDataBase#getCurrentPlayer()}
+	 * method will throw an exception.
 	 * 
 	 */
 	public PlayerDataBase() {
@@ -147,5 +151,8 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 */
 	private void endCurrentPlayerTurn() {
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
+		// The current player's turn ended, all observers (i.e. power failures)
+		// should be notified.
+		notifyObservers();
 	}
 }

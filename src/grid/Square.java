@@ -14,11 +14,15 @@ import player.Player;
  * as it is not prevented by the square's internal state. Moving to another
  * Square can have side effects.
  */
-public class Square extends ASquare implements Observer {
+public class Square extends ASquare {
 	
-	private List<IItem>	itemList	= new ArrayList<IItem>();
-	private IPlayer		player;
-	private int			lightTrail;
+	private List<IItem>		itemList	= new ArrayList<IItem>();
+	private IPlayer			player;
+	private int				lightTrail;
+	// Having one PowerFailure object at this moment is enough. Since they all
+	// have the same time to live, the last one added will be the one which will
+	// live the longest. If this changes, we'd want to change this into a List.
+	private PowerFailure	powerFailure;
 	
 	/**
 	 * Default constructor.
@@ -48,12 +52,13 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
-	 * TODO
+	 * This method will check if a Square has a power failure. This depends on
+	 * both the state of the Square itself, as on its neighbours.
 	 * 
-	 * @return
+	 * @return whether or not it has a power failure.
 	 */
 	public boolean hasPowerFailure() {
-		return false;
+		return powerFailure != null;
 	}
 	
 	private List<IItem> getAllItems() {
@@ -115,7 +120,9 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
-	 * Returns whether or not this Square has currently a {@link Player}, i.e. <code>{@link #getPlayer()}!= null</code>.
+	 * Returns whether or not this Square has currently a {@link Player}, i.e.
+	 * <code>{@link #getPlayer()}!= null</code>.
+	 * 
 	 * @return Whether this square has a Player.
 	 */
 	@Override
@@ -130,6 +137,8 @@ public class Square extends ASquare implements Observer {
 	 * FIXME null
 	 */
 	public void setPlayer(IPlayer player) {
+		if (player == null)
+			throw new IllegalArgumentException();
 		this.player = player;
 		penalty(player);
 	}
@@ -140,7 +149,7 @@ public class Square extends ASquare implements Observer {
 	 * 
 	 * @param player
 	 *        The Player which will feel the consequences.
-	 *        
+	 * 
 	 *        TODO null
 	 */
 	private void penalty(IPlayer player) {
@@ -164,12 +173,14 @@ public class Square extends ASquare implements Observer {
 	}
 	
 	/**
-	 * TODO
+	 * This method removes a power failure from a square.
+	 * 
+	 * @param powerFailure
+	 *        The power failure to remove
 	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		if (lightTrail > 0)
-			lightTrail--;
+	public void removePowerFailure(PowerFailure powerFailure) {
+		if (this.powerFailure.equals(powerFailure))
+			this.powerFailure = null;
 	}
 	
 }
