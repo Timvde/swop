@@ -83,8 +83,7 @@ public class Square extends ASquare {
 	/**
 	 * This method sets the haslightTrail for this square.
 	 * 
-	 * @param b
-	 *        the new value for <code>this.hasLightTrail</code>
+	 * 
 	 * 
 	 * @note <b>Do NOT use this method.</b> The light trail is automatically
 	 *       updated as the player (and its light trail) moves around the grid.
