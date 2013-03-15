@@ -75,6 +75,12 @@ public class LightGrenade extends Item implements ILightGrenade {
 	public void use(ASquare square) {
 		if (square instanceof WallPart)
 			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
+		
+		// check if this light grenade can be added to the square
+		for (IItem item : ((Square) square).getAllItems())
+			if (item instanceof LightGrenade)
+				throw new IllegalStateException("There is already a light grenade on the square");
+		
 		this.enable();
 		
 		// TODO this should not be a cast! Asquare should provide this method!

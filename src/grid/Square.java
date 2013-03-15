@@ -25,7 +25,7 @@ public class Square extends ASquare {
 	/**
 	 * Default constructor.
 	 */
-	public Square() { 
+	public Square() {
 		
 	}
 	
@@ -59,9 +59,13 @@ public class Square extends ASquare {
 		return powerFailure != null;
 	}
 	
-	private List<IItem> getAllItems() {
+	/**
+	 * returns all the items on this square
+	 * @return the items on this square
+	 */
+	public List<IItem> getAllItems() {
 		// Encapsulation isn't required, as this is a private method.
-		return itemList;
+		return new ArrayList<IItem>(itemList);
 	}
 	
 	@Override

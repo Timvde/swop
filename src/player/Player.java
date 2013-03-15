@@ -16,8 +16,9 @@ import notnullcheckweaver.NotNull;
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
- * during a turn. These actions are {@link #moveInDirection(Direction) move}, {@link #pickUpItem(IItem) pickup} an item,
- * {@link #useItem(IItem) use} an item and {@link #endTurn() end} the turn.
+ * during a turn. These actions are {@link #moveInDirection(Direction) move},
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
+ * item and {@link #endTurn() end} the turn.
  */
 public class Player extends Observable implements IPlayer {
 	
@@ -199,7 +200,7 @@ public class Player extends Observable implements IPlayer {
 		}
 		else {
 			// TODO player loses the game
-			System.out.println("Player "+getID()+" loses the game!");
+			System.out.println("Player " + getID() + " loses the game!");
 		}
 	}
 	
@@ -280,7 +281,13 @@ public class Player extends Observable implements IPlayer {
 		// TODO are there any other exceptions?
 		ASquare currentSquare = this.grid.getSquareAt(currentCoord);
 		inventory.removeItem(i);
-		i.use(currentSquare);
+		try {
+			i.use(currentSquare);
+		} catch (IllegalStateException e) {
+			// re-add the item to the inventory and re-throw the exception
+			inventory.addItem(i);
+			throw e;
+		}
 		
 		this.skipNumberOfActions(1);
 		lightTrail.updateLightTrail();
