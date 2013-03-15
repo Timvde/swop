@@ -70,7 +70,7 @@ public class Player extends Observable implements IPlayer {
 	public Player(@NotNull Coordinate startCoordinate, @NotNull IGrid grid)
 			throws IllegalArgumentException, IllegalStateException {
 		if (startCoordinate == null || grid == null) {
-			throw new IllegalArgumentException("The given arguements cannot be null");
+			throw new IllegalArgumentException("The given arguments cannot be null");
 		}
 		if (grid.getSquareAt(startCoordinate) == null) {
 			throw new IllegalStateException("The given coordinate must exist on the given grid");
@@ -260,16 +260,25 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public void pickUpItem(IItem item) {
 		Square currentSquare = (Square) getGrid().getSquareAt(currentCoord);
-		if (item == null || !currentSquare.hasItemWithID(item.getId()))
+		if (item == null || !currentSquare.contains(item))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
 		// remove the item from the square
 		currentSquare.removeItem(item);
-		// add the item to the inventory
-		inventory.addItem(item);
+		
+		try {
+			// add the item to the inventory
+			inventory.addItem(item);
+		}
+		catch (IllegalArgumentException e) {
+			// the inventory is full, re-add the item
+			currentSquare.addItem(item);
+			throw e;
+		}
 		
 		// reduce the actions left
-		skipNumberOfActions(1);
+		decreaseAllowedNumberOfActions();
+		this.lightTrail.updateLightTrail();
 	}
 	
 	@Override

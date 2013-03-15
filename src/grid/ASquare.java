@@ -50,13 +50,13 @@ public abstract class ASquare {
 	public abstract IItem pickupItem(int ID) throws IllegalArgumentException;
 	
 	/**
-	 * Returns whether or not this square holds the item with a given ID.
+	 * Returns whether or not this square holds the item.
 	 * 
-	 * @param ID
-	 *        The ID of the queried Item
-	 * @return whether or not this square holds the item with a given ID.
+	 * @param item
+	 *        the queried Item
+	 * @return whether or not this square holds the item.
 	 */
-	public abstract boolean hasItemWithID(int ID);
+	public abstract boolean contains(IItem item);
 	
 	/**
 	 * Returns whether or not this ASquare holds currently a {@link Player}
