@@ -31,7 +31,7 @@ public interface IPlayer {
 	 * 
 	 * @return the coordinate this player has to reach to win the game.
 	 */
-	public Coordinate getTargetPosition();
+	public Coordinate getStartingPosition();
 	
 	/**
 	 * Returns the coordinate this player currently stands on.
@@ -147,8 +147,9 @@ public interface IPlayer {
 	 * 
 	 * @param item
 	 *        The item to pick up.
-	 * @throws IllegalArgumentException The item must be on the square the player is
-	 * currently on and cannot be null.
+	 * @throws IllegalArgumentException
+	 *         The item must be on the square the player is currently on and
+	 *         cannot be null.
 	 */
 	public void pickUpItem(IItem item) throws IllegalArgumentException;
 	
@@ -157,6 +158,8 @@ public interface IPlayer {
 	 * 
 	 * @param i
 	 *        The item that will be used.
+	 * @throws IllegalArgumentException
+	 *         The item is not in the inventory
 	 */
-	public void useItem(IItem i);
+	public void useItem(IItem i) throws IllegalArgumentException;
 }

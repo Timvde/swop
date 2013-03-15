@@ -347,6 +347,7 @@ public class GridBuilder {
 		
 		Grid final_grid = new Grid(grid);
 		final_grid.addPowerFailureAtCoordinate(new Coordinate(1, 1));
+		final_grid.enablePowerFailures(false);
 		
 		return final_grid;
 	}
