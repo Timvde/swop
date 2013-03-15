@@ -38,7 +38,7 @@ public class Game {
 	/**
 	 * Start the initialisation and run the GUI.
 	 */
-	public void start() {
+	public void start() { 
 		this.playerDB = new PlayerDataBase(grid);  
 		
 		// create all the controllers, giving them the IPlayerDB
