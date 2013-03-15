@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuppressWarnings("javadoc")
 @RunWith(Suite.class)
 @SuiteClasses({ CoordinateTest.class, GridTest.class, WallTest.class, SquareTest.class,
-		InventoryTest.class, LightTrailTest.class })
+		InventoryTest.class, LightTrailTest.class, EffectTest.class, PlayerDBTest.class, PlayerTest.class, LightGrenadeTest.class })
 public class TestSuite {
 	
 	@BeforeClass
