@@ -79,7 +79,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			newPlayer.addObserver(this);
 		}
 		
-		// Set the left downmost player as starting player.
+		// Set the right upmost player as starting player.
 		this.currentPlayerIndex = 0;
 	}
 	

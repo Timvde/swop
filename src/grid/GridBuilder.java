@@ -24,6 +24,10 @@ public class GridBuilder {
 	private int					width;
 	private int					height;
 	
+	// Constraints
+	private int					minimumGridWidth = 10;
+	private int					minimumGridHeight = 10;
+	
 	/**
 	 * Create a new builder for the grid
 	 */
@@ -60,7 +64,8 @@ public class GridBuilder {
 	}
 	
 	/**
-	 * set the width of the grid. This must be a strictly positive integer
+	 * set the width of the grid. This must be a strictly positive integer, and
+	 * at least 10.
 	 * 
 	 * @param width
 	 *        the width of the grid
@@ -68,8 +73,8 @@ public class GridBuilder {
 	 */
 	// @Requires("width > 0")
 	public GridBuilder setGridWidth(int width) {
-		if (width <= 3 && height <= 3)
-			throw new IllegalArgumentException("height and width cannot be less than three!");
+		if ((width <= 3 && height <= 3) || width < minimumGridWidth)
+			throw new IllegalArgumentException("False grid dimensions!");
 		this.width = width;
 		return this;
 	}
@@ -83,8 +88,8 @@ public class GridBuilder {
 	 */
 	// @Requires("height > 0")
 	public GridBuilder setGridHeigth(int height) {
-		if (width <= 3 && height <= 3)
-			throw new IllegalArgumentException("height and width cannot be less than three!");
+		if ((width <= 3 && height <= 3) || height < minimumGridHeight)
+			throw new IllegalArgumentException("False grid dimensions!");
 		this.height = height;
 		return this;
 	}

@@ -15,6 +15,7 @@ import controllers.NewGameController;
  * @author tom
  *
  */
+@SuppressWarnings("javadoc")
 public class StartGameTest {
 	
 	private static NewGameController	newGameCont;
@@ -36,8 +37,7 @@ public class StartGameTest {
 		}
 	}
 	
-	// TODO juiste exception definiëren
-	@Test(expected = Exception.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testNewGameFalseDimensions() {
 		newGameCont.newGame(6, 6);
 	}

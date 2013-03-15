@@ -32,6 +32,7 @@ public interface ILightGrenade extends IItem {
 //	 */
 //	public void trigger() throws IllegalStateException;
 
+	
 	/**
 	 * This method sets the state of the grenade to {@link LightGrenadeState}
 	 * .ACTIVE. It cannot be called until the player who dropped the

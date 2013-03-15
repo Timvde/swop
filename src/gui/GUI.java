@@ -445,7 +445,9 @@ public class GUI implements Runnable {
 	 */
 	public void draw(Grid g) {
 		this.grid = g;
-		gui.repaint();
+		
+		if (this.gui != null)
+			gui.repaint();
 	}
 	
 	/**
