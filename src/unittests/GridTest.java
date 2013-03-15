@@ -19,8 +19,8 @@ public class GridTest {
 	public void testConstructor() {
 		for (int i = 0; i < 10; i++) {
 			ArrayList<IPlayer> players = new ArrayList<IPlayer>();
-			IPlayer p1 = new Player(new Coordinate(9, 0), new GridBuilder().getPredefinedTestGrid());
-			IPlayer p2 = new Player(new Coordinate(0, 9), new GridBuilder().getPredefinedTestGrid());
+			IPlayer p1 = new Player(new Coordinate(9, 0), new GridBuilder().getPredefinedTestGrid(false));
+			IPlayer p2 = new Player(new Coordinate(0, 9), new GridBuilder().getPredefinedTestGrid(false));
 			players.add(p1);
 			players.add(p2);
 			Grid grid = new GridBuilder().build();
@@ -38,7 +38,7 @@ public class GridTest {
 	@Test
 	public void testStaticGrid() {
 
-		Grid grid = new GridBuilder().getPredefinedTestGrid();
+		Grid grid = new GridBuilder().getPredefinedTestGrid(false);
 				
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"

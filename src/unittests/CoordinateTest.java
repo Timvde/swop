@@ -37,4 +37,12 @@ public class CoordinateTest {
 		assertEquals(new Coordinate(-1, 0), Coordinate.ORIGIN.getCoordinateInDirection(Direction.WEST));
 		assertEquals(new Coordinate(-1,-1), Coordinate.ORIGIN.getCoordinateInDirection(Direction.NORTHWEST));
 	}
+	
+	@Test
+	public void testisNeighbour() {
+		assertTrue(new Coordinate(2, 3).isNeighbour(new Coordinate(2, 4)));
+		assertTrue(new Coordinate(2, 3).isNeighbour(new Coordinate(1, 2)));
+		assertFalse(new Coordinate(2, 3).isNeighbour(new Coordinate(3, 1)));
+		assertFalse(new Coordinate(2, 3).isNeighbour(new Coordinate(2, 5)));
+	}
 }

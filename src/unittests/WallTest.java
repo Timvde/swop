@@ -80,15 +80,40 @@ public class WallTest {
 		assertEquals(part1, part2);
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWallPartMethods() {
 		WallPart part = wall.getWallPart();
 		assertEquals(part.getCarryableItems().size(), 0);
 		assertEquals(part.getPlayer(), null);
 		assertFalse(part.hasLightTrail());
 		assertFalse(part.hasItemWithID(0));
+		assertFalse(part.hasPlayer());
 		
-		// This one will throw
-		part.pickupItem(0);
+		boolean hasThrown = false;
+		try {
+			part.pickupItem(0);
+		}
+		catch (Exception e) {
+			hasThrown = true;
+		}
+		assertTrue(hasThrown);
+		
+		hasThrown = false;
+		try {
+			wall.getWallPart().setPlayer(null);
+		}
+		catch (Exception e) {
+			hasThrown = true;
+		}
+		assertTrue(hasThrown);
+		
+		hasThrown = false;
+		try {
+			wall.getWallPart().removePlayer();
+		}
+		catch (Exception e) {
+			hasThrown = true;
+		}
+		assertTrue(hasThrown);
 	}
 }
