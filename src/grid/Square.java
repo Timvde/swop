@@ -25,7 +25,7 @@ public class Square extends ASquare {
 	/**
 	 * Default constructor.
 	 */
-	public Square() {
+	public Square() { 
 		
 	}
 	
