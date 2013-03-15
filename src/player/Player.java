@@ -13,11 +13,11 @@ import ObjectronExceptions.IllegalMoveException;
 import notnullcheckweaver.NotNull;
 
 /**
- * TODO: verantw voor: actions per TURN actions = move; pickup; use
- * 
- * en action history (boolean hasmovedyet)
- * 
- * 
+ * Main character of the Tron game. A player carries an {@link Inventory
+ * inventory} and is trailed by a {@link LightTrail light trail}. During the
+ * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
+ * during a turn. These actions are {@link #moveInDirection(Direction) move}, {@link #pickUpItem(IItem) pickup} an item,
+ * {@link #useItem(IItem) use} an item and {@link #endTurn() end} the turn.
  */
 public class Player extends Observable implements IPlayer {
 	
@@ -196,7 +196,7 @@ public class Player extends Observable implements IPlayer {
 			// this player's turn will end; reset the turn-related properties
 			this.resetHasMoved();
 			resetNumberOfActionsLeft();
-			
+			lightTrail.updateLightTrail();
 		}
 		else {
 			// TODO player loses the game
@@ -270,6 +270,7 @@ public class Player extends Observable implements IPlayer {
 		
 		// reduce the actions left
 		skipNumberOfActions(1);
+		lightTrail.updateLightTrail();
 	}
 	
 	@Override
@@ -282,6 +283,7 @@ public class Player extends Observable implements IPlayer {
 		i.use(currentSquare);
 		
 		this.skipNumberOfActions(1);
+		lightTrail.updateLightTrail();
 	}
 	
 	/**
