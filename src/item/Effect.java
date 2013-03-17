@@ -2,6 +2,7 @@ package item;
 
 import grid.PowerFailure;
 import player.IPlayer;
+import grid.ASquare;
 
 /**
  * A class to calculate the consequences of a Player entering a Square, which
@@ -11,8 +12,9 @@ import player.IPlayer;
 public class Effect {
 	
 	private IPlayer	player;
-	private boolean	hasLightGrenade	= false;
-	private boolean	hasPowerFailure	= false;
+	private boolean	hasLightGrenade;
+	private boolean	hasPowerFailure;
+	private ASquare	destination;
 	
 	/**
 	 * Initializing the Effect.
@@ -22,6 +24,8 @@ public class Effect {
 	 */
 	public Effect(IPlayer player) {
 		this.player = player;
+		this.hasLightGrenade = false;
+		this.hasPowerFailure = false;
 	}
 	
 	/**
@@ -43,12 +47,27 @@ public class Effect {
 	}
 	
 	/**
+	 * Tell the Effect to take the teleporter into calculation.
+	 * 
+	 * @param destination
+	 *        the destination of the teleporter
+	 */
+	public void teleportTo(ASquare destination) {
+		this.destination = destination;
+	}
+	
+	/**
 	 * Calculate the resulting penalty for the player and execute it.
 	 * 
 	 * @return True when the effect has ended the player's turn.
 	 * @throws IllegalStateException
 	 */
 	public boolean execute() throws IllegalStateException {
+		// teleport the player to the specified destination
+		if (destination != null) {
+			//teleport 
+		}
+		
 		if (!hasLightGrenade) {
 			if (hasPowerFailure) {
 				player.endTurn();

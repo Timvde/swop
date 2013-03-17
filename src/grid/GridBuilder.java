@@ -348,7 +348,7 @@ public class GridBuilder {
 		Grid final_grid = new Grid(grid);
 		
 		if (usePowerfailure)
-		final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
+			final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
 		
 		final_grid.enablePowerFailures(false);
 		
@@ -359,26 +359,37 @@ public class GridBuilder {
 	
 	/**
 	 * This function returns a predefined grid which we can use to test. This
-	 * should not be used in gameplay.
+	 * should not be used in game play. The returned grid is shown below. The
+	 * legend for this grid is a followed:
+	 * <ul>
+	 * <li>numbers: starting position of the players</li>
+	 * <li>x: walls</li>
+	 * <li>o: light grenades</li>
+	 * <li>t: teleporters (these teleport to the square right above)</li>
+	 * <li>d: destination of the teleporters</li>
+	 * <li>F: Power failure</li>
+	 * </ul>
 	 * 
 	 * <pre>
-	 *   ____________________
-	 *  | | | |F|F|F| | | |2|
-	 *  | | | |F|F|F| | | | |
-	 *  | | | |F|F|F| |o| | |
-	 *  | | | | | | | | | | |
-	 *  | | | | | | | | | | |
-	 *  | | | | |x|x|x|x|x| |
-	 *  | | | | | | | |o| | |
-	 *  | | |o| | | | | |o| |
-	 *  | | | | | |o|o|o|o| |
-	 *  |1| | | | | | | | | |
+	 *   _____________________________
+	 *  |  |  |  | F| F| F|  |  |  | 2|
+	 *  |  |  |  | F| F| F|  |  |  |  |
+	 *  |  |  |  | F| F| F|  | o|  |t1|
+	 *  |  |  |  |  |  |  |  |  |  |d2|
+	 *  |  |  |  |  |  |  |  |  |  |  |
+	 *  |  |  |  |  | x| x| x| x| x|  |
+	 *  |  |  |  |  |  |  |  | o|  |  |
+	 *  |t2|  | o|  |  |  |  |  | o|  |
+	 *  |d1|  |  |  |  | o| o| o| o|  |
+	 *  | 1|  |  |  |  |  |  |  |  |  |
+	 *  -------------------------------
 	 * </pre>
-	 * @param usePowerfailure 
-	 * 			Boolean to express if there must be a powerfailure in the
-	 *          test grid. Shown by F in the map above.
 	 * 
-	 * @return the new prediefined grid
+	 * @param usePowerfailure
+	 *        Boolean to express if there must be a power failure in the test
+	 *        grid. Shown by F in the map above.
+	 * 
+	 * @return the new predefined grid
 	 */
 	public Grid getPredefinedTestGrid(boolean usePowerfailure) {
 		List<Wall> walls = new ArrayList<Wall>();
@@ -389,10 +400,10 @@ public class GridBuilder {
 	
 	/**
 	 * Returns a randomly created coordinate that exists on the grid specified
-	 * by {@link GridBuilder#getPredefinedTestGrid()}. Used for testing
+	 * by {@link GridBuilder#getPredefinedTestGrid(boolean)}. Used for testing
 	 * purposes.
 	 * 
-	 * @return A random coord on the testgrid.
+	 * @return A random coordinate on the test grid.
 	 */
 	public static Coordinate getRandomCoordOnTestGrid() {
 		return new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
@@ -401,8 +412,8 @@ public class GridBuilder {
 	
 	/**
 	 * The size of the grid returned by
-	 * {@link GridBuilder#getPredefinedTestGrid()} Used for testing purposes,
-	 * should not be used in gameplay.
+	 * {@link GridBuilder#getPredefinedTestGrid(boolean)} Used for testing
+	 * purposes, should not be used in game play.
 	 */
 	public static final int	PREDIFINED_GRID_SIZE	= 10;
 	
