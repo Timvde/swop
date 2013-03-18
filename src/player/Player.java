@@ -261,8 +261,6 @@ public class Player extends Observable implements IPlayer {
 	@Override
 	public void pickUpItem(IItem item) {
 		Square currentSquare = (Square) getGrid().getSquareAt(currentCoord);
-		if (item == null || !currentSquare.contains(item))
-			throw new IllegalArgumentException("The item does not exist on the square");
 		
 		// remove the item from the square
 		currentSquare.removeItem(item);

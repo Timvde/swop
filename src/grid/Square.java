@@ -44,8 +44,12 @@ public class Square extends ASquare {
 	 * 
 	 * @param item
 	 *        The item to remove
+	 * @throws IllegalArgumentException
+	 *         The item must exist on the square
 	 */
 	public void removeItem(IItem item) {
+		if (item == null || !this.contains(item))
+			throw new IllegalArgumentException("The item does not exist on the square");
 		itemList.remove(item);
 	}
 	
@@ -61,6 +65,7 @@ public class Square extends ASquare {
 	
 	/**
 	 * returns all the items on this square
+	 * 
 	 * @return the items on this square
 	 */
 	public List<IItem> getAllItems() {
