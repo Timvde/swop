@@ -21,12 +21,12 @@ import controllers.MoveController;
  * @author Tom
  */
 @SuppressWarnings("javadoc")
-public class MovePlayerTest { 
+public class MovePlayerTest {
 	
-	private static MoveController		moveCont;
-	private static EndTurnController	endTurnCont;
-	private static Grid					grid;
-	private static PlayerDataBase		playerDB;
+	private MoveController		moveCont;
+	private EndTurnController	endTurnCont;
+	private Grid				grid;
+	private PlayerDataBase		playerDB;
 	
 	public void newGame() {
 		Game game = new Game();
@@ -47,11 +47,12 @@ public class MovePlayerTest {
 	}
 	
 	@Test
-	public void testNoTwoPlayersOnOneSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+	public void testNoTwoPlayersOnOneSquare() throws IllegalStateException,
+			IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
-
+		
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.SOUTHWEST);
@@ -71,15 +72,16 @@ public class MovePlayerTest {
 		try {
 			// This causes two players to be on the same square:
 			moveCont.move(Direction.NORTHEAST);
-		} 
+		}
 		catch (IllegalMoveException e) {
 			exceptionThrown = true;
 		}
 		Assert.assertEquals(true, exceptionThrown);
 	}
-	 
+	
 	@Test
-	public void testCannotMoveOnWall() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+	public void testCannotMoveOnWall() throws IllegalStateException, IllegalArgumentException,
+			IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
@@ -106,7 +108,8 @@ public class MovePlayerTest {
 	}
 	
 	@Test(expected = IllegalMoveException.class)
-	public void testCannotLeaveGrid() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+	public void testCannotLeaveGrid() throws IllegalStateException, IllegalArgumentException,
+			IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
@@ -115,7 +118,8 @@ public class MovePlayerTest {
 	
 	// TODO specifieker specifiëren, ook met try catch
 	@Test(expected = Exception.class)
-	public void testCannotCrossLightrail() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+	public void testCannotCrossLightrail() throws IllegalStateException, IllegalArgumentException,
+			IllegalMoveException {
 		newGame();
 		
 		// Player 1 actions
