@@ -1,11 +1,11 @@
 package player;
 
 import grid.Coordinate;
-import grid.Square;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import grid.ASquare;
+import grid.square.ASquare;
+import grid.square.Square;
 
 /**
  * LightTrail is an impenetrable wall (for other players) which trails the

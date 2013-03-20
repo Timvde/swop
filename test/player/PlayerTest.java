@@ -1,4 +1,4 @@
-package unittests;
+package player;
 
 import static org.junit.Assert.assertEquals;
 import grid.Coordinate;

@@ -1,8 +1,8 @@
-package unittests;
+package player;
 
 import static org.junit.Assert.assertEquals;
+import lightgrenade.LightGrenade;
 import item.Item;
-import item.LightGrenade;
 import org.junit.Before;
 import org.junit.Test;
 import player.Inventory;

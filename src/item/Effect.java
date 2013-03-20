@@ -1,17 +1,18 @@
 package item;
 
-import grid.PowerFailure;
+import grid.square.ASquare;
+import grid.square.PowerFailure;
+import grid.square.TronObject;
 import player.IPlayer;
-import grid.ASquare;
 
 /**
- * A class to calculate the consequences of a Player entering a Square, which
- * can at the moment have an active light grenade, be in power failured state or
+ * A class to calculate the consequences of a {@link TronObject} entering a Square, which
+ * can for example have an active light grenade, be in power failured state or
  * have both.
  */
 public class Effect {
 	
-	private IPlayer	player;
+	private TronObject	object;
 	private boolean	hasLightGrenade;
 	private boolean	hasPowerFailure;
 	private ASquare	destination;
@@ -19,11 +20,11 @@ public class Effect {
 	/**
 	 * Initializing the Effect.
 	 * 
-	 * @param player
-	 *        The player to receive the effect.
+	 * @param object
+	 *        The object to receive the effect.
 	 */
-	public Effect(IPlayer player) {
-		this.player = player;
+	public Effect(TronObject object) {
+		this.object = object;
 		this.hasLightGrenade = false;
 		this.hasPowerFailure = false;
 	}
@@ -52,7 +53,7 @@ public class Effect {
 	 * @param destination
 	 *        the destination of the teleporter
 	 */
-	public void teleportTo(ASquare destination) {
+	public void addTeleportTo(ASquare destination) {
 		this.destination = destination;
 	}
 	
@@ -63,21 +64,21 @@ public class Effect {
 	 * @throws IllegalStateException
 	 */
 	public boolean execute() throws IllegalStateException {
-		// teleport the player to the specified destination
-		if (destination != null) {
-			//teleport 
+		// teleport the object to the specified destination
+		if (destination != null && object.asTeleportable() != null) {
+			object.asTeleportable().teleportTo(destination);
 		}
 		
 		if (!hasLightGrenade) {
 			if (hasPowerFailure) {
-				player.endTurn();
+				object.asAffectedByPowerFailure().damageByPowerFailure();
 				return true;
 			}
 		}
 		else {
 			// The square the player stepped on has a light grenade and should
 			// always cause a decrease of at least three actions at this point.
-			player.skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
+			object.asExplodable().skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
 		}
 		return false;
 	}

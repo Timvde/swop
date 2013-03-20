@@ -1,5 +1,8 @@
 package grid;
 
+import grid.square.ASquare;
+import grid.square.PowerFailure;
+import grid.square.Square;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.HashSet;

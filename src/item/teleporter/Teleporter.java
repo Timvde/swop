@@ -1,6 +1,7 @@
-package item;
+package item.teleporter;
 
-import grid.ASquare;
+import item.Item;
+import grid.square.ASquare;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed

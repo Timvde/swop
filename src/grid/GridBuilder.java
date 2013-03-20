@@ -1,12 +1,14 @@
 package grid;
 
 import grid.WallPart;
-import item.LightGrenade;
+import grid.square.ASquare;
+import grid.square.Square;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import lightgrenade.LightGrenade;
 
 /**
  * A builder used for building the grid. This builder contains all the

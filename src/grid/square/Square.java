@@ -1,4 +1,4 @@
-package grid;
+package grid.square;
 
 import item.Effect;
 import item.IItem;

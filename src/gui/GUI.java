@@ -1,19 +1,19 @@
 package gui;
 
-import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.WallPart;
+import grid.square.ASquare;
 import item.IItem;
 import item.Item;
-import item.LightGrenade;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import lightgrenade.LightGrenade;
 import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
 import controllers.EndTurnController;

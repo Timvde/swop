@@ -1,12 +1,12 @@
-package unittests;
+package grid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import grid.WallPart;
+import grid.square.ASquare;
 import java.util.ArrayList;
 import org.junit.Test;
 import player.IPlayer;

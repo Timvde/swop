@@ -3,9 +3,9 @@ package controllers;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
+import grid.square.ASquare;
 import player.IPlayer;
 import player.PlayerDataBase;
 

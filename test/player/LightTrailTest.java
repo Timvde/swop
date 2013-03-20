@@ -1,9 +1,9 @@
-package unittests;
+package player;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import grid.Square;
+import grid.square.Square;
 import org.junit.Before;
 import org.junit.Test;
 import player.LightTrail;

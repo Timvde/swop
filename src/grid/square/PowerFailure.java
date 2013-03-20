@@ -1,4 +1,4 @@
-package grid;
+package grid.square;
 
 import java.util.ArrayList;
 import java.util.Iterator;

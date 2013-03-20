@@ -1,4 +1,4 @@
-package unittests;
+package player;
 
 import grid.Coordinate;
 import grid.Grid;

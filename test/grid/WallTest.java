@@ -1,9 +1,9 @@
-package unittests;
+package grid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import item.LightGrenade;
+import lightgrenade.LightGrenade;
 import grid.Coordinate;
 import grid.Wall;
 import grid.WallPart;

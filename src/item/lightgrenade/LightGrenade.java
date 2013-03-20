@@ -1,8 +1,11 @@
-package item;
+package item.lightgrenade;
 
-import grid.ASquare;
-import grid.Square;
+import item.Effect;
+import item.IItem;
+import item.Item;
 import grid.WallPart;
+import grid.square.ASquare;
+import grid.square.Square;
 import com.sun.istack.internal.NotNull;
 
 /**

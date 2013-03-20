@@ -1,8 +1,6 @@
-package unittests;
+package grid;
 
 import static org.junit.Assert.*;
-import grid.Coordinate;
-import grid.Direction;
 import org.junit.Before;
 import org.junit.Test;
 

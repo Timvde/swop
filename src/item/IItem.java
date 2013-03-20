@@ -1,7 +1,7 @@
 package item;
 
-import grid.ASquare;
-import grid.Square;
+import grid.square.ASquare;
+import grid.square.Square;
 import player.Player;
 
 /**

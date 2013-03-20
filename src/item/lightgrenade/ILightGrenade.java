@@ -1,6 +1,7 @@
-package item;
+package item.lightgrenade;
 
-import item.LightGrenade.LightGrenadeState;
+import item.IItem;
+import item.lightgrenade.LightGrenade.LightGrenadeState;
 
 /**
  * A light grenade always is in a {@link LightGrenadeState}. Initially in the
