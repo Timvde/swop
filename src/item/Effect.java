@@ -1,21 +1,20 @@
 package item;
 
-import grid.square.ASquare;
-import grid.square.PowerFailure;
-import grid.square.TronObject;
-import player.IPlayer;
+import grid.ASquare;
+import grid.PowerFailure;
+import grid.TronObject;
 
 /**
- * A class to calculate the consequences of a {@link TronObject} entering a Square, which
- * can for example have an active light grenade, be in power failured state or
- * have both.
+ * A class to calculate the consequences of a {@link TronObject} entering a
+ * Square, which can for example have an active light grenade, be in power
+ * failured state or have both.
  */
 public class Effect {
 	
 	private TronObject	object;
-	private boolean	hasLightGrenade;
-	private boolean	hasPowerFailure;
-	private ASquare	destination;
+	private boolean		hasLightGrenade;
+	private boolean		hasPowerFailure;
+	private ASquare		destination;
 	
 	/**
 	 * Initializing the Effect.
@@ -27,6 +26,15 @@ public class Effect {
 		this.object = object;
 		this.hasLightGrenade = false;
 		this.hasPowerFailure = false;
+	}
+	
+	/**
+	 * return the object that will suffer from this effect
+	 * 
+	 * @return the object of this effect
+	 */
+	public TronObject getObject() {
+		return object;
 	}
 	
 	/**
@@ -65,20 +73,20 @@ public class Effect {
 	 */
 	public boolean execute() throws IllegalStateException {
 		// teleport the object to the specified destination
-		if (destination != null && object.asTeleportable() != null) {
-			object.asTeleportable().teleportTo(destination);
+		if (destination != null && getObject().asTeleportable() != null) {
+			getObject().asTeleportable().teleportTo(destination);
 		}
 		
 		if (!hasLightGrenade) {
 			if (hasPowerFailure) {
-				object.asAffectedByPowerFailure().damageByPowerFailure();
+				getObject().asAffectedByPowerFailure().damageByPowerFailure();
 				return true;
 			}
 		}
 		else {
 			// The square the player stepped on has a light grenade and should
 			// always cause a decrease of at least three actions at this point.
-			object.asExplodable().skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
+			getObject().asExplodable().skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
 		}
 		return false;
 	}

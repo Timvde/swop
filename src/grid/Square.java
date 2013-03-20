@@ -1,9 +1,11 @@
-package grid.square;
+package grid;
 
 import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import player.IPlayer;
 import player.Player;
 
@@ -14,19 +16,29 @@ import player.Player;
  */
 public class Square extends ASquare {
 	
-	private List<IItem>		itemList	= new ArrayList<IItem>();
-	private IPlayer			player;
-	private boolean			lightTrail;
+	/** a map of the squares adjacent to this square */
+	private Map<Direction, Square>	neighbours;
+	/** the list of items in this square */
+	private List<IItem>				itemList;
+	/** the player on this square */
+	private IPlayer					player;
+	/** a boolean representing whether there is a light trail on this square */
+	private boolean					lightTrail;
 	// Having one PowerFailure object at this moment is enough. Since they all
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
-	private PowerFailure	powerFailure;
+	private PowerFailure			powerFailure;
 	
 	/**
 	 * Default constructor.
+	 * 
+	 * @param neighbours
+	 *        the squares adjacent to this square
 	 */
-	public Square() {
-		
+	public Square(Map<Direction, Square> neighbours) {
+		itemList = new ArrayList<IItem>();
+		lightTrail = false;
+		this.neighbours = new HashMap<Direction, Square>(neighbours);
 	}
 	
 	/**
@@ -34,7 +46,12 @@ public class Square extends ASquare {
 	 * 
 	 * @param item
 	 *        the item to add
+	 * @deprecated This method will be replaced with the
+	 *             {@link #placeOn(TronObject)} method. This provides more
+	 *             consistency and automatically adds an {@link Effect effect}
+	 *             if this is required.
 	 */
+	@Deprecated
 	public void addItem(IItem item) {
 		itemList.add(item);
 	}
@@ -44,9 +61,25 @@ public class Square extends ASquare {
 	 * 
 	 * @param item
 	 *        The item to remove
+	 * @deprecated This method is replaced by the more general
+	 *             {@link #remove(TronObject)} method.
 	 */
+	@Deprecated
 	public void removeItem(IItem item) {
 		itemList.remove(item);
+	}
+	
+	/**
+	 * Removes an object from this square.
+	 * 
+	 * @param object
+	 *        the object to be removed
+	 */
+	public void remove(TronObject object) {
+		if (player == object)
+			player = null;
+		else
+			itemList.remove(object);
 	}
 	
 	/**
@@ -61,10 +94,12 @@ public class Square extends ASquare {
 	
 	/**
 	 * returns all the items on this square
+	 * 
 	 * @return the items on this square
 	 */
 	public List<IItem> getAllItems() {
 		// Encapsulation isn't required, as this is a private method.
+		// NOT ANYMORE IT'S NOT
 		return new ArrayList<IItem>(itemList);
 	}
 	
@@ -107,8 +142,10 @@ public class Square extends ASquare {
 	@Override
 	public IItem pickupItem(int ID) {
 		for (IItem itemOnSquare : this.getAllItems())
-			if (ID == itemOnSquare.getId())
+			if (ID == itemOnSquare.getId()) {
+				this.remove(itemOnSquare);
 				return itemOnSquare;
+			}
 		// if not yet returned --> not on square
 		throw new IllegalArgumentException("The square doesn't hold the requested item");
 	}
@@ -147,7 +184,10 @@ public class Square extends ASquare {
 	 * 
 	 * @throws IllegalStateException
 	 * @return True if the move of the player has caused him to end his turn.
+	 * @deprecated This method is replaced by the more general and more
+	 *             consistent {@link #placeOn(TronObject)} method.
 	 */
+	@Deprecated
 	public boolean setPlayer(IPlayer player) throws IllegalStateException {
 		if (player == null)
 			throw new IllegalArgumentException();
@@ -162,7 +202,11 @@ public class Square extends ASquare {
 	 * @param player
 	 *        The Player which will feel the consequences.
 	 * @return True when the penalty has caused the player to end his turn.
+	 * @deprecated The method will be replaced by a system that will
+	 *             automatically add a penalty to each object that is placed on
+	 *             this square.
 	 */
+	@Deprecated
 	private boolean penalty(IPlayer player) throws IllegalStateException {
 		Effect effect = new Effect(player);
 		
@@ -195,4 +239,81 @@ public class Square extends ASquare {
 		this.powerFailure = powerFailure;
 	}
 	
+	/**
+	 * Test whether an {@link TronObject object} can be added to this square.
+	 * 
+	 * @param object
+	 *        the object that is to be added
+	 * @return true if the object can be added, else false
+	 */
+	public boolean canBeAdded(TronObject object) {
+		// see issue#38
+		return false;
+	}
+	
+	/**
+	 * Test whether a player can be added to this square
+	 * 
+	 * @param player
+	 *        the player that is to be added
+	 * @return true if the player can be added, else false
+	 */
+	public boolean canBeAdded(IPlayer player) {
+		return this.player == null;
+	}
+	
+	/**
+	 * Place an new object on the square. This method will calculate the
+	 * {@link Effect} on the specified object and add that effect to the object.
+	 * 
+	 * @param object
+	 *        the object to be placed on this square
+	 */
+	public void placeOn(TronObject object) {
+		// test if the object can be added to the square
+		if (!canBeAdded(object))
+			throw new IllegalArgumentException("item could not be placed on this square");
+		// create a new effect
+		Effect effect = new Effect(object);
+		// let this square add to the effect
+		this.addToEffect(effect);
+		// let the items on this square add to the effect
+		for (IItem item : itemList) {
+			item.addToEffect(effect);
+		}
+		// execute the effect
+		effect.execute();
+		
+		// if the effect is executed the object can be added to the list
+		this.setObject(object);
+	}
+	
+	private void setObject(TronObject object) {
+		// TODO
+	}
+	
+	/**
+	 * Add a {@link PowerFailure} to the effect if this square has a power
+	 * failure and the {@link Effect#getObject() object} can suffer from a power
+	 * failure.
+	 * 
+	 * @param effect
+	 *        the effect where the power failure needs to be added
+	 */
+	public void addToEffect(Effect effect) {
+		if (this.hasPowerFailure() && null != effect.getObject().asAffectedByPowerFailure())
+			effect.addPowerFailure(getPowerFailure());
+	}
+	
+	/**
+	 * Returns the square adjacent to this square in the specified direction or
+	 * null if the neighbour does not exist in the specified direction.
+	 * 
+	 * @param direction
+	 *        the direction of the neighbor
+	 * @return the square in the direction
+	 */
+	public Square getNeighbour(Direction direction) {
+		return neighbours.get(direction);
+	}
 }

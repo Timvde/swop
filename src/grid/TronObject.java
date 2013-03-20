@@ -1,4 +1,4 @@
-package grid.square;
+package grid;
 
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
@@ -10,7 +10,7 @@ import item.teleporter.Teleportable;
  * 
  * @author Bavo Mees
  */
-public abstract class TronObject {
+public interface TronObject {
 	
 	/**
 	 * Returns the same instance of the object as a {@link Teleportable} object
@@ -18,7 +18,7 @@ public abstract class TronObject {
 	 * 
 	 * @return a teleportable
 	 */
-	public abstract Teleportable asTeleportable();
+	public Teleportable asTeleportable();
 	
 	/**
 	 * Returns the same instance of the object as an {@link Explodable} object
@@ -26,7 +26,7 @@ public abstract class TronObject {
 	 * 
 	 * @return an explodable
 	 */
-	public abstract Explodable asExplodable();
+	public Explodable asExplodable();
 	
 	/**
 	 * Returns the same instance of the object as an {@link AffectedByPowerFailure} object
@@ -34,5 +34,5 @@ public abstract class TronObject {
 	 * 
 	 * @return an AffectedByPowerFailure
 	 */
-	public abstract AffectedByPowerFailure asAffectedByPowerFailure();
+	public AffectedByPowerFailure asAffectedByPowerFailure();
 }

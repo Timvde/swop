@@ -1,4 +1,4 @@
-package grid.square;
+package grid;
 
 /**
  * Objects having the AffectedByPowerFailure property can be damaged as result of a 

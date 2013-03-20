@@ -1,10 +1,10 @@
 package gui;
 
+import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.Grid;
 import grid.WallPart;
-import grid.square.ASquare;
 import item.IItem;
 import item.Item;
 import java.awt.Graphics2D;

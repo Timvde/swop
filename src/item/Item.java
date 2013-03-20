@@ -1,7 +1,7 @@
 package item;
 
-import grid.square.AffectedByPowerFailure;
-import grid.square.TronObject;
+import grid.AffectedByPowerFailure;
+import grid.TronObject;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,7 +13,7 @@ import com.sun.istack.internal.NotNull;
  * 
  * @author Bavo Mees
  */
-public abstract class Item extends TronObject implements IItem {
+public abstract class Item implements IItem {
 	
 	@NotNull
 	private int						id;

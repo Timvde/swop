@@ -1,14 +1,15 @@
 package item;
 
-import grid.square.ASquare;
-import grid.square.Square;
+import grid.ASquare;
+import grid.Square;
+import grid.TronObject;
 import player.Player;
 
 /**
  * An Item is an object that can be placed on a {@link Square}. Each item has a
  * unique ID. Some Items can be picked up by a {@link Player}.
  */
-public interface IItem {
+public interface IItem extends TronObject {
 	
 	/**
 	 * Returns the unique ID of this item

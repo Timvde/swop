@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import lightgrenade.LightGrenade;
 import grid.GridBuilder;
-import grid.square.Square;
 import item.Item;
 import org.junit.Before;
 import org.junit.Test;

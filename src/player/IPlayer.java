@@ -2,7 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Direction;
-import grid.Grid;
+import grid.TronObject;
 import item.IItem;
 import java.util.List;
 import ObjectronExceptions.IllegalMoveException;
@@ -17,7 +17,7 @@ import ObjectronExceptions.IllegalMoveException;
  * A Player is the main actor of the game. It can move round, pick up objects
  * and tries to win the game
  */
-public interface IPlayer {
+public interface IPlayer extends TronObject {
 	
 	/**
 	 * Returns the unique ID-number associated with this player.

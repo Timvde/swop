@@ -1,6 +1,5 @@
 package grid;
 
-import grid.square.ASquare;
 import item.IItem;
 import java.util.List;
 import java.util.Set;

@@ -3,9 +3,9 @@ package item.lightgrenade;
 import item.Effect;
 import item.IItem;
 import item.Item;
+import grid.ASquare;
+import grid.Square;
 import grid.WallPart;
-import grid.square.ASquare;
-import grid.square.Square;
 import com.sun.istack.internal.NotNull;
 
 /**

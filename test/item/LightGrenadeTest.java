@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import lightgrenade.LightGrenade;
 import lightgrenade.LightGrenade.LightGrenadeState;
 import grid.Coordinate;
+import grid.Square;
 import grid.Wall;
-import grid.square.Square;
 import org.junit.Before;
 import org.junit.Test;
 

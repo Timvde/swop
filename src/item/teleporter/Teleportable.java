@@ -1,6 +1,6 @@
 package item.teleporter;
 
-import grid.square.ASquare;
+import grid.ASquare;
 
 /**
  * Indicates an object or item that can be teleported by a {@link Teleporter}

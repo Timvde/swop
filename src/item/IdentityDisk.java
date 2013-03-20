@@ -1,8 +1,8 @@
 package item;
 
 import item.teleporter.Teleportable;
-import grid.square.ASquare;
-import grid.square.AffectedByPowerFailure;
+import grid.ASquare;
+import grid.AffectedByPowerFailure;
 
 /**
  * Identity disk can be launched by players on the grid. The disk will then

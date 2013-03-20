@@ -1,4 +1,4 @@
-package grid.square;
+package grid;
 
 import item.IItem;
 import java.util.List;
@@ -81,7 +81,11 @@ public abstract class ASquare {
 	 * This method removes a player from a square. This method is enforced:
 	 * setPlayer(null) will throw. This is for both readability's sake and to
 	 * prevent errors.
+	 * 
+	 * @deprecated This method is replaced by the more general
+	 *             {@link Square#remove(TronObject)} method
 	 */
+	@Deprecated
 	public abstract void removePlayer();
 	
 	/**

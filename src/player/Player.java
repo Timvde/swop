@@ -1,12 +1,12 @@
 package player;
 
+import grid.ASquare;
+import grid.AffectedByPowerFailure;
 import grid.Coordinate;
 import grid.Direction;
 import grid.IGrid;
-import grid.square.ASquare;
-import grid.square.AffectedByPowerFailure;
-import grid.square.Square;
-import grid.square.TronObject;
+import grid.Square;
+import grid.TronObject;
 import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
@@ -24,7 +24,7 @@ import notnullcheckweaver.NotNull;
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
-public class Player extends TronObject implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
+public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
 	
 	/**
 	 * The maximum number of actions a Player is allowed to do in one turn.

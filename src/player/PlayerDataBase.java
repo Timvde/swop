@@ -2,7 +2,7 @@ package player;
 
 import grid.Coordinate;
 import grid.Grid;
-import grid.square.Square;
+import grid.Square;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
