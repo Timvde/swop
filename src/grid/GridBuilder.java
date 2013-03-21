@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -109,8 +110,7 @@ public class GridBuilder {
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
-				Square sq = new Square();
-				grid.put(new Coordinate(i, j), sq);
+				grid.put(new Coordinate(i, j), getSquare(i, j));
 			}
 		
 		// place walls on the grid

@@ -17,7 +17,7 @@ import player.Player;
 public class Square extends ASquare {
 	
 	/** a map of the squares adjacent to this square */
-	private Map<Direction, Square>	neighbours;
+	private Map<Direction, ASquare>	neighbours;
 	/** the list of items in this square */
 	private List<IItem>				itemList;
 	/** the player on this square */
@@ -35,10 +35,10 @@ public class Square extends ASquare {
 	 * @param neighbours
 	 *        the squares adjacent to this square
 	 */
-	public Square(Map<Direction, Square> neighbours) {
+	public Square(Map<Direction, ASquare> neighbours) {
 		itemList = new ArrayList<IItem>();
 		lightTrail = false;
-		this.neighbours = new HashMap<Direction, Square>(neighbours);
+		this.neighbours = new HashMap<Direction, ASquare>(neighbours);
 	}
 	
 	/**
@@ -217,6 +217,7 @@ public class Square extends ASquare {
 		return effect.execute();
 	}
 	
+	@Deprecated
 	@Override
 	public void removePlayer() {
 		this.player = null;
@@ -248,11 +249,16 @@ public class Square extends ASquare {
 	 */
 	public boolean canBeAdded(TronObject object) {
 		// see issue#38
-		return false;
+		if (object instanceof IPlayer)
+			return canBeAdded((IPlayer) object);
+		else if (object instanceof IItem)
+			return canBeAdded((IItem) object);
+		else
+			return false;
 	}
 	
 	/**
-	 * Test whether a player can be added to this square
+	 * Test whether a {@link IPlayer player} can be added to this square
 	 * 
 	 * @param player
 	 *        the player that is to be added
@@ -260,6 +266,17 @@ public class Square extends ASquare {
 	 */
 	public boolean canBeAdded(IPlayer player) {
 		return this.player == null;
+	}
+	
+	/**
+	 * Test whether an {@link IItem item} can be added to this square
+	 * 
+	 * @param item
+	 *        the item that is to be added
+	 * @return true if the item can be added, else false
+	 */
+	public boolean canBeAdded(IItem item) {
+		return true;
 	}
 	
 	/**
@@ -285,11 +302,31 @@ public class Square extends ASquare {
 		effect.execute();
 		
 		// if the effect is executed the object can be added to the list
-		this.setObject(object);
+		this.addObject(object);
 	}
 	
-	private void setObject(TronObject object) {
-		// TODO
+	private void addObject(TronObject object) {
+		// see issue#38
+		if (object instanceof IPlayer)
+			addObject((IPlayer) object);
+		else if (object instanceof IItem)
+			addObject((IItem) object);
+		
+	}
+	
+	private void addObject(IPlayer player) {
+		this.player = player;
+	}
+	
+	/**
+	 * add a new item into the item list
+	 * 
+	 * @param item
+	 *        the item to be added
+	 *
+	 */
+	private void addObject(IItem item) {
+		itemList.add(item);
 	}
 	
 	/**
@@ -313,7 +350,7 @@ public class Square extends ASquare {
 	 *        the direction of the neighbor
 	 * @return the square in the direction
 	 */
-	public Square getNeighbour(Direction direction) {
+	public ASquare getNeighbour(Direction direction) {
 		return neighbours.get(direction);
 	}
 }
