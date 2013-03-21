@@ -1,5 +1,6 @@
 package player;
 
+import grid.ASquare;
 import grid.Coordinate;
 import grid.Direction;
 import grid.TronObject;
@@ -24,21 +25,21 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the ID associated with this player.
 	 */
-	public int getID(); // TODO gaan we dit nog gebruiken??
+	public int getID(); // TODO gaan we dit nog gebruiken?? ik denk het niet (bavo)
 	
 	/**
-	 * Returns the coordinate this player has to reach to win the game.
+	 * Returns the square this player has to reach to win the game.
 	 * 
-	 * @return the coordinate this player has to reach to win the game.
+	 * @return the square this player has to reach to win the game.
 	 */
-	public Coordinate getStartingPosition();
+	public ASquare getStartingPosition();
 	
 	/**
-	 * Returns the coordinate this player currently stands on.
+	 * Returns the square this player currently stands on.
 	 * 
-	 * @return the coordinate this player currently stands on.
+	 * @return the square this player currently stands on.
 	 */
-	public Coordinate getCurrentLocation();
+	public ASquare getCurrentLocation();
 	
 	/**
 	 * Returns the {@link Inventory}-content associated with this player.

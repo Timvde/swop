@@ -42,42 +42,34 @@ public class Square extends ASquare {
 	}
 	
 	/**
-	 * add an item to the square
+	 * Add a specified item to the square, the item will (if possible) be
+	 * affected by other items on the square.
 	 * 
 	 * @param item
 	 *        the item to add
-	 * @deprecated This method will be replaced with the
-	 *             {@link #placeOn(TronObject)} method. This provides more
-	 *             consistency and automatically adds an {@link Effect effect}
-	 *             if this is required.
 	 */
-	@Deprecated
 	public void addItem(IItem item) {
+		// test whether the item can be placed on the square
+		if (!canBeAdded(item))
+			throw new IllegalArgumentException("The item could not be placed on this square!");
+		// place the item on this square
 		itemList.add(item);
+		// execute an effect on the item
+		this.executeEffect(item);
 	}
 	
 	/**
-	 * Remove an item from the square
-	 * 
-	 * @param item
-	 *        The item to remove
-	 * @deprecated This method is replaced by the more general
-	 *             {@link #remove(TronObject)} method.
-	 */
-	@Deprecated
-	public void removeItem(IItem item) {
-		itemList.remove(item);
-	}
-	
-	/**
-	 * Removes an object from this square.
+	 * Removes an object from this square, if the item is not placed on this
+	 * square nothing will happen.
 	 * 
 	 * @param object
 	 *        the object to be removed
 	 */
-	public void remove(TronObject object) {
+	public void remove(Object object) {
+		// test if the player needs to be removed
 		if (player == object)
 			player = null;
+		// else remove player from the item list
 		else
 			itemList.remove(object);
 	}
@@ -88,6 +80,7 @@ public class Square extends ASquare {
 	 * 
 	 * @return whether or not it has a power failure.
 	 */
+	@Override
 	public boolean hasPowerFailure() {
 		return powerFailure != null;
 	}
@@ -99,7 +92,7 @@ public class Square extends ASquare {
 	 */
 	public List<IItem> getAllItems() {
 		// Encapsulation isn't required, as this is a private method.
-		// NOT ANYMORE IT'S NOT
+		// NOT ANYMORE, IT'S NOT
 		return new ArrayList<IItem>(itemList);
 	}
 	
@@ -118,22 +111,20 @@ public class Square extends ASquare {
 	}
 	
 	/**
-	 * This method sets the haslightTrail for this square.
-	 * 
-	 * 
-	 * 
-	 * @note <b>Do NOT use this method.</b> The light trail is automatically
-	 *       updated by the light trail as the player moves around the grid.
+	 * This method sets the haslightTrail for this square. <br>
+	 * <br>
+	 * <b>Do NOT use this method.</b> The light trail is automatically updated
+	 * by the light trail as the player moves around the grid.
 	 */
 	public void placeLightTrail() {
 		lightTrail = true;
 	}
 	
 	/**
-	 * Remove the light trail from this square.
-	 * 
-	 * @note <b>Do NOT use this method.</b> The light trail is automatically
-	 *       updated by the light trail as the player moves around the grid.
+	 * Remove the light trail from this square. <br>
+	 * <br>
+	 * <b>Do NOT use this method.</b> The light trail is automatically updated
+	 * by the light trail as the player moves around the grid.
 	 */
 	public void removeLightTrail() {
 		lightTrail = false;
@@ -151,11 +142,13 @@ public class Square extends ASquare {
 	}
 	
 	@Override
-	public boolean contains(IItem item) {
-		for (IItem itemOnSquare : this.getAllItems())
-			if (item.equals(itemOnSquare))
-				return true;
-		return false;
+	public boolean contains(Object object) {
+		if (object == null)
+			return false;
+		else if (object.equals(player))
+			return true;
+		else 
+			return itemList.contains(object);
 	}
 	
 	/**
@@ -178,49 +171,15 @@ public class Square extends ASquare {
 		return player != null;
 	}
 	
-	/**
-	 * Move an IPlayer on this square. This might cause a penalty to the player,
-	 * depending on the square's current power state and the items it contains.
-	 * 
-	 * @throws IllegalStateException
-	 * @return True if the move of the player has caused him to end his turn.
-	 * @deprecated This method is replaced by the more general and more
-	 *             consistent {@link #placeOn(TronObject)} method.
-	 */
-	@Deprecated
-	public boolean setPlayer(IPlayer player) throws IllegalStateException {
-		if (player == null)
-			throw new IllegalArgumentException();
-		this.player = player;
-		return penalty(player);
-	}
-	
-	/**
-	 * This method will set up an Effect object with the right parameters and
-	 * execute it.
-	 * 
-	 * @param player
-	 *        The Player which will feel the consequences.
-	 * @return True when the penalty has caused the player to end his turn.
-	 * @deprecated The method will be replaced by a system that will
-	 *             automatically add a penalty to each object that is placed on
-	 *             this square.
-	 */
-	@Deprecated
-	private boolean penalty(IPlayer player) throws IllegalStateException {
-		Effect effect = new Effect(player);
-		
-		effect.addPowerFailure(powerFailure);
-		for (IItem item : getAllItems())
-			item.addToEffect(effect);
-		
-		return effect.execute();
-	}
-	
-	@Deprecated
 	@Override
-	public void removePlayer() {
-		this.player = null;
+	public void addPlayer(IPlayer player) {
+		// test whether the player can be added 
+		if (!canBeAdded(player))
+			throw new IllegalArgumentException("the player cannot be added to this square!");
+		// set the player to this square 
+		this.player = player;
+		// add the effect to the player
+		this.executeEffect(player);
 	}
 	
 	@Override
@@ -241,31 +200,18 @@ public class Square extends ASquare {
 	}
 	
 	/**
-	 * Test whether an {@link TronObject object} can be added to this square.
-	 * 
-	 * @param object
-	 *        the object that is to be added
-	 * @return true if the object can be added, else false
-	 */
-	public boolean canBeAdded(TronObject object) {
-		// see issue#38
-		if (object instanceof IPlayer)
-			return canBeAdded((IPlayer) object);
-		else if (object instanceof IItem)
-			return canBeAdded((IItem) object);
-		else
-			return false;
-	}
-	
-	/**
-	 * Test whether a {@link IPlayer player} can be added to this square
+	 * Test whether a {@link IPlayer player} can be added to this square. A
+	 * player can be added, if there is no other player placed on this square.
+	 * More formally this method will return <code>true</code> if and only if<br>
+	 * <code>this.hasPlayer() == false</code>.
 	 * 
 	 * @param player
 	 *        the player that is to be added
 	 * @return true if the player can be added, else false
 	 */
 	public boolean canBeAdded(IPlayer player) {
-		return this.player == null;
+		// check if there is an other player
+		return this.player == null && player != null;
 	}
 	
 	/**
@@ -276,70 +222,30 @@ public class Square extends ASquare {
 	 * @return true if the item can be added, else false
 	 */
 	public boolean canBeAdded(IItem item) {
-		return true;
+		return true; // TODO are there any preconditions?
 	}
 	
 	/**
-	 * Place an new object on the square. This method will calculate the
-	 * {@link Effect} on the specified object and add that effect to the object.
+	 * Executes a new effect to a {@link TronObject}
 	 * 
 	 * @param object
 	 *        the object to be placed on this square
 	 */
-	public void placeOn(TronObject object) {
-		// test if the object can be added to the square
-		if (!canBeAdded(object))
-			throw new IllegalArgumentException("item could not be placed on this square");
+	private void executeEffect(TronObject object) {
+		
 		// create a new effect
 		Effect effect = new Effect(object);
-		// let this square add to the effect
-		this.addToEffect(effect);
+		
 		// let the items on this square add to the effect
-		for (IItem item : itemList) {
+		for (IItem item : itemList)
 			item.addToEffect(effect);
-		}
+		
+		// if the square has a power failure, add it to the effect
+		if (this.hasPowerFailure())
+			effect.addPowerFailure(powerFailure);
+		
 		// execute the effect
 		effect.execute();
-		
-		// if the effect is executed the object can be added to the list
-		this.addObject(object);
-	}
-	
-	private void addObject(TronObject object) {
-		// see issue#38
-		if (object instanceof IPlayer)
-			addObject((IPlayer) object);
-		else if (object instanceof IItem)
-			addObject((IItem) object);
-		
-	}
-	
-	private void addObject(IPlayer player) {
-		this.player = player;
-	}
-	
-	/**
-	 * add a new item into the item list
-	 * 
-	 * @param item
-	 *        the item to be added
-	 *
-	 */
-	private void addObject(IItem item) {
-		itemList.add(item);
-	}
-	
-	/**
-	 * Add a {@link PowerFailure} to the effect if this square has a power
-	 * failure and the {@link Effect#getObject() object} can suffer from a power
-	 * failure.
-	 * 
-	 * @param effect
-	 *        the effect where the power failure needs to be added
-	 */
-	public void addToEffect(Effect effect) {
-		if (this.hasPowerFailure() && null != effect.getObject().asAffectedByPowerFailure())
-			effect.addPowerFailure(getPowerFailure());
 	}
 	
 	/**
@@ -352,5 +258,10 @@ public class Square extends ASquare {
 	 */
 	public ASquare getNeighbour(Direction direction) {
 		return neighbours.get(direction);
+	}
+
+	@Override
+	public void removePlayer() {
+		this.player = null;
 	}
 }

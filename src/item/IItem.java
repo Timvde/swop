@@ -42,4 +42,12 @@ public interface IItem extends TronObject {
 	 *        The Effect which will be used to calculate the penalty
 	 */
 	public void addToEffect(Effect effect);
+	
+	/**
+	 * Executes the functions of the item on a specified object.
+	 * 
+	 * @param object
+	 *        the object that is influenced by this item
+	 */
+	public void execute(TronObject object);
 }

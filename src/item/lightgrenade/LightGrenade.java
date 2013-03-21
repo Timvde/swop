@@ -5,6 +5,7 @@ import item.IItem;
 import item.Item;
 import grid.ASquare;
 import grid.Square;
+import grid.TronObject;
 import grid.WallPart;
 import com.sun.istack.internal.NotNull;
 
@@ -26,6 +27,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	
 	@NotNull
 	private LightGrenadeState	state;
+	private int 				damage;
 	
 	/**
 	 * create a new light grenade, the state of this light grenade will be
@@ -33,6 +35,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	 */
 	public LightGrenade() {
 		state = LightGrenadeState.INACTIVE;
+		damage = 3;
 	}
 	
 	@Override
@@ -57,7 +60,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	}
 	
 	@Override
-	public void explode() throws IllegalStateException {
+	public void execute(TronObject object) throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'exploded'");
@@ -94,8 +97,17 @@ public class LightGrenade extends Item implements ILightGrenade {
 	public void addToEffect(Effect effect) {
 		if (this.getState() == LightGrenadeState.ACTIVE) {
 			this.state = LightGrenadeState.EXPLODED;
-			effect.addLightGrenade();
+			effect.addItem(this);
 		}
+	}
+	
+	/**
+	 * Increase the strength of a light grenade for when it explodes. By default, when a light grenade explode it will
+	 * decrease the number of actions left by {@link Explodable} objects by three. This method will increase the strength of 
+	 * a light grenade to four.   
+	 */
+	public void increaseStrength() {
+		damage = 4;	
 	}
 	
 	/************************* LigthGrenadeEnum *************************/

@@ -1,5 +1,6 @@
 package player;
 
+import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import grid.Square;
@@ -170,7 +171,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		
 		// If the player is on a square with a power failure, it can do one
 		// action less.
-		if (grid.getSquareAt(getCurrentPlayer().getCurrentLocation()).hasPowerFailure())
+		if (getCurrentPlayer().getCurrentLocation().hasPowerFailure())
 			getCurrentPlayer().skipNumberOfActions(1);
 	}
 	
@@ -197,7 +198,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * 
 	 * @return
 	 */
-	private Coordinate getFinishOfCurrentPlayer() {
+	private ASquare getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();
 	}
 }

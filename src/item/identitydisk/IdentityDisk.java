@@ -1,8 +1,11 @@
-package item;
+package item.identitydisk;
 
+import item.Item;
 import item.teleporter.Teleportable;
 import grid.ASquare;
 import grid.AffectedByPowerFailure;
+import grid.Square;
+import grid.TronObject;
 
 /**
  * Identity disk can be launched by players on the grid. The disk will then
@@ -19,6 +22,7 @@ import grid.AffectedByPowerFailure;
 public class IdentityDisk extends Item implements Teleportable, AffectedByPowerFailure {
 	
 	private int range;
+	private Square currentSquare;
 	
 	/**
 	 * create a new identity disk
@@ -29,8 +33,13 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	
 	@Override
 	public void use(ASquare square) {
-		// TODO Auto-generated method stub
+		// set the location of the current square
+		currentSquare = (Square) square;
 		
+		// move the disk as long as it can ... 
+		while (range > 0) {
+			//TODO 
+		}
 	}
 	
 	@Override
@@ -40,8 +49,12 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	
 	@Override
 	public void teleportTo(ASquare destination) {
-		// TODO Auto-generated method stub
-		
+		// remove the disk from the current square
+		currentSquare.remove(this);
+		// set the destination to the current square
+		currentSquare = (Square) destination;
+		// add the disk to a new square 
+		currentSquare.addItem(this);
 	}
 	
 	@Override
@@ -68,6 +81,11 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	@Override
 	public void damageByPowerFailure() {
 		range--;
+	}
+
+	@Override
+	public void execute(TronObject object) {
+		// the object does nothing when an object/player steps on an identity disk
 	}
 	
 }

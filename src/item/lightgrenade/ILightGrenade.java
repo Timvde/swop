@@ -1,5 +1,6 @@
 package item.lightgrenade;
 
+import grid.TronObject;
 import item.IItem;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
 
@@ -47,14 +48,15 @@ public interface ILightGrenade extends IItem {
 	public void enable() throws IllegalStateException;
 
 	/**
-	 * This method sets the state of the grenade to {@link LightGrenadeState}
-	 * .EXPLODED
+	 * Let the light grenade explode. This will set the internal state of the light grenade to 
+	 * exploded. If the specified element can be affected by an {@link Explodable explosion}, the 
+	 * object will suffer from this explosion. 
 	 * 
 	 * @throws IllegalStateException
 	 *             The transition to the EXPLODED state must be valid from the
 	 *             current state:
 	 *             <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
 	 */
-	public void explode() throws IllegalStateException;
+	public void execute(TronObject object) throws IllegalStateException;
 
 }

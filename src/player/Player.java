@@ -24,7 +24,8 @@ import notnullcheckweaver.NotNull;
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
-public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
+public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
+		Explodable {
 	
 	/**
 	 * The maximum number of actions a Player is allowed to do in one turn.
@@ -36,15 +37,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
-	@NotNull
-	private final Coordinate		startingCoord;
-	@NotNull
-	private Coordinate				currentCoord;
-	
-	@NotNull
+	private final Square			startSquare;
+	private Square					currentSquare;
 	private Inventory				inventory;
 	private LightTrail				lightTrail;
-	@NotNull
 	private IGrid					grid;
 	
 	/*
@@ -61,7 +57,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
 	 * starting position of the player.
 	 * 
-	 * @param startCoordinate
+	 * @param startSquare
 	 *        The starting position of the player
 	 * @param grid
 	 *        The grid the player will move on
@@ -70,22 +66,22 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * @throws IllegalStateException
 	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(@NotNull Coordinate startCoordinate, @NotNull IGrid grid)
+	public Player(Square startSquare, IGrid grid)
 			throws IllegalArgumentException, IllegalStateException {
-		if (startCoordinate == null || grid == null) {
+		if (startSquare == null || grid == null) {
 			throw new IllegalArgumentException("The given arguments cannot be null");
 		}
-		if (grid.getSquareAt(startCoordinate) == null) {
-			throw new IllegalStateException("The given coordinate must exist on the given grid");
-		}
+//		if (grid.getSquareAt(startSquare) == null) {
+//			throw new IllegalStateException("The given coordinate must exist on the given grid");
+//		}
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		this.startingCoord = startCoordinate;
-		this.currentCoord = startCoordinate;
+		this.startSquare = startSquare;
+		this.currentSquare = startSquare;
 		this.grid = grid;
 	}
 	
@@ -99,13 +95,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public Coordinate getStartingPosition() {
-		return this.startingCoord;
+	public ASquare getStartingPosition() {
+		return this.startSquare;
 	}
 	
 	@Override
-	public Coordinate getCurrentLocation() {
-		return this.currentCoord;
+	public ASquare getCurrentLocation() {
+		return this.currentSquare;
 	}
 	
 	@Override
@@ -124,6 +120,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * related fields.
 	 */
 	private void increaseAllowedNumberOfActions() {
+		// increase the number of actions left by the number of actions per turn
+		// this cannot be more then the max number of actions
 		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
 				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
 	}
@@ -234,22 +232,26 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// remove this player form his current square
-		Square oldSquare = ((Square) this.grid.getSquareAt(this.currentCoord));
-		oldSquare.removePlayer();
+		currentSquare.removePlayer();
 		
 		// set new position
-		this.currentCoord = this.currentCoord.getCoordinateInDirection(direction);
-		Square newSquare = (Square) getGrid().getSquareAt(this.currentCoord);
+		// FIXME see issue#39
+		Square newSquare = (Square) currentSquare.getNeighbour(direction);
 		
-		// This should happen before the player is set on the next square,
-		// because then the effects will be calculated.
+		// the player is moving 
 		this.setHasMoved();
-		boolean endTurn = newSquare.setPlayer(this);
-		if (!endTurn)
-			this.decreaseAllowedNumberOfActions();
 		
-		// FIXME hasLightTrail() van square... (i'm trying, hold on ... )
-		this.lightTrail.updateLightTrail(oldSquare);
+		// add the player to the new square
+		newSquare.addPlayer(this);
+		
+		// update the light trail of this player 
+		this.lightTrail.updateLightTrail(currentSquare);
+		
+		// set the new square of the player
+		currentSquare = newSquare;
+		
+		// end the players action ... 
+		decreaseAllowedNumberOfActions();
 	}
 	
 	@Override
@@ -264,12 +266,11 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		Square currentSquare = (Square) getGrid().getSquareAt(currentCoord);
 		if (item == null || !currentSquare.contains(item))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
 		// remove the item from the square
-		currentSquare.removeItem(item);
+		currentSquare.remove(item);
 		
 		try {
 			// add the item to the inventory
@@ -281,7 +282,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			throw e;
 		}
 		
-		// reduce the actions left
+		// end the players action ... 
 		decreaseAllowedNumberOfActions();
 		this.lightTrail.updateLightTrail();
 	}
@@ -291,16 +292,21 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
-		ASquare currentSquare = this.grid.getSquareAt(currentCoord);
+		
+		// remove the item from the inventory
 		inventory.removeItem(i);
+		
+		// try and use the item 
 		try {
 			i.use(currentSquare);
-		} catch (IllegalStateException e) {
+		}
+		catch (IllegalStateException e) {
 			// re-add the item to the inventory and re-throw the exception
 			inventory.addItem(i);
 			throw e;
 		}
 		
+		// end the players action ... 
 		this.decreaseAllowedNumberOfActions();
 		lightTrail.updateLightTrail();
 	}
@@ -325,24 +331,26 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * Resets the uniqe Id counter. The next newly created player will have an
-	 * ID of 0. This method should be caleed form the PlayerDb when ir re-fills
+	 * Resets the unique Id counter. The next newly created player will have an
+	 * ID of 0. This method should be called form the PlayerDb when it re-fills
 	 * the database (package access).
 	 */
 	static void resetUniqueIdcounter() {
 		nextID = new AtomicInteger();
 	}
-
+	
 	@Override
 	public Teleportable asTeleportable() {
 		return this;
 	}
-
+	
 	@Override
 	public void teleportTo(ASquare destination) {
-		//TODO
+		currentSquare.remove(this);
+		currentSquare = (Square) destination;
+		destination.addPlayer(this);
 	}
-
+	
 	/**
 	 * Ends the turn of this player
 	 */
@@ -350,12 +358,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	public void damageByPowerFailure() {
 		this.endTurn();
 	}
-
+	
 	@Override
 	public Explodable asExplodable() {
 		return this;
 	}
-
+	
 	@Override
 	public AffectedByPowerFailure asAffectedByPowerFailure() {
 		return this;

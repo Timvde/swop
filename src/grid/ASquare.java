@@ -50,42 +50,35 @@ public abstract class ASquare {
 	public abstract IItem pickupItem(int ID) throws IllegalArgumentException;
 	
 	/**
-	 * Returns whether or not this square holds the item.
+	 * Returns whether or not this square holds the specified object.
 	 * 
-	 * @param item
-	 *        the queried Item
-	 * @return whether or not this square holds the item.
+	 * @param object
+	 *        the object to be tested
+	 * @return true if the square holds the object, else false
 	 */
-	public abstract boolean contains(IItem item);
+	public abstract boolean contains(Object object);
 	
 	/**
-	 * Returns whether or not this ASquare holds currently a {@link Player}
+	 * Returns whether or not this ASquare holds currently a {@link Player player}
 	 * 
 	 * @return Whether this square has a Player.
 	 */
 	public abstract boolean hasPlayer();
 	
 	/**
-	 * set a specified player on this square. This method returns whether the
-	 * turn of the player has been ended by an effect of the square or items on
-	 * that square
+	 * Add a specified player to this square. This method will automatically adds the effects of 
+	 * the items on this square to the player. 
 	 * 
 	 * @param p
-	 *        the new player
-	 * @return whether the turn has been ended.
-	 * @throws IllegalStateException
+	 *        the player who wants to be placed on this square
 	 */
-	public abstract boolean setPlayer(IPlayer p);
+	public abstract void addPlayer(IPlayer p);
 	
 	/**
 	 * This method removes a player from a square. This method is enforced:
 	 * setPlayer(null) will throw. This is for both readability's sake and to
 	 * prevent errors.
-	 * 
-	 * @deprecated This method is replaced by the more general
-	 *             {@link Square#remove(TronObject)} method
 	 */
-	@Deprecated
 	public abstract void removePlayer();
 	
 	/**

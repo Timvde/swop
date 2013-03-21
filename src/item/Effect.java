@@ -1,8 +1,11 @@
 package item;
 
-import grid.ASquare;
 import grid.PowerFailure;
 import grid.TronObject;
+import item.lightgrenade.LightGrenade;
+import item.teleporter.Teleporter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class to calculate the consequences of a {@link TronObject} entering a
@@ -11,10 +14,9 @@ import grid.TronObject;
  */
 public class Effect {
 	
-	private TronObject	object;
-	private boolean		hasLightGrenade;
-	private boolean		hasPowerFailure;
-	private ASquare		destination;
+	private TronObject		object;
+	private List<Item>		items;
+	private PowerFailure	powerFailure;
 	
 	/**
 	 * Initializing the Effect.
@@ -24,8 +26,7 @@ public class Effect {
 	 */
 	public Effect(TronObject object) {
 		this.object = object;
-		this.hasLightGrenade = false;
-		this.hasPowerFailure = false;
+		items = new ArrayList<Item>();
 	}
 	
 	/**
@@ -38,31 +39,27 @@ public class Effect {
 	}
 	
 	/**
-	 * Tell the Effect to take a light grenade into calculation.
-	 */
-	public void addLightGrenade() {
-		this.hasLightGrenade = true;
-	}
-	
-	/**
 	 * Tell the Effect to take the specified power failure into calculation.
 	 * 
 	 * @param powerFailure
 	 *        the power failure to be added
 	 */
 	public void addPowerFailure(PowerFailure powerFailure) {
-		if (powerFailure != null)
-			this.hasPowerFailure = true;
+		if (powerFailure == null)
+			throw new IllegalArgumentException("power failure cannot be null!");
+		this.powerFailure = powerFailure;
 	}
 	
 	/**
-	 * Tell the Effect to take the teleporter into calculation.
+	 * Tell the Effect to take the specified item into calculation.
 	 * 
-	 * @param destination
-	 *        the destination of the teleporter
+	 * @param item
+	 *        the item that has an effect on the object
 	 */
-	public void addTeleportTo(ASquare destination) {
-		this.destination = destination;
+	public void addItem(Item item) {
+		if (item == null) 
+			throw new IllegalArgumentException("teleporter cannot be null!");
+		items.add(item);
 	}
 	
 	/**
@@ -71,23 +68,14 @@ public class Effect {
 	 * @return True when the effect has ended the player's turn.
 	 * @throws IllegalStateException
 	 */
-	public boolean execute() throws IllegalStateException {
-		// teleport the object to the specified destination
-		if (destination != null && getObject().asTeleportable() != null) {
-			getObject().asTeleportable().teleportTo(destination);
-		}
-		
-		if (!hasLightGrenade) {
-			if (hasPowerFailure) {
-				getObject().asAffectedByPowerFailure().damageByPowerFailure();
-				return true;
-			}
-		}
-		else {
-			// The square the player stepped on has a light grenade and should
-			// always cause a decrease of at least three actions at this point.
-			getObject().asExplodable().skipNumberOfActions(3 + (hasPowerFailure ? 1 : 0));
-		}
-		return false;
+	public void execute() throws IllegalStateException {
+		// first, check if the power failure increases any effects that are present
+		for (Item item : items) 
+			powerFailure.modify(item);
+		// then, execute the effects of each item in the list
+		for (Item item : items)
+			item.execute(object);
+		// lastly, let the powerfailure influence the object
+		powerFailure.execute(object);
 	}
 }

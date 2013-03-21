@@ -2,6 +2,7 @@ package item.teleporter;
 
 import item.Item;
 import grid.ASquare;
+import grid.TronObject;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -39,6 +40,18 @@ public class Teleporter extends Item {
 	@Override
 	public String toString() {
 		return "Teleporter." + getId();
+	}
+	
+	/**
+	 * Teleport the specified object to the destination square. If the object
+	 * cannot be {@link Teleportable teleported}, nothing will happen. 
+	 * 
+	 * @param object
+	 *        the object that will be teleported
+	 */
+	public void execute(TronObject object) {
+		if (null != object.asTeleportable())
+			object.asTeleportable().teleportTo(destination);
 	}
 	
 }
