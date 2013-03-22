@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 import lightgrenade.LightGrenade;
 import lightgrenade.LightGrenade.LightGrenadeState;
 import grid.Coordinate;
-import grid.Square;
-import grid.Wall;
 import org.junit.Before;
 import org.junit.Test;
+import square.Square;
+import square.Wall;
 
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {

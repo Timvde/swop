@@ -1,11 +1,10 @@
 package player;
 
-import grid.ASquare;
 import grid.Coordinate;
-import grid.Square;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import square.ASquare;
 
 /**
  * LightTrail is an impenetrable wall (for other players) which trails the
@@ -19,7 +18,7 @@ import java.util.List;
 public class LightTrail {
 	
 	/** the lightTrail of the player */
-	private LinkedList<Square>	lightTrail;
+	private LinkedList<ASquare>	lightTrail;
 	
 	/** the maximum length of this light trail */
 	private static final int	MAXIMUM_LENGTH	= 3;
@@ -29,7 +28,7 @@ public class LightTrail {
 	 * lightTrail will be zero.
 	 */
 	public LightTrail() {
-		lightTrail = new LinkedList<Square>();
+		lightTrail = new LinkedList<ASquare>();
 	}
 	
 	/**
@@ -42,19 +41,19 @@ public class LightTrail {
 	 * This method should be called whenever the player makes a move action on
 	 * the board.
 	 * 
-	 * @param square
+	 * @param currentSquare
 	 *        the new square which the light trail should cover
 	 * @throws IllegalArgumentException
 	 *         if the specified coordinate is not a
-	 *         {@link #isValidNewSquare(Square) valid} new coordinate for this
+	 *         {@link #isValidNewSquare(ASquare) valid} new coordinate for this
 	 *         lightTrail
 	 */
-	public void updateLightTrail(Square square) throws IllegalArgumentException {
-		if (!isValidNewSquare(square))
+	public void updateLightTrail(ASquare currentSquare) throws IllegalArgumentException {
+		if (!isValidNewSquare(currentSquare))
 			throw new IllegalArgumentException(
 					"the specified square could not be added to the lightTrail!");
-		lightTrail.addFirst(square);
-		square.placeLightTrail();
+		lightTrail.addFirst(currentSquare);
+		currentSquare.placeLightTrail();
 		
 		if (lightTrail.size() > MAXIMUM_LENGTH)
 			lightTrail.removeLast().removeLightTrail();
@@ -67,20 +66,20 @@ public class LightTrail {
 	 * {@link Coordinate#isNeighbour(Coordinate) neighbor} of the first
 	 * coordinate of this lightTrail.
 	 * 
-	 * @param square
+	 * @param currentSquare
 	 *        the square to test
 	 * @return whether the new coordinate can be set as a new part of the
 	 *         lightTrail
 	 */
-	public boolean isValidNewSquare(Square square) {
+	public boolean isValidNewSquare(ASquare currentSquare) {
 		// null cannot be added to the list
-		if (square == null)
+		if (currentSquare == null)
 			return false;
 		// if the lightTrail is empty, any coordinate is valid
 		if (lightTrail.isEmpty())
 			return true;
 		// test whether the lightTrail already contains the coordinate
-		else if (lightTrail.contains(square))
+		else if (lightTrail.contains(currentSquare))
 			return false;
 		else
 			return true;

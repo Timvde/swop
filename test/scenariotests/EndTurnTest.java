@@ -3,12 +3,12 @@ package scenariotests;
 import static org.junit.Assert.*;
 import game.Game;
 import grid.Coordinate;
-import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
 import org.junit.Test;
 import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
+import square.Direction;
 import controllers.EndTurnController;
 import controllers.MoveController;
 

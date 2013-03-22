@@ -1,12 +1,12 @@
 package item.lightgrenade;
 
+import square.ISquare;
+import square.Square;
+import square.TronObject;
+import square.WallPart;
 import item.Effect;
 import item.IItem;
 import item.Item;
-import grid.ASquare;
-import grid.Square;
-import grid.TronObject;
-import grid.WallPart;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -17,11 +17,10 @@ import com.sun.istack.internal.NotNull;
  * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
  * then gets used by a player the internal state of this item will be changed to
  * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode
- * whenever the {@link #explode()} method is called. After exploding the light
+ * whenever the {@link #execute()} method is called. After exploding the light
  * grenade converts to it's last state {@link LightGrenadeState#EXPLODED
  * EXPLODED}, this will convert the item to a immutable object.
  * 
- * @author Bavo Mees
  */
 public class LightGrenade extends Item implements ILightGrenade {
 	
@@ -65,6 +64,8 @@ public class LightGrenade extends Item implements ILightGrenade {
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'exploded'");
 		this.state = LightGrenadeState.EXPLODED;
+		
+		object.asExplodable().skipNumberOfActions(damage);
 	}
 	
 	@Override
@@ -78,7 +79,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	}
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(ISquare square) {
 		if (square instanceof WallPart)
 			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
 		
@@ -96,7 +97,6 @@ public class LightGrenade extends Item implements ILightGrenade {
 	@Override
 	public void addToEffect(Effect effect) {
 		if (this.getState() == LightGrenadeState.ACTIVE) {
-			this.state = LightGrenadeState.EXPLODED;
 			effect.addItem(this);
 		}
 	}
@@ -107,7 +107,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	 * a light grenade to four.   
 	 */
 	public void increaseStrength() {
-		damage = 4;	
+		damage = 4;
 	}
 	
 	/************************* LigthGrenadeEnum *************************/
@@ -128,18 +128,6 @@ public class LightGrenade extends Item implements ILightGrenade {
 				return (toState == this) || (toState == ACTIVE);
 			}
 		},
-		// /**
-		// * The grenade is dropped on a square by a player and will become
-		// active
-		// * once the player leaves the square
-		// */
-		// TRIGGERED {
-		//
-		// @Override
-		// public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-		// return (toState == this) || (toState == ACTIVE);
-		// }
-		// },
 		/**
 		 * the grenade is armed
 		 */

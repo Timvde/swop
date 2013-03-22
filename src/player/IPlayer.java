@@ -1,11 +1,12 @@
 package player;
 
-import grid.ASquare;
 import grid.Coordinate;
-import grid.Direction;
-import grid.TronObject;
 import item.IItem;
 import java.util.List;
+import square.ASquare;
+import square.Direction;
+import square.ISquare;
+import square.TronObject;
 import ObjectronExceptions.IllegalMoveException;
 
 /*
@@ -32,7 +33,7 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the square this player has to reach to win the game.
 	 */
-	public ASquare getStartingPosition();
+	public ISquare getStartingPosition();
 	
 	/**
 	 * Returns the square this player currently stands on.

@@ -1,8 +1,9 @@
-package grid;
+package square;
 
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import player.IPlayer;
 import player.Player;
 
@@ -11,7 +12,14 @@ import player.Player;
  */
 public class WallPart extends ASquare {
 	
-	WallPart() {}
+	/**
+	 * Create a new wall part 
+	 * @param neighbours
+	 * 	the neighbours of this square
+	 */
+	public WallPart(Map<Direction, ASquare> neighbours) {
+		super(neighbours);
+	}
 	
 	@Override
 	public List<IItem> getCarryableItems() {
@@ -33,22 +41,12 @@ public class WallPart extends ASquare {
 		throw new IllegalArgumentException("Walls do not contain items");
 	}
 	
-	@Override
-	public boolean contains(IItem item) {
-		return false;
-	}
-	
 	/**
 	 * Always returns false; A wall cannot hold a {@link Player}.
 	 */
 	@Override
 	public boolean hasPlayer() {
 		return false;
-	}
-	
-	@Override
-	public boolean setPlayer(IPlayer p) {
-		throw new IllegalStateException("Can not set a player on a wallpart!");
 	}
 	
 	@Override
@@ -70,5 +68,40 @@ public class WallPart extends ASquare {
 	@Override
 	void removePowerFailure(PowerFailure powerFailure) {
 		throw new IllegalStateException("A WallPart does not have any power failures.");
+	}
+
+	@Override
+	public boolean contains(Object object) {
+		return false;
+	}
+
+	@Override
+	public void addPlayer(IPlayer p) {
+		throw new IllegalArgumentException("Players cannot be added to a wall!");
+	}
+
+	@Override
+	public void placeLightTrail() {
+		throw new IllegalStateException("light trail cannot be placed on wallparts");
+	}
+
+	@Override
+	public void removeLightTrail() {
+		throw new IllegalStateException("light trail cannot be placed on wallparts");
+	}
+
+	@Override
+	public void addItem(IItem item) {
+		throw new IllegalStateException("items cannot be added to light trails");
+	}
+
+	@Override
+	public void remove(Object object) {
+		// there are no items on a wall part, so nothing is to be done
+	}
+
+	@Override
+	public List<IItem> getAllItems() {
+		return new ArrayList<IItem>();
 	}
 }

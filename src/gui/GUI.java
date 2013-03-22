@@ -1,21 +1,22 @@
 package gui;
 
-import grid.ASquare;
 import grid.Coordinate;
-import grid.Direction;
 import grid.Grid;
-import grid.WallPart;
 import item.IItem;
 import item.Item;
+import item.lightgrenade.LightGrenade;
+import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import lightgrenade.LightGrenade;
 import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
+import square.Direction;
+import square.ISquare;
+import square.WallPart;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -68,6 +69,7 @@ public class GUI implements Runnable {
 	private Image					playerBlueImage;
 	private Image					wallImage;
 	private Image					lightGrenadeImage;
+	private Image					teleporterImage;
 	private Image					lightTrailImage;
 	private Image					finishBlue;
 	private Image					finishRed;
@@ -168,11 +170,19 @@ public class GUI implements Runnable {
 						}
 					}
 					
+					// Draw the two finish squares:
+					Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
+					Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
+					graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
+							guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+					graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
+							guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+					
 					// Populate the grid squares with the correct images:
 					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
 					
 					for (Coordinate c : gridCoords) {
-						ASquare square = guiDataController.getSquareAt(c);
+						ISquare square = guiDataController.getSquareAt(c);
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
@@ -218,16 +228,6 @@ public class GUI implements Runnable {
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
-						// Draw the two finish squares:
-						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0,
-								gridHeight - 1));
-						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(
-								gridWidth - 1, 0));
-						graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-								guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
-								guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						
 						// Draw items if necessary
 						List<IItem> itemList = guiDataController.getItemList(c);
 						for (IItem i : itemList) {
@@ -235,8 +235,11 @@ public class GUI implements Runnable {
 								graphics.drawImage(lightGrenadeImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
+							if (i.getClass() == Teleporter.class) {
+								graphics.drawImage(teleporterImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
 						}
-						
 					}
 					
 					// Show the items in the list that the current player can
@@ -273,6 +276,7 @@ public class GUI implements Runnable {
 		this.playerBlueImage = gui.loadImage("player_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.wallImage = gui.loadImage("wall.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.teleporterImage = gui.loadImage("icon.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightTrailImage = gui.loadImage("cell_lighttrail.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);

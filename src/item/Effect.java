@@ -1,11 +1,9 @@
 package item;
 
-import grid.PowerFailure;
-import grid.TronObject;
-import item.lightgrenade.LightGrenade;
-import item.teleporter.Teleporter;
 import java.util.ArrayList;
 import java.util.List;
+import square.PowerFailure;
+import square.TronObject;
 
 /**
  * A class to calculate the consequences of a {@link TronObject} entering a
@@ -70,12 +68,14 @@ public class Effect {
 	 */
 	public void execute() throws IllegalStateException {
 		// first, check if the power failure increases any effects that are present
-		for (Item item : items) 
-			powerFailure.modify(item);
+		if (powerFailure != null)
+			for (Item item : items) 
+				powerFailure.modify(item);
 		// then, execute the effects of each item in the list
 		for (Item item : items)
 			item.execute(object);
 		// lastly, let the powerfailure influence the object
-		powerFailure.execute(object);
+		if (powerFailure != null)
+			powerFailure.execute(object);
 	}
 }

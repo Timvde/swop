@@ -1,6 +1,6 @@
 package item.lightgrenade;
 
-import grid.TronObject;
+import square.TronObject;
 import item.IItem;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
 

@@ -1,9 +1,8 @@
-package grid;
+package square;
 
 import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import player.IPlayer;
@@ -16,8 +15,6 @@ import player.Player;
  */
 public class Square extends ASquare {
 	
-	/** a map of the squares adjacent to this square */
-	private Map<Direction, ASquare>	neighbours;
 	/** the list of items in this square */
 	private List<IItem>				itemList;
 	/** the player on this square */
@@ -36,35 +33,23 @@ public class Square extends ASquare {
 	 *        the squares adjacent to this square
 	 */
 	public Square(Map<Direction, ASquare> neighbours) {
+		super(neighbours);
 		itemList = new ArrayList<IItem>();
 		lightTrail = false;
-		this.neighbours = new HashMap<Direction, ASquare>(neighbours);
 	}
 	
-	/**
-	 * Add a specified item to the square, the item will (if possible) be
-	 * affected by other items on the square.
-	 * 
-	 * @param item
-	 *        the item to add
-	 */
+	@Override
 	public void addItem(IItem item) {
 		// test whether the item can be placed on the square
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
-		// place the item on this square
-		itemList.add(item);
 		// execute an effect on the item
 		this.executeEffect(item);
+		// place the item on this square
+		itemList.add(item);
 	}
 	
-	/**
-	 * Removes an object from this square, if the item is not placed on this
-	 * square nothing will happen.
-	 * 
-	 * @param object
-	 *        the object to be removed
-	 */
+	@Override
 	public void remove(Object object) {
 		// test if the player needs to be removed
 		if (player == object)
@@ -74,12 +59,7 @@ public class Square extends ASquare {
 			itemList.remove(object);
 	}
 	
-	/**
-	 * This method will check if a Square has a power failure. This depends on
-	 * both the state of the Square itself, as on its neighbours.
-	 * 
-	 * @return whether or not it has a power failure.
-	 */
+
 	@Override
 	public boolean hasPowerFailure() {
 		return powerFailure != null;
@@ -110,22 +90,12 @@ public class Square extends ASquare {
 		return lightTrail;
 	}
 	
-	/**
-	 * This method sets the haslightTrail for this square. <br>
-	 * <br>
-	 * <b>Do NOT use this method.</b> The light trail is automatically updated
-	 * by the light trail as the player moves around the grid.
-	 */
+	@Override
 	public void placeLightTrail() {
 		lightTrail = true;
 	}
 	
-	/**
-	 * Remove the light trail from this square. <br>
-	 * <br>
-	 * <b>Do NOT use this method.</b> The light trail is automatically updated
-	 * by the light trail as the player moves around the grid.
-	 */
+	@Override
 	public void removeLightTrail() {
 		lightTrail = false;
 	}
@@ -187,8 +157,11 @@ public class Square extends ASquare {
 		if (this.powerFailure != null && this.powerFailure.equals(powerFailure))
 			this.powerFailure = null;
 	}
-	
-	PowerFailure getPowerFailure() {
+	/**
+	 * returns the power failure of this object
+	 * @return power failure 
+	 */
+	public PowerFailure getPowerFailure() {
 		return this.powerFailure;
 	}
 	
@@ -246,18 +219,6 @@ public class Square extends ASquare {
 		
 		// execute the effect
 		effect.execute();
-	}
-	
-	/**
-	 * Returns the square adjacent to this square in the specified direction or
-	 * null if the neighbour does not exist in the specified direction.
-	 * 
-	 * @param direction
-	 *        the direction of the neighbor
-	 * @return the square in the direction
-	 */
-	public ASquare getNeighbour(Direction direction) {
-		return neighbours.get(direction);
 	}
 
 	@Override

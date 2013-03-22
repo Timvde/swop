@@ -5,10 +5,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import lightgrenade.LightGrenade;
 import grid.Coordinate;
-import grid.Wall;
-import grid.WallPart;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import square.Wall;
+import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class WallTest {

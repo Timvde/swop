@@ -3,7 +3,6 @@ package item;
 import static org.junit.Assert.assertEquals;
 import lightgrenade.LightGrenade;
 import grid.Coordinate;
-import grid.Direction;
 import grid.Grid;
 import grid.GridBuilder;
 import item.Effect;
@@ -12,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import player.IPlayer;
 import player.Player;
+import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
 
 @SuppressWarnings("javadoc")

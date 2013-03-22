@@ -1,20 +1,18 @@
 package player;
 
-import grid.ASquare;
-import grid.AffectedByPowerFailure;
-import grid.Coordinate;
-import grid.Direction;
 import grid.IGrid;
-import grid.Square;
-import grid.TronObject;
 import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
+import square.ASquare;
+import square.AffectedByPowerFailure;
+import square.Direction;
+import square.ISquare;
+import square.Square;
 import ObjectronExceptions.IllegalMoveException;
-import notnullcheckweaver.NotNull;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
@@ -37,11 +35,10 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
-	private final Square			startSquare;
-	private Square					currentSquare;
+	private final ASquare			startSquare;
+	private ASquare					currentSquare;
 	private Inventory				inventory;
 	private LightTrail				lightTrail;
-	private IGrid					grid;
 	
 	/*
 	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
@@ -66,14 +63,15 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 * @throws IllegalStateException
 	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(Square startSquare, IGrid grid)
-			throws IllegalArgumentException, IllegalStateException {
+	public Player(Square startSquare, IGrid grid) throws IllegalArgumentException,
+			IllegalStateException {
 		if (startSquare == null || grid == null) {
 			throw new IllegalArgumentException("The given arguments cannot be null");
 		}
-//		if (grid.getSquareAt(startSquare) == null) {
-//			throw new IllegalStateException("The given coordinate must exist on the given grid");
-//		}
+		// if (grid.getSquareAt(startSquare) == null) {
+		// throw new
+		// IllegalStateException("The given coordinate must exist on the given grid");
+		// }
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
@@ -82,11 +80,6 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.startSquare = startSquare;
 		this.currentSquare = startSquare;
-		this.grid = grid;
-	}
-	
-	private IGrid getGrid() {
-		return grid;
 	}
 	
 	@Override
@@ -95,7 +88,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	}
 	
 	@Override
-	public ASquare getStartingPosition() {
+	public ISquare getStartingPosition() {
 		return this.startSquare;
 	}
 	
@@ -221,34 +214,30 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	@Override
 	public void moveInDirection(Direction direction) throws IllegalMoveException {
-		if (!isPreconditionMoveSatisfied()) {
+		if (!isPreconditionMoveSatisfied())
 			throw new IllegalMoveException("The move-preconditions are not satisfied.");
-		}
-		if (!isValidDirection(direction)) {
+		if (!isValidDirection(direction))
 			throw new IllegalMoveException("The specified direction is not valid.");
-		}
-		if (!getGrid().canMoveFromCoordInDirection(this.currentCoord, direction)) {
+		else if (!canMoveInDirection(direction))
 			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
-		}
 		
 		// remove this player form his current square
 		currentSquare.removePlayer();
 		
-		// set new position
-		// FIXME see issue#39
-		Square newSquare = (Square) currentSquare.getNeighbour(direction);
-		
+		// update the light trail of this player 
+		this.lightTrail.updateLightTrail(currentSquare);
+
 		// the player is moving 
 		this.setHasMoved();
 		
-		// add the player to the new square
-		newSquare.addPlayer(this);
-		
-		// update the light trail of this player 
-		this.lightTrail.updateLightTrail(currentSquare);
+		// set new position
+		ASquare newSquare = currentSquare.getNeighbour(direction);
 		
 		// set the new square of the player
 		currentSquare = newSquare;
+
+		// add the player to the new square
+		newSquare.addPlayer(this);
 		
 		// end the players action ... 
 		decreaseAllowedNumberOfActions();
@@ -262,6 +251,63 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	@Override
 	public boolean isPreconditionMoveSatisfied() {
 		return getAllowedNumberOfActions() > 0;
+	}
+	
+	/**
+	 * test whether the player can move in the specified direction.
+	 * 
+	 * @param direction
+	 *        the direction in which the player wants to move
+	 * @return whether the player can move in the specified direction
+	 */
+	public boolean canMoveInDirection(Direction direction) {
+		// test whether a square in the specified direction exists
+		if (currentSquare.getNeighbour(direction) == null)
+			return false;
+		// test if there is a player in the specified direction
+		else if (currentSquare.getNeighbour(direction).hasPlayer())
+			return false;
+		// test if the square in the specified direction has a light trail
+		else if (currentSquare.getNeighbour(direction).hasLightTrail())
+			return false;
+		// test if the player would cross a light trail by moving in the
+		// specified direction
+		else if (crossesLightTrail(direction))
+			return false;
+		// darn, we could not stop the player moving
+		// better luck next time
+		return true;
+	}
+	
+	/**
+	 * returns whether the player would cross a light trail if he moved in the
+	 * specified direction
+	 * 
+	 * @param direction
+	 *        the direction to test
+	 * @return true if the player crosses a light trail, else false
+	 */
+	private boolean crossesLightTrail(Direction direction) {
+		// test if we are moving sideways
+		if (direction.getPrimeryDirections().size() != 2)
+			return false;
+		
+		// test if the square has a neighbour in both directions 
+		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(0)) == null)
+			return false;
+		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)) == null)
+			return false;
+		
+		// test if both of the neighbours have a light trail
+		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(0))
+				.hasLightTrail())
+			return false;
+		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)).hasLightTrail())
+			return false;
+		
+		// it looks like the player crosses a light trail
+		// he will not get away with this ...  
+		return true;
 	}
 	
 	@Override
@@ -282,7 +328,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			throw e;
 		}
 		
-		// end the players action ... 
+		// end the players action ...
 		decreaseAllowedNumberOfActions();
 		this.lightTrail.updateLightTrail();
 	}
@@ -296,7 +342,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		// remove the item from the inventory
 		inventory.removeItem(i);
 		
-		// try and use the item 
+		// try and use the item
 		try {
 			i.use(currentSquare);
 		}
@@ -306,7 +352,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			throw e;
 		}
 		
-		// end the players action ... 
+		// end the players action ...
 		this.decreaseAllowedNumberOfActions();
 		lightTrail.updateLightTrail();
 	}

@@ -1,11 +1,12 @@
 package item.identitydisk;
 
+import square.ASquare;
+import square.AffectedByPowerFailure;
+import square.ISquare;
+import square.Square;
+import square.TronObject;
 import item.Item;
 import item.teleporter.Teleportable;
-import grid.ASquare;
-import grid.AffectedByPowerFailure;
-import grid.Square;
-import grid.TronObject;
 
 /**
  * Identity disk can be launched by players on the grid. The disk will then
@@ -32,7 +33,7 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	}
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(ISquare square) {
 		// set the location of the current square
 		currentSquare = (Square) square;
 		

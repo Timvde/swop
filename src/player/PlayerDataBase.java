@@ -1,12 +1,13 @@
 package player;
 
-import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
-import grid.Square;
+import item.lightgrenade.LightGrenade;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import square.ISquare;
+import square.Square;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -89,7 +90,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		Player.resetUniqueIdcounter();
 		this.playerList.clear();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player(playerStartingPositions[i], grid);
+			Player newPlayer = new Player((Square) grid.getSquareAt(playerStartingPositions[i]), grid);
 			this.playerList.add(newPlayer);
 			newPlayer.addObserver(this);
 		}
@@ -198,7 +199,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * 
 	 * @return
 	 */
-	private ASquare getFinishOfCurrentPlayer() {
+	private ISquare getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();
 	}
 }

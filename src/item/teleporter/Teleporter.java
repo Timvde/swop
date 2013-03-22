@@ -1,8 +1,10 @@
 package item.teleporter;
 
+import square.ASquare;
+import square.ISquare;
+import square.TronObject;
+import item.Effect;
 import item.Item;
-import grid.ASquare;
-import grid.TronObject;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -26,7 +28,7 @@ public class Teleporter extends Item {
 	}
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(ISquare square) {
 		throw new UnsupportedOperationException(
 				"A teleporter cannot be pickup and thus be placed on an item by a player !!");
 	}
@@ -52,6 +54,11 @@ public class Teleporter extends Item {
 	public void execute(TronObject object) {
 		if (null != object.asTeleportable())
 			object.asTeleportable().teleportTo(destination);
+	}
+
+	@Override
+	public void addToEffect(Effect effect) {
+		effect.addItem(this);
 	}
 	
 }

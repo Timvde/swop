@@ -1,13 +1,19 @@
 package grid;
 
-import grid.WallPart;
 import item.lightgrenade.LightGrenade;
+import item.teleporter.Teleporter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import square.ASquare;
+import square.Direction;
+import square.ISquare;
+import square.Square;
+import square.Wall;
+import square.WallPart;
 
 /**
  * A builder used for building the grid. This builder contains all the
@@ -17,7 +23,8 @@ import java.util.Random;
  */
 public class GridBuilder {
 	
-	private static final double	NUMBER_OF_ITEMS_ON_BOARD	= 0.05;
+	private static final double	NUMBER_OF_GRENADES	= 0.02;
+	private static final double NUMBER_OF_TELEPORTERS = 0.02;
 	private static final int	MINIMUM_WALL_SIZE			= 2;
 	
 	private double				maximalLengthOfWall;
@@ -110,7 +117,7 @@ public class GridBuilder {
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
-				grid.put(new Coordinate(i, j), getSquare(i, j));
+				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
 			}
 		
 		// place walls on the grid
@@ -126,6 +133,32 @@ public class GridBuilder {
 		return new Grid(grid);
 	}
 	
+	private Square getSquare(Coordinate coordinate) {
+		// initialize the neighbours
+		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		
+		// find the neighbours of the new square
+		for (Direction direction : Direction.values())
+			if (grid.containsKey(coordinate.getCoordinateInDirection(direction)))
+				neighbours.put(direction, grid.get(coordinate.getCoordinateInDirection(direction)));
+		
+		// return the new square with its neighbours
+		return new Square(neighbours);
+	}
+	
+	private WallPart getWallPart(Coordinate coordinate) {
+		// initialize the neighbours
+		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		
+		// find the neighbours of the new square
+		for (Direction direction : Direction.values())
+			if (grid.containsKey(coordinate.getCoordinateInDirection(direction)))
+				neighbours.put(direction, grid.get(coordinate.getCoordinateInDirection(direction)));
+		
+		// return the new square with its neighbours
+		return new WallPart(neighbours);
+	}
+	
 	/* -------------------- grid building methods ------------------------ */
 	
 	/**
@@ -135,7 +168,7 @@ public class GridBuilder {
 	 */
 	private int getNumberOfWallParts() {
 		int i = 0;
-		for (ASquare square : grid.values())
+		for (ISquare square : grid.values())
 			if (square.getClass() == WallPart.class)
 				i++;
 		return i;
@@ -182,7 +215,7 @@ public class GridBuilder {
 			throw new IllegalArgumentException("the wall cannot be placed on the board");
 		Wall wall = new Wall(start, end);
 		for (Coordinate coord : getWallPositions(start, end))
-			grid.put(coord, wall.getWallPart());
+			grid.put(coord, getWallPart(coord));
 		walls.add(wall);
 	}
 	
@@ -273,21 +306,41 @@ public class GridBuilder {
 	
 	/**
 	 * Place a random number of items on the board. The number of items will be
-	 * a rounded percentage ({@value #NUMBER_OF_ITEMS_ON_BOARD}) of the total
+	 * a rounded percentage ({@value #NUMBER_OF_GRENADES}) of the total
 	 * size of the board. The items will be placed on the board with the
 	 * following {@link #canPlaceItem(Coordinate) constraints}.
 	 */
 	private void placeItemsOnBoard() {
 		int numberOfLightGrenades = 0;
-		while (((double) numberOfLightGrenades) / grid.size() < NUMBER_OF_ITEMS_ON_BOARD) {
+		while (((double) numberOfLightGrenades) / grid.size() < NUMBER_OF_GRENADES) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
 				((Square) grid.get(position)).addItem(new LightGrenade());
 				numberOfLightGrenades++;
 			}
 		}
+		
+		int numberOfTeleporters = 0;
+		while (((double) numberOfTeleporters) / grid.size() < NUMBER_OF_TELEPORTERS) {
+			Coordinate position = Coordinate.random(width, height);
+			if (canPlaceItem(position)) {
+				((Square) grid.get(position)).addItem(new Teleporter(getTeleporterDestination()));
+				numberOfTeleporters++;
+				System.out.println("placing teleporter on " + position);
+			}
+		}
 	}
 	
+	private ASquare getTeleporterDestination() {
+		do {
+			Coordinate c = Coordinate.random(width, height);
+			if (grid.containsKey(c) && grid.get(c).getClass() == Square.class) {
+				System.out.println("with destination: " + c);
+				return grid.get(c);
+			}
+		} while (true);
+	}
+
 	/**
 	 * returns whether an item can be placed on the board. An item cannot be
 	 * placed on the board if the specified coordinate is a start position of
@@ -328,8 +381,7 @@ public class GridBuilder {
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
-				Square sq = new Square();
-				grid.put(new Coordinate(i, j), sq);
+				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
 			}
 		
 		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());

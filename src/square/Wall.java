@@ -1,4 +1,6 @@
-package grid;
+package square;
+
+import grid.Coordinate;
 
 /**
  * This class exists to enforce the wall restrictions as class invariants. - A
@@ -10,8 +12,6 @@ public class Wall {
 	
 	private Coordinate		start;
 	private Coordinate		end;
-	
-	private static WallPart	wallPart;
 	
 	/**
 	 * Construct a Wall with the given start and end coordinates
@@ -50,11 +50,11 @@ public class Wall {
 	 * The following methods are package private, since they can be accessed by
 	 * Grid, to create a predefined test grid.
 	 */
-	Coordinate getStart() {
+	public Coordinate getStart() {
 		return start;
 	}
 	
-	Coordinate getEnd() {
+	public Coordinate getEnd() {
 		return end;
 	}
 	
@@ -66,6 +66,7 @@ public class Wall {
 	 * @return True when they touch, false when they don't
 	 */
 	public boolean touchesWall(Wall wall) {
+		
 		/*
 		 * To do this easily, we "spoof" one off the walls to be longer and
 		 * thicker, and check whether they intersect.
@@ -86,17 +87,4 @@ public class Wall {
 		// Otherwise, they have overlap in both directions, and they'll touch
 		return true;
 	}
-	
-	/**
-	 * Returns a WallPart. As all WallParts are actually the same, this will be
-	 * a reference to the same object every time.
-	 * 
-	 * @return A WallPart
-	 */
-	public WallPart getWallPart() {
-		if (wallPart == null)
-			wallPart = new WallPart();
-		return wallPart;
-	}
-
 }

@@ -2,11 +2,18 @@ package grid;
 
 import item.IItem;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import square.ASquare;
+import square.Direction;
+import square.ISquare;
+import square.PowerFailure;
+import square.Square;
+import square.WallPart;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -54,12 +61,12 @@ public class Grid implements IGrid {
 	 * @return returns the grid
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
-		return grid; // FIXME clone ofzo?
+		return new HashMap<Coordinate, ASquare>(grid);
 	}
 	
 	@Override
 	public List<IItem> getItemList(Coordinate coordinate) {
-		return grid.get(coordinate).getCarryableItems();
+		return grid.get(coordinate).getAllItems();
 	}
 	
 	@Override
@@ -143,58 +150,10 @@ public class Grid implements IGrid {
 		Square toSquare = (Square) grid.get(toCoord);
 		if (toSquare.hasPlayer())
 			return false;
-		// players cannot move through light trails
-		if (this.crossesLightTrail(fromCoord, direction)) {
-			return false;
-		}
 		return true;
 	}
 	
-	/**
-	 * This method returns whether or not one crosses or ends in a lightTrail if
-	 * he moves one square from a specified coordinate in a specified direction.
-	 * 
-	 * @param fromCoord
-	 *        The coordinate one wants to leave.
-	 * 
-	 * @param direction
-	 *        he direction one wants to move in.
-	 * @return whether one crosses or ends in a lightTrail if he moves one
-	 *         square from a specified coordinate in a specified direction.
-	 */
-	private boolean crossesLightTrail(Coordinate fromCoord, Direction direction) {
-		// direction must exist and coordinates must exist on grid
-		if (fromCoord == null || direction == null
-				|| !grid.containsKey(fromCoord.getCoordinateInDirection(direction)))
-			return false;
-		
-		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
-		// the diagonal squares must exist both on the grid (the grid is always
-		// a square)
-		if (!grid.containsKey(direction.getCrossingCoordinateOnYAxis(toCoord))
-				|| !grid.containsKey(direction.getCrossingCoordinateOnYAxis(toCoord))) {
-			return false;
-		}
-		
-		// players cannot move on light trails
-		if (grid.get(toCoord).hasLightTrail()) {
-			return true;
-		}
-		
-		ASquare diagSquare1 = grid.get(direction.getCrossingCoordinateOnXAxis(toCoord));
-		ASquare diagSquare2 = grid.get(direction.getCrossingCoordinateOnYAxis(toCoord));
-		
-		if (diagSquare1.equals(diagSquare2)) {
-			return false;
-		}
-		
-		// players cannot cross light trails diagonally
-		if ((diagSquare1.hasLightTrail() || diagSquare1.hasPlayer())
-				&& (diagSquare2.hasLightTrail() || diagSquare2.hasPlayer())) {
-			return true;
-		}
-		return false;
-	}
+	
 	
 	/**
 	 * This method updates all power failure related things.
@@ -238,7 +197,7 @@ public class Grid implements IGrid {
 	
 	private Set<PowerFailure> getAllPowerFailures() {
 		Set<PowerFailure> failures = new HashSet<PowerFailure>();
-		for (ASquare square : getGrid().values()) {
+		for (ISquare square : getGrid().values()) {
 			if (square.hasPowerFailure())
 				failures.add(((Square) square).getPowerFailure());
 		}

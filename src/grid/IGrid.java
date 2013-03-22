@@ -3,6 +3,9 @@ package grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
+import square.ASquare;
+import square.Direction;
+import square.ISquare;
 import notnullcheckweaver.NotNull;
 
 /**
@@ -50,7 +53,7 @@ public interface IGrid {
 	 * @return The square at that coordinate or null if the location doesn't
 	 *         exists.
 	 */
-	public ASquare getSquareAt(@NotNull Coordinate coordinate);
+	public ISquare getSquareAt(@NotNull Coordinate coordinate);
 	
 	// FIXME check null
 	

@@ -5,11 +5,12 @@ import static org.junit.Assert.assertTrue;
 import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
-import grid.WallPart;
 import java.util.ArrayList;
 import org.junit.Test;
 import player.IPlayer;
 import player.Player;
+import square.ISquare;
+import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class GridTest {
@@ -24,7 +25,7 @@ public class GridTest {
 			players.add(p2);
 			Grid grid = new GridBuilder().build();
 			int numberOfWalls = 2;
-			for (ASquare sq : grid.getGrid().values())
+			for (ISquare sq : grid.getGrid().values())
 				if (sq.getClass() == WallPart.class)
 					numberOfWalls++;
 			assertTrue(numberOfWalls >= 2); // Minimum wall size

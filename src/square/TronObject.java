@@ -1,4 +1,4 @@
-package grid;
+package square;
 
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;

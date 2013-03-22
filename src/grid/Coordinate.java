@@ -3,6 +3,7 @@ package grid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import square.Direction;
 
 /**
  * A immutable Cartesian coordinate in a two dimensional plane. Each coordinate

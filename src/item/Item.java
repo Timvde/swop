@@ -1,10 +1,10 @@
 package item;
 
-import grid.AffectedByPowerFailure;
-import grid.TronObject;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
+import square.AffectedByPowerFailure;
+import square.TronObject;
 import com.sun.istack.internal.NotNull;
 
 /**

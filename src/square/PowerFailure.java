@@ -1,4 +1,4 @@
-package grid;
+package square;
 
 import item.Item;
 import item.lightgrenade.LightGrenade;

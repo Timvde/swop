@@ -9,6 +9,7 @@ import item.Item;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;
+import square.Square;
 
 @SuppressWarnings("javadoc")
 public class SquareTest {

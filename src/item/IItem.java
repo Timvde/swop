@@ -1,9 +1,9 @@
 package item;
 
-import grid.ASquare;
-import grid.Square;
-import grid.TronObject;
 import player.Player;
+import square.ISquare;
+import square.Square;
+import square.TronObject;
 
 /**
  * An Item is an object that can be placed on a {@link Square}. Each item has a
@@ -25,7 +25,7 @@ public interface IItem extends TronObject {
 	 * @param square
 	 *        the square on which the item was used.
 	 */
-	public void use(ASquare square);
+	public void use(ISquare square);
 	
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.
