@@ -62,11 +62,8 @@ public class Effect {
 	
 	/**
 	 * Calculate the resulting penalty for the player and execute it.
-	 * 
-	 * @return True when the effect has ended the player's turn.
-	 * @throws IllegalStateException
 	 */
-	public void execute() throws IllegalStateException {
+	public void execute() {
 		// first, check if the power failure increases any effects that are present
 		if (powerFailure != null)
 			for (Item item : items) 

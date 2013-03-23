@@ -1,7 +1,8 @@
 package item;
 
 import player.Player;
-import square.ISquare;
+import square.ASquare;
+import square.Direction;
 import square.Square;
 import square.TronObject;
 
@@ -24,8 +25,10 @@ public interface IItem extends TronObject {
 	 * 
 	 * @param square
 	 *        the square on which the item was used.
+	 * @param direction
+	 *        the direction in which the item will be used
 	 */
-	public void use(ISquare square);
+	public void use(ASquare square, Direction direction);
 	
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.

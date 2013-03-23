@@ -1,5 +1,6 @@
 package grid;
 
+import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.ArrayList;
@@ -23,8 +24,9 @@ import square.WallPart;
  */
 public class GridBuilder {
 	
-	private static final double	NUMBER_OF_GRENADES	= 0.02;
-	private static final double NUMBER_OF_TELEPORTERS = 0.02;
+	private static final double	NUMBER_OF_GRENADES			= 0.02;
+	private static final double	NUMBER_OF_TELEPORTERS		= 0.02;
+	private static final double	NUMBER_OF_IDENTITY_DISKS	= 0.05;
 	private static final int	MINIMUM_WALL_SIZE			= 2;
 	
 	private double				maximalLengthOfWall;
@@ -306,27 +308,39 @@ public class GridBuilder {
 	
 	/**
 	 * Place a random number of items on the board. The number of items will be
-	 * a rounded percentage ({@value #NUMBER_OF_GRENADES}) of the total
-	 * size of the board. The items will be placed on the board with the
-	 * following {@link #canPlaceItem(Coordinate) constraints}.
+	 * a rounded percentage ({@value #NUMBER_OF_GRENADES}) of the total size of
+	 * the board. The items will be placed on the board with the following
+	 * {@link #canPlaceItem(Coordinate) constraints}.
 	 */
 	private void placeItemsOnBoard() {
-		int numberOfLightGrenades = 0;
-		while (((double) numberOfLightGrenades) / grid.size() < NUMBER_OF_GRENADES) {
+		// place light grenades
+		int numberOfItems = 0;
+		while (((double) numberOfItems) / grid.size() < NUMBER_OF_GRENADES) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
 				((Square) grid.get(position)).addItem(new LightGrenade());
-				numberOfLightGrenades++;
+				numberOfItems++;
 			}
 		}
 		
-		int numberOfTeleporters = 0;
-		while (((double) numberOfTeleporters) / grid.size() < NUMBER_OF_TELEPORTERS) {
+		// place teleporters
+		numberOfItems = 0;
+		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
 				((Square) grid.get(position)).addItem(new Teleporter(getTeleporterDestination()));
-				numberOfTeleporters++;
+				numberOfItems++;
 				System.out.println("placing teleporter on " + position);
+			}
+		}
+		
+		// place identity disks
+		numberOfItems = 0;
+		while (((double) numberOfItems) / grid.size() < NUMBER_OF_IDENTITY_DISKS) {
+			Coordinate position = Coordinate.random(width, height);
+			if (canPlaceItem(position)) {
+				((Square) grid.get(position)).addItem(new IdentityDisk());
+				numberOfItems++;
 			}
 		}
 	}
@@ -340,7 +354,7 @@ public class GridBuilder {
 			}
 		} while (true);
 	}
-
+	
 	/**
 	 * returns whether an item can be placed on the board. An item cannot be
 	 * placed on the board if the specified coordinate is a start position of

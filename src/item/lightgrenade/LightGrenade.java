@@ -1,12 +1,12 @@
 package item.lightgrenade;
 
-import square.ISquare;
-import square.Square;
-import square.TronObject;
-import square.WallPart;
 import item.Effect;
 import item.IItem;
 import item.Item;
+import square.ASquare;
+import square.Direction;
+import square.Square;
+import square.TronObject;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -17,7 +17,7 @@ import com.sun.istack.internal.NotNull;
  * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
  * then gets used by a player the internal state of this item will be changed to
  * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode
- * whenever the {@link #execute()} method is called. After exploding the light
+ * whenever the {@link #execute(TronObject)} method is called. After exploding the light
  * grenade converts to it's last state {@link LightGrenadeState#EXPLODED
  * EXPLODED}, this will convert the item to a immutable object.
  * 
@@ -41,14 +41,6 @@ public class LightGrenade extends Item implements ILightGrenade {
 	public LightGrenadeState getState() {
 		return this.state;
 	}
-	
-//	@Override
-//	public void trigger() throws IllegalStateException {
-//		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
-//			throw new IllegalStateException("Illegal transition from " + this.state.toString()
-//					+ " to TRIGGERED");
-//		this.state = LightGrenadeState.TRIGGERED;
-//	}
 	
 	@Override
 	public void enable() throws IllegalStateException {
@@ -79,9 +71,9 @@ public class LightGrenade extends Item implements ILightGrenade {
 	}
 	
 	@Override
-	public void use(ISquare square) {
-		if (square instanceof WallPart)
-			throw new IllegalArgumentException("LightGrenade cannot be used on a Wall!");
+	public void use(ASquare square, Direction direction) {
+		if (square.canBeAdded(this))
+			throw new IllegalArgumentException("LightGrenade could not be added to the square!");
 		
 		// check if this light grenade can be added to the square
 		for (IItem item : ((Square) square).getAllItems())

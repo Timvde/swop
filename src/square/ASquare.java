@@ -169,4 +169,13 @@ public abstract class ASquare implements ISquare {
 	 * @return the items on this square
 	 */
 	public abstract List<IItem> getAllItems();
+	
+	/**
+	 * Test whether an {@link IItem item} can be added to this square
+	 * 
+	 * @param item
+	 *        the item that is to be added
+	 * @return true if the item can be added, else false
+	 */
+	public abstract boolean canBeAdded(IItem item);
 }

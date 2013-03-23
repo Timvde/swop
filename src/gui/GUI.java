@@ -4,19 +4,23 @@ import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
 import item.Item;
+import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
 import square.Direction;
 import square.ISquare;
 import square.WallPart;
+import ObjectronExceptions.IllegalMoveException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -70,6 +74,7 @@ public class GUI implements Runnable {
 	private Image					wallImage;
 	private Image					lightGrenadeImage;
 	private Image					teleporterImage;
+	private Image					identityDiskImage;
 	private Image					lightTrailImage;
 	private Image					finishBlue;
 	private Image					finishRed;
@@ -239,6 +244,10 @@ public class GUI implements Runnable {
 								graphics.drawImage(teleporterImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
+							if (i.getClass() == IdentityDisk.class) {
+								graphics.drawImage(identityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
 						}
 					}
 					
@@ -277,6 +286,7 @@ public class GUI implements Runnable {
 		this.wallImage = gui.loadImage("wall.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.teleporterImage = gui.loadImage("icon.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.identityDiskImage = gui.loadImage("identity_disk.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightTrailImage = gui.loadImage("cell_lighttrail.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
@@ -453,7 +463,8 @@ public class GUI implements Runnable {
 						// Use the inventoryListSelected to access the Item that
 						// is selected in the inventory!
 						if (inventoryListSelected != null) {
-							useItemController.useItem((IItem) inventoryListSelected);
+							useItemController
+									.useItem((IItem) inventoryListSelected, askDirection());
 							inventoryListSelected = null;
 							gui.repaint();
 						}
@@ -558,5 +569,28 @@ public class GUI implements Runnable {
 		int y = (c.getY() * 40) + topLeftGridOffsetY;
 		
 		return new Coordinate(x, y);
+	}
+	
+	private Direction askDirection() {
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		String name = null;
+		try {
+			name = in.readLine();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		switch (name) {
+			case "north":
+				return Direction.NORTH;
+			case "south":
+				return Direction.SOUTH;
+			case "east":
+				return Direction.EAST;
+			case "west":
+				return Direction.WEST;
+			default:
+				return null;
+		}
 	}
 }

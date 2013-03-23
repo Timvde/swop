@@ -19,7 +19,7 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem, Direction) use} an
  * item and {@link #endTurn() end} the turn.
  */
 public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
@@ -334,7 +334,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	}
 	
 	@Override
-	public void useItem(IItem i) {
+	public void useItem(IItem i, Direction direction) {
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
@@ -344,7 +344,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		
 		// try and use the item
 		try {
-			i.use(currentSquare);
+			i.use(currentSquare, direction);
 		}
 		catch (IllegalStateException e) {
 			// re-add the item to the inventory and re-throw the exception

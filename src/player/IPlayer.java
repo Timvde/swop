@@ -1,6 +1,5 @@
 package player;
 
-import grid.Coordinate;
 import item.IItem;
 import java.util.List;
 import square.ASquare;
@@ -26,7 +25,8 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the ID associated with this player.
 	 */
-	public int getID(); // TODO gaan we dit nog gebruiken?? ik denk het niet (bavo)
+	public int getID(); // TODO gaan we dit nog gebruiken?? ik denk het niet
+						// (bavo)
 	
 	/**
 	 * Returns the square this player has to reach to win the game.
@@ -108,7 +108,6 @@ public interface IPlayer extends TronObject {
 	 *         The move preconditions must be satisfied, i.e. this.
 	 *         {@link #isPreconditionMoveSatisfied()}. The grid must allow the
 	 *         player to do the move, i.e.
-	 *         {@link Grid#canMoveFromCoordInDirection(Coordinate, Direction)
 	 *         <code>canMoveFromCoordInDirection(this.getCurrentLocation(),
 	 *         direction)</code>}
 	 * @throws IllegalArgumentException
@@ -117,7 +116,7 @@ public interface IPlayer extends TronObject {
 	 *         <code>{@link #isValidDirection(Direction)}</code>.
 	 * @throws IllegalMoveException
 	 *         TODO
-	 */
+	 */ //TODO rewrite documentation
 	public void moveInDirection(Direction direction) throws IllegalStateException,
 			IllegalArgumentException, IllegalMoveException;
 	
@@ -160,8 +159,10 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @param i
 	 *        The item that will be used.
+	 * @param direction
+	 *        the direction in whitch the item will be used
 	 * @throws IllegalArgumentException
 	 *         The item is not in the inventory
 	 */
-	public void useItem(IItem i) throws IllegalArgumentException;
+	public void useItem(IItem i, Direction direction) throws IllegalArgumentException;
 }

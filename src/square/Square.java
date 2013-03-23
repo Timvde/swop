@@ -187,13 +187,7 @@ public class Square extends ASquare {
 		return this.player == null && player != null;
 	}
 	
-	/**
-	 * Test whether an {@link IItem item} can be added to this square
-	 * 
-	 * @param item
-	 *        the item that is to be added
-	 * @return true if the item can be added, else false
-	 */
+	@Override
 	public boolean canBeAdded(IItem item) {
 		return true; // TODO are there any preconditions?
 	}
