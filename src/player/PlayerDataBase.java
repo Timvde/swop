@@ -90,7 +90,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 		Player.resetUniqueIdcounter();
 		this.playerList.clear();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player((Square) grid.getSquareAt(playerStartingPositions[i]), grid);
+			Player newPlayer = new Player((Square) grid.getSquareAt(playerStartingPositions[i]));
 			this.playerList.add(newPlayer);
 			newPlayer.addObserver(this);
 		}

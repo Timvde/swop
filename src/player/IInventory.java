@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * An inventory of {@link Item items} is carried by a {@link Player player}. The
  * inventory cannot hold more then a {@link #getMaxNumberOfItems() maximum}
- * number of items.
+ * number of items. 
  */
 public interface IInventory {
 	

@@ -1,6 +1,5 @@
 package player;
 
-import grid.IGrid;
 import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
@@ -56,22 +55,16 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 * 
 	 * @param startSquare
 	 *        The starting position of the player
-	 * @param grid
-	 *        The grid the player will move on
 	 * @throws IllegalArgumentException
 	 *         The given arguments cannot be null.
 	 * @throws IllegalStateException
 	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(Square startSquare, IGrid grid) throws IllegalArgumentException,
+	public Player(Square startSquare) throws IllegalArgumentException,
 			IllegalStateException {
-		if (startSquare == null || grid == null) {
+		if (startSquare == null) {
 			throw new IllegalArgumentException("The given arguments cannot be null");
 		}
-		// if (grid.getSquareAt(startSquare) == null) {
-		// throw new
-		// IllegalStateException("The given coordinate must exist on the given grid");
-		// }
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
@@ -80,6 +73,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.startSquare = startSquare;
 		this.currentSquare = startSquare;
+		startSquare.addPlayer(this);
 	}
 	
 	@Override
@@ -392,9 +386,21 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	@Override
 	public void teleportTo(ASquare destination) {
+		if (!canTeleportTo(destination))
+			throw new IllegalArgumentException("Player could not teleport to destination: " + destination);
 		currentSquare.remove(this);
 		currentSquare = (Square) destination;
 		destination.addPlayer(this);
+	}
+	
+	public boolean canTeleportTo(ASquare destination) {
+		// test if the destination exists
+		if (destination == null)
+			return false;
+		// test if the square accepts players
+		// TODO 
+		
+		return true;
 	}
 	
 	/**
