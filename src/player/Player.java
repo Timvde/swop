@@ -60,8 +60,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 * @throws IllegalStateException
 	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(Square startSquare) throws IllegalArgumentException,
-			IllegalStateException {
+	public Player(Square startSquare) {
 		if (startSquare == null) {
 			throw new IllegalArgumentException("The given arguments cannot be null");
 		}

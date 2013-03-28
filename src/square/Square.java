@@ -16,15 +16,15 @@ import player.Player;
 public class Square extends ASquare {
 	
 	/** the list of items in this square */
-	private List<IItem>				itemList;
+	private List<IItem>		itemList;
 	/** the player on this square */
-	private IPlayer					player;
+	private IPlayer			player;
 	/** a boolean representing whether there is a light trail on this square */
-	private boolean					lightTrail;
+	private boolean			lightTrail;
 	// Having one PowerFailure object at this moment is enough. Since they all
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
-	private PowerFailure			powerFailure;
+	private PowerFailure	powerFailure;
 	
 	/**
 	 * Default constructor.
@@ -59,7 +59,6 @@ public class Square extends ASquare {
 			itemList.remove(object);
 	}
 	
-
 	@Override
 	public boolean hasPowerFailure() {
 		return powerFailure != null;
@@ -102,7 +101,9 @@ public class Square extends ASquare {
 	
 	@Override
 	public IItem pickupItem(int ID) {
-		for (IItem itemOnSquare : this.getAllItems())
+		// try and retrieve the item
+		// only items that are carryable can be picked up!
+		for (IItem itemOnSquare : this.getCarryableItems())
 			if (ID == itemOnSquare.getId()) {
 				this.remove(itemOnSquare);
 				return itemOnSquare;
@@ -117,7 +118,7 @@ public class Square extends ASquare {
 			return false;
 		else if (object.equals(player))
 			return true;
-		else 
+		else
 			return itemList.contains(object);
 	}
 	
@@ -143,10 +144,10 @@ public class Square extends ASquare {
 	
 	@Override
 	public void addPlayer(IPlayer player) {
-		// test whether the player can be added 
+		// test whether the player can be added
 		if (!canBeAdded(player))
 			throw new IllegalArgumentException("the player cannot be added to this square!");
-		// set the player to this square 
+		// set the player to this square
 		this.player = player;
 		// add the effect to the player
 		this.executeEffect(player);
@@ -154,12 +155,15 @@ public class Square extends ASquare {
 	
 	@Override
 	void removePowerFailure(PowerFailure powerFailure) {
-		if (this.powerFailure != null && this.powerFailure.equals(powerFailure))
+		if (this.powerFailure != null 
+				&& this.powerFailure.equals(powerFailure))
 			this.powerFailure = null;
 	}
+	
 	/**
 	 * returns the power failure of this object
-	 * @return power failure 
+	 * 
+	 * @return power failure
 	 */
 	public PowerFailure getPowerFailure() {
 		return this.powerFailure;
@@ -183,13 +187,17 @@ public class Square extends ASquare {
 	 * @return true if the player can be added, else false
 	 */
 	public boolean canBeAdded(IPlayer player) {
-		// check if there is an other player
+		// check if there is an other player and if the specified player exists
 		return this.player == null && player != null;
 	}
 	
 	@Override
 	public boolean canBeAdded(IItem item) {
-		return true; // TODO are there any preconditions?
+		// test whether the item exists
+		if (item == null)
+			return false;
+		// TODO are there any other preconditions?
+		return true;
 	}
 	
 	/**
@@ -214,7 +222,10 @@ public class Square extends ASquare {
 		// execute the effect
 		effect.execute();
 	}
-
+	
+	/**
+	 * @deprecated see {@link ASquare#removePlayer() here}
+	 */
 	@Override
 	public void removePlayer() {
 		this.player = null;

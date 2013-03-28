@@ -23,8 +23,25 @@ public class Effect {
 	 *        The object to receive the effect.
 	 */
 	public Effect(TronObject object) {
+		if (!isValidObject(object))
+			throw new IllegalArgumentException("The object was not valid!");
 		this.object = object;
 		items = new ArrayList<Item>();
+	}
+	
+	/**
+	 * Returns whether the specified object is a valid object for this effect. 
+	 * @param object
+	 * 	the object to test 
+	 * @return true if the object is valid for this square, else false
+	 */
+	public boolean isValidObject(TronObject object) {
+		// test if the object exists
+		if (object == null)
+			return false;
+		// i don't know what else can happen ... 
+		else 
+			return true;
 	}
 	
 	/**
@@ -56,7 +73,7 @@ public class Effect {
 	 */
 	public void addItem(Item item) {
 		if (item == null) 
-			throw new IllegalArgumentException("teleporter cannot be null!");
+			throw new IllegalArgumentException("Item cannot be null!");
 		items.add(item);
 	}
 	
@@ -66,13 +83,21 @@ public class Effect {
 	public void execute() {
 		// first, check if the power failure increases any effects that are present
 		if (powerFailure != null)
-			for (Item item : items) 
+			for (Item item : items)
 				powerFailure.modify(item);
 		// then, execute the effects of each item in the list
 		for (Item item : items)
 			item.execute(object);
-		// lastly, let the powerfailure influence the object
+		// lastly, let the power failure influence the object
 		if (powerFailure != null)
 			powerFailure.execute(object);
+	}
+	
+	/**
+	 * Returns the list of items that will effect the {@link #getObject() object}. 
+	 * @return list of items for this effect
+	 */
+	List<IItem> getItems() {
+		return new ArrayList<IItem>(items);
 	}
 }

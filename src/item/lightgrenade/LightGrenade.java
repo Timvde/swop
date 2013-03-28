@@ -5,7 +5,6 @@ import item.IItem;
 import item.Item;
 import square.ASquare;
 import square.Direction;
-import square.Square;
 import square.TronObject;
 import com.sun.istack.internal.NotNull;
 
@@ -72,18 +71,16 @@ public class LightGrenade extends Item implements ILightGrenade {
 	
 	@Override
 	public void use(ASquare square, Direction direction) {
-		if (square.canBeAdded(this))
-			throw new IllegalArgumentException("LightGrenade could not be added to the square!");
 		
 		// check if this light grenade can be added to the square
-		for (IItem item : ((Square) square).getAllItems())
+		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
 				throw new IllegalStateException("There is already a light grenade on the square");
 		
-		this.enable();
+		// try and add this light grenade to the square 
+		square.addItem(this);
 		
-		// TODO this should not be a cast! Asquare should provide this method!
-		((Square) square).addItem(this);
+		this.enable();
 	}
 	
 	@Override

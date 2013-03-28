@@ -91,7 +91,8 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	@Override
 	public void teleportTo(ASquare destination) {
 		// remove the disk from the current square
-		currentSquare.remove(this);
+		if (currentSquare != null)
+			currentSquare.remove(this);
 		// set the destination to the current square
 		currentSquare = (Square) destination;
 		// add the disk to a new square

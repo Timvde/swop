@@ -3,7 +3,6 @@ package square;
 import item.Item;
 import item.lightgrenade.LightGrenade;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,28 +26,26 @@ public class PowerFailure {
 	private boolean			modifiedAnItem;
 	
 	/**
-	 * Create a power failure for a given list of Squares.
+	 * Create a power failure for a given square. This will also impact the
+	 * neigbhours of the specified square.
 	 * 
-	 * @param squares
-	 *        The squares that are impacted by this power failure.
+	 * @param square
+	 *        The square that is impacted by this power failure.
 	 */
-	public PowerFailure(List<ASquare> squares) {
-		// We have no way to check if the right conditions are met (i.e. the
-		// squares are neighbours), so we just have to trust the system. This is
-		// not that bad at all, as PowerFailure objects should never get to the
-		// outside.
+	public PowerFailure(ASquare square) {
+		squares = new ArrayList<ASquare>();
 		
-		for (Iterator<ASquare> it = squares.iterator(); it.hasNext();) {
-			ASquare square = it.next();
-			try {
-				square.addPowerFailure(this);
-			}
-			catch (IllegalStateException e) {
-				it.remove();
-			}
-		}
+		// set the powerfailure for this square
+		square.addPowerFailure(this);
+		squares.add(square);
 		
-		this.squares = squares;
+		// add a power failure for the neighbours of the square
+		for (Direction direction : Direction.values())
+			if (square.getNeighbour(direction) != null) {
+				square.getNeighbour(direction).addPowerFailure(this);
+				squares.add(square.getNeighbour(direction));
+			}
+		
 		timeToLive = 3;
 	}
 	
@@ -75,10 +72,11 @@ public class PowerFailure {
 	 *        the item of which the effect has to be increased
 	 */
 	public void modify(Item item) {
-		// for now a power failure only increases the strength of a light grenade
+		// for now a power failure only increases the strength of a light
+		// grenade
 		if (item instanceof LightGrenade) {
 			((LightGrenade) item).increaseStrength();
-			// set the flag, so the power failure does not damage the item twice 
+			// set the flag, so the power failure does not damage the item twice
 			this.modifiedAnItem = true;
 		}
 	}

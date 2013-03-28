@@ -1,74 +1,107 @@
 package item;
 
 import static org.junit.Assert.assertEquals;
-import lightgrenade.LightGrenade;
-import grid.Coordinate;
-import grid.Grid;
-import grid.GridBuilder;
-import item.Effect;
-import item.Item;
+import static org.junit.Assert.assertTrue;
+import item.lightgrenade.LightGrenade;
+import item.teleporter.Teleporter;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import player.IPlayer;
-import player.Player;
+import player.DummyPlayer;
+import square.ASquare;
 import square.Direction;
-import ObjectronExceptions.IllegalMoveException;
+import square.PowerFailure;
+import square.Square;
 
 @SuppressWarnings("javadoc")
 public class EffectTest {
 	
-	private IPlayer	player;
-	private Effect	effect;
-	private Grid	grid;
+	private Effect		effect;
+	private DummyPlayer	player;
 	
 	@Before
 	public void setUp() {
-		grid = new GridBuilder().getPredefinedTestGrid(false);
-		player = new Player(new Coordinate(0, 9), grid);
-		// Set the number of actions left at 2 initially to get a different
-		// result from the light grenade and the power failure
-		player.skipNumberOfActions(1);
+		player = new DummyPlayer();
 		effect = new Effect(player);
 	}
 	
 	@Test
-	public void testLightGrenade() {
-		effect.addLightGrenade();
+	public void testEffect() {
+		LightGrenade lightGrenade = new LightGrenade();
+		Effect effect = new Effect(lightGrenade);
+		assertEquals(lightGrenade, effect.getObject());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testEffect_nullArgument() {
+		// try and make a new effect with null as argument
+		new Effect(null);
+	}
+	
+	@Test
+	public void testAddPowerFailure() {
+		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		PowerFailure powerFailure = new PowerFailure(square);
+		
+		effect.addPowerFailure(powerFailure);
 		effect.execute();
-		// This will result in a negative number of actions left (i.e. the
-		// penalty for his next turn) The player will see he has no actions left
-		// and notify the database (to end his turn) and give himself again 3
-		// actions for his next
-		// turn.
-		assertEquals(player.getAllowedNumberOfActions(), -1 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
+		assertTrue(player.isDamagedByPowerFailure());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddPowerFailure_nullArgument() {
+		effect.addPowerFailure(null);
 	}
 	
 	@Test
-	public void testPowerFailure() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
-		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
-		// a player always has already done a move-action when it hits a
-		// power failure. This is necessary to do a successful endTurn().
-		try {
-			player.moveInDirection(Direction.NORTH);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		assertEquals(player.getAllowedNumberOfActions(), 0 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
+	public void testAddItem() {
+		LightGrenade lightGrenade = new LightGrenade();
+		Teleporter teleporter = new Teleporter(new Square(
+				Collections.<Direction, ASquare> emptyMap()));
+		
+		effect.addItem(teleporter);
+		effect.addItem(lightGrenade);
+		
+		assertEquals(2, effect.getItems().size());
+		assertTrue(effect.getItems().contains(lightGrenade));
+		assertTrue(effect.getItems().contains(teleporter));
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testAddItem_nullArgument() {
+		effect.addItem(null);
 	}
 	
 	@Test
-	public void testLightGrenadeAndPowerFailure() {
-		grid.addPowerFailureAtCoordinate(new Coordinate(0, 7));
-		Item lightGrenade = new LightGrenade();
-		lightGrenade.use(grid.getSquareAt(new Coordinate(0, 8)));
-		try {
-			player.moveInDirection(Direction.NORTH);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		assertEquals(player.getAllowedNumberOfActions(), -2 + Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
+	public void testExecute_withALightGrenade() {
+		// add an active light grenade to the effect
+		LightGrenade lightGrenade = new LightGrenade();
+		lightGrenade.enable();
+		effect.addItem(lightGrenade);
+		
+		// execute the effect
+		effect.execute();
+		
+		// test if the light grenade has affect the player
+		assertEquals(3, player.getNumberOfActionsSkipped());
 	}
 	
+	@Test
+	public void testExecute_withLightGrenadeAndPowerFailure() {
+		// add an active light grenade to the effect
+		LightGrenade lightGrenade = new LightGrenade();
+		lightGrenade.enable();
+		effect.addItem(lightGrenade);
+		
+		// add a power failure to the effect
+		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		PowerFailure powerFailure = new PowerFailure(square);
+		effect.addPowerFailure(powerFailure);
+		
+		// execute the effect
+		effect.execute();
+		
+		// test if the light grenade has affect the player
+		assertEquals(4, player.getNumberOfActionsSkipped());
+	}
 }

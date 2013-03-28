@@ -37,8 +37,8 @@ public class WallPart extends ASquare {
 	}
 	
 	@Override
-	public IItem pickupItem(int ID) throws IllegalArgumentException {
-		throw new IllegalArgumentException("Walls do not contain items");
+	public IItem pickupItem(int ID) {
+		throw new UnsupportedOperationException("Walls do not contain items");
 	}
 	
 	/**
@@ -51,7 +51,7 @@ public class WallPart extends ASquare {
 	
 	@Override
 	public void removePlayer() {
-		throw new IllegalStateException(
+		throw new UnsupportedOperationException(
 				"Can not remove a player on a wallpart! No players are supposed to be on it.");
 	}
 	
@@ -62,12 +62,12 @@ public class WallPart extends ASquare {
 	
 	@Override
 	void addPowerFailure(PowerFailure powerFailure) {
-		throw new IllegalStateException("A WallPart cannot have a power failure.");
+		throw new UnsupportedOperationException("A WallPart cannot have a power failure.");
 	}
 	
 	@Override
 	void removePowerFailure(PowerFailure powerFailure) {
-		throw new IllegalStateException("A WallPart does not have any power failures.");
+		throw new UnsupportedOperationException("A WallPart does not have any power failures.");
 	}
 
 	@Override
@@ -77,22 +77,22 @@ public class WallPart extends ASquare {
 
 	@Override
 	public void addPlayer(IPlayer p) {
-		throw new IllegalArgumentException("Players cannot be added to a wall!");
+		throw new UnsupportedOperationException("Players cannot be added to a wall!");
 	}
 
 	@Override
 	public void placeLightTrail() {
-		throw new IllegalStateException("light trail cannot be placed on wallparts");
+		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
 
 	@Override
 	public void removeLightTrail() {
-		throw new IllegalStateException("light trail cannot be placed on wallparts");
+		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
 
 	@Override
 	public void addItem(IItem item) {
-		throw new IllegalStateException("items cannot be added to light trails");
+		throw new UnsupportedOperationException("items cannot be added to light trails");
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import org.junit.Test;
 import player.IPlayer;
 import player.Player;
 import square.ISquare;
+import square.Square;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
@@ -19,8 +20,8 @@ public class GridTest {
 	public void testConstructor() {
 		for (int i = 0; i < 10; i++) {
 			ArrayList<IPlayer> players = new ArrayList<IPlayer>();
-			IPlayer p1 = new Player(new Coordinate(9, 0), new GridBuilder().getPredefinedTestGrid(false));
-			IPlayer p2 = new Player(new Coordinate(0, 9), new GridBuilder().getPredefinedTestGrid(false));
+			IPlayer p1 = new Player((Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0)));
+			IPlayer p2 = new Player((Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0)));
 			players.add(p1);
 			players.add(p2);
 			Grid grid = new GridBuilder().build();
@@ -39,7 +40,7 @@ public class GridTest {
 	public void testStaticGrid() {
 
 		Grid grid = new GridBuilder().getPredefinedTestGrid(false);
-				
+		
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s w w w w w s \n" + "s s s s s s s l s s \n" + "s s l s s s s s l s \n"

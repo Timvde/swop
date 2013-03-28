@@ -28,10 +28,9 @@ public class PlayerTest {
 		assertEquals(player.getCurrentLocation(), randomSquare);
 		assertEquals(false, player.hasMovedYet());
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
-		// chk empty inventory
+		// check empty inventory
 		assertEquals(0, player.getInventoryContent().size());
 		Assert.assertNotNull(player.getStartingPosition());
-		// FIXME maken we PlayerDB verantw vor het bijhouden vd targetpos?
 	}
 	
 	@Test (expected = IllegalArgumentException.class)
@@ -41,34 +40,7 @@ public class PlayerTest {
 	
 	@Test
 	public void testEndTurn() {
-		boolean isIllegalStateExceptionThrown = false;
-		try {
-			player.endTurn();
-		}
-		catch (Exception e) {
-			isIllegalStateExceptionThrown = true;
-		}
-		assertEquals(false, isIllegalStateExceptionThrown);
-		assertEquals(true, areTurnRelatedFieldsReset());
-		
-		// skip a turn
-		isIllegalStateExceptionThrown = false;
-		player.skipNumberOfActions(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
-		try {
-			player.endTurn();
-		}
-		catch (Exception e) {
-			isIllegalStateExceptionThrown = true;
-		}
-		assertEquals(false, isIllegalStateExceptionThrown);
-		assertEquals(true, areTurnRelatedFieldsReset());
-		
-		// TODO player.hasMoved --> loses the game
-	}
-	
-	private boolean areTurnRelatedFieldsReset() {
-		return (player.hasMovedYet() == false)
-				&& (player.getAllowedNumberOfActions() >= Player.MAX_NUMBER_OF_ACTIONS_PER_TURN);
+		// TODO	
 	}
 	
 	@Test

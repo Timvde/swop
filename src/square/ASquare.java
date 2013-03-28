@@ -1,6 +1,7 @@
 package square;
 
 import item.IItem;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import player.IPlayer;
@@ -38,7 +39,7 @@ public abstract class ASquare implements ISquare {
 					"the specified neighbours could not be set as the neighbours for this square!");
 		
 		// set the neighbours as the neighbours for this square
-		this.neighbours = neighbours;
+		this.neighbours = new HashMap<Direction, ASquare>(neighbours);
 		
 		// for each neighbour of this square, set this square as the neighbour
 		// in the opposite direction
@@ -56,7 +57,9 @@ public abstract class ASquare implements ISquare {
 	 * @return true if the neighours can be set for this square, else false
 	 */
 	private boolean canHaveAsNeighbours(Map<Direction, ASquare> neighbours) {
-		return neighbours != null;
+		if (neighbours == null)
+			return false;
+		return true;
 	}
 	
 	/**
@@ -97,7 +100,13 @@ public abstract class ASquare implements ISquare {
 	 * This method removes a player from a square. This method is enforced:
 	 * setPlayer(null) will throw. This is for both readability's sake and to
 	 * prevent errors.
+	 * 
+	 * @deprecated The method {@link #remove(Object)} can be used if a player is
+	 *             to be removed from this square. This method needs a reference
+	 *             to the player, but if you do not have one it is probably not
+	 *             up to you to remove a player from this square ...
 	 */
+	@Deprecated
 	public abstract void removePlayer();
 	
 	/**

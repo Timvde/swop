@@ -1,14 +1,10 @@
-package grid;
+package square;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import lightgrenade.LightGrenade;
 import grid.Coordinate;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import square.Wall;
-import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class WallTest {
@@ -71,50 +67,5 @@ public class WallTest {
 		Wall second = new Wall(new Coordinate(8, 3), new Coordinate(4, 3));
 		
 		assertTrue(first.touchesWall(second));
-	}
-	
-	@Test
-	public void testGetWallPart() {
-		WallPart part1 = wall.getWallPart();
-		WallPart part2 = new Wall(start, new Coordinate(3, 5)).getWallPart();
-		
-		assertEquals(part1, part2);
-	}
-	
-	@Test
-	public void testWallPartMethods() {
-		WallPart part = wall.getWallPart();
-		assertEquals(part.getCarryableItems().size(), 0);
-		assertEquals(part.getPlayer(), null);
-		assertFalse(part.hasLightTrail());
-		assertFalse(part.contains(new LightGrenade()));
-		assertFalse(part.hasPlayer());
-		
-		boolean hasThrown = false;
-		try {
-			part.pickupItem(0);
-		}
-		catch (Exception e) {
-			hasThrown = true;
-		}
-		assertTrue(hasThrown);
-		
-		hasThrown = false;
-		try {
-			wall.getWallPart().setPlayer(null);
-		}
-		catch (Exception e) {
-			hasThrown = true;
-		}
-		assertTrue(hasThrown);
-		
-		hasThrown = false;
-		try {
-			wall.getWallPart().removePlayer();
-		}
-		catch (Exception e) {
-			hasThrown = true;
-		}
-		assertTrue(hasThrown);
 	}
 }

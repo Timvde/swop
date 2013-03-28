@@ -1,11 +1,9 @@
 package unittests;
 
 import item.EffectTest;
-import item.LightGrenadeTest;
+import item.lightgrenade.LightGrenadeTest;
 import grid.CoordinateTest;
 import grid.GridTest;
-import grid.SquareTest;
-import grid.WallTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -20,6 +18,8 @@ import scenariotests.MovePlayerTest;
 import scenariotests.PickUpTest;
 import scenariotests.StartGameTest;
 import scenariotests.UseItemTest;
+import square.SquareTest;
+import square.WallTest;
 
 @SuppressWarnings("javadoc")
 @RunWith(Suite.class)

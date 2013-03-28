@@ -35,11 +35,10 @@ public class LightTrail {
 	 * Update the lightTrail to a specified coordinate. This method will trim
 	 * the lightTrail if this appears to be necessary. When the method returns
 	 * the lightTrail will cover a square with the specified coordinate if the
-	 * previous length of the square was less than MAXIMUM LENGTH,
-	 * otherwise the lightTrail will have shifted to cover the new Coordinate
-	 * and the last coordinate of the square will be cleared of this lightTrail.
-	 * This method should be called whenever the player makes a move action on
-	 * the board.
+	 * previous length of the square was less than MAXIMUM LENGTH, otherwise the
+	 * lightTrail will have shifted to cover the new Coordinate and the last
+	 * coordinate of the square will be cleared of this lightTrail. This method
+	 * should be called whenever the player makes a move action on the board.
 	 * 
 	 * @param currentSquare
 	 *        the new square which the light trail should cover
@@ -106,11 +105,12 @@ public class LightTrail {
 	}
 	
 	/**
-	 * returns a list of the squares in this light trail
+	 * returns a list of the squares in this light trail, this method is for
+	 * testing purposes and therefore package accessible only.
 	 * 
 	 * @return a list of the squares
 	 */
-	public List<ASquare> getLightTrailSquares() {
+	List<ASquare> getLightTrailSquares() {
 		return new ArrayList<ASquare>(lightTrail);
 	}
 }
