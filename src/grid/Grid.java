@@ -1,7 +1,6 @@
 package grid;
 
 import item.IItem;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -186,13 +185,8 @@ public class Grid implements IGrid {
 	 *        The coordinate to receive the power failure.
 	 */
 	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
-		List<Coordinate> coords = coordinate.getAllNeighbours();
-		List<ASquare> squares = new ArrayList<ASquare>();
-		coords.add(coordinate);
-		for (Coordinate coord : coords)
-			if (getSquareAt(coord) != null)
-				squares.add(getSquareAt(coord));
-		new PowerFailure(squares);
+		if (grid.containsKey(coordinate));
+			new PowerFailure(grid.get(coordinate));
 	}
 	
 	private Set<PowerFailure> getAllPowerFailures() {

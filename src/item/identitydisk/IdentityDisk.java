@@ -129,6 +129,5 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	public void execute(TronObject object) {
 		// the object does nothing when an object/player steps on an identity
 		// disk
-	}
-	
+	}	
 }
