@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import square.ASquare;
-import square.Direction;
 import square.ISquare;
 import square.PowerFailure;
 import square.Square;
@@ -130,28 +129,8 @@ public class Grid implements IGrid {
 	
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
-		return this.grid.keySet();
+		return new HashSet<Coordinate>(this.grid.keySet());
 	}
-	
-	@Override
-	public boolean canMoveFromCoordInDirection(Coordinate fromCoord, Direction direction) {
-		// direction and fromCoord must exist
-		if (direction == null || fromCoord == null)
-			return false;
-		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
-		// next coordinate must be on the grid
-		if (!grid.containsKey(toCoord))
-			return false;
-		// players cannot move through walls
-		if (grid.get(toCoord) instanceof WallPart)
-			return false;
-		// players cannot occupy the same position
-		Square toSquare = (Square) grid.get(toCoord);
-		if (toSquare.hasPlayer())
-			return false;
-		return true;
-	}
-	
 	
 	
 	/**
@@ -185,8 +164,9 @@ public class Grid implements IGrid {
 	 *        The coordinate to receive the power failure.
 	 */
 	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
-		if (grid.containsKey(coordinate));
-			new PowerFailure(grid.get(coordinate));
+		if (grid.containsKey(coordinate))
+			if (grid.get(coordinate) instanceof Square)
+				new PowerFailure(grid.get(coordinate));
 	}
 	
 	private Set<PowerFailure> getAllPowerFailures() {

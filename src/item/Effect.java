@@ -12,9 +12,14 @@ import square.TronObject;
  */
 public class Effect {
 	
+	/** the object who will suffer from this effect */
 	private TronObject		object;
+	/** The list of items that will have an effect on the object */
 	private List<Item>		items;
+	/** The power failure that will effect the object */
 	private PowerFailure	powerFailure;
+	/** a boolean representing whether the effect has executed his effect */
+	private boolean			executed;
 	
 	/**
 	 * Initializing the Effect.
@@ -25,22 +30,27 @@ public class Effect {
 	public Effect(TronObject object) {
 		if (!isValidObject(object))
 			throw new IllegalArgumentException("The object was not valid!");
+		
+		// Initialize variables
+		this.executed = false;
 		this.object = object;
 		items = new ArrayList<Item>();
+		
 	}
 	
 	/**
-	 * Returns whether the specified object is a valid object for this effect. 
+	 * Returns whether the specified object is a valid object for this effect.
+	 * 
 	 * @param object
-	 * 	the object to test 
+	 *        the object to test
 	 * @return true if the object is valid for this square, else false
 	 */
 	public boolean isValidObject(TronObject object) {
 		// test if the object exists
 		if (object == null)
 			return false;
-		// i don't know what else can happen ... 
-		else 
+		// i don't know what else can happen ...
+		else
 			return true;
 	}
 	
@@ -72,7 +82,7 @@ public class Effect {
 	 *        the item that has an effect on the object
 	 */
 	public void addItem(Item item) {
-		if (item == null) 
+		if (item == null)
 			throw new IllegalArgumentException("Item cannot be null!");
 		items.add(item);
 	}
@@ -81,20 +91,31 @@ public class Effect {
 	 * Calculate the resulting penalty for the player and execute it.
 	 */
 	public void execute() {
-		// first, check if the power failure increases any effects that are present
+		if (executed)
+			throw new IllegalStateException("The effect has already executed!");
+		
+		// first, check if the power failure increases any effects that are
+		// present
 		if (powerFailure != null)
 			for (Item item : items)
 				powerFailure.modify(item);
+		
 		// then, execute the effects of each item in the list
 		for (Item item : items)
 			item.execute(object);
+		
 		// lastly, let the power failure influence the object
 		if (powerFailure != null)
 			powerFailure.execute(object);
+		
+		// set the executed boolean to true
+		this.executed = true;
 	}
 	
 	/**
-	 * Returns the list of items that will effect the {@link #getObject() object}. 
+	 * Returns the list of items that will effect the {@link #getObject()
+	 * object}.
+	 * 
 	 * @return list of items for this effect
 	 */
 	List<IItem> getItems() {
