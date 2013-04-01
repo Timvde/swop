@@ -55,6 +55,9 @@ public class Game {
 		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
 				this.guiDataCont);
 		
+		// Set the initialized GUI as the gui for the controllers
+		useItemCont.setGUI(gui);
+		
 		java.awt.EventQueue.invokeLater(gui);
 	}
 	

@@ -3,7 +3,6 @@ package item.teleporter;
 import item.Effect;
 import item.Item;
 import square.ASquare;
-import square.Direction;
 import square.TronObject;
 
 /**
@@ -28,7 +27,7 @@ public class Teleporter extends Item {
 	}
 	
 	@Override
-	public void use(ASquare square, Direction direction) {
+	public void use(ASquare square) {
 		throw new UnsupportedOperationException(
 				"A teleporter cannot be pickup and thus be placed on an item by a player !!");
 	}

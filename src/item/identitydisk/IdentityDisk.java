@@ -22,8 +22,9 @@ import square.TronObject;
  */
 public class IdentityDisk extends Item implements Teleportable, AffectedByPowerFailure {
 	
-	private int		range;
-	private ASquare	currentSquare;
+	private int			range;
+	private ASquare		currentSquare;
+	private Direction	direction;
 	
 	/**
 	 * create a new identity disk
@@ -33,7 +34,11 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	}
 	
 	@Override
-	public void use(ASquare square, Direction direction) {
+	public void use(ASquare square) {
+		if (direction == null)
+			throw new IllegalStateException(
+					"The disk cannot be used when there is no direction set!");
+		
 		// set the location of the current square
 		currentSquare = square;
 		
@@ -46,6 +51,9 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 				break;
 			}
 		}
+		
+		// reset the direction field
+		direction = null;
 	}
 	
 	/**
@@ -129,5 +137,15 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	public void execute(TronObject object) {
 		// the object does nothing when an object/player steps on an identity
 		// disk
-	}	
+	}
+	
+	/**
+	 * Set the direction in which the disk will be fired.
+	 * 
+	 * @param direction
+	 *        the direction in which the disk will be fired.
+	 */
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
 }

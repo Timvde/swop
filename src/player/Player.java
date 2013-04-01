@@ -327,7 +327,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	}
 	
 	@Override
-	public void useItem(IItem i, Direction direction) {
+	public void useItem(IItem i) {
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
@@ -337,7 +337,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		
 		// try and use the item
 		try {
-			i.use(currentSquare, direction);
+			i.use(currentSquare);
 		}
 		catch (IllegalStateException e) {
 			// re-add the item to the inventory and re-throw the exception

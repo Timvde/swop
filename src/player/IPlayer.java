@@ -159,10 +159,8 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @param i
 	 *        The item that will be used.
-	 * @param direction
-	 *        the direction in whitch the item will be used
 	 * @throws IllegalArgumentException
 	 *         The item is not in the inventory
 	 */
-	public void useItem(IItem i, Direction direction) throws IllegalArgumentException;
+	public void useItem(IItem i) throws IllegalArgumentException;
 }

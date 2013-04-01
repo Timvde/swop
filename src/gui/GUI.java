@@ -464,7 +464,7 @@ public class GUI implements Runnable {
 						// is selected in the inventory!
 						if (inventoryListSelected != null) {
 							useItemController
-									.useItem((IItem) inventoryListSelected, askDirection());
+									.useItem((IItem) inventoryListSelected);
 							inventoryListSelected = null;
 							gui.repaint();
 						}
@@ -571,7 +571,12 @@ public class GUI implements Runnable {
 		return new Coordinate(x, y);
 	}
 	
-	private Direction askDirection() {
+	/**
+	 * Ask the user for a basic direction and return this.
+	 *  
+	 * @return the direction the user has chosen
+	 */
+	public Direction getBasicDirection() {
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		String name = null;
 		try {

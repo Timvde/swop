@@ -4,7 +4,6 @@ import item.Effect;
 import item.IItem;
 import item.Item;
 import square.ASquare;
-import square.Direction;
 import square.TronObject;
 import com.sun.istack.internal.NotNull;
 
@@ -70,7 +69,7 @@ public class LightGrenade extends Item implements ILightGrenade {
 	}
 	
 	@Override
-	public void use(ASquare square, Direction direction) {
+	public void use(ASquare square) {
 		
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
