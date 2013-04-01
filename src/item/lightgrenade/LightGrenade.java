@@ -104,7 +104,6 @@ public class LightGrenade extends Item {
 	public void use(ASquare square, Direction direction) {
 		//TODO: nullpointer... --> throw illegalArgument?
 		
-		// TODO: just ask the square: canPlaceItemOnSquare(this)
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
@@ -112,7 +111,6 @@ public class LightGrenade extends Item {
 		
 		// try and add this light grenade to the square
 		square.addItem(this);
-		// TODO try catch UnsupportedOperationException --> throw new IllegalState (cannot be added to wall)
 		
 		this.enable();
 	}

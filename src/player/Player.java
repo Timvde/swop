@@ -102,14 +102,24 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 * This method will under normal circumstances increase the allowed number
 	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. When the
 	 * Player is on a power failured square, the number of actions lost will be
-	 * 2. It is called when a Player calls {@link #endTurn()} to reset his turn
-	 * related fields.
+	 * 2. It is called by the PlayerDB when it assigns the next Player.
 	 */
-	private void increaseAllowedNumberOfActions() {
+	void assignNewTurn() {
+		// rest the turn related properties
+		this.resetHasMoved();
+		
 		// increase the number of actions left by the number of actions per turn
 		// this cannot be more then the max number of actions
 		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
 				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
+				
+		// If the player is on a square with a power failure, it can do one
+		// action less.
+		if (this.getCurrentLocation().hasPowerFailure())
+			this.skipNumberOfActions(1);
+		
+		// allowed nb actions could be <= 0 because of penalties
+		checkEndTurn();
 	}
 	
 	/**
@@ -136,16 +146,22 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	}
 	
 	/**
+	 * This sets the number of actions a player has left to zero. This will end
+	 * a player's turn.
+	 */
+	private void resetNumberOfActionsLeft() {
+		skipNumberOfActions(getAllowedNumberOfActions());
+	}
+	
+	/**
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
 	private void checkEndTurn() {
 		if (getAllowedNumberOfActions() <= 0) {
+			// notify the DB to end turn
 			this.setChanged();
 			this.notifyObservers();
-			// We need to increase it again to prepare for this player's next
-			// turn.
-			this.increaseAllowedNumberOfActions();
 		}
 	}
 	
@@ -182,7 +198,6 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		
 		if (this.hasMovedYet()) {
 			// this player's turn will end; reset the turn-related properties
-			this.resetHasMoved();
 			resetNumberOfActionsLeft();
 			lightTrail.updateLightTrail();
 		}
@@ -190,14 +205,6 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			// TODO player loses the game
 			System.out.println("Player " + getID() + " loses the game!");
 		}
-	}
-	
-	/**
-	 * This sets the number of actions a player has left to zero. This will end
-	 * a player's turn.
-	 */
-	private void resetNumberOfActionsLeft() {
-		skipNumberOfActions(getAllowedNumberOfActions());
 	}
 	
 	@Override
@@ -214,7 +221,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		else if (!canMoveInDirection(direction))
 			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
 		
-		// remove this player form his current square
+		// remove this player from his current square
 		currentSquare.removePlayer();
 		
 		// update the light trail of this player 

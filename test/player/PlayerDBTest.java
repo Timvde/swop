@@ -8,9 +8,6 @@ import java.util.List;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import player.IPlayer;
-import player.Player;
-import player.PlayerDataBase;
 
 @SuppressWarnings("javadoc")
 public class PlayerDBTest {
@@ -23,7 +20,9 @@ public class PlayerDBTest {
 	public void setUp() {
 		grid = new GridBuilder().getPredefinedTestGrid(false);
 		playerDB = new PlayerDataBase(grid);
-		exampleCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
+		exampleCoords = new Coordinate[] {
+				new Coordinate(GridBuilder.PREDIFINED_GRID_SIZE - 1,
+						GridBuilder.PREDIFINED_GRID_SIZE - 1), new Coordinate(0, 0) };
 		playerDB.createNewDB(exampleCoords, grid);
 	}
 	
@@ -48,7 +47,7 @@ public class PlayerDBTest {
 		// all players should be different
 		allDifferent(list);
 		
-		playerDB.createNewDB(exampleCoords, grid);
+		playerDB.createNewDB(exampleCoords, new GridBuilder().getPredefinedTestGrid(false));
 		List<IPlayer> list2 = getAllPlayerFromDB();
 		// all players should be different
 		allDifferent(list2);
