@@ -7,7 +7,7 @@ import square.TronObject;
 
 /**
  * An Item is an object that can be placed on a {@link Square}. Each item has a
- * unique ID. Some Items can be picked up by a {@link Player}.
+ * unique ID. Some Items can be picked up by a {@link Player}. 
  */
 public interface IItem extends TronObject {
 	

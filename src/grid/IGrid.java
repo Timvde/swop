@@ -14,23 +14,6 @@ import notnullcheckweaver.NotNull;
  */
 public interface IGrid {
 	
-	/**
-	 * Returns whether or not one is allowed to move one Square from a specified
-	 * {@link Coordinate} in a specified {@link Direction}. One can only move to
-	 * coordinates that exists on the grid (i.e.
-	 * <code>fromCoordinate.getCoordinateInDirection(direction)</code> must
-	 * exist on the grid). One cannot move through walls or light trails. No two
-	 * players can be on the same Square.
-	 * 
-	 * @param fromCoordinate
-	 *        The coordinate one wants to leave.
-	 * @param direction
-	 *        The direction one wants to move in.
-	 * @return whether one is allowed to move one Square from a specified
-	 *         {@link Coordinate} in a specified {@link Direction}.
-	 */
-	public abstract boolean canMoveFromCoordInDirection(Coordinate fromCoordinate,
-			Direction direction);
 	
 	/**
 	 * returns the list of items on a square, when there are no items on the
