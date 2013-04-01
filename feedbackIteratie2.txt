@@ -1,0 +1,19 @@
+- Algemeen: beter :)
+
+- Presentatie:
+    * leesbare diagrammen! (lichte achtergrondkleuren)    
+    * nuttige uitbreidingen vermelden, en nodige aanpassingen (bv nieuw item -> Effect? Player?)
+    * correctheid UML (alt ipv opt, note ipv functionaliteit, tekst bij pijlen ipv functies)
+
+- Design:
+    * vrij goed
+    * Power failures: concept in squares, squares hoeven niet te weten over power failures (wat als meer concepten?)
+    * Effect: weet veel van Items en Squares, herbekijken -> design pattern? (Power failure mag wel weten van een light grenade, niet omgekeerd?)
+    * LightGrenade -> explode() verandert enkel state, wordt nergens gebruikt (enkel in tests)
+
+- Documentatie: vrij goed
+- Tests:
+    * statisch grid is goed
+    * _normal_ flow van scenario testen (move, use...) -> operaties moeten tonen dat het spel speelbaar is
+    * Geen unit tests op power failures (aanmaken van power failure propageert naar de squares errond)
+    * We proberen het systeem niet te breken (ongeldige input meeleveren)
