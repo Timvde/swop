@@ -80,12 +80,12 @@ public class UseItemTest {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		// Player 2 actions
-		List<IItem> items1 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		moveCont.move(Direction.EAST);
-		List<IItem> items2 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
@@ -115,7 +115,7 @@ public class UseItemTest {
 		// Player 2 actions
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
-		List<IItem> items1 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);

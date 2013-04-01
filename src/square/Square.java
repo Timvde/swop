@@ -186,6 +186,7 @@ public class Square extends ASquare {
 	 *        the player that is to be added
 	 * @return true if the player can be added, else false
 	 */
+	@Override
 	public boolean canBeAdded(IPlayer player) {
 		// check if there is an other player and if the specified player exists
 		return this.player == null && player != null;

@@ -167,13 +167,10 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 			// TODO: Notify game
 		}
 		
+		this.playerList.get(currentPlayerIndex).assignNewTurn();
+		
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 		updatePowerFailures();
-		
-		// If the player is on a square with a power failure, it can do one
-		// action less.
-		if (getCurrentPlayer().getCurrentLocation().hasPowerFailure())
-			getCurrentPlayer().skipNumberOfActions(1);
 	}
 	
 	/**

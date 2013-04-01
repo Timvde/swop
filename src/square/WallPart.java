@@ -109,4 +109,9 @@ public class WallPart extends ASquare {
 	public boolean canBeAdded(IItem item) {
 		return false;
 	}
+	
+	@Override
+	public boolean canBeAdded(IPlayer player) {
+		return false;
+	}
 }

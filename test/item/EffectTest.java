@@ -3,6 +3,7 @@ package item;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import item.lightgrenade.LightGrenade;
+import item.lightgrenade.LightGrenade.LightGrenadeState;
 import item.teleporter.Teleporter;
 import java.util.Collections;
 import org.junit.Before;
@@ -76,7 +77,7 @@ public class EffectTest {
 	public void testExecute_withALightGrenade() {
 		// add an active light grenade to the effect
 		LightGrenade lightGrenade = new LightGrenade();
-		lightGrenade.enable();
+		explodeLightGrenade(lightGrenade);
 		effect.addItem(lightGrenade);
 		
 		// execute the effect
@@ -90,7 +91,7 @@ public class EffectTest {
 	public void testExecute_withLightGrenadeAndPowerFailure() {
 		// add an active light grenade to the effect
 		LightGrenade lightGrenade = new LightGrenade();
-		lightGrenade.enable();
+		explodeLightGrenade(lightGrenade);
 		effect.addItem(lightGrenade);
 		
 		// add a power failure to the effect
@@ -103,5 +104,18 @@ public class EffectTest {
 		
 		// test if the light grenade has affect the player
 		assertEquals(4, player.getNumberOfActionsSkipped());
+	}
+	
+	/**
+	 * Will set the {@link LightGrenadeState} to EXPLODED.
+	 */
+	public void explodeLightGrenade(LightGrenade lightGrenade) {
+		Square emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		
+		// Simulate adding the lightgrenade to the square and thus making it active.
+		lightGrenade.use(emptySquare);
+		
+		// Simulate a Player stepping on the light grenade an thus exploding it.
+		emptySquare.addPlayer(new DummyPlayer());
 	}
 }

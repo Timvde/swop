@@ -45,19 +45,23 @@ public class PlayerTest {
 	
 	@Test
 	public void testNumberOfActions() {
-		// test the initial number of actions
-		assertEquals(3, player.getAllowedNumberOfActions());
+		// test the initial number of actions, Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
 		// decrease by one 
 		player.skipNumberOfActions(1);
 		// test again
-		assertEquals(2, player.getAllowedNumberOfActions());
-		// subtract another two 
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN-1, player.getAllowedNumberOfActions());
+		// subtract another two: nb of actions will become zero
 		player.skipNumberOfActions(2);
-		// i think the player should have three now 
-		// but this might be something that will change
-		assertEquals(3, player.getAllowedNumberOfActions());
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN-3, player.getAllowedNumberOfActions());
+		
+		//simulate the DB assigning new actions to the player
+		player.assignNewTurn();
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());		
+		
 		// subtract four at once 
 		player.skipNumberOfActions(4);
+		player.assignNewTurn();
 		// the result should now be two ( 3 - 4 + 3 )
 		assertEquals(2, player.getAllowedNumberOfActions());
 	}
@@ -66,5 +70,21 @@ public class PlayerTest {
 	public void testIsValidDirection() {
 		assertTrue(player.isValidDirection(Direction.NORTH));
 		assertFalse(player.isValidDirection(null));
+	}
+	
+	@Test
+	public void testAssignNewTurn() {
+		player.assignNewTurn();
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
+		assertFalse(player.hasMovedYet());
+		assertFalse(player.hasMovedYet());
+		
+		player.skipNumberOfActions(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
+		assertEquals(-4, player.getAllowedNumberOfActions());
+		assertFalse(player.hasMovedYet());
+		
+		player.assignNewTurn();
+		assertEquals(-1, player.getAllowedNumberOfActions());
+		assertFalse(player.hasMovedYet());
 	}
 }

@@ -93,8 +93,12 @@ public abstract class ASquare implements ISquare {
 	 * 
 	 * @param p
 	 *        the player who wants to be placed on this square
+	 *        
+	 * @throws IllegalArgumentException
+	 *         It must be possible to add the player to this square. More formally
+	 *         <code>{@link #canBeAdded(IPlayer)}</code> .
 	 */
-	public abstract void addPlayer(IPlayer p);
+	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
 	
 	/**
 	 * This method removes a player from a square. This method is enforced:
@@ -148,8 +152,11 @@ public abstract class ASquare implements ISquare {
 	 * 
 	 * @param item
 	 *        the item to add
+	 * @throws IllegalArgumentException
+	 *         It must be possible to add the item to this square. More formally
+	 *         <code>{@link #canBeAdded(IItem)}</code>.
 	 */
-	public abstract void addItem(IItem item);
+	public abstract void addItem(IItem item) throws IllegalArgumentException;
 	
 	/**
 	 * Returns the neighbour of this square in the specified direction or null
@@ -187,4 +194,13 @@ public abstract class ASquare implements ISquare {
 	 * @return true if the item can be added, else false
 	 */
 	public abstract boolean canBeAdded(IItem item);
+	
+	/**
+	 * Test whether a {@link IPlayer player} can be added to this square.
+	 * 
+	 * @param player
+	 *        the player that is to be added
+	 * @return true if the player can be added, else false
+	 */
+	public abstract boolean canBeAdded(IPlayer player);
 }

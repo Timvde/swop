@@ -76,12 +76,12 @@ public class PickUpTest {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		// Player 2 actions
-		List<IItem> items1 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		moveCont.move(Direction.EAST);
-		List<IItem> items2 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
@@ -90,7 +90,7 @@ public class PickUpTest {
 		endTurnCont.endTurn();
 		// Player 2 actions
 		moveCont.move(Direction.EAST);
-		List<IItem> items3 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items3 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade3 = items3.get(0);
 		pickUpCont.pickUpItem(lightGrenade3);
@@ -99,12 +99,12 @@ public class PickUpTest {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		// Player 2 actions
-		List<IItem> items4 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items4 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade4 = items4.get(0);
 		pickUpCont.pickUpItem(lightGrenade4);
 		moveCont.move(Direction.NORTH);
-		List<IItem> items5 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items5 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade5 = items5.get(0);
 		pickUpCont.pickUpItem(lightGrenade5);
@@ -113,7 +113,7 @@ public class PickUpTest {
 		endTurnCont.endTurn();
 		// Player 2 actions
 		moveCont.move(Direction.NORTHWEST);
-		List<IItem> items6 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items6 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade6 = items6.get(0);
 		pickUpCont.pickUpItem(lightGrenade6);
@@ -130,7 +130,7 @@ public class PickUpTest {
 		endTurnCont.endTurn();
 		// Player 2 actions
 		moveCont.move(Direction.SOUTHWEST);
-		List<IItem> items7 = grid.getSquareAt(playerDB.getCurrentPlayer().getCurrentLocation())
+		List<IItem> items7 = playerDB.getCurrentPlayer().getCurrentLocation()
 				.getCarryableItems();
 		IItem lightGrenade7 = items7.get(0);
 		

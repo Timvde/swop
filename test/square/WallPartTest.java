@@ -94,7 +94,6 @@ public class WallPartTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void testAddItem() {
-		assertFalse(wall.canBeAdded(null));
 		wall.addItem(null);
 	}
 	

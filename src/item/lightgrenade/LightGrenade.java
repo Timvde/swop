@@ -15,16 +15,27 @@ import com.sun.istack.internal.NotNull;
  * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
  * then gets used by a player the internal state of this item will be changed to
  * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode
- * whenever the {@link #execute(TronObject)} method is called. After exploding the light
- * grenade converts to it's last state {@link LightGrenadeState#EXPLODED
- * EXPLODED}, this will convert the item to a immutable object.
+ * whenever the {@link #execute(TronObject)} method is called. After exploding
+ * the light grenade converts to it's last state
+ * {@link LightGrenadeState#EXPLODED EXPLODED}, this will convert the item to a
+ * immutable object.
  * 
  */
-public class LightGrenade extends Item implements ILightGrenade {
+public class LightGrenade extends Item {
 	
 	@NotNull
 	private LightGrenadeState	state;
-	private int 				damage;
+	private int					damage;
+	
+	/**
+	 * The default strength of a light grenade: the number of actions to skip
+	 * for {@link Explodable} objects when it explodes.
+	 */
+	static final int	DEFAULT_STRENGTH	= 3;
+	/**
+	 * The enforced damage, when {@link #increaseStrength()} is called.
+	 */
+	static final int	INCREASED_STRENGHT	= 4;
 	
 	/**
 	 * create a new light grenade, the state of this light grenade will be
@@ -32,30 +43,50 @@ public class LightGrenade extends Item implements ILightGrenade {
 	 */
 	public LightGrenade() {
 		state = LightGrenadeState.INACTIVE;
-		damage = 3;
+		damage = DEFAULT_STRENGTH;
 	}
 	
-	@Override
-	public LightGrenadeState getState() {
+	/**
+	 * This method returns the current {@link LightGrenadeState} the grenade is
+	 * in. (For testing purposes)
+	 * 
+	 * @return the current {@link LightGrenadeState} the grenade is in.
+	 */
+	LightGrenadeState getState() {
 		return this.state;
 	}
 	
-	@Override
-	public void enable() throws IllegalStateException {
+	/**
+	 * This method sets the state of the grenade to {@link LightGrenadeState}
+	 * .ACTIVE. It cannot be called until the player who dropped the
+	 * lightgrenade and triggered it, left the square.
+	 * 
+	 * @throws IllegalStateException
+	 *         The transition to the ACTIVE state must be valid from the current
+	 *         state:
+	 *         <code>this.getState().isAllowedTransistionTo(LightGrenadeState.ACTIVE)</code>
+	 */
+	private void enable() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'enabled'");
 		this.state = LightGrenadeState.ACTIVE;
 	}
 	
-	@Override
-	public void execute(TronObject object) throws IllegalStateException {
+	/**
+	 * This method sets the state of the grenade to {@link LightGrenadeState}
+	 * .EXPLODED
+	 * 
+	 * @throws IllegalStateException
+	 *         The transition to the EXPLODED state must be valid from the
+	 *         current state:
+	 *         <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
+	 */
+	private void explode() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'exploded'");
 		this.state = LightGrenadeState.EXPLODED;
-		
-		object.asExplodable().skipNumberOfActions(damage);
 	}
 	
 	@Override
@@ -84,18 +115,35 @@ public class LightGrenade extends Item implements ILightGrenade {
 	
 	@Override
 	public void addToEffect(Effect effect) {
-		if (this.getState() == LightGrenadeState.ACTIVE) {
+		if (this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)) {
+			this.explode();
 			effect.addItem(this);
 		}
 	}
 	
+	@Override
+	public void execute(TronObject object) throws IllegalStateException {
+		// Test whether this light grenade can explode
+		if (this.state != LightGrenadeState.ACTIVE)
+			throw new IllegalStateException("One can only execute active light grenades");
+		// Test whether the specified object can explode
+		if (object.asExplodable() == null)
+			throw new IllegalArgumentException("The specified object cannot explode");
+		
+		// explode
+		object.asExplodable().skipNumberOfActions(damage);
+		this.explode();
+	}
+	
 	/**
-	 * Increase the strength of a light grenade for when it explodes. By default, when a light grenade explode it will
-	 * decrease the number of actions left by {@link Explodable} objects by three. This method will increase the strength of 
-	 * a light grenade to four.   
+	 * Increase the strength of a light grenade (the damage it does when it
+	 * explodes). By default, when a light grenade explode it will decrease the
+	 * number of actions left for {@link Explodable} objects by
+	 * {@value #DEFAULT_STRENGTH}. This method will increase the strength of a
+	 * light grenade to {@value #INCREASED_STRENGHT}.
 	 */
 	public void increaseStrength() {
-		damage = 4;
+		damage = INCREASED_STRENGHT;
 	}
 	
 	/************************* LigthGrenadeEnum *************************/

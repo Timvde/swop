@@ -585,17 +585,20 @@ public class GUI implements Runnable {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		switch (name) {
-			case "north":
-				return Direction.NORTH;
-			case "south":
-				return Direction.SOUTH;
-			case "east":
-				return Direction.EAST;
-			case "west":
-				return Direction.WEST;
-			default:
-				return null;
+		
+		if (name.equals("north")) {
+			return Direction.NORTH;
 		}
+		else if (name.equals("south")){
+			return Direction.SOUTH;
+		}
+		else if (name.equals("east")) {
+			return Direction.EAST;
+		}
+		else if (name.equals("west")) {
+			return Direction.WEST;
+		}
+		
+		return null;
 	}
 }
