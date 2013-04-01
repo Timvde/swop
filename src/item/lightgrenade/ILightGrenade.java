@@ -11,6 +11,8 @@ import item.lightgrenade.LightGrenade.LightGrenadeState;
  * A player may only 'trigger' a light grenade, which means the grenade will
  * become 'active', once the player leaves the square. When a player enters a
  * square with an active light grenade, it will go in the 'exploded' state.
+ * 
+ * TODO remove this interface?
  */
 public interface ILightGrenade extends IItem {
 

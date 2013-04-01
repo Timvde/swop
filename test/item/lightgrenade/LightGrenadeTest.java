@@ -18,12 +18,14 @@ import square.WallPart;
 public class LightGrenadeTest {
 	
 	private LightGrenade	lightGrenade;
-	private DummyPlayer		player;
+	private DummyPlayer		affectedPlayer;
+	private Square			emptySquare;
 	
 	@Before
 	public void setUp() {
 		lightGrenade = new LightGrenade();
-		player = new DummyPlayer();
+		emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		affectedPlayer = new DummyPlayer();
 	}
 	
 	@Test
@@ -39,89 +41,117 @@ public class LightGrenadeTest {
 	@Test
 	public void testStateTransision() {
 		assertEquals(LightGrenadeState.INACTIVE, lightGrenade.getState());
-		lightGrenade.enable();
+		activateLightGrenade();
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
-		lightGrenade.execute(player);
+		
+		explodeLightGrenade();
 		assertEquals(LightGrenadeState.EXPLODED, lightGrenade.getState());
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void testEnable_IllegalState() {
-		lightGrenade.enable();
-		lightGrenade.execute(player);
-		lightGrenade.enable();
+	public void testExecuteInactiveIllegalState_IllegalState() {
+		// one cannot execute an inexploded lightgrenade
+		lightGrenade.execute(affectedPlayer);
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void testExplode_IllegalState() {
-		lightGrenade.execute(player);
+	public void testExecuteActiveIllegalState() {
+		activateLightGrenade();
+		// one cannot execute an active lightgrenade
+		lightGrenade.execute(affectedPlayer);
 	}
 	
 	@Test
-	public void isCarriable() {
+	public void TestIsCarriable() {
 		assertTrue(lightGrenade.isCarriable());
-		lightGrenade.enable();
+		
+		activateLightGrenade();
 		assertFalse(lightGrenade.isCarriable());
-		lightGrenade.execute(player);
+		
+		explodeLightGrenade();
 		assertFalse(lightGrenade.isCarriable());
 	}
 	
 	@Test
 	public void testUse() {
-		Square sq = new Square(Collections.<Direction, ASquare> emptyMap());
-		
-		lightGrenade.use(sq, null);
+		lightGrenade.use(emptySquare, null);
 		
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
-		sq.contains(lightGrenade);
+		assertTrue(emptySquare.contains(lightGrenade));
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)
-	public void testUse_SqureIsAWall() {
+	public void testUse_SquareIsAWall() {
 		lightGrenade.use(new WallPart(Collections.<Direction, ASquare> emptyMap()), null);
 	}
 	
 	@Test(expected = IllegalStateException.class)
 	public void testUse_alreadyLightGrenadeOnSquare() {
-		Square sq = new Square(Collections.<Direction, ASquare> emptyMap());
-		sq.addItem(new LightGrenade());
-		
-		lightGrenade.use(sq, null);
+		emptySquare.addItem(new LightGrenade());
+		lightGrenade.use(emptySquare, null);
 	}
 	
 	@Test
-	public void testIncreaseStrength() {
-		// place the light grenade somewhere (not really important)
-		lightGrenade.use(new Square(Collections.<Direction, ASquare> emptyMap()), null);
+	public void testNormalStrengthExplode() {
+		activateLightGrenade();
+		explodeLightGrenade();
+		// test if the strength was increased
+		assertEquals(LightGrenade.DEFAULT_STRENGTH, affectedPlayer.getNumberOfActionsSkipped());
+	}
+	
+	@Test
+	public void testIncreasedStrenghtExplode() {
 		// increase the strength of the light grenade
 		lightGrenade.increaseStrength();
-		
-		// execute the effect on the player
-		lightGrenade.execute(player);
-		
+		activateLightGrenade();
+		explodeLightGrenade();
 		// test if the strength was increased
-		assertEquals(4, player.getNumberOfActionsSkipped());
+		assertEquals(LightGrenade.INCREASED_STRENGHT, affectedPlayer.getNumberOfActionsSkipped());
 	}
 	
 	@Test
 	public void testAddToEffect() {
-		Effect effect = new Effect(player);
+		Effect effect = new Effect(affectedPlayer);
 		lightGrenade.addToEffect(effect);
 		effect.execute();
+		assertEquals(0, affectedPlayer.getNumberOfActionsSkipped());
 		
-		assertEquals(0, player.getNumberOfActionsSkipped());
-		
-		lightGrenade.use(new Square(Collections.<Direction, ASquare> emptyMap()), null);
-		effect = new Effect(player);
+		activateLightGrenade();
+		effect = new Effect(affectedPlayer);
 		lightGrenade.addToEffect(effect);
 		effect.execute();
+		assertEquals(LightGrenade.DEFAULT_STRENGTH, affectedPlayer.getNumberOfActionsSkipped());
 		
-		assertEquals(3, player.getNumberOfActionsSkipped());
-		
-		effect = new Effect(player);
+		effect = new Effect(affectedPlayer);
 		lightGrenade.addToEffect(effect);
 		effect.execute();
+		assertEquals(LightGrenade.DEFAULT_STRENGTH, affectedPlayer.getNumberOfActionsSkipped());
 		
-		assertEquals(3, player.getNumberOfActionsSkipped());
+		lightGrenade.increaseStrength();
+		effect = new Effect(affectedPlayer);
+		lightGrenade.addToEffect(effect);
+		effect.execute();
+		assertEquals(LightGrenade.INCREASED_STRENGHT, affectedPlayer.getNumberOfActionsSkipped());
+	}
+	
+	/**
+	 * Simulates adding the lightgrenade to the square and thus making it
+	 * active.
+	 */
+	public void activateLightGrenade() {
+		lightGrenade.use(emptySquare, null);
+		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
+		assertTrue(emptySquare.contains(lightGrenade));
+	}
+	
+	/**
+	 * Simulate a Player stepping on the light grenade an thus exploding it.
+	 * 
+	 * this.square should contain the lightgrenade (by first calling
+	 * {@link #activateLightGrenade()}
+	 */
+	public void explodeLightGrenade() {
+		emptySquare.addPlayer(affectedPlayer);
+		assertEquals(LightGrenadeState.EXPLODED, lightGrenade.getState());
 	}
 }
