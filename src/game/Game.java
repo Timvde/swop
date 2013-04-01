@@ -6,6 +6,7 @@ import grid.GridBuilder;
 import gui.GUI;
 import player.Player;
 import player.PlayerDataBase;
+import square.ASquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -37,10 +38,10 @@ public class Game {
 	}
 	
 	/**
-	 * Start the initialisation and run the GUI.
+	 * Start the initialization and run the GUI.
 	 */
 	public void start() { 
-		this.playerDB = new PlayerDataBase(grid); 
+		this.playerDB = new PlayerDataBase(); 
 		
 		// create all the controllers, giving them the IPlayerDB
 		MoveController moveCont = new MoveController(this.playerDB);
@@ -87,9 +88,9 @@ public class Game {
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
 		
-		Coordinate[] playerStartingCoordinates = new Coordinate[] { new Coordinate(width - 1, 0),
-				new Coordinate(0, height - 1) };
-		playerDB.createNewDB(playerStartingCoordinates, grid);
+		ASquare[] playerStartingCoordinates = new ASquare[] { grid.getGrid().get(new Coordinate(width - 1, 0)),
+				grid.getGrid().get(new Coordinate(0, height - 1)) };
+		playerDB.createNewDB(playerStartingCoordinates);
 	}
 	
 	/**

@@ -4,7 +4,6 @@ import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
 import square.ASquare;
 import square.AffectedByPowerFailure;
@@ -18,26 +17,35 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem, Direction) use} an
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
-public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
-		Explodable {
+public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
 	
-	/**
-	 * The maximum number of actions a Player is allowed to do in one turn.
-	 */
+	/** The maximum number of actions a Player is allowed to do in one turn */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN	= 3;
-	
+	/**
+	 * The id of the player, not really used, but hey ... let's do something
+	 * crazy
+	 */
 	private int						id;
 	private static AtomicInteger	nextID							= new AtomicInteger();
-	
+	/** The number of actions the player has left during this turn */
 	private int						allowedNumberOfActionsLeft;
+	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
+	/** The starting square of this player */
 	private final ASquare			startSquare;
+	/** The square where the player is currently standing */
 	private ASquare					currentSquare;
+	/** The inventory of the player */
 	private Inventory				inventory;
+	/** The light trail of the player */
 	private LightTrail				lightTrail;
+	/** The state of the player */
+	private PlayerState				state;
+	/** The player database in which the player is placed */
+	private PlayerDataBase			playerDB;
 	
 	/*
 	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
@@ -49,21 +57,24 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
-	 * moved and has an allowed nb of actions of
+	 * moved and has an allowed number of actions of
 	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
-	 * starting position of the player.
+	 * starting position of the player. The default state of a player is
+	 * {@link PlayerState#WAITING}.
 	 * 
 	 * @param startSquare
 	 *        The starting position of the player
+	 * @param playerDB
+	 *        The {@link PlayerDataBase playerDB} the player has to notify when
+	 *        his turn ends
 	 * @throws IllegalArgumentException
 	 *         The given arguments cannot be null.
 	 * @throws IllegalStateException
 	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(Square startSquare) {
-		if (startSquare == null) {
+	public Player(Square startSquare, PlayerDataBase playerDB) {
+		if (startSquare == null || playerDB == null)
 			throw new IllegalArgumentException("The given arguments cannot be null");
-		}
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
@@ -72,6 +83,8 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.startSquare = startSquare;
 		this.currentSquare = startSquare;
+		this.state = PlayerState.WAITING;
+		this.playerDB = playerDB;
 		startSquare.addPlayer(this);
 	}
 	
@@ -112,7 +125,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		// this cannot be more then the max number of actions
 		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
 				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
-				
+		
 		// If the player is on a square with a power failure, it can do one
 		// action less.
 		if (this.getCurrentLocation().hasPowerFailure())
@@ -159,9 +172,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 */
 	private void checkEndTurn() {
 		if (getAllowedNumberOfActions() <= 0) {
-			// notify the DB to end turn
-			this.setChanged();
-			this.notifyObservers();
+			playerDB.endPlayerTurn(this);
 		}
 	}
 	
@@ -188,13 +199,38 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		this.hasMoved = false;
 	}
 	
+	/**
+	 * Returns whether this player can perform an action.
+	 * 
+	 * @return true if the player can perform an action, else false
+	 */
+	private boolean canPreformAction() {
+		return this.state == PlayerState.ACTIVE;
+	}
+	
+	/**
+	 * Set the state of the player to a new specified state
+	 * 
+	 * @param state
+	 *        the new state of the player
+	 */
+	void setPlayerState(PlayerState state) {
+		if (state == null)
+			throw new IllegalArgumentException("The state of the player cannot be null!");
+		
+		// set the player state
+		this.state = state;
+	}
+	
 	/* #################### User methods #################### */
 	
 	@Override
 	public void endTurn() throws IllegalStateException {
-		if (!isPreconditionEndTurnSatisfied()) {
+		if (!canPreformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
+		if (!isPreconditionEndTurnSatisfied())
 			throw new IllegalStateException("The endTurn-preconditions are not satisfied.");
-		}
 		
 		if (this.hasMovedYet()) {
 			// this player's turn will end; reset the turn-related properties
@@ -214,20 +250,23 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	@Override
 	public void moveInDirection(Direction direction) throws IllegalMoveException {
+		if (!canPreformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (!isPreconditionMoveSatisfied())
 			throw new IllegalMoveException("The move-preconditions are not satisfied.");
 		if (!isValidDirection(direction))
 			throw new IllegalMoveException("The specified direction is not valid.");
-		else if (!canMoveInDirection(direction))
+		if (!canMoveInDirection(direction))
 			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
 		
 		// remove this player from his current square
-		currentSquare.removePlayer();
+		currentSquare.remove(this);
 		
-		// update the light trail of this player 
+		// update the light trail of this player
 		this.lightTrail.updateLightTrail(currentSquare);
-
-		// the player is moving 
+		
+		// the player is moving
 		this.setHasMoved();
 		
 		// set new position
@@ -235,11 +274,11 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		
 		// set the new square of the player
 		currentSquare = newSquare;
-
+		
 		// add the player to the new square
 		newSquare.addPlayer(this);
 		
-		// end the players action ... 
+		// end the players action ...
 		decreaseAllowedNumberOfActions();
 	}
 	
@@ -292,7 +331,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		if (direction.getPrimeryDirections().size() != 2)
 			return false;
 		
-		// test if the square has a neighbour in both directions 
+		// test if the square has a neighbour in both directions
 		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(0)) == null)
 			return false;
 		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)) == null)
@@ -302,16 +341,20 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(0))
 				.hasLightTrail())
 			return false;
-		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)).hasLightTrail())
+		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(1))
+				.hasLightTrail())
 			return false;
 		
 		// it looks like the player crosses a light trail
-		// he will not get away with this ...  
+		// he will not get away with this ...
 		return true;
 	}
 	
 	@Override
 	public void pickUpItem(IItem item) {
+		if (!canPreformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (item == null || !currentSquare.contains(item))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
@@ -335,6 +378,9 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	@Override
 	public void useItem(IItem i) {
+		if (!canPreformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
@@ -393,18 +439,28 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	@Override
 	public void teleportTo(ASquare destination) {
 		if (!canTeleportTo(destination))
-			throw new IllegalArgumentException("Player could not teleport to destination: " + destination);
+			throw new IllegalArgumentException("Player could not teleport to destination: "
+					+ destination);
 		currentSquare.remove(this);
 		currentSquare = (Square) destination;
 		destination.addPlayer(this);
 	}
 	
+	/**
+	 * Returns whether the player can teleport to the specified square.
+	 * 
+	 * @param destination
+	 *        the destination to test
+	 * @return true if the player can teleport to the specified square, else
+	 *         false
+	 */
 	public boolean canTeleportTo(ASquare destination) {
 		// test if the destination exists
 		if (destination == null)
 			return false;
-		// test if the square accepts players
-		// TODO 
+		// test if there is a player on the square
+		if (destination.hasPlayer())
+			return false;
 		
 		return true;
 	}
