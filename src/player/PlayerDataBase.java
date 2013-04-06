@@ -60,22 +60,20 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *         the same.
 	 */
 	// who the f**k uses an array these days?
-	// And if you wanted all different values, just use a set !!
+	// And if you wanted all different values, just use a set {@link
+	// java.util.Set} !!
 	// can you please change this, i expect a bit more professionalism in this
 	// project
 	public void createNewDB(@NotNull ASquare[] playerStartingPositions)
 			throws IllegalArgumentException {
-		if (playerStartingPositions == null) {
+		if (playerStartingPositions == null)
 			throw new IllegalArgumentException("the given arguments cannot be null");
-		}
-		if (playerStartingPositions.length != NUMBER_OF_PLAYERS) {
+		if (playerStartingPositions.length != NUMBER_OF_PLAYERS)
 			throw new IllegalArgumentException("The number of player-starting-coordinates is wrong");
-		}
 		
-		if (!allDifferent(playerStartingPositions)) {
+		if (!allDifferent(playerStartingPositions))
 			throw new IllegalArgumentException(
 					"The specified player-starting-coordinates must all be different");
-		}
 		
 		Player.resetUniqueIdcounter();
 		this.playerList.clear();
@@ -84,8 +82,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			this.playerList.add(newPlayer);
 		}
 		
-		// Set the right upmost player as starting player.
+		// Set the first player as the starting player and make him active.
 		this.currentPlayerIndex = 0;
+		playerList.get(currentPlayerIndex).setPlayerState(PlayerState.ACTIVE);
 	}
 	
 	private boolean allDifferent(ASquare[] playerStartingPositions) {
@@ -126,6 +125,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			// TODO notify game
 		}
 		else {
+			
+			// check if the current player can be set to waiting 
+			if (!player.getPlayerState().canTransistionTo(PlayerState.WAITING))
+				throw new IllegalStateException("It looks like the game has finished already");
+			
 			// set the current player to waiting
 			player.setPlayerState(PlayerState.WAITING);
 			
@@ -133,11 +137,15 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 			player = playerList.get(currentPlayerIndex);
 			
+			// check if the next player can start his turn 
+			if (! player.getPlayerState().canTransistionTo(PlayerState.ACTIVE))
+				throw new IllegalStateException("It looks like the game has finished already");
+			
 			// assign new actions to the specified player and set him active
 			player.assignNewTurn();
 			player.setPlayerState(PlayerState.ACTIVE);
 			
-			updatePowerFailures();
+			notifyObservers();
 		}
 	}
 	
@@ -145,9 +153,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * This method will notify the grid that a new turn started and it should
 	 * upgrade power failures.
 	 */
-	private void updatePowerFailures() {
+	@Override
+	public void notifyObservers() {
 		this.setChanged();
-		this.notifyObservers();
+		super.notifyObservers();
 	}
 	
 	/**

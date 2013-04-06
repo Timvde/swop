@@ -1,12 +1,12 @@
 package grid;
 
 import item.IItem;
+
 import java.util.List;
 import java.util.Set;
+
 import square.ASquare;
-import square.Direction;
 import square.ISquare;
-import notnullcheckweaver.NotNull;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -23,7 +23,7 @@ public interface IGrid {
 	 *        the coordinate of the square where the items are located
 	 * @return a list of items on a square
 	 */
-	public List<IItem> getItemList(@NotNull Coordinate coordinate);
+	public List<IItem> getItemList(Coordinate coordinate);
 	
 	// FIXME check null
 	
@@ -36,7 +36,7 @@ public interface IGrid {
 	 * @return The square at that coordinate or null if the location doesn't
 	 *         exists.
 	 */
-	public ISquare getSquareAt(@NotNull Coordinate coordinate);
+	public ISquare getSquareAt(Coordinate coordinate);
 	
 	// FIXME check null
 	

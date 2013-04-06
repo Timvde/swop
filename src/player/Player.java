@@ -222,6 +222,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.state = state;
 	}
 	
+	PlayerState getPlayerState() {
+		return this.state;
+	}
+	
 	/* #################### User methods #################### */
 	
 	@Override
@@ -238,7 +242,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			lightTrail.updateLightTrail();
 		}
 		else {
-			// TODO player loses the game
+			// check if we can transition to the LOST state 
+			// this should be possible ... 
+			if (!state.canTransistionTo(PlayerState.LOST))
+				throw new IllegalStateException(
+						"We are under attack! I don't really know what is happening but when i entered this method the state of the player was ACTIVE and it seems that now, it is not. The only thing I can think of is that someone is messing with my internal state while I am executing. I don't like it.");
+			this.state = PlayerState.LOST;
 			System.out.println("Player " + getID() + " loses the game!");
 		}
 	}
