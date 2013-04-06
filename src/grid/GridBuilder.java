@@ -25,8 +25,8 @@ import square.WallPart;
 public class GridBuilder {
 	
 	private static final double	NUMBER_OF_GRENADES			= 0.02;
-	private static final double	NUMBER_OF_TELEPORTERS		= 0.02;
-	private static final double	NUMBER_OF_IDENTITY_DISKS	= 0.05;
+	private static final double	NUMBER_OF_TELEPORTERS		= 0.03;
+	private static final double	NUMBER_OF_IDENTITY_DISKS	= 0.02;
 	private static final int	MINIMUM_WALL_SIZE			= 2;
 	
 	private double				maximalLengthOfWall;

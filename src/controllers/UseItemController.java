@@ -1,5 +1,6 @@
 package controllers;
 
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import gui.GUI;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
@@ -45,8 +46,11 @@ public class UseItemController {
 	 * 
 	 * @param item
 	 *        The item that will be used.
+	 * @throws CannotPlaceLightGrenadeException 
+	 * @throws IllegalStateException 
+	 * @throws IllegalArgumentException 
 	 */
-	public void useItem(IItem item) {
+	public void useItem(IItem item) throws IllegalArgumentException, IllegalStateException, CannotPlaceLightGrenadeException {
 		// If the item used is an identity disk, a direction must be set before
 		// the item
 		// can be used. As described in the documentation of identity disk.
