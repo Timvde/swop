@@ -1,5 +1,6 @@
 package item;
 
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.Player;
 import square.ASquare;
 import square.Square;
@@ -23,9 +24,10 @@ public interface IItem extends TronObject {
 	 * use(Square) will be different for each subclass of item.
 	 * 
 	 * @param square
-	 *        the square on which the item was used.
+	 *        the square on which the item was used. 
+	 * @throws CannotPlaceLightGrenadeException 
 	 */
-	public void use(ASquare square);
+	public void use(ASquare square) throws CannotPlaceLightGrenadeException;
 	
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.
