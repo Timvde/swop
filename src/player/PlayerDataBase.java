@@ -91,6 +91,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
+		this.playerList.get(currentPlayerIndex).setPlayerState(PlayerState.ACTIVE);
 	}
 	
 	/**
@@ -157,13 +158,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			// set the current player to waiting
 			player.setPlayerState(PlayerState.WAITING);
 			
-			// find the next player
+			// find the next player and assign him a new turn
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 			player = playerList.get(currentPlayerIndex);
-			
-			// assign new actions to the specified player and set him active
 			player.assignNewTurn();
-			player.setPlayerState(PlayerState.ACTIVE);
 			
 			// notify observers a Player-change has occured
 			this.setChanged();

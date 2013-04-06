@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;
+import player.PlayerDataBase;
 
 @SuppressWarnings("javadoc")
 public class WallPartTest {
@@ -48,8 +49,11 @@ public class WallPartTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void addPlayer() {
-		Player player = new Player(new Square(Collections.<Direction, ASquare> emptyMap()));
-		wall.addPlayer(player);
+		PlayerDataBase db = new PlayerDataBase();
+		db.createNewDB(new Square[] { new Square(Collections.<Direction, ASquare> emptyMap()),
+				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		
+		wall.addPlayer(db.getCurrentPlayer());
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)

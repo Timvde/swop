@@ -15,15 +15,30 @@ import org.junit.Test;
 import player.DummyPlayer;
 import player.IPlayer;
 import player.Player;
+import player.PlayerDataBase;
 
 @SuppressWarnings("javadoc")
 public class SquareTest {
 	
 	private static Square	square;
+	private static IPlayer playerOnSquare;
 	
 	@Before
 	public void setUp() {
 		square = new Square(Collections.<Direction, ASquare> emptyMap());
+		PlayerDataBase db = new PlayerDataBase();
+		db.createNewDB(new Square[] { square,
+				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		// db now placed the player on the square
+		playerOnSquare = db.getCurrentPlayer();
+	}
+	
+	private IPlayer getNewRandomPlayer() {
+		PlayerDataBase db = new PlayerDataBase();
+		db.createNewDB(new Square[] { new Square(Collections.<Direction, ASquare> emptyMap()),
+				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		// db now placed the player on the square
+		return db.getCurrentPlayer();
 	}
 	
 	@Test
@@ -49,36 +64,34 @@ public class SquareTest {
 	}
 	
 	@Test
-	public void testRemove() {
+	public void testRemove() {		
 		// place some stuff on the square
-		Player player = new Player(square);
 		LightGrenade lightGrenade = new LightGrenade();
 		square.addItem(lightGrenade);
 		
 		// test if null removes anything (it shouldn't)
 		square.remove(null);
-		assertTrue(square.contains(player));
+		assertTrue(square.contains(playerOnSquare));
 		assertTrue(square.contains(lightGrenade));
 		
 		// remove the player from the square
-		square.remove(player);
-		assertFalse(square.contains(player));
+		square.remove(playerOnSquare);
+		assertFalse(square.contains(playerOnSquare));
 		assertTrue(square.contains(lightGrenade));
 		assertFalse(square.hasPlayer());
 		
 		// remove the light grenade from the square
 		square.remove(lightGrenade);
 		assertFalse(square.contains(lightGrenade));
-		assertFalse(square.contains(player));
+		assertFalse(square.contains(playerOnSquare));
 		assertFalse(square.hasPlayer());
 	}
 	
 	@Test
 	public void testContains() {
 		// create some stuff but do not place it on the square
-		Player player = new Player(square);
+		IPlayer player = getNewRandomPlayer();
 		LightGrenade lightGrenade = new LightGrenade();
-		square.remove(player);
 		
 		// test if the square contains anything (i hope not)
 		assertFalse(square.contains(null));
@@ -86,6 +99,7 @@ public class SquareTest {
 		assertFalse(square.contains(lightGrenade));
 		
 		// add a player to the square
+		square.removePlayer();
 		square.addPlayer(player);
 		assertTrue(square.contains(player));
 		assertFalse(square.contains(lightGrenade));
@@ -100,9 +114,8 @@ public class SquareTest {
 	
 	@Test
 	public void testPlayer() {
-		Player player = new Player(square);
-		assertEquals(square.getPlayer(), player);
-		square.remove(player);
+		assertEquals(square.getPlayer(), playerOnSquare);
+		square.remove(playerOnSquare);
 		assertEquals(square.getPlayer(), null);
 	}
 	
@@ -246,17 +259,16 @@ public class SquareTest {
 	public void testAddPlayer() {
 		// setup (make a new player and make sure he is not placed on the
 		// square)
-		Player player = new Player(square);
-		square.remove(player);
+		square.remove(playerOnSquare);
 		
 		assertFalse(square.hasPlayer());
-		assertFalse(square.contains(player));
+		assertFalse(square.contains(playerOnSquare));
 		
 		// add a player to the square
-		square.addPlayer(player);
+		square.addPlayer(playerOnSquare);
 		
 		// test if the player is placed on the square
-		assertTrue(square.contains(player));
+		assertTrue(square.contains(playerOnSquare));
 		assertTrue(square.hasPlayer());
 	}
 	
@@ -285,9 +297,8 @@ public class SquareTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testAddPlayer_allreadyPlayerOnSquare() {
 		// place a player on the square
-		new Player(square);
 		// create a second player
-		Player p2 = new Player(new Square(Collections.<Direction, ASquare> emptyMap()));
+		IPlayer p2 = getNewRandomPlayer();
 		
 		assertFalse(square.canBeAdded(p2));
 		square.addPlayer(p2);

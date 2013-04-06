@@ -1,71 +1,106 @@
 package player;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import grid.Grid;
-import grid.GridBuilder;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import java.util.Collections;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import square.ASquare;
 import square.Direction;
 import square.Square;
 
 @SuppressWarnings("javadoc")
 public class PlayerTest {
 	
-	private Player		player;
-	private Square		randomSquare;
+	private Player	player;
+	private Square	randomSquare;
+	private PlayerDataBase db;
 	
 	@Before
 	public void setUp() {
-		Grid grid = new GridBuilder().getPredefinedTestGrid(false);
-		randomSquare = (Square) grid.getSquareAt(GridBuilder.getRandomCoordOnTestGrid());
-		player = new Player(randomSquare);
+		randomSquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		db = new PlayerDataBase();
+		db.createNewDB(new Square[] {randomSquare, new Square(Collections.<Direction, ASquare> emptyMap())});
+		player = (Player) db.getCurrentPlayer();
 	}
 	
 	@Test
 	public void testConstructor() {
+		// test basic fields
 		assertEquals(player.getCurrentLocation(), randomSquare);
 		assertEquals(false, player.hasMovedYet());
+		assertEquals(1, player.getID());
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
 		// check empty inventory
 		assertEquals(0, player.getInventoryContent().size());
 		Assert.assertNotNull(player.getStartingPosition());
+		
+		// test whether the player is appointed by the db as the current player
+		assertIsCurrentPlayerTurn();
+	}
+
+	private void assertIsCurrentPlayerTurn() {
+		assertEquals(player, db.getCurrentPlayer());
+		assertEquals(PlayerState.ACTIVE, player.getState());
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
+	private void assertIsNotCurrentPlayerTurn() {
+		assertFalse(player.equals(db.getCurrentPlayer()));
+		assertEquals(PlayerState.WAITING, player.getState());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullArgument() {
-		new Player(null);
+		new Player(null, null);
 	}
 	
 	@Test
 	public void testEndTurn() {
-		// TODO	
+		// TODO
 	}
 	
 	@Test
 	public void testNumberOfActions() {
-		// test the initial number of actions, Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
+		assertIsCurrentPlayerTurn();
+		
+		// test the initial number of actions,
+		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
-		// decrease by one 
+		assertIsCurrentPlayerTurn();
+		
+		// decrease by one
 		player.skipNumberOfActions(1);
+		assertIsCurrentPlayerTurn();
+		
 		// test again
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN-1, player.getAllowedNumberOfActions());
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1, player.getAllowedNumberOfActions());
+		assertIsCurrentPlayerTurn();
+
 		// subtract another two: nb of actions will become zero
+		// --> player must have asked the db to switch players
 		player.skipNumberOfActions(2);
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN-3, player.getAllowedNumberOfActions());
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3, player.getAllowedNumberOfActions());
+		assertIsNotCurrentPlayerTurn();
+
+		// simulate player switch
+		switchPlayers();
+		assertIsCurrentPlayerTurn();
+		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
 		
-		//simulate the DB assigning new actions to the player
-		player.assignNewTurn();
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());		
-		
-		// subtract four at once 
+		// subtract four at once
 		player.skipNumberOfActions(4);
-		player.assignNewTurn();
+		assertIsNotCurrentPlayerTurn();
+		switchPlayers();
 		// the result should now be two ( 3 - 4 + 3 )
 		assertEquals(2, player.getAllowedNumberOfActions());
 	}
 	
+	private void switchPlayers() {
+		db.endPlayerTurn((Player) db.getCurrentPlayer());
+	}
+
 	@Test
 	public void testIsValidDirection() {
 		assertTrue(player.isValidDirection(Direction.NORTH));
@@ -74,17 +109,22 @@ public class PlayerTest {
 	
 	@Test
 	public void testAssignNewTurn() {
+		assertIsCurrentPlayerTurn();
 		player.assignNewTurn();
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
-		assertFalse(player.hasMovedYet());
+		assertIsCurrentPlayerTurn();
 		
 		player.skipNumberOfActions(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
 		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
+		// player should have switched turns (allowed nb actions < 0)
+		assertIsNotCurrentPlayerTurn();
 		
-		player.assignNewTurn();
+		switchPlayers();
+		assertIsNotCurrentPlayerTurn();
 		assertEquals(-1, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
+		assertIsNotCurrentPlayerTurn();
 	}
 }

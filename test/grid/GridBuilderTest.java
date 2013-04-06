@@ -2,13 +2,8 @@ package grid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import grid.Coordinate;
-import grid.Grid;
-import grid.GridBuilder;
-import java.util.ArrayList;
 import org.junit.Test;
-import player.IPlayer;
-import player.Player;
+import player.PlayerDataBase;
 import square.ISquare;
 import square.Square;
 import square.WallPart;
@@ -19,11 +14,13 @@ public class GridBuilderTest {
 	@Test
 	public void testConstructor() {
 		for (int i = 0; i < 10; i++) {
-			ArrayList<IPlayer> players = new ArrayList<IPlayer>();
-			IPlayer p1 = new Player((Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0)));
-			IPlayer p2 = new Player((Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0)));
-			players.add(p1);
-			players.add(p2);
+			// create Players, using the PlayerDb and the predefined test grid
+			Square[] startingPositions = new Square[2];
+			startingPositions[0] = (Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0));
+			startingPositions[1] = (Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0));
+			PlayerDataBase playerDb = new PlayerDataBase();
+			playerDb.createNewDB(startingPositions);
+			
 			Grid grid = new GridBuilder().build();
 			int numberOfWalls = 2;
 			for (ISquare sq : grid.getGrid().values())
@@ -38,7 +35,6 @@ public class GridBuilderTest {
 	
 	@Test
 	public void testStaticGrid() {
-
 		Grid grid = new GridBuilder().getPredefinedTestGrid(false);
 		
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"

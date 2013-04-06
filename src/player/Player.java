@@ -80,7 +80,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
 		startSquare.addPlayer(this);
-	}
+	} //TODO check whether given db contains the player
 	
 	@Override
 	public int getID() {
@@ -114,6 +114,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	void assignNewTurn() {
 		// rest the turn related properties
 		this.resetHasMoved();
+		this.setPlayerState(PlayerState.ACTIVE);
 		
 		// increase the number of actions left by the number of actions per turn
 		// this cannot be more then the max number of actions
@@ -431,7 +432,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public String toString() {
-		return "ID = " + this.id;
+		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + allowedNumberOfActionsLeft
+				+ ", hasMoved=" + hasMoved + ", currentSquare=" + currentSquare + ", state="
+				+ state + "]";
 	}
 	
 	/**
@@ -501,6 +504,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	void destroy() {
 		this.playerDB = null;
+		this.currentSquare.removePlayer();
 		this.currentSquare = null;
 		this.id = -1;
 		this.inventory = null;

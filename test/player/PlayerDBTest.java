@@ -1,34 +1,32 @@
 package player;
 
-import grid.Coordinate;
-import grid.Grid;
 import grid.GridBuilder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import square.ASquare;
+import square.Direction;
+import square.Square;
 
 @SuppressWarnings("javadoc")
 public class PlayerDBTest {
 	
 	private PlayerDataBase	playerDB;
-	private Coordinate[]	exampleCoords;
-	private Grid			grid;
+	private Square[]		playerPositions;
 	
 	@Before
 	public void setUp() {
-		grid = new GridBuilder().getPredefinedTestGrid(false);
-		playerDB = new PlayerDataBase(grid);
-		exampleCoords = new Coordinate[] {
-				new Coordinate(GridBuilder.PREDIFINED_GRID_SIZE - 1,
-						GridBuilder.PREDIFINED_GRID_SIZE - 1), new Coordinate(0, 0) };
-		playerDB.createNewDB(exampleCoords, grid);
+		playerDB = new PlayerDataBase();
+		playerPositions = new GridBuilder().getPlayerStartingPositionsOnTestGrid();
+		playerDB.createNewDB(playerPositions);
 	}
 	
 	@Test
 	public void testConstructor() {
-		playerDB = new PlayerDataBase(grid);
+		playerDB = new PlayerDataBase();
 		
 		// an empty DB should throw an exception
 		boolean exceptionThrown = false;
@@ -47,7 +45,24 @@ public class PlayerDBTest {
 		// all players should be different
 		allDifferent(list);
 		
-		playerDB.createNewDB(exampleCoords, new GridBuilder().getPredefinedTestGrid(false));
+		// use the same starting positions
+		playerDB.createNewDB(playerPositions);
+		List<IPlayer> list2 = getAllPlayerFromDB();
+		// all players should be different
+		allDifferent(list2);
+		
+		// the two lists should contain different players
+		containDifferentPlayers(list, list2);
+	}
+	
+	@Test
+	public void testCreateNewDBDiffStartingPos() {
+		List<IPlayer> list = getAllPlayerFromDB();
+		// all players should be different
+		allDifferent(list);
+		
+		// use different starting positions
+		playerDB.createNewDB(this.getSquareArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS));
 		List<IPlayer> list2 = getAllPlayerFromDB();
 		// all players should be different
 		allDifferent(list2);
@@ -62,7 +77,7 @@ public class PlayerDBTest {
 		
 		// null
 		try {
-			playerDB.createNewDB(null, null);
+			playerDB.createNewDB(null);
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
@@ -70,9 +85,9 @@ public class PlayerDBTest {
 		Assert.assertEquals(true, exceptionThrown);
 		
 		// empty array
-		Coordinate[] playerStartingCoords = {};
+		Square[] playerStartingPositions = {};
 		try {
-			playerDB.createNewDB(playerStartingCoords, grid);
+			playerDB.createNewDB(playerStartingPositions);
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
@@ -80,9 +95,9 @@ public class PlayerDBTest {
 		Assert.assertEquals(true, exceptionThrown);
 		
 		// too large array
-		playerStartingCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1);
+		playerStartingPositions = getSquareArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1);
 		try {
-			playerDB.createNewDB(playerStartingCoords, grid);
+			playerDB.createNewDB(playerStartingPositions);
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
@@ -90,10 +105,10 @@ public class PlayerDBTest {
 		Assert.assertEquals(true, exceptionThrown);
 		
 		// duplicate coords
-		playerStartingCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
-		playerStartingCoords[playerStartingCoords.length - 1] = playerStartingCoords[0];
+		playerStartingPositions = getSquareArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
+		playerStartingPositions[playerStartingPositions.length - 1] = playerStartingPositions[0];
 		try {
-			playerDB.createNewDB(playerStartingCoords, grid);
+			playerDB.createNewDB(playerStartingPositions);
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
@@ -102,14 +117,13 @@ public class PlayerDBTest {
 	}
 	
 	/**
-	 * Genenerates an array with a specified number of randomly created
-	 * coordinates in the grid defined by
-	 * {@link GridBuilder#getPredefinedTestGrid()}
+	 * Genenerates an array with a specified number of newly created
+	 * squares.
 	 */
-	private Coordinate[] randomCoordArrayOfSize(int size) {
-		Coordinate[] result = new Coordinate[size];
+	private Square[] getSquareArrayOfSize(int size) {
+		Square[] result = new Square[size];
 		for (int j = 0; j < size; j++) {
-			result[j] = GridBuilder.getRandomCoordOnTestGrid();
+			result[j] = new Square(Collections.<Direction, ASquare> emptyMap());
 		}
 		return result;
 	}
@@ -138,9 +152,8 @@ public class PlayerDBTest {
 			IPlayer curPlayer = (Player) playerDB.getCurrentPlayer();
 			result.add(curPlayer);
 			
-			// simulate a notifyObserves from curPlayer to indicate he wants to
-			// end his turn
-			playerDB.update((Player) curPlayer, null);
+			//let the cur player end his turn
+			playerDB.endPlayerTurn((Player) curPlayer);
 			// now the curPlayer should have changed
 		}
 		return result;

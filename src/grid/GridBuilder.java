@@ -465,15 +465,37 @@ public class GridBuilder {
 	}
 	
 	/**
-	 * Returns a randomly created coordinate that exists on the grid specified
+	 * Returns an array with the starting square of the players of the predefined test grid.
+	 * 
+	 * @return An array with the starting square of the players of the predefined test grid.
+	 */
+	public Square[] getPlayerStartingPositionsOnTestGrid() {
+		Grid grid = getPredefinedTestGrid(false);
+		return new Square[] {
+				(Square) grid.getSquareAt(new Coordinate(0, 0)),
+				(Square) grid.getSquareAt(new Coordinate(PREDIFINED_GRID_SIZE - 1,
+						PREDIFINED_GRID_SIZE - 1)) };
+	}
+	
+	/**
+	 * Returns a randomly created square that exists on the grid specified
 	 * by {@link GridBuilder#getPredefinedTestGrid(boolean)}. Used for testing
 	 * purposes.
 	 * 
-	 * @return A random coordinate on the test grid.
+	 * @return A random square on the test grid.
 	 */
-	public static Coordinate getRandomCoordOnTestGrid() {
-		return new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
+	public Square getRandomSquareOnTestGrid() {
+		ASquare sq = getRandomAsquareOnTestGrid();
+		while (!(sq instanceof Square))
+			sq = getRandomAsquareOnTestGrid();
+		return (Square) sq;
+	}
+	
+	private ASquare getRandomAsquareOnTestGrid() {
+		Grid g = this.getPredefinedTestGrid(false);
+		Coordinate c = new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
 				new Random().nextInt(PREDIFINED_GRID_SIZE));
+		return g.getSquareAt(c);
 	}
 	
 	/**
