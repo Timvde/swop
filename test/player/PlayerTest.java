@@ -1,8 +1,7 @@
 package player;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 import java.util.Collections;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -30,9 +29,12 @@ public class PlayerTest {
 	public void testConstructor() {
 		// test basic fields
 		assertEquals(player.getCurrentLocation(), randomSquare);
+		
+		// check the turn stuff
 		assertEquals(false, player.hasMovedYet());
 		assertEquals(1, player.getID());
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
+		
 		// check empty inventory
 		assertEquals(0, player.getInventoryContent().size());
 		Assert.assertNotNull(player.getStartingPosition());
@@ -43,16 +45,26 @@ public class PlayerTest {
 
 	private void assertIsCurrentPlayerTurn() {
 		assertEquals(player, db.getCurrentPlayer());
-		assertEquals(PlayerState.ACTIVE, player.getState());
+		assertEquals(PlayerState.ACTIVE, player.getPlayerState());
 	}
 	
 	private void assertIsNotCurrentPlayerTurn() {
 		assertFalse(player.equals(db.getCurrentPlayer()));
-		assertEquals(PlayerState.WAITING, player.getState());
+		assertEquals(PlayerState.WAITING, player.getPlayerState());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testConstructor_nullArgument() {
+	public void testConstructor_nullArgumentSquare() {
+		new Player(null, db);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testConstructor_nullArgumentPlayerDB() {
+		new Player(randomSquare, null);
+	}
+	
+	@Test (expected = IllegalArgumentException.class) 
+	public void testConstructor_nullArguments() {
 		new Player(null, null);
 	}
 	
@@ -87,6 +99,7 @@ public class PlayerTest {
 		// simulate player switch
 		switchPlayers();
 		assertIsCurrentPlayerTurn();
+		
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
 		
 		// subtract four at once
