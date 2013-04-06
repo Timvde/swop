@@ -10,6 +10,7 @@ import square.AffectedByPowerFailure;
 import square.Direction;
 import square.ISquare;
 import square.Square;
+import square.WallPart;
 import ObjectronExceptions.IllegalMoveException;
 
 /**
@@ -476,6 +477,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		// test if there is a player on the square
 		if (destination.hasPlayer())
 			return false;
+		
+		//test whether the destination is a wall
+		// FIXME we need a better way to do this
+		if (destination instanceof WallPart) {
+			return false;
+		}
 		
 		return true;
 	}
