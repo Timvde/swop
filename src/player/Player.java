@@ -11,6 +11,7 @@ import square.AffectedByPowerFailure;
 import square.Direction;
 import square.ISquare;
 import square.Square;
+import square.WallPart;
 import ObjectronExceptions.IllegalMoveException;
 
 /**
@@ -266,6 +267,9 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			return false;
 		// test if there is a player in the specified direction
 		else if (currentSquare.getNeighbour(direction).hasPlayer())
+			return false;
+		// test if the square in the specified direction is a wallpart
+		else if (currentSquare.getNeighbour(direction) instanceof WallPart)
 			return false;
 		// test if the square in the specified direction has a light trail
 		else if (currentSquare.getNeighbour(direction).hasLightTrail())
