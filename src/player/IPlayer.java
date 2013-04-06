@@ -6,6 +6,7 @@ import square.ASquare;
 import square.Direction;
 import square.ISquare;
 import square.TronObject;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 
 /*
@@ -160,7 +161,9 @@ public interface IPlayer extends TronObject {
 	 * @param i
 	 *        The item that will be used.
 	 * @throws IllegalArgumentException
-	 *         The item is not in the inventory
+	 *         The item is not in the inventory 
+	 * @throws CannotPlaceLightGrenadeException 
+	 * 			The lightgrenade cannot be placed here.
 	 */
-	public void useItem(IItem i) throws IllegalArgumentException;
+	public void useItem(IItem i) throws IllegalArgumentException, CannotPlaceLightGrenadeException;
 }

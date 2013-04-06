@@ -5,6 +5,7 @@ import item.IItem;
 import item.Item;
 import square.ASquare;
 import square.TronObject;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -48,11 +49,11 @@ public class LightGrenade extends Item {
 	
 	/**
 	 * This method returns the current {@link LightGrenadeState} the grenade is
-	 * in. (For testing purposes)
+	 * in. (For testing purposes and GUI drawing)
 	 * 
 	 * @return the current {@link LightGrenadeState} the grenade is in.
 	 */
-	LightGrenadeState getState() {
+	public LightGrenadeState getState() {
 		return this.state;
 	}
 	
@@ -70,7 +71,9 @@ public class LightGrenade extends Item {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.ACTIVE))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'enabled'");
+		
 		this.state = LightGrenadeState.ACTIVE;
+		System.out.println("state: "+ this.state);
 	}
 	
 	/**
@@ -100,23 +103,24 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(ASquare square) throws CannotPlaceLightGrenadeException {
 		
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
-				throw new IllegalStateException("There is already a light grenade on the square");
+				throw new CannotPlaceLightGrenadeException("There is already a light grenade on the square");
 		
 		// try and add this light grenade to the square 
 		square.addItem(this);
 		
 		this.enable();
+		
+		System.out.println("Lightgrenade enabled.");
 	}
 	
 	@Override
 	public void addToEffect(Effect effect) {
 		if (this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)) {
-			this.explode();
 			effect.addItem(this);
 		}
 	}
@@ -125,7 +129,8 @@ public class LightGrenade extends Item {
 	public void execute(TronObject object) throws IllegalStateException {
 		// Test whether this light grenade can explode
 		if (this.state != LightGrenadeState.ACTIVE)
-			throw new IllegalStateException("One can only execute active light grenades");
+			return;
+		
 		// Test whether the specified object can explode
 		if (object.asExplodable() == null)
 			throw new IllegalArgumentException("The specified object cannot explode");
@@ -133,6 +138,8 @@ public class LightGrenade extends Item {
 		// explode
 		object.asExplodable().skipNumberOfActions(damage);
 		this.explode();
+		
+		System.out.println("Lightgrenade exploded. Damage done: "+damage);
 	}
 	
 	/**
@@ -144,6 +151,8 @@ public class LightGrenade extends Item {
 	 */
 	public void increaseStrength() {
 		damage = INCREASED_STRENGHT;
+		
+		System.out.println("Lightgrenade set to increased strength.");
 	}
 	
 	/************************* LigthGrenadeEnum *************************/
