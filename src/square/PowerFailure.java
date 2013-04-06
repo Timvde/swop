@@ -42,8 +42,10 @@ public class PowerFailure {
 		// add a power failure for the neighbours of the square
 		for (Direction direction : Direction.values())
 			if (square.getNeighbour(direction) != null) {
-				square.getNeighbour(direction).addPowerFailure(this);
-				squares.add(square.getNeighbour(direction));
+				if (!(square.getNeighbour(direction) instanceof WallPart)) {
+					square.getNeighbour(direction).addPowerFailure(this);
+					squares.add(square.getNeighbour(direction));
+				}
 			}
 		
 		timeToLive = 3;
