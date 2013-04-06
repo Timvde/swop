@@ -10,8 +10,11 @@ import com.sun.istack.internal.NotNull;
 
 /**
  * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
- * the current player allowed to play. The {@link PlayerDataBase} will observe
- * his players. A Player notifies the database (by calling
+ * the current player allowed to play.
+ * 
+ * 
+ * FIXME UPDATE THIS COMMENT The {@link PlayerDataBase} will observe his
+ * players. A Player notifies the database (by calling
  * <code>notifyObservers()</code>) to indicate he wants to end his turn.
  * 
  * At the same time, Squares will observe the PlayerDataBase, which will notify
@@ -36,6 +39,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * . Until then the {@link PlayerDataBase#getCurrentPlayer()} method will
 	 * throw an exception.
 	 */
+	// TODO: Why do we not add an argument to the constructor and call the
+	// createNewDB method from within?
 	public PlayerDataBase() {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
 	}
@@ -43,7 +48,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	/**
 	 * This method first clears the current database and then re-fills the
 	 * database with PlayerDataBase.NUMBER_OF_PLAYERS newly created
-	 * {@link Player} which it will observe.
+	 * {@link Player}s.
 	 * 
 	 * The order of the players is determined by the specified starting
 	 * positions array. The first player allowed to play, is the player with the
@@ -78,14 +83,27 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		}
 		
 		Player.resetUniqueIdcounter();
-		this.playerList.clear();
+		this.clearDataBase();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
 			Player newPlayer = new Player((Square) playerStartingPositions[i], this);
 			this.playerList.add(newPlayer);
 		}
 		
-		// Set the right upmost player as starting player.
+		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
+	}
+	
+	/**
+	 * Clears the current DB. Destroys all the players within so that no-one can
+	 * use an old Player reference to break the game.
+	 */
+	private void clearDataBase() {
+		for (Player p : this.playerList) {
+			// set all references of the player to null so that no-one can still
+			// play with an old player.
+			p.destroy();
+		}
+		this.playerList.clear();
 	}
 	
 	private boolean allDifferent(ASquare[] playerStartingPositions) {
@@ -114,16 +132,26 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * {@link PlayerState#WAITING} and set the next player to active. This next
 	 * player then receives three actions for his turn. This method will also
 	 * check whether the player has reached his finish position. If this is the
-	 * case he will set the state of the player to finished and notify
-	 * {@link Game game} that a player has finished the game.
+	 * case he will set the state of the player to finished and notify its
+	 * observers (i.e. {@link Game}) that a player has finished the game.
 	 * 
 	 * @param player
 	 *        the player who wants to end his turn
+	 * 
+	 * @throws IllegalStateException
+	 *         Only the current player (i.e. {@link #getCurrentPlayer()}) can
+	 *         switch the players.
 	 */
-	void endPlayerTurn(Player player) {
+	void endPlayerTurn(Player player) throws IllegalStateException {
+		if (!player.equals(getCurrentPlayer())) {
+			throw new IllegalStateException("Only the current player can end his turn");
+		}
+		
 		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
 			player.setPlayerState(PlayerState.FINISHED);
-			// TODO notify game
+			// TODO notify Game
+			this.setChanged();
+			this.notifyObservers();
 		}
 		else {
 			// set the current player to waiting
@@ -137,7 +165,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			player.assignNewTurn();
 			player.setPlayerState(PlayerState.ACTIVE);
 			
-			updatePowerFailures();
+			// notify observers a Player-change has occured
+			this.setChanged();
+			this.notifyObservers();
+			
+			// updatePowerFailures();
 		}
 	}
 	
@@ -163,7 +195,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * Returns the finish square of the current player, i.e. the starting square
 	 * of the other player.
 	 * 
-	 * @return
+	 * @return The finish square of the current player.
 	 */
 	private ISquare getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();

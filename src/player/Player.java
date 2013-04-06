@@ -26,7 +26,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN	= 3;
 	/**
 	 * The id of the player, not really used, but hey ... let's do something
-	 * crazy
+	 * crazy FIXME DO we stil need the id? in GUI?
 	 */
 	private int						id;
 	private static AtomicInteger	nextID							= new AtomicInteger();
@@ -47,14 +47,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/** The player database in which the player is placed */
 	private PlayerDataBase			playerDB;
 	
-	/*
-	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
-	 * 
-	 * @Deprecated public Player(@NotNull Coordinate targetPosition) {
-	 * this.targetPosition = targetPosition; this.id = nextID.incrementAndGet();
-	 * this.inventory = new Inventory(); this.lightTrail = new LightTrail(); }
-	 */
-	
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed number of actions of
@@ -72,7 +64,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * @throws IllegalStateException
 	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(Square startSquare, PlayerDataBase playerDB) {
+	// User cannot create players himself. This is the responsability of
+	// the PlayerDB --> constructor package access
+	Player(Square startSquare, PlayerDataBase playerDB) {
 		if (startSquare == null || playerDB == null)
 			throw new IllegalArgumentException("The given arguments cannot be null");
 		
@@ -213,13 +207,30 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * 
 	 * @param state
 	 *        the new state of the player
+	 * 
+	 * @throws IllegalArgumentException
+	 *         The player must be allowed to switch his state from his current
+	 *         state to the specified state. I.e.
+	 *         <code>this.getState().isAllowedTransistionTo(state)</code>
 	 */
-	void setPlayerState(PlayerState state) {
-		if (state == null)
-			throw new IllegalArgumentException("The state of the player cannot be null!");
+	void setPlayerState(PlayerState state) throws IllegalArgumentException {
+		if (!this.state.isAllowedTransistionTo(state)) {
+			throw new IllegalArgumentException(
+					"The player is not allowed to switch his state from the current state "
+							+ this.state.name() + " to the specified state " + state.name());
+		}
 		
 		// set the player state
 		this.state = state;
+	}
+	
+	/**
+	 * Returns the current state the player is in. (For testing purposes)
+	 * 
+	 * @return The current state the player is in.
+	 */
+	PlayerState getState() {
+		return this.state;
 	}
 	
 	/* #################### User methods #################### */
@@ -236,9 +247,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			// this player's turn will end; reset the turn-related properties
 			resetNumberOfActionsLeft();
 			lightTrail.updateLightTrail();
+			playerDB.endPlayerTurn(this);
 		}
 		else {
-			// TODO player loses the game
+			// TODO player loses the game --> zeg tegen DB
 			System.out.println("Player " + getID() + " loses the game!");
 		}
 	}
@@ -481,5 +493,18 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	@Override
 	public AffectedByPowerFailure asAffectedByPowerFailure() {
 		return this;
+	}
+	
+	/**
+	 * Sets all references of the player to null so that no-one can modify the
+	 * game with an old player.
+	 */
+	void destroy() {
+		this.playerDB = null;
+		this.currentSquare = null;
+		this.id = -1;
+		this.inventory = null;
+		this.lightTrail = null;
+		this.state = null;
 	}
 }
