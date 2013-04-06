@@ -153,21 +153,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			this.notifyObservers();
 		}
 		else {
-			
-			// check if the current player can be set to waiting 
-			if (!player.getPlayerState().canTransistionTo(PlayerState.WAITING))
-				throw new IllegalStateException("It looks like the game has finished already");
-			
 			// set the current player to waiting
 			player.setPlayerState(PlayerState.WAITING);
 			
 			// find the next player and assign him a new turn
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 			player = playerList.get(currentPlayerIndex);
-			
-			// check if the next player can start his turn 
-			if (! player.getPlayerState().canTransistionTo(PlayerState.ACTIVE))
-				throw new IllegalStateException("It looks like the game has finished already");
 			
 			// assign new actions to the specified player and set him active
 			player.assignNewTurn();

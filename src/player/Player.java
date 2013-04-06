@@ -251,12 +251,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			playerDB.endPlayerTurn(this);
 		}
 		else {
-			// check if we can transition to the LOST state 
-			// this should be possible ... 
-			if (!state.canTransistionTo(PlayerState.LOST))
-				throw new IllegalStateException(
-						"We are under attack! I don't really know what is happening but when i entered this method the state of the player was ACTIVE and it seems that now, it is not. The only thing I can think of is that someone is messing with my internal state while I am executing. I don't like it.");
-			this.state = PlayerState.LOST;
+			// setPlayerState will check if we can transition to the LOST state 
+			this.setPlayerState(PlayerState.LOST);
 		}
 	}
 	
