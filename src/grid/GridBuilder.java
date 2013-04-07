@@ -6,6 +6,7 @@ import item.teleporter.Teleporter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -325,14 +326,17 @@ public class GridBuilder {
 		
 		// place teleporters
 		numberOfItems = 0;
+		LinkedList<Teleporter> teleporters = new LinkedList<>();
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
-				((Square) grid.get(position)).addItem(new Teleporter(getTeleporterDestination()));
+				Teleporter teleporter = new Teleporter(getTeleporterDestination(teleporters), grid.get(position));
+				((Square) grid.get(position)).addItem(teleporter);
+				teleporters.add(teleporter);
 				numberOfItems++;
-				System.out.println("placing teleporter on " + position);
 			}
 		}
+		teleporters.get(0).setDestination(getTeleporterDestination(teleporters));
 		
 		// place identity disks
 		numberOfItems = 0;
@@ -345,14 +349,11 @@ public class GridBuilder {
 		}
 	}
 	
-	private ASquare getTeleporterDestination() {
-		do {
-			Coordinate c = Coordinate.random(width, height);
-			if (grid.containsKey(c) && grid.get(c).getClass() == Square.class) {
-				System.out.println("with destination: " + c);
-				return grid.get(c);
-			}
-		} while (true);
+	private Teleporter getTeleporterDestination(List<Teleporter> teleporters) {
+		if (teleporters.isEmpty())
+			return null;
+		else
+			return teleporters.get(new Random().nextInt(teleporters.size()));
 	}
 	
 	/**
