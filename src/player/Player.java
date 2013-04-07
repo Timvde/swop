@@ -224,7 +224,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
 		
 		// remove this player from his current square
-		currentSquare.removePlayer();
+		currentSquare.remove(this);
 		
 		// update the light trail of this player 
 		this.lightTrail.updateLightTrail(currentSquare);
