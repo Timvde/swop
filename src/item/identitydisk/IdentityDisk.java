@@ -50,6 +50,9 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 				currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
 				break;
 			}
+			
+			// decrease the range of the disk 
+			range--;
 		}
 		
 		// reset the direction field
