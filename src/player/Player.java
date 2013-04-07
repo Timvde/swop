@@ -20,8 +20,8 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem, Direction) use} an
- * item and {@link #endTurn() end} the turn.
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem)
+ * use} an item and {@link #endTurn() end} the turn.
  */
 public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
 		Explodable {
@@ -114,7 +114,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		// this cannot be more then the max number of actions
 		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
 				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
-				
+		
 		// If the player is on a square with a power failure, it can do one
 		// action less.
 		if (this.getCurrentLocation().hasPowerFailure())
@@ -226,22 +226,32 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		// remove this player from his current square
 		currentSquare.remove(this);
 		
-		// update the light trail of this player 
-		this.lightTrail.updateLightTrail(currentSquare);
-
-		// the player is moving 
+		// set new position
+		ASquare oldSquare = currentSquare;
+		currentSquare = currentSquare.getNeighbour(direction);
+		
+		try {
+			// add the player to the new square
+			currentSquare.addPlayer(this);
+		}
+		catch (IllegalArgumentException e) {
+			// The player could not be added to the square (apparently)
+			currentSquare.remove(this);
+			// re-add the player to the current square
+			oldSquare.addPlayer(this);
+			// set the old square as the square
+			currentSquare = oldSquare;
+			// throw an exception
+			throw new IllegalMoveException("The player cannot move in the given direction on the grid");
+		}
+		
+		// update the light trail of this player
+		this.lightTrail.updateLightTrail(oldSquare);
+		
+		// the player is moving
 		this.setHasMoved();
 		
-		// set new position
-		ASquare newSquare = currentSquare.getNeighbour(direction);
-		
-		// set the new square of the player
-		currentSquare = newSquare;
-
-		// add the player to the new square
-		newSquare.addPlayer(this);
-		
-		// end the players action ... 
+		// end the players action ...
 		decreaseAllowedNumberOfActions();
 	}
 	
@@ -297,7 +307,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		if (direction.getPrimeryDirections().size() != 2)
 			return false;
 		
-		// test if the square has a neighbour in both directions 
+		// test if the square has a neighbour in both directions
 		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(0)) == null)
 			return false;
 		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)) == null)
@@ -307,11 +317,12 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(0))
 				.hasLightTrail())
 			return false;
-		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)).hasLightTrail())
+		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(1))
+				.hasLightTrail())
 			return false;
 		
 		// it looks like the player crosses a light trail
-		// he will not get away with this ...  
+		// he will not get away with this ...
 		return true;
 	}
 	
@@ -398,20 +409,31 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	@Override
 	public void teleportTo(ASquare destination) {
 		if (!canTeleportTo(destination))
-			throw new IllegalArgumentException("Player could not teleport to destination: " + destination);
+			throw new IllegalArgumentException("Player could not teleport to destination: "
+					+ destination);
 		currentSquare.remove(this);
 		currentSquare = (Square) destination;
 		destination.addPlayer(this);
 	}
 	
+	/**
+	 * Return whether this player can teleport to the specified destination
+	 * 
+	 * @param destination
+	 *        the destination to test
+	 * @return true if the player can be added to the specified destination,
+	 *         else false
+	 */
 	public boolean canTeleportTo(ASquare destination) {
 		// test if the destination exists
 		if (destination == null)
 			return false;
 		// test if the square accepts players
-		// TODO 
-		
-		return true;
+		else if (!destination.canBeAdded(this))
+			return false;
+		// anything else?
+		else
+			return true;
 	}
 	
 	/**

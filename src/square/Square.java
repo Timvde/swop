@@ -190,8 +190,18 @@ public class Square extends ASquare {
 	 */
 	@Override
 	public boolean canBeAdded(IPlayer player) {
-		// check if there is an other player and if the specified player exists
-		return this.player == null && player != null;
+		// check if the specified player exists
+		if (player == null)
+			return false;
+		// check if this square has a light trail
+		else if (lightTrail)
+			return false;
+		// check if the square has already a player
+		else if (this.player != null)
+			return false;
+		// everything looks OK ... 
+		else 
+			return true;
 	}
 	
 	@Override
