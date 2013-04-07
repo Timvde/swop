@@ -1,11 +1,8 @@
 package item.identitydisk;
 
-import item.Item;
 import item.teleporter.Teleportable;
-import square.ASquare;
 import square.AffectedByPowerFailure;
 import square.Direction;
-import square.Square;
 import square.TronObject;
 
 /**
@@ -20,11 +17,9 @@ import square.TronObject;
  * 
  * @author Bavo Mees
  */
-public class IdentityDisk extends Item implements Teleportable, AffectedByPowerFailure {
+public class IdentityDisk extends ChargedIdentityDisk implements Teleportable, AffectedByPowerFailure {
 	
 	private int			range;
-	private ASquare		currentSquare;
-	private Direction	direction;
 	
 	/**
 	 * create a new identity disk
@@ -33,39 +28,16 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 		range = 4;
 	}
 	
-	@Override
-	public void use(ASquare square) {
-		if (direction == null)
-			throw new IllegalStateException(
-					"The disk cannot be used when there is no direction set!");
-		
-		// set the location of the current square
-		currentSquare = square;
-
-		// test if the disk can move 
-		if (!canMoveDisk(direction))
-			// if not add it to the current square
-			currentSquare.addItem(this);
-		else
-			// else start moving the disk as long as it can ...
-			while (canMoveDisk(direction)) {
-				moveDisk(direction);
-				// test if we have hit a player (and hit him if we have)
-				if (currentSquare.hasPlayer()) {
-					currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
-					break;
-				}
-				
-				// decrease the range of the disk
-				range--;
-			}
-		
-		// reset the direction field
-		direction = null;
-		// reset the range of the disk
-		range = 4;
-	}
 	
+	
+	@Override
+	protected void moveDisk(Direction direction) {
+		super.moveDisk(direction);
+		range--;
+	}
+
+
+
 	/**
 	 * Test whether the disk can be moved in the specified direction, a square
 	 * can be moved in a direction when it has any range left, if the current
@@ -76,29 +48,12 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	 *        the direction to test
 	 * @return true if the disk can move in the specified direction, else false
 	 */
-	private boolean canMoveDisk(Direction direction) {
+	public boolean canMoveDisk(Direction direction) {
 		// test if there is any range left to move
 		if (range <= 0)
 			return false;
-		// test whether the square has a neighbour in the given direction
-		else if (currentSquare.getNeighbour(direction) == null)
-			return false;
-		// test whether the disk can be added to the neighbour
-		else if (!currentSquare.getNeighbour(direction).canBeAdded(this))
-			return false;
-		// looks like the item can be added
-		return true;
-	}
-	
-	private void moveDisk(Direction direction) {
-		if (!canMoveDisk(direction))
-			throw new IllegalStateException("something happend, good look finding it ...");
-		// remove the item from the current square
-		currentSquare.remove(this);
-		// set the neighbour as the current square
-		currentSquare = currentSquare.getNeighbour(direction);
-		// add the square to the (new) current square
-		currentSquare.addItem(this);
+		else 
+			return super.canMoveDisk(direction);
 	}
 	
 	@Override
@@ -107,27 +62,8 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	}
 	
 	@Override
-	public void teleportTo(ASquare destination) {
-		// remove the disk from the current square
-		if (currentSquare != null)
-			currentSquare.remove(this);
-		// set the destination to the current square
-		currentSquare = (Square) destination;
-		// add the disk to a new square
-		currentSquare.addItem(this);
-	}
-	
-	@Override
 	public String toString() {
 		return "IdentityDisk." + getId();
-	}
-	
-	/**
-	 * returns this instance as a {@link Teleportable} object.
-	 */
-	@Override
-	public Teleportable asTeleportable() {
-		return this;
 	}
 	
 	/**
@@ -147,15 +83,5 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	public void execute(TronObject object) {
 		// the object does nothing when an object/player steps on an identity
 		// disk
-	}
-	
-	/**
-	 * Set the direction in which the disk will be fired.
-	 * 
-	 * @param direction
-	 *        the direction in which the disk will be fired.
-	 */
-	public void setDirection(Direction direction) {
-		this.direction = direction;
 	}
 }

@@ -1,10 +1,10 @@
 package controllers;
 
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import gui.GUI;
 import item.IItem;
-import item.identitydisk.IdentityDisk;
+import item.identitydisk.ChargedIdentityDisk;
 import player.IPlayerDataBase;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
  * A controller for handling the use item actions of the GUI.
@@ -54,8 +54,8 @@ public class UseItemController {
 		// If the item used is an identity disk, a direction must be set before
 		// the item
 		// can be used. As described in the documentation of identity disk.
-		if (item instanceof IdentityDisk)
-			((IdentityDisk) item).setDirection(gui.getBasicDirection());
+		if (item instanceof ChargedIdentityDisk)
+			((ChargedIdentityDisk) item).setDirection(gui.getBasicDirection());
 		
 		playerDB.getCurrentPlayer().useItem(item);
 	}
