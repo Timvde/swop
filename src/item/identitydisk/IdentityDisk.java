@@ -62,6 +62,8 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 		
 		// reset the direction field
 		direction = null;
+		// reset the range of the disk
+		range = 4;
 	}
 	
 	/**
