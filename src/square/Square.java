@@ -43,10 +43,12 @@ public class Square extends ASquare {
 		// test whether the item can be placed on the square
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
-		// execute an effect on the item
-		this.executeEffect(item);
+		
 		// place the item on this square
 		itemList.add(item);
+		
+		// execute an effect on the item
+		this.executeEffect(item);
 	}
 	
 	@Override
