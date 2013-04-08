@@ -1,6 +1,6 @@
 package grid;
 
-import item.identitydisk.ChargedIdentityDisk;
+import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.ArrayList;
@@ -343,7 +343,7 @@ public class GridBuilder {
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_IDENTITY_DISKS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
-				((Square) grid.get(position)).addItem(new ChargedIdentityDisk());
+				((Square) grid.get(position)).addItem(new UnchargedIdentityDisk());
 				numberOfItems++;
 			}
 		}
