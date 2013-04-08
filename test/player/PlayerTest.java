@@ -22,7 +22,7 @@ public class PlayerTest implements Observer {
 	
 	private Player			player;
 	private PlayerDataBase	db;
-	private boolean			notified;
+	private PlayerState		notifiedWithPlayerState;
 	
 	@Before
 	public void setUp() {
@@ -32,7 +32,6 @@ public class PlayerTest implements Observer {
 		db.addObserver(this);
 		
 		player = (Player) db.getCurrentPlayer();
-		notified = false;
 	}
 	
 	/* ######################### CONSTRUCTOR TESTS ######################### */
@@ -147,7 +146,7 @@ public class PlayerTest implements Observer {
 		player.skipNumberOfActions(2);
 		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3, player.getAllowedNumberOfActions());
 		assertIsNotCurrentPlayerTurn();
-		assertObserversNotified();
+		assertObserversNotifiedOfPlayerSwitch();
 		
 		// simulate player switch
 		switchPlayers();
@@ -176,6 +175,7 @@ public class PlayerTest implements Observer {
 		assertFalse(player.hasMovedYet());
 		// player should have switched turns (allowed nb actions < 0)
 		assertIsNotCurrentPlayerTurn();
+		assertObserversNotifiedOfPlayerSwitch();
 		
 		switchPlayers();
 		assertIsNotCurrentPlayerTurn();
@@ -192,14 +192,16 @@ public class PlayerTest implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		this.notified = true;
+		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
+			this.notifiedWithPlayerState = (PlayerState) arg;
+		}
 	}
 	
 	/* ############ PlayerDb methods (private) ############# */
 	
 	private void switchPlayers() {
 		db.endPlayerTurn((Player) db.getCurrentPlayer());
-		assertObserversNotified();
+		assertObserversNotifiedOfPlayerSwitch();
 	}
 	
 	private void assertIsCurrentPlayerTurn() {
@@ -216,8 +218,12 @@ public class PlayerTest implements Observer {
 		assertEquals(PlayerState.ACTIVE, ((Player) db.getCurrentPlayer()).getPlayerState());
 	}
 	
-	private void assertObserversNotified() {
-		assertTrue(this.notified);
-		this.notified = false;
+	private void assertObserversNotifiedOfPlayerSwitch() {
+		// PlayerDB passes the PlayerState of the player whos turn is ended
+		// as an argument
+		assertEquals(PlayerState.WAITING, this.notifiedWithPlayerState);
+		// ignore any other PlayerStates; only intrested in Player-turn ends
+		
+		this.notifiedWithPlayerState = null;
 	}
 }

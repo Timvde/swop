@@ -116,6 +116,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
 			player.setPlayerState(PlayerState.FINISHED);
+			// notify observers
+			this.setChanged();
+			this.notifyObservers(player.getPlayerState());
 		}
 		else {
 			// set the current player to waiting
@@ -125,12 +128,15 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 			Player newPlayer = playerList.get(currentPlayerIndex);
 			
+			// notify observers a Player-change has occured
+			this.setChanged();
+			this.notifyObservers(player.getPlayerState());
+			
 			// assign new actions to the specified player and set him active
+			// this may introduce a new player switch (the resulting penalty
+			// after adding new actions may still be < 0)
 			newPlayer.assignNewTurn();
 		}
-		// notify observers a Player-change has occured
-		this.setChanged();
-		this.notifyObservers(player.getPlayerState());
 	}
 	
 	/**
