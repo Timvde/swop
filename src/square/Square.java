@@ -194,7 +194,7 @@ public class Square extends ASquare {
 		if (player == null)
 			return false;
 		// check if this square has a light trail
-		else if (lightTrail)
+		else if (this.hasLightTrail())
 			return false;
 		// check if the square has already a player
 		else if (this.player != null)

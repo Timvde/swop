@@ -6,7 +6,6 @@ import item.teleporter.Teleporter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -326,7 +325,7 @@ public class GridBuilder {
 		
 		// place teleporters
 		numberOfItems = 0;
-		LinkedList<Teleporter> teleporters = new LinkedList<>();
+		List<Teleporter> teleporters = new ArrayList<>();
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
@@ -336,6 +335,7 @@ public class GridBuilder {
 				numberOfItems++;
 			}
 		}
+		teleporters.remove(0);
 		teleporters.get(0).setDestination(getTeleporterDestination(teleporters));
 		
 		// place identity disks

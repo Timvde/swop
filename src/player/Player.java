@@ -235,13 +235,10 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			currentSquare.addPlayer(this);
 		}
 		catch (IllegalArgumentException e) {
-			// The player could not be added to the square (apparently)
+			// Rollback before rethrowing an exception
 			currentSquare.remove(this);
-			// re-add the player to the current square
 			oldSquare.addPlayer(this);
-			// set the old square as the square
 			currentSquare = oldSquare;
-			// throw an exception
 			throw new IllegalMoveException("The player cannot move in the given direction on the grid");
 		}
 		
