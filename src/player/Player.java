@@ -359,7 +359,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		try {
 			i.use(currentSquare);
 		}
-		catch (Exception e) {
+		catch (CannotPlaceLightGrenadeException e) {
 			// re-add the item to the inventory and re-throw the exception
 			inventory.addItem(i);
 			throw e;
