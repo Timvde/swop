@@ -235,7 +235,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			currentSquare.addPlayer(this);
 		}
 		catch (IllegalArgumentException e) {
-			// Rollback before rethorwing an exception
+			// Rollback before rethrowing an exception
 			currentSquare.remove(this);
 			oldSquare.addPlayer(this);
 			currentSquare = oldSquare;
