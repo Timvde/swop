@@ -3,6 +3,7 @@ package controllers;
 import gui.GUI;
 import item.IItem;
 import item.identitydisk.ChargedIdentityDisk;
+import item.identitydisk.IdentityDisk;
 import player.IPlayerDataBase;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
@@ -54,7 +55,7 @@ public class UseItemController {
 		// If the item used is an identity disk, a direction must be set before
 		// the item
 		// can be used. As described in the documentation of identity disk.
-		if (item instanceof ChargedIdentityDisk)
+		if (item instanceof IdentityDisk)
 			((ChargedIdentityDisk) item).setDirection(gui.getBasicDirection());
 		
 		playerDB.getCurrentPlayer().useItem(item);
