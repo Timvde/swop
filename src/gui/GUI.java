@@ -251,7 +251,7 @@ public class GUI implements Runnable {
 								graphics.drawImage(teleporterImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
-							if (i.getClass() == IdentityDisk.class) {
+							if (i instanceof IdentityDisk) {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
