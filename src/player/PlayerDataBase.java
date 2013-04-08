@@ -1,25 +1,22 @@
 package player;
 
 import game.Game;
+import grid.Grid;
 import java.util.ArrayList;
 import java.util.Observable;
-import square.ASquare;
+import java.util.Set;
 import square.ISquare;
 import square.Square;
 import com.sun.istack.internal.NotNull;
 
 /**
  * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
- * the current player allowed to play.
+ * the current player allowed to play. PlayerDataBase is an {@link Observable}
+ * and will notify its observers any time a player switch has occurered.
  * 
- * 
- * FIXME UPDATE THIS COMMENT The {@link PlayerDataBase} will observe his
- * players. A Player notifies the database (by calling
- * <code>notifyObservers()</code>) to indicate he wants to end his turn.
- * 
- * At the same time, Squares will observe the PlayerDataBase, which will notify
- * them at each player change, to calculate how long they should stay power
- * failured.
+ * {@link Grid} will observe the database in order to update the powerfailured
+ * {@link Square}s. {@link Game} ass well will observe the database to be
+ * notified when a Player has won/lost the game.
  * 
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
@@ -34,15 +31,15 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	private int					currentPlayerIndex;
 	
 	/**
-	 * Creates a new empty PlayerDataBase. to fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB(ASquare[]) createNewDB}
-	 * . Until then the {@link PlayerDataBase#getCurrentPlayer()} method will
-	 * throw an exception.
+	 * Creates a new empty PlayerDataBase and calls the
+	 * {@link #createNewDB(Set)} method with hte specified argument to fill it.
+	 * 
+	 * @param playerStartingPositions
+	 *        The argument to pass to the {@link #createNewDB(Set)} method.
 	 */
-	// TODO: Why do we not add an argument to the constructor and call the
-	// createNewDB method from within?
-	public PlayerDataBase() {
+	public PlayerDataBase(@NotNull Set<Square> playerStartingPositions) {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
+		this.createNewDB(playerStartingPositions);
 	}
 	
 	/**
@@ -51,45 +48,35 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * {@link Player}s.
 	 * 
 	 * The order of the players is determined by the specified starting
-	 * positions array. The first player allowed to play, is the player with the
-	 * first starting position in the specified array.
+	 * positions set. The first player allowed to play, is the player with the
+	 * first starting position in the specified set.
 	 * 
 	 * @param playerStartingPositions
-	 *        The specified starting coordinates for the players to create
-	 * 
+	 *        The specified starting coordinates for the players to create.
 	 * 
 	 * @throws IllegalArgumentException
-	 *         The arguments cannot be null. The length of the specified
-	 *         playerStartingCoordinates array must be
-	 *         {@value #NUMBER_OF_PLAYERS} and no two given coordinates can be
-	 *         the same.
+	 *         The arguments cannot be null and the length of the specified
+	 *         playerStartingCoordinates set must be {@value #NUMBER_OF_PLAYERS}
+	 *         .
 	 */
-	// who the f**k uses an array these days?
-	// And if you wanted all different values, just use a set {@link
-	// java.util.Set} !!
-	// can you please change this, i expect a bit more professionalism in this
-	// project
-	public void createNewDB(@NotNull ASquare[] playerStartingPositions)
+	public void createNewDB(@NotNull Set<Square> playerStartingPositions)
 			throws IllegalArgumentException {
 		if (playerStartingPositions == null)
-			throw new IllegalArgumentException("the given arguments cannot be null");
-		if (playerStartingPositions.length != NUMBER_OF_PLAYERS)
+			throw new IllegalArgumentException("the given argument cannot be null");
+		if (playerStartingPositions.size() != NUMBER_OF_PLAYERS)
 			throw new IllegalArgumentException("The number of player-starting-coordinates is wrong");
-		
-		if (!allDifferent(playerStartingPositions))
-			throw new IllegalArgumentException(
-					"The specified player-starting-coordinates must all be different");
 		
 		Player.resetUniqueIdcounter();
 		this.clearDataBase();
-		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player((Square) playerStartingPositions[i], this);
+		
+		for (Square square : playerStartingPositions) {
+			Player newPlayer = new Player(square, this);
 			this.playerList.add(newPlayer);
 		}
 		
-		// Set the first player as starting player and make him active.
+		// Set the first player as starting player and assign him the turn.
 		this.currentPlayerIndex = 0;
-		this.playerList.get(currentPlayerIndex).setPlayerState(PlayerState.ACTIVE);
+		this.playerList.get(currentPlayerIndex).assignNewTurn();
 	}
 	
 	/**
@@ -105,23 +92,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		this.playerList.clear();
 	}
 	
-	private boolean allDifferent(ASquare[] playerStartingPositions) {
-		for (int i = 0; i < playerStartingPositions.length - 1; i++) {
-			ASquare c1 = playerStartingPositions[i];
-			for (int j = i + 1; j < playerStartingPositions.length; j++) {
-				ASquare c2 = playerStartingPositions[j];
-				if (c1.equals(c2)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
 	@Override
 	public IPlayer getCurrentPlayer() throws IllegalStateException {
 		if (this.playerList.size() == 0)
-			throw new IllegalStateException("The PlayerDatabase is empy.");
+			throw new IllegalStateException("The PlayerDatabase is empty.");
 		
 		return this.playerList.get(this.currentPlayerIndex);
 	}
@@ -129,10 +103,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	/**
 	 * End a players turn. This will set the state of the specified player to
 	 * {@link PlayerState#WAITING} and set the next player to active. This next
-	 * player then receives three actions for his turn. This method will also
-	 * check whether the player has reached his finish position. If this is the
-	 * case he will set the state of the player to finished and notify its
-	 * observers (i.e. {@link Game}) that a player has finished the game.
+	 * player then receives {@link Player.MAX_NUMBER_OF_ACTIONS_PER_TURN}
+	 * actions for his turn. This method will also check whether the player has
+	 * reached his finish position. If this is the case he will set the state of
+	 * the player to finished and notify its observers (i.e. {@link Game}) that
+	 * a player has finished the game.
 	 * 
 	 * @param player
 	 *        the player who wants to end his turn
