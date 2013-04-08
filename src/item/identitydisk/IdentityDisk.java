@@ -41,19 +41,29 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 		
 		// set the location of the current square
 		currentSquare = square;
-		
-		// move the disk as long as it can ...
-		while (canMoveDisk(direction)) {
-			moveDisk(direction);
-			// test if we have hit a player (and hit him if we have)
-			if (currentSquare.hasPlayer()) {
-				currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
-				break;
+
+		// test if the disk can move 
+		if (!canMoveDisk(direction))
+			// if not add it to the current square
+			currentSquare.addItem(this);
+		else
+			// else start moving the disk as long as it can ...
+			while (canMoveDisk(direction)) {
+				moveDisk(direction);
+				// test if we have hit a player (and hit him if we have)
+				if (currentSquare.hasPlayer()) {
+					currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
+					break;
+				}
+				
+				// decrease the range of the disk
+				range--;
 			}
-		}
 		
 		// reset the direction field
 		direction = null;
+		// reset the range of the disk
+		range = 4;
 	}
 	
 	/**

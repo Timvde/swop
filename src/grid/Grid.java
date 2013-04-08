@@ -134,7 +134,6 @@ public class Grid implements IGrid, Observer {
 		return new HashSet<Coordinate>(this.grid.keySet());
 	}
 	
-	
 	/**
 	 * This method updates all power failure related things.
 	 * 
@@ -151,8 +150,12 @@ public class Grid implements IGrid, Observer {
 		if (ENABLE_POWER_FAILURE) {
 			Random rand = new Random();
 			for (Coordinate coordinate : getGrid().keySet()) {
-				if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
-					addPowerFailureAtCoordinate(coordinate);
+				// Check if square is a wallpart. If so, no powerfailure
+				// possible.
+				if (!(getGrid().get(coordinate) instanceof WallPart)) {
+					if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
+						addPowerFailureAtCoordinate(coordinate);
+					}
 				}
 			}
 		}

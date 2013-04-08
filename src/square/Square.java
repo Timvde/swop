@@ -43,10 +43,12 @@ public class Square extends ASquare {
 		// test whether the item can be placed on the square
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
-		// execute an effect on the item
-		this.executeEffect(item);
+		
 		// place the item on this square
 		itemList.add(item);
+		
+		// execute an effect on the item
+		this.executeEffect(item);
 	}
 	
 	@Override
@@ -188,8 +190,18 @@ public class Square extends ASquare {
 	 */
 	@Override
 	public boolean canBeAdded(IPlayer player) {
-		// check if there is an other player and if the specified player exists
-		return this.player == null && player != null;
+		// check if the specified player exists
+		if (player == null)
+			return false;
+		// check if this square has a light trail
+		else if (this.hasLightTrail())
+			return false;
+		// check if the square has already a player
+		else if (this.player != null)
+			return false;
+		// everything looks OK ... 
+		else 
+			return true;
 	}
 	
 	@Override

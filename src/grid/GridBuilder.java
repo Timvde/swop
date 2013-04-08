@@ -25,8 +25,8 @@ import square.WallPart;
 public class GridBuilder {
 	
 	private static final double	NUMBER_OF_GRENADES			= 0.02;
-	private static final double	NUMBER_OF_TELEPORTERS		= 0.02;
-	private static final double	NUMBER_OF_IDENTITY_DISKS	= 0.05;
+	private static final double	NUMBER_OF_TELEPORTERS		= 0.03;
+	private static final double	NUMBER_OF_IDENTITY_DISKS	= 0.02;
 	private static final int	MINIMUM_WALL_SIZE			= 2;
 	
 	private double				maximalLengthOfWall;
@@ -325,14 +325,18 @@ public class GridBuilder {
 		
 		// place teleporters
 		numberOfItems = 0;
+		List<Teleporter> teleporters = new ArrayList<Teleporter>();
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
-				((Square) grid.get(position)).addItem(new Teleporter(getTeleporterDestination()));
+				Teleporter teleporter = new Teleporter(getTeleporterDestination(teleporters), grid.get(position));
+				((Square) grid.get(position)).addItem(teleporter);
+				teleporters.add(teleporter);
 				numberOfItems++;
-				System.out.println("placing teleporter on " + position);
 			}
 		}
+		Teleporter teleporter = teleporters.remove(0);
+		teleporter.setDestination(getTeleporterDestination(teleporters));
 		
 		// place identity disks
 		numberOfItems = 0;
@@ -345,14 +349,11 @@ public class GridBuilder {
 		}
 	}
 	
-	private ASquare getTeleporterDestination() {
-		do {
-			Coordinate c = Coordinate.random(width, height);
-			if (grid.containsKey(c) && grid.get(c).getClass() == Square.class) {
-				System.out.println("with destination: " + c);
-				return grid.get(c);
-			}
-		} while (true);
+	private Teleporter getTeleporterDestination(List<Teleporter> teleporters) {
+		if (teleporters.isEmpty())
+			return null;
+		else
+			return teleporters.get(new Random().nextInt(teleporters.size()));
 	}
 	
 	/**

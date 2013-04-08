@@ -11,6 +11,7 @@ import square.Direction;
 import square.ISquare;
 import square.Square;
 import square.WallPart;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 
 /**
@@ -18,8 +19,8 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
- * item and {@link #endTurn() end} the turn.
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem)
+ * use} an item and {@link #endTurn() end} the turn.
  */
 public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
 	
@@ -277,20 +278,27 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		// remove this player from his current square
 		currentSquare.remove(this);
 		
+		// set new position
+		ASquare oldSquare = currentSquare;
+		currentSquare = currentSquare.getNeighbour(direction);
+		
+		try {
+			// add the player to the new square
+			currentSquare.addPlayer(this);
+		}
+		catch (IllegalArgumentException e) {
+			// Rollback before rethrowing an exception
+			currentSquare.remove(this);
+			oldSquare.addPlayer(this);
+			currentSquare = oldSquare;
+			throw new IllegalMoveException("The player cannot move in the given direction on the grid");
+		}
+		
 		// update the light trail of this player
-		this.lightTrail.updateLightTrail(currentSquare);
+		this.lightTrail.updateLightTrail(oldSquare);
 		
 		// the player is moving
 		this.setHasMoved();
-		
-		// set new position
-		ASquare newSquare = currentSquare.getNeighbour(direction);
-		
-		// set the new square of the player
-		currentSquare = newSquare;
-		
-		// add the player to the new square
-		newSquare.addPlayer(this);
 		
 		// end the players action ...
 		decreaseAllowedNumberOfActions();
@@ -319,6 +327,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			return false;
 		// test if there is a player in the specified direction
 		else if (currentSquare.getNeighbour(direction).hasPlayer())
+			return false;
+		// test if the square in the specified direction is a wallpart
+		else if (currentSquare.getNeighbour(direction) instanceof WallPart)
 			return false;
 		// test if the square in the specified direction has a light trail
 		else if (currentSquare.getNeighbour(direction).hasLightTrail())
@@ -391,10 +402,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public void useItem(IItem i) {
-		if (!canPreformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
+	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException, CannotPlaceLightGrenadeException {
+	if (!canPreformAction())
+		throw new IllegalStateException(
+				"The player cannot preform actions unless he is active!");
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
@@ -406,7 +417,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		try {
 			i.use(currentSquare);
 		}
-		catch (IllegalStateException e) {
+		catch (CannotPlaceLightGrenadeException e) {
 			// re-add the item to the inventory and re-throw the exception
 			inventory.addItem(i);
 			throw e;
@@ -474,17 +485,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		// test if the destination exists
 		if (destination == null)
 			return false;
-		// test if there is a player on the square
-		if (destination.hasPlayer())
-			return false;
 		
-		//test whether the destination is a wall
-		// FIXME we need a better way to do this
-		if (destination instanceof WallPart) {
+		// test if the square accepts players
+		else if (!destination.canBeAdded(this))
 			return false;
-		}
-		
-		return true;
+		// anything else?
+		else
+			return true;
 	}
 	
 	/**
