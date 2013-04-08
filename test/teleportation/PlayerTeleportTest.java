@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;
@@ -27,8 +29,10 @@ public class PlayerTeleportTest {
 		start = new Square(neighbours);
 		destination = new Square(neighbours);
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new Square[] { start,
-				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		Set<ASquare> set = new HashSet<ASquare>();
+		set.add(start);
+		set.add(new Square(Collections.<Direction, ASquare> emptyMap()));
+		db.createNewDB(set);
 		player = (Player) db.getCurrentPlayer();
 	}
 	

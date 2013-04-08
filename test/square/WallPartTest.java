@@ -1,6 +1,7 @@
 package square;
 
 import static org.junit.Assert.*;
+import grid.GridBuilder;
 import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import org.junit.Before;
@@ -50,8 +51,7 @@ public class WallPartTest {
 	@Test(expected = UnsupportedOperationException.class)
 	public void addPlayer() {
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new Square[] { new Square(Collections.<Direction, ASquare> emptyMap()),
-				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 		
 		wall.addPlayer(db.getCurrentPlayer());
 	}

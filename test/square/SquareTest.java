@@ -3,6 +3,7 @@ package square;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import grid.GridBuilder;
 import item.Item;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -27,16 +28,14 @@ public class SquareTest {
 	public void setUp() {
 		square = new Square(Collections.<Direction, ASquare> emptyMap());
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new Square[] { square,
-				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 		// db now placed the player on the square
 		playerOnSquare = db.getCurrentPlayer();
 	}
 	
 	private IPlayer getNewRandomPlayer() {
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new Square[] { new Square(Collections.<Direction, ASquare> emptyMap()),
-				new Square(Collections.<Direction, ASquare> emptyMap()) });
+		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 		// db now placed the player on the square
 		return db.getCurrentPlayer();
 	}
