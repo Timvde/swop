@@ -1,21 +1,27 @@
 package player;
 
 import grid.GridBuilder;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import square.ASquare;
 import square.Direction;
 import square.Square;
+import square.WallPart;
 
+/**
+ * Tests the creation of a {@link PlayerDataBase}. Player switching behavior is
+ * tested in {@link PlayerTest}.
+ * 
+ */
 @SuppressWarnings("javadoc")
 public class PlayerDBTest {
 	
 	private PlayerDataBase	playerDB;
-	private Square[]		playerPositions;
+	private Set<ASquare>	playerPositions;
 	
 	@Before
 	public void setUp() {
@@ -41,34 +47,28 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testCreateNewDB() {
-		List<IPlayer> list = getAllPlayerFromDB();
-		// all players should be different
-		allDifferent(list);
+		// all players are different (set would throw an excption otherwise)
+		Set<IPlayer> set1 = getAllPlayerFromDB();
 		
 		// use the same starting positions
 		playerDB.createNewDB(playerPositions);
-		List<IPlayer> list2 = getAllPlayerFromDB();
-		// all players should be different
-		allDifferent(list2);
+		Set<IPlayer> set2 = getAllPlayerFromDB();
 		
 		// the two lists should contain different players
-		containDifferentPlayers(list, list2);
+		containDifferentPlayers(set1, set2);
 	}
 	
 	@Test
 	public void testCreateNewDBDiffStartingPos() {
-		List<IPlayer> list = getAllPlayerFromDB();
-		// all players should be different
-		allDifferent(list);
+		// all players are different (set would throw an excption otherwise)
+		Set<IPlayer> set1 = getAllPlayerFromDB();
 		
 		// use different starting positions
-		playerDB.createNewDB(this.getSquareArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS));
-		List<IPlayer> list2 = getAllPlayerFromDB();
-		// all players should be different
-		allDifferent(list2);
+		playerDB.createNewDB(this.getPlayerStartingPosSetOfSize(PlayerDataBase.NUMBER_OF_PLAYERS));
+		Set<IPlayer> set2 = getAllPlayerFromDB();
 		
 		// the two lists should contain different players
-		containDifferentPlayers(list, list2);
+		containDifferentPlayers(set1, set2);
 	}
 	
 	@Test
@@ -84,10 +84,9 @@ public class PlayerDBTest {
 		}
 		Assert.assertEquals(true, exceptionThrown);
 		
-		// empty array
-		Square[] playerStartingPositions = {};
+		// empty set
 		try {
-			playerDB.createNewDB(playerStartingPositions);
+			playerDB.createNewDB(new HashSet<ASquare>());
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
@@ -95,20 +94,17 @@ public class PlayerDBTest {
 		Assert.assertEquals(true, exceptionThrown);
 		
 		// too large array
-		playerStartingPositions = getSquareArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1);
 		try {
-			playerDB.createNewDB(playerStartingPositions);
+			playerDB.createNewDB(getPlayerStartingPosSetOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1));
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
 		}
 		Assert.assertEquals(true, exceptionThrown);
 		
-		// duplicate coords
-		playerStartingPositions = getSquareArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
-		playerStartingPositions[playerStartingPositions.length - 1] = playerStartingPositions[0];
+		// walls
 		try {
-			playerDB.createNewDB(playerStartingPositions);
+			playerDB.createNewDB(getWallSetOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1));
 		}
 		catch (IllegalArgumentException e) {
 			exceptionThrown = true;
@@ -117,46 +113,48 @@ public class PlayerDBTest {
 	}
 	
 	/**
-	 * Genenerates an array with a specified number of newly created
-	 * squares.
+	 * Genenerates a set with a specified number of newly created squares.
 	 */
-	private Square[] getSquareArrayOfSize(int size) {
-		Square[] result = new Square[size];
+	private Set<ASquare> getPlayerStartingPosSetOfSize(int size) {
+		Set<ASquare> result = new HashSet<ASquare>();
 		for (int j = 0; j < size; j++) {
-			result[j] = new Square(Collections.<Direction, ASquare> emptyMap());
+			result.add(new Square(Collections.<Direction, ASquare> emptyMap()));
 		}
 		return result;
 	}
 	
-	private void allDifferent(List<IPlayer> list) {
-		for (int i = 0; i < list.size() - 1; i++) {
-			IPlayer player1 = list.get(i);
-			for (int j = i + 1; j < list.size(); j++) {
-				IPlayer player2 = list.get(j);
-				Assert.assertNotSame(player1, player2);
+	private Set<ASquare> getWallSetOfSize(int size) {
+		Set<ASquare> result = new HashSet<ASquare>();
+		for (int j = 0; j < size; j++) {
+			result.add(new WallPart(Collections.<Direction, ASquare> emptyMap()));
+		}
+		return result;
+	}
+	
+	private void containDifferentPlayers(Set<IPlayer> set1, Set<IPlayer> set2) {
+		Assert.assertEquals(set1.size(), set2.size());
+		for (IPlayer p1 : set1) {
+			for (IPlayer p2 : set2) {
+				Assert.assertNotSame(p1, p2);
 			}
 		}
 	}
 	
-	private void containDifferentPlayers(List<IPlayer> list1, List<IPlayer> list2) {
-		Assert.assertEquals(list1.size(), list2.size());
-		for (int i = 0; i < list1.size(); i++) {
-			Assert.assertNotSame(list1.get(i), list2.get(i));
-		}
-	}
-	
-	private List<IPlayer> getAllPlayerFromDB() {
-		List<IPlayer> result = new ArrayList<IPlayer>();
+	/**
+	 * Returns a set with all the Players in a specified {@link PlayerDataBase}
+	 * (by simulating player switchs).
+	 */
+	private Set<IPlayer> getAllPlayerFromDB() {
+		Set<IPlayer> result = new HashSet<IPlayer>();
 		
 		for (int i = 0; i < PlayerDataBase.NUMBER_OF_PLAYERS; i++) {
-			IPlayer curPlayer = (Player) playerDB.getCurrentPlayer();
+			Player curPlayer = (Player) playerDB.getCurrentPlayer();
 			result.add(curPlayer);
 			
-			//let the cur player end his turn
+			// let the cur player end his turn
 			playerDB.endPlayerTurn((Player) curPlayer);
 			// now the curPlayer should have changed
 		}
 		return result;
 	}
-	
 }

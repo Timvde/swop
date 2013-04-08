@@ -6,9 +6,11 @@ import item.teleporter.Teleporter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import square.ASquare;
 import square.Direction;
 import square.ISquare;
@@ -470,12 +472,15 @@ public class GridBuilder {
 	 * 
 	 * @return An array with the starting square of the players of the predefined test grid.
 	 */
-	public Square[] getPlayerStartingPositionsOnTestGrid() {
+	public Set<ASquare> getPlayerStartingPositionsOnTestGrid() {
 		Grid grid = getPredefinedTestGrid(false);
-		return new Square[] {
-				(Square) grid.getSquareAt(new Coordinate(0, 0)),
-				(Square) grid.getSquareAt(new Coordinate(PREDIFINED_GRID_SIZE - 1,
-						PREDIFINED_GRID_SIZE - 1)) };
+		Set<ASquare> playerStartingPositions = new HashSet<ASquare>();
+		playerStartingPositions.add(grid.getSquareAt(
+				new Coordinate(0, 0)));
+		playerStartingPositions.add(grid.getSquareAt(
+				new Coordinate(GridBuilder.PREDIFINED_GRID_SIZE - 1,
+						GridBuilder.PREDIFINED_GRID_SIZE - 1)));
+		return playerStartingPositions;
 	}
 	
 	/**

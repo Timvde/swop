@@ -170,9 +170,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	/**
 	 * Gets the other player
 	 * 
+	 * FOR TESTING PURPOSES ONLY
+	 * 
 	 * @return The other player
 	 */
-	private Player getOtherPlayer() {
+	Player getOtherPlayer() {
 		return playerList.get((currentPlayerIndex + 1) % NUMBER_OF_PLAYERS);
 	}
 	

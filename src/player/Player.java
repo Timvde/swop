@@ -203,7 +203,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * 
 	 * @return true if the player can perform an action, else false
 	 */
-	private boolean canPreformAction() {
+	private boolean canPerformAction() {
 		return this.state == PlayerState.ACTIVE;
 	}
 	
@@ -242,7 +242,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public void endTurn() throws IllegalStateException {
-		if (!canPreformAction())
+		if (!canPerformAction())
 			throw new IllegalStateException(
 					"The player cannot preform actions unless he is active!");
 		if (!isPreconditionEndTurnSatisfied())
@@ -268,7 +268,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public void moveInDirection(Direction direction) throws IllegalMoveException {
-		if (!canPreformAction())
+		if (!canPerformAction())
 			throw new IllegalStateException(
 					"The player cannot preform actions unless he is active!");
 		if (!isPreconditionMoveSatisfied())
@@ -381,7 +381,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public void pickUpItem(IItem item) {
-		if (!canPreformAction())
+		if (!canPerformAction())
 			throw new IllegalStateException(
 					"The player cannot preform actions unless he is active!");
 		if (item == null || !currentSquare.contains(item))
@@ -408,7 +408,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	@Override
 	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
 			CannotPlaceLightGrenadeException {
-		if (!canPreformAction())
+		if (!canPerformAction())
 			throw new IllegalStateException(
 					"The player cannot preform actions unless he is active!");
 		if (!inventory.hasItem(i))
@@ -439,6 +439,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
 	 * return false.oldSquare
 	 */
+	//FIXME gaan we resetten of destroyen???
 	public void reset() {
 		inventory = new Inventory();
 		lightTrail = new LightTrail();

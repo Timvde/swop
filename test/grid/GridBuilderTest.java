@@ -2,10 +2,12 @@ package grid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 import player.PlayerDataBase;
+import square.ASquare;
 import square.ISquare;
-import square.Square;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
@@ -15,11 +17,8 @@ public class GridBuilderTest {
 	public void testConstructor() {
 		for (int i = 0; i < 10; i++) {
 			// create Players, using the PlayerDb and the predefined test grid
-			Square[] startingPositions = new Square[2];
-			startingPositions[0] = (Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0));
-			startingPositions[1] = (Square) new GridBuilder().getPredefinedTestGrid(false).getSquareAt(new Coordinate(9, 0));
 			PlayerDataBase playerDb = new PlayerDataBase();
-			playerDb.createNewDB(startingPositions);
+			playerDb.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 			
 			Grid grid = new GridBuilder().build();
 			int numberOfWalls = 2;
