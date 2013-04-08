@@ -325,7 +325,7 @@ public class GridBuilder {
 		
 		// place teleporters
 		numberOfItems = 0;
-		List<Teleporter> teleporters = new ArrayList<>();
+		List<Teleporter> teleporters = new ArrayList<Teleporter>();
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
@@ -335,8 +335,8 @@ public class GridBuilder {
 				numberOfItems++;
 			}
 		}
-		teleporters.remove(0);
-		teleporters.get(0).setDestination(getTeleporterDestination(teleporters));
+		Teleporter teleporter = teleporters.remove(0);
+		teleporter.setDestination(getTeleporterDestination(teleporters));
 		
 		// place identity disks
 		numberOfItems = 0;
