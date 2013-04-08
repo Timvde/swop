@@ -3,35 +3,24 @@ package item.identitydisk;
 import item.Item;
 import item.teleporter.Teleportable;
 import square.ASquare;
-import square.AffectedByPowerFailure;
 import square.Direction;
 import square.Square;
 import square.TronObject;
 
 /**
- * Identity disk can be launched by players on the grid. The disk will then
- * travel 4 squares in a specified direction. If this disk travels through a
- * square affected by a power failure, the disk will decrease its range. An
+ * Charged Identity disk can be launched by players on the grid. The disk will then
+ * travel until it hits a player, wall or reaches the end of the board. An
  * identity disk cannot travel trough walls or outside of the grid. When either
  * of those cases crosses the path of this disk, the disk will stop before the
  * wall or the end of the grid. When an identity disk hits a player that player
  * loses its turn, and the disk will stop at the position of the player that has
  * been hit by the disk.
  * 
- * @author Bavo Mees
  */
-public class IdentityDisk extends Item implements Teleportable, AffectedByPowerFailure {
+public abstract class IdentityDisk extends Item implements Teleportable {
 	
-	private int			range;
 	private ASquare		currentSquare;
 	private Direction	direction;
-	
-	/**
-	 * create a new identity disk
-	 */
-	public IdentityDisk() {
-		range = 4;
-	}
 	
 	@Override
 	public void use(ASquare square) {
@@ -41,8 +30,8 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 		
 		// set the location of the current square
 		currentSquare = square;
-
-		// test if the disk can move 
+		
+		// test if the disk can move
 		if (!canMoveDisk(direction))
 			// if not add it to the current square
 			currentSquare.addItem(this);
@@ -55,15 +44,10 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 					currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
 					break;
 				}
-				
-				// decrease the range of the disk
-				range--;
 			}
 		
 		// reset the direction field
 		direction = null;
-		// reset the range of the disk
-		range = 4;
 	}
 	
 	/**
@@ -76,12 +60,9 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	 *        the direction to test
 	 * @return true if the disk can move in the specified direction, else false
 	 */
-	private boolean canMoveDisk(Direction direction) {
-		// test if there is any range left to move
-		if (range <= 0)
-			return false;
+	public boolean canMoveDisk(Direction direction) {
 		// test whether the square has a neighbour in the given direction
-		else if (currentSquare.getNeighbour(direction) == null)
+		if (currentSquare.getNeighbour(direction) == null)
 			return false;
 		// test whether the disk can be added to the neighbour
 		else if (!currentSquare.getNeighbour(direction).canBeAdded(this))
@@ -90,7 +71,13 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 		return true;
 	}
 	
-	private void moveDisk(Direction direction) {
+	/**
+	 * move the identity disk in the specified direction
+	 * 
+	 * @param direction
+	 *        the direction in which this disk should win
+	 */
+	protected void moveDisk(Direction direction) {
 		if (!canMoveDisk(direction))
 			throw new IllegalStateException("something happend, good look finding it ...");
 		// remove the item from the current square
@@ -119,7 +106,7 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	
 	@Override
 	public String toString() {
-		return "IdentityDisk." + getId();
+		return "ChargedIdentityDisk." + getId();
 	}
 	
 	/**
@@ -128,19 +115,6 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	@Override
 	public Teleportable asTeleportable() {
 		return this;
-	}
-	
-	/**
-	 * returns this instance as a {@link AffectedByPowerFailure} object.
-	 */
-	@Override
-	public AffectedByPowerFailure asAffectedByPowerFailure() {
-		return this;
-	}
-	
-	@Override
-	public void damageByPowerFailure() {
-		range--;
 	}
 	
 	@Override
@@ -158,4 +132,5 @@ public class IdentityDisk extends Item implements Teleportable, AffectedByPowerF
 	public void setDirection(Direction direction) {
 		this.direction = direction;
 	}
+	
 }

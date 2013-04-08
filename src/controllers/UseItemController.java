@@ -1,10 +1,10 @@
 package controllers;
 
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import gui.GUI;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import player.IPlayerDataBase;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
  * A controller for handling the use item actions of the GUI.
