@@ -432,21 +432,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		lightTrail.updateLightTrail();
 	}
 	
-	/**
-	 * resets the player for a new game. The inventory and the lightTrail will
-	 * be reinitialized. The number of actions left is set to
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
-	 * return false.oldSquare
-	 */
-	//FIXME gaan we resetten of destroyen???
-	public void reset() {
-		inventory = new Inventory();
-		lightTrail = new LightTrail();
-		
-		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		hasMoved = false;
-	}
-	
 	@Override
 	public String toString() {
 		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + allowedNumberOfActionsLeft
