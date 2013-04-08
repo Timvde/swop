@@ -9,6 +9,8 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
+import player.PlayerDataBase;
+import player.PlayerState;
 import square.ASquare;
 import square.ISquare;
 import square.PowerFailure;
@@ -194,9 +196,18 @@ public class Grid implements IGrid, Observer {
 	public void enablePowerFailures(boolean enabled) {
 		this.ENABLE_POWER_FAILURE = enabled;
 	}
-
+	
 	@Override
 	public void update(Observable o, Object arg) {
-		this.updatePowerFailures();
+		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
+			// PlayerDB passes the PlayerState of the player whos turn is ended
+			// as an argument
+			PlayerState state = (PlayerState) arg;
+			if (state == PlayerState.WAITING) {
+				this.updatePowerFailures();
+			}
+			// ignore any other PlayerStates; only intrested in Player-turn ends
+		}
+		// else do nothing; return
 	}
 }

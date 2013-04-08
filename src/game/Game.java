@@ -4,9 +4,13 @@ import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
+import player.IPlayer;
 import player.PlayerDataBase;
+import player.PlayerState;
 import square.ASquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
@@ -42,8 +46,8 @@ public class Game implements Observer {
 	 * Start the initialization and run the GUI.
 	 */
 	public void start() {
-		// make a new PlayerDB and observe it (to be notified when a player has
-		// won/lost)
+		// make a new PlayerDB and observe it
+		// (to be notified when a player has won/lost)
 		this.playerDB = new PlayerDataBase();
 		playerDB.addObserver(this);
 		
@@ -74,7 +78,8 @@ public class Game implements Observer {
 	 */
 	public void setGrid(Grid grid) {
 		this.grid = grid;
-		//Grid must be notified of player switching to update the power failures
+		// Grid must be notified of player switching to update the power
+		// failures
 		this.playerDB.addObserver(grid);
 		
 		// TODO is this method used for testing purposes??
@@ -95,16 +100,48 @@ public class Game implements Observer {
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
 		
-		ASquare[] playerStartingCoordinates = new ASquare[] {
-				grid.getGrid().get(new Coordinate(width - 1, 0)),
-				grid.getGrid().get(new Coordinate(0, height - 1)) };
-		playerDB.createNewDB(playerStartingCoordinates);
+		Set<ASquare> playerStartingPositions = new HashSet<ASquare>();
+		playerStartingPositions.add(grid.getGrid().get(new Coordinate(width - 1, 0)));
+		playerStartingPositions.add(grid.getGrid().get(new Coordinate(0, height - 1)));
+		playerDB.createNewDB(playerStartingPositions);
 	}
-	
 	
 	@Override
 	public void update(Observable o, Object arg) {
+		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
+			this.handlePlayerDataBaseEvent((PlayerDataBase) o, (PlayerState) arg);
+		}
+		//else do nothing; return
+	}
+	
+	/**
+	 * This method will be called each time {@link PlayerDataBase} reports a
+	 * Player-change (passing the {@link PlayerState} of the player whos turn is
+	 * ended as an argument).
+	 * @param endedPlayerState the {@link PlayerState} of the player whos turn is
+	 * ended
+	 * @param db 
+	 */
+	private void handlePlayerDataBaseEvent(PlayerDataBase db, PlayerState endedPlayerState) {
+		// only interested in finished or lost states; ignore active/waiting states
+		switch (endedPlayerState) {
+			case FINISHED:
+				this.endGameWithWinner(db.getCurrentPlayer());
+				break;
+			
+			case LOST:
+				this.endGameWithLoser(db.getCurrentPlayer());
+		}
+	}
+
+	private void endGameWithLoser(IPlayer player) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("game is finished with loser " + player);
+	}
+
+	private void endGameWithWinner(IPlayer player) {
+		// TODO Auto-generated method stub
+		System.out.println("game is finished with winner " + player);
+
 	}
 }

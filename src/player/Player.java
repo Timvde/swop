@@ -19,8 +19,8 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem)
- * use} an item and {@link #endTurn() end} the turn.
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
+ * item and {@link #endTurn() end} the turn.
  */
 public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
 	
@@ -56,20 +56,21 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * starting position of the player. The default state of a player is
 	 * {@link PlayerState#WAITING}.
 	 * 
-	 * @param startSquare
+	 * @param square
 	 *        The starting position of the player
 	 * @param playerDB
 	 *        The {@link PlayerDataBase playerDB} the player has to notify when
 	 *        his turn ends
 	 * @throws IllegalArgumentException
 	 *         The given arguments cannot be null.
-	 * @throws IllegalStateException
-	 *         The given coordinate must exist on the given grid
+	 * @throws IllegalArgumentException
+	 *         It must be possible to add this player to the specified
+	 *         startSquare, i.e. {@link Square#canBeAdded(IPlayer)}.
 	 */
 	// User cannot create players himself. This is the responsability of
 	// the PlayerDB --> constructor package access
-	Player(Square startSquare, PlayerDataBase playerDB) {
-		if (startSquare == null || playerDB == null)
+	Player(ASquare square, PlayerDataBase playerDB) throws IllegalArgumentException {
+		if (square == null || playerDB == null)
 			throw new IllegalArgumentException("The given arguments cannot be null");
 		
 		this.id = nextID.incrementAndGet();
@@ -77,12 +78,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		this.startSquare = startSquare;
-		this.currentSquare = startSquare;
+		this.startSquare = square;
+		this.currentSquare = square;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
-		startSquare.addPlayer(this);
-	} //TODO check whether given db contains the player
+		// will throw IllegalArgumentException if player can't be added
+		square.addPlayer(this);
+	}
 	
 	@Override
 	public int getID() {
@@ -253,8 +255,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			playerDB.endPlayerTurn(this);
 		}
 		else {
-			// setPlayerState will check if we can transition to the LOST state 
+			// setPlayerState will check if we can transition to the LOST state
 			this.setPlayerState(PlayerState.LOST);
+			this.playerDB.reportGameLost(this);
 		}
 	}
 	
@@ -291,7 +294,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			currentSquare.remove(this);
 			oldSquare.addPlayer(this);
 			currentSquare = oldSquare;
-			throw new IllegalMoveException("The player cannot move in the given direction on the grid");
+			throw new IllegalMoveException(
+					"The player cannot move in the given direction on the grid");
 		}
 		
 		// update the light trail of this player
@@ -402,10 +406,11 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException, CannotPlaceLightGrenadeException {
-	if (!canPreformAction())
-		throw new IllegalStateException(
-				"The player cannot preform actions unless he is active!");
+	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
+			CannotPlaceLightGrenadeException {
+		if (!canPreformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
