@@ -249,8 +249,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			throw new IllegalStateException("The endTurn-preconditions are not satisfied.");
 		
 		if (this.hasMovedYet()) {
-			// this player's turn will end; reset the turn-related properties
-			resetNumberOfActionsLeft();
+			// this player's turn will end;
 			lightTrail.updateLightTrail();
 			playerDB.endPlayerTurn(this);
 		}

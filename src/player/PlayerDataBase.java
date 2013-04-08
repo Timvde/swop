@@ -48,8 +48,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * {@link Player}s.
 	 * 
 	 * The order of the players is determined by the specified starting
-	 * positions set. The first player allowed to play, is the player with the
-	 * first starting position in the specified set.
+	 * positions set's iterator and thus is not (necessary) deterministic. The
+	 * first player allowed to play, is the player that is returned first by the
+	 * specified set's iterator.
 	 * 
 	 * @param playerStartingPositions
 	 *        The specified starting {@link Square}s for the {@link Player}s to

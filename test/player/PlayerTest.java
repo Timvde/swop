@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import grid.GridBuilder;
 import item.lightgrenade.LightGrenade;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
 import junit.framework.Assert;
@@ -70,8 +71,43 @@ public class PlayerTest implements Observer {
 	/* ######################### TURN TESTS ######################### */
 	
 	@Test
-	public void testEndTurn() {
-		// TODO
+	public void testEndTurnWithMove() throws IllegalMoveException {
+		doMove();
+		
+		player.endTurn();
+		assertIsNotCurrentPlayerTurn();
+	}
+	
+	/**
+	 * This method will move the player one square in the first direction
+	 * possible.
+	 * 
+	 * Warning: this method is just a quick hack to make sure the player has
+	 * done a move (as the iterator order of a {@link HashSet} is not
+	 * deterministic and this is used to appoint the first player in the db)
+	 */
+	private void doMove() {
+		boolean moved = false;
+		for (Direction dir : Direction.values()) {
+			try {
+				player.moveInDirection(dir);
+				moved = true;
+				break;
+			}
+			catch (IllegalMoveException e) {
+				; // do nothing try the next direction
+			}
+		}
+		assertTrue(moved);
+	}
+	
+	@Test
+	public void testEndTurnWithoutMove() {
+		player.endTurn();
+		
+		// test whether player sets itself lost and reported it
+		assertEquals(PlayerState.LOST, player.getPlayerState());
+		assertEquals(PlayerState.LOST, this.notifiedWithPlayerState);
 	}
 	
 	@Test
