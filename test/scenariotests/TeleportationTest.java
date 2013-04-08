@@ -26,13 +26,9 @@ public class TeleportationTest {
 	public void setUp() throws Exception {
 		Game game = new Game();
 		grid = new GridBuilder().getPredefinedTestGrid(false);
-		playerDB = new PlayerDataBase(grid);
+		playerDB = new PlayerDataBase();
 		
-		Coordinate[] startingCoords = new Coordinate[2];
-		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
-		
-		playerDB.createNewDB(startingCoords, grid);
+		playerDB.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 		game.setGrid(grid);
 		
 		game.start();
