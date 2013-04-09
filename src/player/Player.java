@@ -20,8 +20,8 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem)
- * use} an item and {@link #endTurn() end} the turn.
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
+ * item and {@link #endTurn() end} the turn.
  */
 public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
 		Explodable {
@@ -30,6 +30,11 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 * The maximum number of actions a Player is allowed to do in one turn.
 	 */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN	= 3;
+	
+	/**
+	 * The number of actions that a player loses if he is standing on a power failured square at the start of his turn.
+	 */
+	private static final int POWER_FAILURE_PENALTY_AT_START_TURN = 1;
 	
 	private int						id;
 	private static AtomicInteger	nextID							= new AtomicInteger();
@@ -99,12 +104,15 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	/* ############## ActionHistory related methods ############## */
 	
-	// TODO: change the literal 2 into something better.
 	/**
 	 * This method will under normal circumstances increase the allowed number
-	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. When the
-	 * Player is on a power failured square, the number of actions lost will be
-	 * 2. It is called by the PlayerDB when it assigns the next Player.
+	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}.
+	 * 
+	 * When this player is on a power failured square, the number of actions
+	 * lost will be {@value #POWER_FAILURE_PENALTY_AT_START_TURN}.
+	 * 
+	 * This method is called by the {@link PlayerDataBase} when it assigns the
+	 * next player.
 	 */
 	void assignNewTurn() {
 		// rest the turn related properties
@@ -118,7 +126,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		// If the player is on a square with a power failure, it can do one
 		// action less.
 		if (this.getCurrentLocation().hasPowerFailure())
-			this.skipNumberOfActions(1);
+			this.skipNumberOfActions(POWER_FAILURE_PENALTY_AT_START_TURN);
 		
 		// allowed nb actions could be <= 0 because of penalties
 		checkEndTurn();
@@ -239,7 +247,8 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			currentSquare.remove(this);
 			oldSquare.addPlayer(this);
 			currentSquare = oldSquare;
-			throw new IllegalMoveException("The player cannot move in the given direction on the grid");
+			throw new IllegalMoveException(
+					"The player cannot move in the given direction on the grid");
 		}
 		
 		// update the light trail of this player
