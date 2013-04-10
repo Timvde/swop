@@ -35,20 +35,15 @@ public class PickUpTest {
 	private void newGame() {
 		Game game = new Game();
 		
-		playerDB = new PlayerDataBase(grid);
+		playerDB = new PlayerDataBase();
 		
 		GridBuilder builder = new GridBuilder();
 		grid = builder.getPredefinedTestGrid(false);
 		
-		Coordinate[] startingCoords = new Coordinate[2];
-		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
-		
-		playerDB.createNewDB(startingCoords, grid);
-		
-		game.setGrid(grid);
+		playerDB.createNewDB(builder.getPlayerStartingPositionsOnTestGrid());
 		
 		game.start();
+		game.setGrid(grid);
 		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);

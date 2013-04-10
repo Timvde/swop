@@ -4,7 +4,6 @@ import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.List;
-import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;
 import square.ASquare;
 import square.AffectedByPowerFailure;
@@ -23,12 +22,9 @@ import ObjectronExceptions.IllegalMoveException;
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
-public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
-		Explodable {
+public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
 	
-	/**
-	 * The maximum number of actions a Player is allowed to do in one turn.
-	 */
+	/** The maximum number of actions a Player is allowed to do in one turn */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 3;
 	
 	/**
@@ -37,50 +33,65 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 */
 	private static final int		POWER_FAILURE_PENALTY_AT_START_TURN	= 1;
 	
+	/**
+	 * The id of the player, not really used, but hey ... let's do something
+	 * crazy FIXME DO we stil need the id? in GUI?
+	 */
 	private int						id;
 	private static AtomicInteger	nextID								= new AtomicInteger();
 	
+	/** The number of actions the player has left during this turn */
 	private int						allowedNumberOfActionsLeft;
+	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
+	/** The starting square of this player */
 	private final ASquare			startSquare;
+	/** The square where the player is currently standing */
 	private ASquare					currentSquare;
+	/** The inventory of the player */
 	private Inventory				inventory;
+	/** The light trail of the player */
 	private LightTrail				lightTrail;
-	
-	/*
-	 * // FIXME bij aanmaak van de players in PlayerDb is de coord onbekend
-	 * 
-	 * @Deprecated public Player(@NotNull Coordinate targetPosition) {
-	 * this.targetPosition = targetPosition; this.id = nextID.incrementAndGet();
-	 * this.inventory = new Inventory(); this.lightTrail = new LightTrail(); }
-	 */
+	/** The state of the player */
+	private PlayerState				state;
+	/** The player database in which the player is placed */
+	private PlayerDataBase			playerDB;
 	
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
-	 * moved and has an allowed nb of actions of
+	 * moved and has an allowed number of actions of
 	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
-	 * starting position of the player.
+	 * starting position of the player. The default state of a player is
+	 * {@link PlayerState#WAITING}.
 	 * 
-	 * @param startSquare
+	 * @param square
 	 *        The starting position of the player
+	 * @param playerDB
+	 *        The {@link PlayerDataBase playerDB} the player has to notify when
+	 *        his turn ends
 	 * @throws IllegalArgumentException
 	 *         The given arguments cannot be null.
-	 * @throws IllegalStateException
-	 *         The given coordinate must exist on the given grid
+	 * @throws IllegalArgumentException
+	 *         It must be possible to add this player to the specified
+	 *         startSquare, i.e. {@link Square#canBeAdded(IPlayer)}.
 	 */
-	public Player(Square startSquare) {
-		if (startSquare == null) {
+	// User cannot create players himself. This is the responsability of
+	// the PlayerDB --> constructor package access
+	Player(ASquare square, PlayerDataBase playerDB) throws IllegalArgumentException {
+		if (square == null || playerDB == null)
 			throw new IllegalArgumentException("The given arguments cannot be null");
-		}
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		this.startSquare = startSquare;
-		this.currentSquare = startSquare;
-		startSquare.addPlayer(this);
+		this.startSquare = square;
+		this.currentSquare = square;
+		this.state = PlayerState.WAITING;
+		this.playerDB = playerDB;
+		// will throw IllegalArgumentException if player can't be added
+		square.addPlayer(this);
 	}
 	
 	@Override
@@ -118,6 +129,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	void assignNewTurn() {
 		// rest the turn related properties
 		this.resetHasMoved();
+		this.setPlayerState(PlayerState.ACTIVE);
 		
 		// increase the number of actions left by the number of actions per turn
 		// this cannot be more then the max number of actions
@@ -177,9 +189,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 */
 	private void checkEndTurn() {
 		if (getAllowedNumberOfActions() <= 0) {
-			// notify the DB to end turn
-			this.setChanged();
-			this.notifyObservers();
+			playerDB.endPlayerTurn(this);
 		}
 	}
 	
@@ -206,22 +216,65 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		this.hasMoved = false;
 	}
 	
+	/**
+	 * Returns whether this player can perform an action.
+	 * 
+	 * @return true if the player can perform an action, else false
+	 */
+	private boolean canPerformAction() {
+		return this.state == PlayerState.ACTIVE;
+	}
+	
+	/**
+	 * Set the state of the player to a new specified state
+	 * 
+	 * @param state
+	 *        the new state of the player
+	 * 
+	 * @throws IllegalArgumentException
+	 *         The player must be allowed to switch his state from his current
+	 *         state to the specified state. I.e.
+	 *         <code>this.getState().isAllowedTransistionTo(state)</code>
+	 */
+	void setPlayerState(PlayerState state) throws IllegalArgumentException {
+		if (!this.state.isAllowedTransistionTo(state)) {
+			throw new IllegalArgumentException(
+					"The player is not allowed to switch his state from the current state "
+							+ this.state.name() + " to the specified state " + state.name());
+		}
+		
+		// set the player state
+		this.state = state;
+	}
+	
+	/**
+	 * Returns the current state the player is in. (For testing purposes)
+	 * 
+	 * @return The current state the player is in.
+	 */
+	PlayerState getPlayerState() {
+		return this.state;
+	}
+	
 	/* #################### User methods #################### */
 	
 	@Override
 	public void endTurn() throws IllegalStateException {
-		if (!isPreconditionEndTurnSatisfied()) {
+		if (!canPerformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
+		if (!isPreconditionEndTurnSatisfied())
 			throw new IllegalStateException("The endTurn-preconditions are not satisfied.");
-		}
 		
 		if (this.hasMovedYet()) {
-			// this player's turn will end; reset the turn-related properties
-			resetNumberOfActionsLeft();
+			// this player's turn will end;
 			lightTrail.updateLightTrail();
+			playerDB.endPlayerTurn(this);
 		}
 		else {
-			// TODO player loses the game
-			System.out.println("Player " + getID() + " loses the game!");
+			// setPlayerState will check if we can transition to the LOST state
+			this.setPlayerState(PlayerState.LOST);
+			this.playerDB.reportGameLost(this);
 		}
 	}
 	
@@ -232,11 +285,14 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	@Override
 	public void moveInDirection(Direction direction) throws IllegalMoveException {
+		if (!canPerformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (!isPreconditionMoveSatisfied())
 			throw new IllegalMoveException("The move-preconditions are not satisfied.");
 		if (!isValidDirection(direction))
 			throw new IllegalMoveException("The specified direction is not valid.");
-		else if (!canMoveInDirection(direction))
+		if (!canMoveInDirection(direction))
 			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
 		
 		// remove this player from his current square
@@ -342,6 +398,9 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	@Override
 	public void pickUpItem(IItem item) {
+		if (!canPerformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (item == null || !currentSquare.contains(item))
 			throw new IllegalArgumentException("The item does not exist on the square");
 		
@@ -364,7 +423,11 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	}
 	
 	@Override
-	public void useItem(IItem i) throws CannotPlaceLightGrenadeException {
+	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
+			CannotPlaceLightGrenadeException {
+		if (!canPerformAction())
+			throw new IllegalStateException(
+					"The player cannot preform actions unless he is active!");
 		if (!inventory.hasItem(i))
 			throw new IllegalArgumentException("The item is not in the inventory");
 		// TODO are there any other exceptions?
@@ -387,23 +450,11 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		lightTrail.updateLightTrail();
 	}
 	
-	/**
-	 * resets the player for a new game. The inventory and the lightTrail will
-	 * be reinitialized. The number of actions left is set to
-	 * {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}. Also {@link #hasMovedYet()} will
-	 * return false.oldSquare
-	 */
-	public void reset() {
-		inventory = new Inventory();
-		lightTrail = new LightTrail();
-		
-		allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		hasMoved = false;
-	}
-	
 	@Override
 	public String toString() {
-		return "ID = " + this.id;
+		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + allowedNumberOfActionsLeft
+				+ ", hasMoved=" + hasMoved + ", currentSquare=" + currentSquare + ", state="
+				+ state + "]";
 	}
 	
 	/**
@@ -431,17 +482,18 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	}
 	
 	/**
-	 * Return whether this player can teleport to the specified destination
+	 * Returns whether the player can teleport to the specified square.
 	 * 
 	 * @param destination
 	 *        the destination to test
-	 * @return true if the player can be added to the specified destination,
-	 *         else false
+	 * @return true if the player can teleport to the specified square, else
+	 *         false
 	 */
 	public boolean canTeleportTo(ASquare destination) {
 		// test if the destination exists
 		if (destination == null)
 			return false;
+		
 		// test if the square accepts players
 		else if (!destination.canBeAdded(this))
 			return false;
@@ -466,5 +518,19 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	@Override
 	public AffectedByPowerFailure asAffectedByPowerFailure() {
 		return this;
+	}
+	
+	/**
+	 * Sets all references of the player to null so that no-one can modify the
+	 * game with an old player.
+	 */
+	void destroy() {
+		this.playerDB = null;
+		this.currentSquare.removePlayer();
+		this.currentSquare = null;
+		this.id = -1;
+		this.inventory = null;
+		this.lightTrail = null;
+		this.state = null;
 	}
 }
