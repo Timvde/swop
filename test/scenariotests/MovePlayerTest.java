@@ -33,17 +33,11 @@ public class MovePlayerTest {
 	@Before
 	public void setUp() {
 		Game game = new Game();
-		playerDB = new PlayerDataBase(grid);
-		grid = new GridBuilder().getPredefinedTestGrid(false);
-		
-		Coordinate[] startingCoords = new Coordinate[2];
-		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
-		
-		playerDB.createNewDB(startingCoords, grid);
-		game.setGrid(grid);
+		playerDB = new PlayerDataBase();
+		grid = new GridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		
 		game.start();
+		game.setGrid(grid);
 		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);

@@ -4,7 +4,9 @@ import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,17 +45,13 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testCreateNewDB() {
-		List<IPlayer> list = getAllPlayerFromDB();
-		// all players should be different
-		allDifferent(list);
+		Set<IPlayer> set1 = getAllPlayerFromDB();
 		
 		playerDB.createNewDB();
-		List<IPlayer> list2 = getAllPlayerFromDB();
-		// all players should be different
-		allDifferent(list2);
+		Set<IPlayer> set2 = getAllPlayerFromDB();
 		
 		// the two lists should contain different players
-		containDifferentPlayers(list, list2);
+		containDifferentPlayers(set1, set2);
 	}
 	
 	// TODO: Deze test kan verwijderd worden, right?
@@ -128,26 +126,30 @@ public class PlayerDBTest {
 		}
 	}
 	
-	private void containDifferentPlayers(List<IPlayer> list1, List<IPlayer> list2) {
-		Assert.assertEquals(list1.size(), list2.size());
-		for (int i = 0; i < list1.size(); i++) {
-			Assert.assertNotSame(list1.get(i), list2.get(i));
+	private void containDifferentPlayers(Set<IPlayer> set1, Set<IPlayer> set2) {
+		Assert.assertEquals(set1.size(), set2.size());
+		for (IPlayer p1 : set1) {
+			for (IPlayer p2 : set2) {
+				Assert.assertNotSame(p1, p2);
+			}
 		}
 	}
 	
-	private List<IPlayer> getAllPlayerFromDB() {
-		List<IPlayer> result = new ArrayList<IPlayer>();
+	/**
+	 * Returns a set with all the Players in a specified {@link PlayerDataBase}
+	 * (by simulating player switchs).
+	 */
+	private Set<IPlayer> getAllPlayerFromDB() {
+		Set<IPlayer> result = new HashSet<IPlayer>();
 		
 		for (int i = 0; i < PlayerDataBase.NUMBER_OF_PLAYERS; i++) {
-			IPlayer curPlayer = (Player) playerDB.getCurrentPlayer();
+			Player curPlayer = (Player) playerDB.getCurrentPlayer();
 			result.add(curPlayer);
 			
-			// simulate a notifyObserves from curPlayer to indicate he wants to
-			// end his turn
-			playerDB.update((Player) curPlayer, null);
+			// let the cur player end his turn
+			playerDB.endPlayerTurn(curPlayer);
 			// now the curPlayer should have changed
 		}
 		return result;
 	}
-	
 }

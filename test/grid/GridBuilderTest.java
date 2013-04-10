@@ -10,22 +10,20 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;
+import player.PlayerDataBase;
 import square.ISquare;
-import square.Square;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class GridBuilderTest {
 	
-	List<Player>	players;
+	private List<Player>	players;
+	private PlayerDataBase	playerDb;
 	
 	@Before
 	public void setUp() {
-		players = new ArrayList<Player>();
-		Player p1 = new Player();
-		Player p2 = new Player();
-		players.add(p1);
-		players.add(p2);
+		playerDb = new PlayerDataBase();
+		players = playerDb.createNewDB();
 	}
 	
 	// TODO: Add a test for light grenades, identity disks, teleporters...
@@ -49,7 +47,6 @@ public class GridBuilderTest {
 	
 	@Test
 	public void testStaticGrid() {
-		
 		Grid grid = new GridBuilder(players).getPredefinedTestGrid(false);
 		
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"

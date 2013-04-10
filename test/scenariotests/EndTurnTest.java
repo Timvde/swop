@@ -1,14 +1,13 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 import game.Game;
-import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import org.junit.Test;
-import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
 import square.Direction;
+import ObjectronExceptions.IllegalMoveException;
 import controllers.EndTurnController;
 import controllers.MoveController;
 
@@ -30,20 +29,13 @@ public class EndTurnTest {
 	private void newGame() {
 		Game game = new Game();
 		
-		playerDB = new PlayerDataBase(grid);
+		playerDB = new PlayerDataBase();
 		
-		GridBuilder builder = new GridBuilder();
+		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
 		grid = builder.getPredefinedTestGrid(true);
 		
-		Coordinate[] startingCoords = new Coordinate[2];
-		startingCoords[0] = new Coordinate(grid.getWidth() - 1, 0);
-		startingCoords[1] = new Coordinate(0, grid.getHeight() - 1);
-		
-		playerDB.createNewDB(startingCoords, grid);
-		
-		game.setGrid(grid);
-		
 		game.start();
+		game.setGrid(grid);
 		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);

@@ -5,7 +5,7 @@ import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import player.Player;
+import player.DummyPlayer;
 
 @SuppressWarnings("javadoc")
 public class WallPartTest {
@@ -48,8 +48,7 @@ public class WallPartTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void addPlayer() {
-		Player player = new Player(new Square(Collections.<Direction, ASquare> emptyMap()));
-		wall.addPlayer(player);
+		wall.addPlayer(new DummyPlayer());
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)
