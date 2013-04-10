@@ -198,9 +198,7 @@ public abstract class ASquare implements ISquare {
 	/**
 	 * Test whether a {@link IPlayer player} can be added to this square.
 	 * 
-	 * @param player
-	 *        the player that is to be added
-	 * @return true if the player can be added, else false
+	 * @return true if a player can be added, else false
 	 */
-	public abstract boolean canBeAdded(IPlayer player);
+	public abstract boolean canAddPlayer();
 }

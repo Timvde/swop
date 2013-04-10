@@ -75,6 +75,7 @@ public class GUI implements Runnable {
 	private Image					lightGrenadeExplodedImage;
 	private Image					teleporterImage;
 	private Image					identityDiskImage;
+	private Image					chargedIdentityDiskImage;
 	private Image					lightTrailImage;
 	private Image					finishBlue;
 	private Image					finishRed;
@@ -296,6 +297,7 @@ public class GUI implements Runnable {
 				SQUARE_SIZE);
 		this.teleporterImage = gui.loadImage("icon.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.identityDiskImage = gui.loadImage("identity_disk.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.chargedIdentityDiskImage = gui.loadImage("charged_identity_disk.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightTrailImage = gui.loadImage("lighttrail_custom.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);

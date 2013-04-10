@@ -1,5 +1,6 @@
 package game;
 
+import java.util.List;
 import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
@@ -40,7 +41,7 @@ public class Game {
 	 * Start the initialisation and run the GUI.
 	 */
 	public void start() { 
-		this.playerDB = new PlayerDataBase(grid); 
+		this.playerDB = new PlayerDataBase(); 
 		
 		// create all the controllers, giving them the IPlayerDB
 		MoveController moveCont = new MoveController(this.playerDB);
@@ -82,14 +83,12 @@ public class Game {
 	 */
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		this.grid = new GridBuilder().setGridWidth(width).setGridHeigth(height).build();
+		List<Player> players = playerDB.createNewDB();
+		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
 		
-		Coordinate[] playerStartingCoordinates = new Coordinate[] { new Coordinate(width - 1, 0),
-				new Coordinate(0, height - 1) };
-		playerDB.createNewDB(playerStartingCoordinates, grid);
 	}
 	
 	/**

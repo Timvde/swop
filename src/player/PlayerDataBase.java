@@ -1,9 +1,9 @@
 package player;
 
-import grid.Coordinate;
 import grid.Grid;
 import item.lightgrenade.LightGrenade;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import square.ISquare;
@@ -39,16 +39,12 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	
 	/**
 	 * Creates a new empty PlayerDataBase. to fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid)
-	 * createNewDB}. Until then the {@link PlayerDataBase#getCurrentPlayer()}
-	 * method will throw an exception.
-	 * 
-	 * @param grid
-	 *        The grid we will play with.
+	 * one has to call {@link PlayerDataBase#createNewDB() createNewDB}. Until
+	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
+	 * exception.
 	 */
-	public PlayerDataBase(Grid grid) {
+	public PlayerDataBase() {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
-		this.grid = grid;
 	}
 	
 	/**
@@ -60,11 +56,7 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * positions array. The first player allowed to play, is the player with the
 	 * first starting position in the specified array.
 	 * 
-	 * @param playerStartingPositions
-	 *        The specified starting coordinates for the players to create
-	 * 
-	 * @param grid
-	 *        The grid on which the players will move
+	 * @return The newly created list of players.
 	 * 
 	 * @throws IllegalArgumentException
 	 *         The arguments cannot be null. The lenght of the specified
@@ -72,50 +64,25 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 *         {@value #NUMBER_OF_PLAYERS} and no two given coordinates can be
 	 *         the same.
 	 */
-	public void createNewDB(@NotNull Coordinate[] playerStartingPositions, Grid grid)
-			throws IllegalArgumentException {
-		if (playerStartingPositions == null || grid == null) {
-			throw new IllegalArgumentException("the given arguments cannot be null");
-		}
-		if (playerStartingPositions.length != NUMBER_OF_PLAYERS) {
-			throw new IllegalArgumentException("The number of player-starting-coordinates is wrong");
-		}
-		if (!allDifferent(playerStartingPositions)) {
-			throw new IllegalArgumentException(
-					"The specified player-starting-coordinates must all be different");
-		}
-		
-		this.grid = grid;
-		
+	public List<Player> createNewDB() {
 		Player.resetUniqueIdcounter();
 		this.playerList.clear();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player((Square) grid.getSquareAt(playerStartingPositions[i]));
+			Player newPlayer = new Player();
 			this.playerList.add(newPlayer);
 			newPlayer.addObserver(this);
 		}
-		
 		// Set the right upmost player as starting player.
 		this.currentPlayerIndex = 0;
-	}
-	
-	private boolean allDifferent(Coordinate[] playerStartingPositions) {
-		for (int i = 0; i < playerStartingPositions.length - 1; i++) {
-			Coordinate c1 = playerStartingPositions[i];
-			for (int j = i + 1; j < playerStartingPositions.length; j++) {
-				Coordinate c2 = playerStartingPositions[j];
-				if (c1.equals(c2)) {
-					return false;
-				}
-			}
-		}
-		return true;
+		
+		return playerList;
+		
 	}
 	
 	@Override
 	public IPlayer getCurrentPlayer() throws IllegalStateException {
 		if (this.playerList.size() == 0) {
-			throw new IllegalStateException("The PlayerDatabase is empy.");
+			throw new IllegalStateException("The PlayerDatabase is empty.");
 		}
 		return this.playerList.get(this.currentPlayerIndex);
 	}
@@ -178,7 +145,8 @@ public class PlayerDataBase implements Observer, IPlayerDataBase {
 	 * upgrade power failures.
 	 */
 	private void updatePowerFailures() {
-		grid.updatePowerFailures();
+		// grid.updatePowerFailures();
+		// Grid has been removed. No power failures until Jo's merge.
 	}
 	
 	/**

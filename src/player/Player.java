@@ -20,8 +20,8 @@ import ObjectronExceptions.IllegalMoveException;
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
  * during a turn. These actions are {@link #moveInDirection(Direction) move},
- * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem)
- * use} an item and {@link #endTurn() end} the turn.
+ * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
+ * item and {@link #endTurn() end} the turn.
  */
 public class Player extends Observable implements IPlayer, Teleportable, AffectedByPowerFailure,
 		Explodable {
@@ -36,7 +36,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	
 	private int						allowedNumberOfActionsLeft;
 	private boolean					hasMoved;
-	private final ASquare			startSquare;
+	private ASquare					startSquare;
 	private ASquare					currentSquare;
 	private Inventory				inventory;
 	private LightTrail				lightTrail;
@@ -54,32 +54,34 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 	 * moved and has an allowed nb of actions of
 	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
 	 * starting position of the player.
-	 * 
-	 * @param startSquare
-	 *        The starting position of the player
-	 * @throws IllegalArgumentException
-	 *         The given arguments cannot be null.
-	 * @throws IllegalStateException
-	 *         The given coordinate must exist on the given grid
 	 */
-	public Player(Square startSquare) {
-		if (startSquare == null) {
-			throw new IllegalArgumentException("The given arguments cannot be null");
-		}
-		
+	public Player() {
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		this.startSquare = startSquare;
-		this.currentSquare = startSquare;
-		startSquare.addPlayer(this);
 	}
 	
 	@Override
 	public int getID() {
 		return id;
+	}
+	
+	/**
+	 * This method is used to initiate the starting position of the player. It
+	 * can be called only once.
+	 * 
+	 * @param square
+	 *        The square that should be the starting position of this player
+	 * @throws IllegalStateException
+	 *         When the player already has a starting position set
+	 */
+	public void setStartingPosition(ASquare square) throws IllegalStateException {
+		if (getStartingPosition() != null)
+			throw new IllegalStateException("This player already has a starting position set");
+		this.startSquare = square;
+		this.currentSquare = square;
 	}
 	
 	@Override
@@ -239,7 +241,8 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 			currentSquare.remove(this);
 			oldSquare.addPlayer(this);
 			currentSquare = oldSquare;
-			throw new IllegalMoveException("The player cannot move in the given direction on the grid");
+			throw new IllegalMoveException(
+					"The player cannot move in the given direction on the grid");
 		}
 		
 		// update the light trail of this player
@@ -426,7 +429,7 @@ public class Player extends Observable implements IPlayer, Teleportable, Affecte
 		if (destination == null)
 			return false;
 		// test if the square accepts players
-		else if (!destination.canBeAdded(this))
+		else if (!destination.canAddPlayer())
 			return false;
 		// anything else?
 		else
