@@ -3,8 +3,11 @@ package player;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import grid.Grid;
+import grid.GridBuilder;
 import item.lightgrenade.LightGrenade;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import junit.framework.Assert;
@@ -20,15 +23,18 @@ public class PlayerTest implements Observer {
 	private Player			player;
 	private PlayerDataBase	db;
 	private PlayerState		notifiedWithPlayerState;
+	private Grid			grid;
 	
 	@Before
 	public void setUp() {
 		db = new PlayerDataBase();
-		db.createNewDB();
+		List<Player> players = db.createNewDB();
 		// make this class an observer for testing purposes
 		db.addObserver(this);
+		grid = new GridBuilder(players).getPredefinedTestGrid(false);
 		
 		player = (Player) db.getCurrentPlayer();
+		player.assignNewTurn();
 	}
 	
 	/* ######################### CONSTRUCTOR TESTS ######################### */

@@ -535,6 +535,14 @@ public class GridBuilder {
 				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
 			}
 		
+		// place players on the board
+		List<Coordinate> startingCoordinates = calculateStartingPositionsOfPlayers();
+		
+		for (int i = 0; i < players.size(); ++i) {
+			players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
+			getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
+		}
+		
 		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
 		
 		((Square) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());

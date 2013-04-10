@@ -47,8 +47,8 @@ public class PlayerDBTest {
 	public void testCreateNewDB() {
 		Set<IPlayer> set1 = getAllPlayerFromDB();
 		
-		playerDB.createNewDB();
-		Set<IPlayer> set2 = getAllPlayerFromDB();
+		;
+		Set<IPlayer> set2 = new HashSet<IPlayer>(playerDB.createNewDB());
 		
 		// the two lists should contain different players
 		containDifferentPlayers(set1, set2);

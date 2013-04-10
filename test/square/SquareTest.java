@@ -263,15 +263,16 @@ public class SquareTest {
 	public void testAddPlayer_executeEffect() {
 		// make a player to test with
 		DummyPlayer player = new DummyPlayer();
+		Square newSquare = new Square(Collections.<Direction, ASquare> emptyMap());
 		
 		// create a square with power failure
-		new PowerFailure(square);
+		new PowerFailure(newSquare);
 		
 		// start testing
 		// when the player moves onto the square, he will suffer from this. He
 		// will be (hopefully) affected by a power failure.
 		
-		square.addPlayer(player);
+		newSquare.addPlayer(player);
 		assertTrue(player.isDamagedByPowerFailure());
 	}
 	
