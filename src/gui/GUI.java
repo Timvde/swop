@@ -4,6 +4,7 @@ import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
 import item.Item;
+import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
@@ -252,7 +253,10 @@ public class GUI implements Runnable {
 								graphics.drawImage(teleporterImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
-							if (i instanceof IdentityDisk) {
+							if (i instanceof ChargedIdentityDisk)
+								graphics.drawImage(chargedIdentityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							else if (i instanceof IdentityDisk) {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
