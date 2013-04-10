@@ -8,6 +8,7 @@ import item.lightgrenade.LightGrenade.LightGrenadeState;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
 import square.ASquare;
 import square.Direction;
@@ -39,7 +40,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testStateTransision() {
+	public void testStateTransision() throws CannotPlaceLightGrenadeException {
 		assertEquals(LightGrenadeState.INACTIVE, lightGrenade.getState());
 		activateLightGrenade();
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
@@ -55,14 +56,14 @@ public class LightGrenadeTest {
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void testExecuteActiveIllegalState() {
+	public void testExecuteActiveIllegalState() throws CannotPlaceLightGrenadeException {
 		activateLightGrenade();
 		// one cannot execute an active lightgrenade
 		lightGrenade.execute(affectedPlayer);
 	}
 	
 	@Test
-	public void TestIsCarriable() {
+	public void TestIsCarriable() throws CannotPlaceLightGrenadeException {
 		assertTrue(lightGrenade.isCarriable());
 		
 		activateLightGrenade();
@@ -73,7 +74,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testUse() {
+	public void testUse() throws CannotPlaceLightGrenadeException {
 		lightGrenade.use(emptySquare);
 		
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
@@ -81,18 +82,18 @@ public class LightGrenadeTest {
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)
-	public void testUse_SquareIsAWall() {
+	public void testUse_SquareIsAWall() throws CannotPlaceLightGrenadeException {
 		lightGrenade.use(new WallPart(Collections.<Direction, ASquare> emptyMap()));
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void testUse_alreadyLightGrenadeOnSquare() {
+	public void testUse_alreadyLightGrenadeOnSquare() throws CannotPlaceLightGrenadeException {
 		emptySquare.addItem(new LightGrenade());
 		lightGrenade.use(emptySquare);
 	}
 	
 	@Test
-	public void testNormalStrengthExplode() {
+	public void testNormalStrengthExplode() throws CannotPlaceLightGrenadeException {
 		activateLightGrenade();
 		explodeLightGrenade();
 		// test if the strength was increased
@@ -100,7 +101,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testIncreasedStrenghtExplode() {
+	public void testIncreasedStrenghtExplode() throws CannotPlaceLightGrenadeException {
 		// increase the strength of the light grenade
 		lightGrenade.increaseStrength();
 		activateLightGrenade();
@@ -110,7 +111,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testAddToEffect() {
+	public void testAddToEffect() throws CannotPlaceLightGrenadeException {
 		Effect effect = new Effect(affectedPlayer);
 		lightGrenade.addToEffect(effect);
 		effect.execute();
@@ -137,8 +138,9 @@ public class LightGrenadeTest {
 	/**
 	 * Simulates adding the lightgrenade to the square and thus making it
 	 * active.
+	 * @throws CannotPlaceLightGrenadeException 
 	 */
-	public void activateLightGrenade() {
+	public void activateLightGrenade() throws CannotPlaceLightGrenadeException {
 		lightGrenade.use(emptySquare);
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
 		assertTrue(emptySquare.contains(lightGrenade));

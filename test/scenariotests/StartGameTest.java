@@ -1,6 +1,5 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
 import game.Game;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,11 +8,10 @@ import controllers.NewGameController;
 /**
  * Test if the game starts correctly, and all preconditions are respected.
  * 
- * Tests:
- * - Minimum grid size: 10x10
+ * Tests: - Minimum grid size: 10x10
  * 
  * @author tom
- *
+ * 
  */
 @SuppressWarnings("javadoc")
 public class StartGameTest {
@@ -29,16 +27,16 @@ public class StartGameTest {
 	
 	@Test
 	public void testNewGameCorrectDimensions() {
-		try {
-			newGameCont.newGame(10, 10);
-		}
-		catch (Exception e) {
-			fail();
-		}
+		newGameCont.newGame(10, 10);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNewGameFalseDimensions() {
+	public void testNewGame_falseDimensions() {
 		newGameCont.newGame(6, 6);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testNewGame_negativeDimensions() {
+		newGameCont.newGame(-1, 10);
 	}
 }
