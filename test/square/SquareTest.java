@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import item.Item;
 import item.identitydisk.IdentityDisk;
+import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.Collections;
@@ -172,9 +173,8 @@ public class SquareTest {
 	public void testGetCarryableItems() {
 		// add some items to the square
 		LightGrenade lightGrenade = new LightGrenade();
-		Teleporter teleporter = new Teleporter(new Square(
-				Collections.<Direction, ASquare> emptyMap()));
-		IdentityDisk identityDisk = new IdentityDisk();
+		Teleporter teleporter = new Teleporter(null, square);
+		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
 		square.addItem(lightGrenade);
 		square.addItem(identityDisk);
@@ -190,9 +190,8 @@ public class SquareTest {
 	public void testGetCarryableItems_encapsulation() {
 		// add some items to the square
 		LightGrenade lightGrenade = new LightGrenade();
-		Teleporter teleporter = new Teleporter(new Square(
-				Collections.<Direction, ASquare> emptyMap()));
-		IdentityDisk identityDisk = new IdentityDisk();
+		Teleporter teleporter = new Teleporter(null, square);
+		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
 		square.addItem(lightGrenade);
 		square.addItem(identityDisk);
@@ -208,9 +207,8 @@ public class SquareTest {
 	public void testPickUpItem() {
 		// add some items to the square
 		LightGrenade lightGrenade = new LightGrenade();
-		Teleporter teleporter = new Teleporter(new Square(
-				Collections.<Direction, ASquare> emptyMap()));
-		IdentityDisk identityDisk = new IdentityDisk();
+		Teleporter teleporter = new Teleporter(null, square);
+		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
 		square.addItem(lightGrenade);
 		square.addItem(identityDisk);
@@ -236,8 +234,7 @@ public class SquareTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testPickUpItem_itemIsNotCarryable() {
-		Teleporter teleporter = new Teleporter(new Square(
-				Collections.<Direction, ASquare> emptyMap()));
+		Teleporter teleporter = new Teleporter(null, square);
 		square.addItem(teleporter);
 		square.pickupItem(teleporter.getId());
 	}

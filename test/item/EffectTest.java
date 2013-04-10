@@ -2,12 +2,14 @@ package item;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import item.identitydisk.IdentityDisk;
+import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
-import item.teleporter.Teleporter;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
 import square.ASquare;
 import square.Direction;
@@ -57,15 +59,14 @@ public class EffectTest {
 	@Test
 	public void testAddItem() {
 		LightGrenade lightGrenade = new LightGrenade();
-		Teleporter teleporter = new Teleporter(new Square(
-				Collections.<Direction, ASquare> emptyMap()));
+		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
-		effect.addItem(teleporter);
+		effect.addItem(identityDisk);
 		effect.addItem(lightGrenade);
 		
 		assertEquals(2, effect.getItems().size());
 		assertTrue(effect.getItems().contains(lightGrenade));
-		assertTrue(effect.getItems().contains(teleporter));
+		assertTrue(effect.getItems().contains(identityDisk));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -74,7 +75,7 @@ public class EffectTest {
 	}
 	
 	@Test
-	public void testExecute_withALightGrenade() {
+	public void testExecute_withALightGrenade() throws CannotPlaceLightGrenadeException {
 		// add an active light grenade to the effect
 		LightGrenade lightGrenade = new LightGrenade();
 		explodeLightGrenade(lightGrenade);
@@ -88,7 +89,7 @@ public class EffectTest {
 	}
 	
 	@Test
-	public void testExecute_withLightGrenadeAndPowerFailure() {
+	public void testExecute_withLightGrenadeAndPowerFailure() throws CannotPlaceLightGrenadeException {
 		// add an active light grenade to the effect
 		LightGrenade lightGrenade = new LightGrenade();
 		explodeLightGrenade(lightGrenade);
@@ -108,8 +109,9 @@ public class EffectTest {
 	
 	/**
 	 * Will set the {@link LightGrenadeState} to EXPLODED.
+	 * @throws CannotPlaceLightGrenadeException 
 	 */
-	public void explodeLightGrenade(LightGrenade lightGrenade) {
+	public void explodeLightGrenade(LightGrenade lightGrenade) throws CannotPlaceLightGrenadeException {
 		Square emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
 		
 		// Simulate adding the lightgrenade to the square and thus making it active.

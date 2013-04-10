@@ -48,6 +48,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		
 		// reset the direction field
 		direction = null;
+		currentSquare = null;
 	}
 	
 	/**
@@ -95,6 +96,9 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	
 	@Override
 	public void teleportTo(ASquare destination) {
+		if (destination == null)
+			throw new IllegalArgumentException("Cannot teleport to null!");
+		
 		// remove the disk from the current square
 		if (currentSquare != null)
 			currentSquare.remove(this);

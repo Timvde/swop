@@ -104,7 +104,6 @@ public class LightGrenade extends Item {
 	
 	@Override
 	public void use(ASquare square) throws CannotPlaceLightGrenadeException {
-		
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
@@ -126,9 +125,9 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void execute(TronObject object) throws IllegalStateException {
+	public void execute(TronObject object) {
 		// Test whether this light grenade can explode
-		if (this.state != LightGrenadeState.ACTIVE)
+		if (!this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			return;
 		
 		// Test whether the specified object can explode

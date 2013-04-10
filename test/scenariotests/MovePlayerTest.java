@@ -113,7 +113,7 @@ public class MovePlayerTest {
 			// This is a move on a wall:
 			moveCont.move(Direction.NORTHEAST);
 		}
-		catch (IllegalArgumentException e) {
+		catch (IllegalMoveException e) {
 			exceptionThrown = true;
 		}
 		Assert.assertEquals(true, exceptionThrown);
@@ -147,5 +147,12 @@ public class MovePlayerTest {
 	public void testMoveOnLightTrail() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.NORTH);
+	}
+	
+	@Test (expected = IllegalMoveException.class)
+	public void testCrossLightTrail() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+		moveCont.move(Direction.SOUTHWEST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.NORTHWEST);
 	}
 }

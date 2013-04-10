@@ -1,8 +1,16 @@
 package item.identitydisk;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import square.ASquare;
+import square.Direction;
+import square.Square;
+import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class IdentityDiskTest {
@@ -11,23 +19,72 @@ public class IdentityDiskTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		identityDisk = new IdentityDisk();
-	}
-	
-	@Test
-	public final void testIdentityDisk() {
-		// Not much to do here it seems. Let's put some other stuff here then. 
-		//
-		// An int, a char and a string walk into a bar and order some drinks. A
-		// short while later, the int and char start hitting on the waitress who
-		// gets very uncomfortable and walks away. The string walks up to the
-		// waitress and says "You'll have to forgive them, they're primitive
-		// types."
+		identityDisk = new ChargedIdentityDisk();
 	}
 	
 	@Test
 	public final void testUse() {
-		fail("Not yet implemented"); // TODO
+		
+		// setup a long strait of squares
+		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square first = square;
+		for (int i = 0; i < 10; i++) {
+			Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+			neighbours.put(Direction.WEST, square);
+			square = new Square(neighbours);
+		}
+		
+		identityDisk.setDirection(Direction.EAST);
+		identityDisk.use(first);
+		
+		assertEquals(identityDisk, square.getAllItems().get(0));
+	}
+	
+	@Test
+	public final void testUse_ItemCannotMove() {
+		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		identityDisk.setDirection(Direction.EAST);
+		identityDisk.use(square);
+		
+		assertEquals(identityDisk, square.getAllItems().get(0));
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public final void testUse_noDirectionSet() {
+		identityDisk.use(new Square(Collections.<Direction, ASquare> emptyMap()));
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public final void testUse_useItemTwice() {
+		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		identityDisk.setDirection(Direction.EAST);
+		identityDisk.use(square);
+		identityDisk.use(square);
+	}
+	
+	@Test
+	public final void testUse_hitWall() {
+		// setup a long strait of squares
+		ASquare square = new Square(Collections.<Direction, ASquare> emptyMap());
+		ASquare first = square;
+		ASquare goal = null;
+		for (int i = 0; i < 10; i++) {
+			Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+			neighbours.put(Direction.WEST, square);
+			
+			if (i == 7) {
+				goal = square;
+				square = new WallPart(neighbours);
+				break;
+			}
+			square = new Square(neighbours);
+		}
+		
+		identityDisk.setDirection(Direction.EAST);
+		identityDisk.use(first);
+		
+		assertEquals(identityDisk, goal.getAllItems().get(0));
+		assertTrue(square.getAllItems().isEmpty());
 	}
 	
 	@Test
@@ -37,17 +94,20 @@ public class IdentityDiskTest {
 	
 	@Test
 	public final void testTeleportTo() {
-		fail("Not yet implemented"); // TODO
+		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		identityDisk.teleportTo(square);
+		assertEquals(identityDisk, square.getAllItems().get(0));
 	}
 	
-	@Test
-	public final void testDamageByPowerFailure() {
-		fail("Not yet implemented"); // TODO
+	@Test (expected = IllegalArgumentException.class)
+	public final void testTeleportTo_nullArgument() {
+		identityDisk.teleportTo(null);
 	}
 	
 	@Test
 	public final void testExecute() {
-		fail("Not yet implemented"); // TODO
-	}
-	
+		// not much to do here 
+		// because we write such good code ... 
+		// *sarcasm*  
+	}	
 }

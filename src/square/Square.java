@@ -215,7 +215,6 @@ public class Square extends ASquare {
 	 *        the object to be placed on this square
 	 */
 	private void executeEffect(TronObject object) {
-		
 		// create a new effect
 		Effect effect = new Effect(object);
 		

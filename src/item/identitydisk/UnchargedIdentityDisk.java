@@ -1,5 +1,6 @@
 package item.identitydisk;
 
+import square.ASquare;
 import square.AffectedByPowerFailure;
 import square.Direction;
 import square.TronObject;
@@ -27,8 +28,14 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 		range = 4;
 	}
 	
-	
-	
+	@Override
+	public void use(ASquare square) {
+		super.use(square);
+		range = 4;
+	}
+
+
+
 	@Override
 	protected void moveDisk(Direction direction) {
 		super.moveDisk(direction);

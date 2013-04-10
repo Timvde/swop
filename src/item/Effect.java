@@ -26,8 +26,12 @@ public class Effect {
 	 * 
 	 * @param object
 	 *        The object to receive the effect.
+	 * 
+	 * @throws IllegalArgumentException
+	 *         The specified object must be valid, i.e.
+	 *         {@link #isValidObject(TronObject)}.
 	 */
-	public Effect(TronObject object) {
+	public Effect(TronObject object) throws IllegalArgumentException {
 		if (!isValidObject(object))
 			throw new IllegalArgumentException("The object was not valid!");
 		
@@ -43,7 +47,7 @@ public class Effect {
 	 * 
 	 * @param object
 	 *        the object to test
-	 * @return true if the object is valid for this square, else false
+	 * @return true if the object is valid for this effect, else false
 	 */
 	public boolean isValidObject(TronObject object) {
 		// test if the object exists
@@ -55,11 +59,11 @@ public class Effect {
 	}
 	
 	/**
-	 * return the object that will suffer from this effect
+	 * return the object that will suffer from this effect (for testing purposes)
 	 * 
 	 * @return the object of this effect
 	 */
-	public TronObject getObject() {
+	TronObject getObject() {
 		return object;
 	}
 	

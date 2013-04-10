@@ -4,7 +4,6 @@ import item.IItem;
 import java.util.List;
 import java.util.Set;
 import square.ASquare;
-import square.ISquare;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -34,7 +33,7 @@ public interface IGrid {
 	 * @return The square at that coordinate or null if the location doesn't
 	 *         exists.
 	 */
-	public ISquare getSquareAt(Coordinate coordinate);
+	public ASquare getSquareAt(Coordinate coordinate);
 	
 	// FIXME check null
 	
