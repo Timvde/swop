@@ -62,7 +62,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public List<Player> createNewDB() {
 		Player.resetUniqueIdcounter();
-		this.playerList.clear();
+		this.clearDataBase();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
 			Player newPlayer = new Player(this);
 			this.playerList.add(newPlayer);
