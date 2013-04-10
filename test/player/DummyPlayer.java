@@ -23,7 +23,7 @@ public class DummyPlayer extends Player {
 	 * square without any neihbours.
 	 */
 	public DummyPlayer() {
-		super(new Square(Collections.<Direction, ASquare> emptyMap()));
+		super();
 		this.damageByPowerFailure = false;
 		this.numberOfActionsSkipped = 0;
 	}

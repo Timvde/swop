@@ -20,7 +20,7 @@ public class PlayerTest {
 	public void setUp() {
 		Grid grid = new GridBuilder().getPredefinedTestGrid(false);
 		randomSquare = (Square) grid.getSquareAt(GridBuilder.getRandomCoordOnTestGrid());
-		player = new Player(randomSquare);
+		player = new Player();
 	}
 	
 	@Test

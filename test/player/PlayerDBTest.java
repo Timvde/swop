@@ -18,17 +18,17 @@ public class PlayerDBTest {
 	
 	@Before
 	public void setUp() {
-		grid = new GridBuilder().getPredefinedTestGrid(false);
-		playerDB = new PlayerDataBase(grid);
+		playerDB = new PlayerDataBase();
 		exampleCoords = new Coordinate[] {
 				new Coordinate(GridBuilder.PREDIFINED_GRID_SIZE - 1,
 						GridBuilder.PREDIFINED_GRID_SIZE - 1), new Coordinate(0, 0) };
-		playerDB.createNewDB(exampleCoords, grid);
+		List<Player> players = playerDB.createNewDB();
+		grid = new GridBuilder(players).getPredefinedTestGrid(false);
 	}
 	
 	@Test
 	public void testConstructor() {
-		playerDB = new PlayerDataBase(grid);
+		playerDB = new PlayerDataBase();
 		
 		// an empty DB should throw an exception
 		boolean exceptionThrown = false;
@@ -47,7 +47,7 @@ public class PlayerDBTest {
 		// all players should be different
 		allDifferent(list);
 		
-		playerDB.createNewDB(exampleCoords, new GridBuilder().getPredefinedTestGrid(false));
+		playerDB.createNewDB();
 		List<IPlayer> list2 = getAllPlayerFromDB();
 		// all players should be different
 		allDifferent(list2);
@@ -56,63 +56,67 @@ public class PlayerDBTest {
 		containDifferentPlayers(list, list2);
 	}
 	
-	@Test
-	public void testCreateNewDBIllegalInput() {
-		boolean exceptionThrown = false;
-		
-		// null
-		try {
-			playerDB.createNewDB(null, null);
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-		
-		// empty array
-		Coordinate[] playerStartingCoords = {};
-		try {
-			playerDB.createNewDB(playerStartingCoords, grid);
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-		
-		// too large array
-		playerStartingCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1);
-		try {
-			playerDB.createNewDB(playerStartingCoords, grid);
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-		
-		// duplicate coords
-		playerStartingCoords = randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
-		playerStartingCoords[playerStartingCoords.length - 1] = playerStartingCoords[0];
-		try {
-			playerDB.createNewDB(playerStartingCoords, grid);
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-	}
-	
-	/**
-	 * Genenerates an array with a specified number of randomly created
-	 * coordinates in the grid defined by
-	 * {@link GridBuilder#getPredefinedTestGrid()}
-	 */
-	private Coordinate[] randomCoordArrayOfSize(int size) {
-		Coordinate[] result = new Coordinate[size];
-		for (int j = 0; j < size; j++) {
-			result[j] = GridBuilder.getRandomCoordOnTestGrid();
-		}
-		return result;
-	}
+	// TODO: Deze test kan verwijderd worden, right?
+	// @Test
+	// public void testCreateNewDBIllegalInput() {
+	// boolean exceptionThrown = false;
+	//
+	// // null
+	// try {
+	// playerDB.createNewDB(null, null);
+	// }
+	// catch (IllegalArgumentException e) {
+	// exceptionThrown = true;
+	// }
+	// Assert.assertEquals(true, exceptionThrown);
+	//
+	// // empty array
+	// Coordinate[] playerStartingCoords = {};
+	// try {
+	// playerDB.createNewDB(playerStartingCoords, grid);
+	// }
+	// catch (IllegalArgumentException e) {
+	// exceptionThrown = true;
+	// }
+	// Assert.assertEquals(true, exceptionThrown);
+	//
+	// // too large array
+	// playerStartingCoords =
+	// randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1);
+	// try {
+	// playerDB.createNewDB(playerStartingCoords, grid);
+	// }
+	// catch (IllegalArgumentException e) {
+	// exceptionThrown = true;
+	// }
+	// Assert.assertEquals(true, exceptionThrown);
+	//
+	// // duplicate coords
+	// playerStartingCoords =
+	// randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
+	// playerStartingCoords[playerStartingCoords.length - 1] =
+	// playerStartingCoords[0];
+	// try {
+	// playerDB.createNewDB(playerStartingCoords, grid);
+	// }
+	// catch (IllegalArgumentException e) {
+	// exceptionThrown = true;
+	// }
+	// Assert.assertEquals(true, exceptionThrown);
+	// }
+	//
+	// /**
+	// * Genenerates an array with a specified number of randomly created
+	// * coordinates in the grid defined by
+	// * {@link GridBuilder#getPredefinedTestGrid()}
+	// */
+	// private Coordinate[] randomCoordArrayOfSize(int size) {
+	// Coordinate[] result = new Coordinate[size];
+	// for (int j = 0; j < size; j++) {
+	// result[j] = GridBuilder.getRandomCoordOnTestGrid();
+	// }
+	// return result;
+	// }
 	
 	private void allDifferent(List<IPlayer> list) {
 		for (int i = 0; i < list.size() - 1; i++) {
