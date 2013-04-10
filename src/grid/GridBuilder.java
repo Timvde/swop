@@ -6,9 +6,11 @@ import item.teleporter.Teleporter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import square.ASquare;
 import square.Direction;
 import square.ISquare;
@@ -329,7 +331,8 @@ public class GridBuilder {
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
-				Teleporter teleporter = new Teleporter(getTeleporterDestination(teleporters), grid.get(position));
+				Teleporter teleporter = new Teleporter(getTeleporterDestination(teleporters),
+						grid.get(position));
 				((Square) grid.get(position)).addItem(teleporter);
 				teleporters.add(teleporter);
 				numberOfItems++;
@@ -466,15 +469,40 @@ public class GridBuilder {
 	}
 	
 	/**
-	 * Returns a randomly created coordinate that exists on the grid specified
-	 * by {@link GridBuilder#getPredefinedTestGrid(boolean)}. Used for testing
+	 * Returns a set with the starting square of the players of the predefined
+	 * test grid.
+	 * 
+	 * @return A set with the starting square of the players of the predefined
+	 *         test grid.
+	 */
+	public Set<ASquare> getPlayerStartingPositionsOnTestGrid() {
+		Grid grid = getPredefinedTestGrid(false);
+		Set<ASquare> playerStartingPositions = new HashSet<ASquare>();
+		playerStartingPositions.add(grid.getSquareAt(new Coordinate(0, 0)));
+		playerStartingPositions.add(grid.getSquareAt(new Coordinate(
+				GridBuilder.PREDIFINED_GRID_SIZE - 1, GridBuilder.PREDIFINED_GRID_SIZE - 1)));
+		return playerStartingPositions;
+	}
+	
+	/**
+	 * Returns a randomly created square that exists on the grid specified by
+	 * {@link GridBuilder#getPredefinedTestGrid(boolean)}. Used for testing
 	 * purposes.
 	 * 
-	 * @return A random coordinate on the test grid.
+	 * @return A random square on the test grid.
 	 */
-	public static Coordinate getRandomCoordOnTestGrid() {
-		return new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
+	public Square getRandomSquareOnTestGrid() {
+		ASquare sq = getRandomAsquareOnTestGrid();
+		while (!(sq instanceof Square))
+			sq = getRandomAsquareOnTestGrid();
+		return (Square) sq;
+	}
+	
+	private ASquare getRandomAsquareOnTestGrid() {
+		Grid g = this.getPredefinedTestGrid(false);
+		Coordinate c = new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
 				new Random().nextInt(PREDIFINED_GRID_SIZE));
+		return g.getSquareAt(c);
 	}
 	
 	/**

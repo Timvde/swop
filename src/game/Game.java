@@ -4,8 +4,14 @@ import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import gui.GUI;
-import player.Player;
+import java.util.HashSet;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+import player.IPlayer;
 import player.PlayerDataBase;
+import player.PlayerState;
+import square.ASquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -18,7 +24,7 @@ import controllers.UseItemController;
  * 
  * @author tom
  */
-public class Game {
+public class Game implements Observer {
 	
 	private Grid				grid;
 	private PlayerDataBase		playerDB;
@@ -37,10 +43,13 @@ public class Game {
 	}
 	
 	/**
-	 * Start the initialisation and run the GUI.
+	 * Start the initialization and run the GUI.
 	 */
-	public void start() { 
-		this.playerDB = new PlayerDataBase(grid); 
+	public void start() {
+		// make a new PlayerDB and observe it
+		// (to be notified when a player has won/lost)
+		this.playerDB = new PlayerDataBase();
+		playerDB.addObserver(this);
 		
 		// create all the controllers, giving them the IPlayerDB
 		MoveController moveCont = new MoveController(this.playerDB);
@@ -69,6 +78,10 @@ public class Game {
 	 */
 	public void setGrid(Grid grid) {
 		this.grid = grid;
+		// Grid must be notified of player switching to update the power
+		// failures
+		this.playerDB.addObserver(grid);
+		
 		// TODO is this method used for testing purposes??
 	}
 	
@@ -87,19 +100,48 @@ public class Game {
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
 		
-		Coordinate[] playerStartingCoordinates = new Coordinate[] { new Coordinate(width - 1, 0),
-				new Coordinate(0, height - 1) };
-		playerDB.createNewDB(playerStartingCoordinates, grid);
+		Set<ASquare> playerStartingPositions = new HashSet<ASquare>();
+		playerStartingPositions.add(grid.getGrid().get(new Coordinate(width - 1, 0)));
+		playerStartingPositions.add(grid.getGrid().get(new Coordinate(0, height - 1)));
+		playerDB.createNewDB(playerStartingPositions);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
+			this.handlePlayerDataBaseEvent((PlayerDataBase) o, (PlayerState) arg);
+		}
+		//else do nothing; return
 	}
 	
 	/**
-	 * end the current game
-	 * 
-	 * @param p
-	 *        the player who wins/loses the game
+	 * This method will be called each time {@link PlayerDataBase} reports a
+	 * Player-change (passing the {@link PlayerState} of the player whos turn is
+	 * ended as an argument).
+	 * @param endedPlayerState the {@link PlayerState} of the player whos turn is
+	 * ended
+	 * @param db 
 	 */
-	public void endGame(Player p) {
+	private void handlePlayerDataBaseEvent(PlayerDataBase db, PlayerState endedPlayerState) {
+		// only interested in finished or lost states; ignore active/waiting states
+		switch (endedPlayerState) {
+			case FINISHED:
+				this.endGameWithWinner(db.getCurrentPlayer());
+				break;
+			
+			case LOST:
+				this.endGameWithLoser(db.getCurrentPlayer());
+		}
+	}
+
+	private void endGameWithLoser(IPlayer player) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("game is finished with loser " + player);
+	}
+
+	private void endGameWithWinner(IPlayer player) {
+		// TODO Auto-generated method stub
+		System.out.println("game is finished with winner " + player);
+
 	}
 }

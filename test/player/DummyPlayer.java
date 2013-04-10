@@ -20,10 +20,10 @@ public class DummyPlayer extends Player {
 	
 	/**
 	 * Create a new dummy player. The player will be set on a self created
-	 * square without any neihbours.
+	 * square without any neighbours.
 	 */
 	public DummyPlayer() {
-		super(new Square(Collections.<Direction, ASquare> emptyMap()));
+		super(new Square(Collections.<Direction, ASquare> emptyMap()), new PlayerDataBase());
 		this.damageByPowerFailure = false;
 		this.numberOfActionsSkipped = 0;
 	}

@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
+import player.PlayerDataBase;
+import player.PlayerState;
 import square.ASquare;
 import square.ISquare;
 import square.PowerFailure;
@@ -18,7 +22,7 @@ import square.WallPart;
  * 
  * @author Bavo Mees
  */
-public class Grid implements IGrid {
+public class Grid implements IGrid, Observer {
 	
 	private Map<Coordinate, ASquare>	grid;
 	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
@@ -191,5 +195,13 @@ public class Grid implements IGrid {
 	 */
 	public void enablePowerFailures(boolean enabled) {
 		this.ENABLE_POWER_FAILURE = enabled;
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o instanceof PlayerDataBase) {
+			this.updatePowerFailures();
+		}
+		// else do nothing; return
 	}
 }
