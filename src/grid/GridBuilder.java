@@ -170,8 +170,7 @@ public class GridBuilder {
 		// find the neighbours of the new square
 		for (Direction direction : Direction.values())
 			if (grid.containsKey(coordinate.getCoordinateInDirection(direction)))
-				neighbours
-						.put(direction, grid.get(coordinate.getCoordinateInDirection(direction)));
+				neighbours.put(direction, grid.get(coordinate.getCoordinateInDirection(direction)));
 		
 		// return the new square with its neighbours
 		return new Square(neighbours);
@@ -341,7 +340,7 @@ public class GridBuilder {
 		placeTeleporters();
 		placeIdentityDisks(startingCoordinates);
 	}
-
+	
 	private void placeLightGrenades(List<Coordinate> startingCoordinates) {
 		// A light grenade should be within a 3x3 square of each starting
 		// position. In general, this is a 5x5 square with the starting
@@ -402,7 +401,7 @@ public class GridBuilder {
 		
 		getSquare(CIDCoords.get(rand.nextInt(CIDCoords.size()))).addItem(new ChargedIdentityDisk());
 	}
-
+	
 	private Teleporter getTeleporterDestination(List<Teleporter> teleporters) {
 		if (teleporters.isEmpty())
 			return null;
@@ -411,7 +410,7 @@ public class GridBuilder {
 	}
 	
 	private List<Coordinate> getPossibleCIDLocations(List<Coordinate> startingCoordinates) {
-		List<Map<Coordinate, Integer>> distances = new ArrayList<Map<Coordinate,Integer>>();
+		List<Map<Coordinate, Integer>> distances = new ArrayList<Map<Coordinate, Integer>>();
 		List<Coordinate> CIDLocations = new ArrayList<Coordinate>();
 		
 		for (Coordinate coord : startingCoordinates)

@@ -104,7 +104,7 @@ public class WallPart extends ASquare {
 	public List<IItem> getAllItems() {
 		return new ArrayList<IItem>();
 	}
-
+	
 	@Override
 	public boolean canBeAdded(IItem item) {
 		return false;

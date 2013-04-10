@@ -40,8 +40,8 @@ public class Game {
 	/**
 	 * Start the initialisation and run the GUI.
 	 */
-	public void start() { 
-		this.playerDB = new PlayerDataBase(); 
+	public void start() {
+		this.playerDB = new PlayerDataBase();
 		
 		// create all the controllers, giving them the IPlayerDB
 		MoveController moveCont = new MoveController(this.playerDB);
