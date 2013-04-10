@@ -199,14 +199,8 @@ public class Grid implements IGrid, Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
-			// PlayerDB passes the PlayerState of the player whos turn is ended
-			// as an argument
-			PlayerState state = (PlayerState) arg;
-			if (state == PlayerState.WAITING) {
-				this.updatePowerFailures();
-			}
-			// ignore any other PlayerStates; only intrested in Player-turn ends
+		if (o instanceof PlayerDataBase) {
+			this.updatePowerFailures();
 		}
 		// else do nothing; return
 	}
