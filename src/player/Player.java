@@ -103,7 +103,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		
 		// tell the DB you received a startposition (to tell this player is
 		// ready to start playing)
-		this.playerDB.reportStartPositionReceived(this);
+		this.playerDB.reportReadyToStart(this);
 	}
 	
 	@Override

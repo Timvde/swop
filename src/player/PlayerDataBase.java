@@ -184,9 +184,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * {@link Player#assignNewTurn() start playing}.
 	 * 
 	 * @param p
-	 *        The player that reports he's received a startpositiona
+	 *        The player reporting he's ready to start playing
 	 */
-	void reportStartPositionReceived(Player p) {
+	void reportReadyToStart(Player p) {
 		if (p.getCurrentLocation() == null) {
 			throw new IllegalStateException("looks like the player didn't receive start position");
 		}
