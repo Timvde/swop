@@ -1,18 +1,15 @@
 package grid;
 
 import item.IItem;
-
 import java.util.List;
 import java.util.Set;
-
-import square.ASquare;
+import square.ISquare;
 
 /**
- * A grid that consists of abstract {@link ASquare squares}.
+ * A grid containing {@link ISquare squares}.
  * 
  */
 public interface IGrid {
-	
 	
 	/**
 	 * returns the list of items on a square, when there are no items on the
@@ -35,14 +32,14 @@ public interface IGrid {
 	 * @return The square at that coordinate or null if the location doesn't
 	 *         exists.
 	 */
-	public ASquare getSquareAt(Coordinate coordinate);
+	public ISquare getSquareAt(Coordinate coordinate);
 	
 	// FIXME check null
 	
 	/**
 	 * Return all the possible coordinates in the grid.
 	 * 
-	 * @return all coordinates in the grid 
+	 * @return all coordinates in the grid
 	 */
 	public Set<Coordinate> getAllGridCoordinates();
 }
