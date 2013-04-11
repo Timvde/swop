@@ -1,17 +1,21 @@
 package player;
 
+import item.Effect;
 import item.IItem;
+import item.lightgrenade.LightGrenade;
 import java.util.List;
 import square.ASquare;
 import square.Direction;
 import square.ISquare;
 import square.Square;
 import square.TronObject;
-import item.Effect;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalStepException;
+import ObjectronExceptions.IllegalUseException;
+import ObjectronExceptions.InventoryFullException;
+import ObjectronExceptions.ItemNotOnSquareException;
 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 
@@ -115,8 +119,8 @@ public interface IPlayer extends TronObject {
 	 * currentLocationBefore}{@link ASquare#getNeighbour(Direction) 
 	 * .getNeighbour(direction)}</code>.</li>
 	 * 
-	 * <li>The {@link Effect effects} of any items on the new Square will
-	 * be executed (as described in {@link ASquare#addPlayer(IPlayer)}).</li>
+	 * <li>The {@link Effect effects} of any items on the new Square will be
+	 * executed (as described in {@link ASquare#addPlayer(IPlayer)}).</li>
 	 * 
 	 * <li>The {@link LightTrail} of the player will be
 	 * {@link LightTrail#updateLightTrail(ASquare) updated}.</li>
@@ -170,21 +174,38 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @param item
 	 *        The item to pick up.
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
 	 * @throws IllegalArgumentException
-	 *         The item must be on the square the player is currently on and
-	 *         cannot be null.
+	 *         The item cannot be <code>null</code>.
+	 * @throws ItemNotOnSquareException
+	 *         The item must be {@link Square#contains(Object) on} the square
+	 *         the player is currently on.
+	 * @throws InventoryFullException
+	 *         This players {@link Inventory} cannot be
+	 *         {@link Inventory#getMaxNumberOfItems() full}.
 	 */
-	public void pickUpItem(IItem item) throws IllegalArgumentException;
+	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException,
+			ItemNotOnSquareException, InventoryFullException;
 	
 	/**
-	 * Use the given item. The item must be in the inventory of the player.
+	 * {@link IItem#use(ASquare) use} the given item. The item must be in the
+	 * inventory of the player.
 	 * 
 	 * @param i
 	 *        The item that will be used.
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
 	 * @throws IllegalArgumentException
-	 *         The item is not in the inventory
+	 *         The specified item cannot be <code>null</code>.
+	 * @throws IllegalUseException
+	 *         The item must be in the {@link Inventory}.
 	 * @throws CannotPlaceLightGrenadeException
-	 *         The lightgrenade cannot be placed here.
+	 *         When the specified item is a {@link LightGrenade} and it can't be
+	 *         added to the square the player is currently standing on.
 	 */
-	public void useItem(IItem i) throws IllegalArgumentException, CannotPlaceLightGrenadeException;
+	public void useItem(IItem i) throws IllegalActionException, IllegalArgumentException,
+			IllegalUseException, CannotPlaceLightGrenadeException;
 }

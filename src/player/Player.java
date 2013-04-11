@@ -15,6 +15,9 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalStepException;
+import ObjectronExceptions.IllegalUseException;
+import ObjectronExceptions.InventoryFullException;
+import ObjectronExceptions.ItemNotOnSquareException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
@@ -253,7 +256,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return this.state;
 	}
 	
-	/* #################### User methods #################### */
+	/* #################### Move methods #################### */
 	
 	@Override
 	public void endTurn() throws IllegalActionException {
@@ -341,7 +344,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * returns whether the player would cross a light trail if he moved in the
+	 * Returns whether the player would cross a light trail if he moved in the
 	 * specified direction
 	 * 
 	 * @param direction
@@ -372,13 +375,18 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return true;
 	}
 	
+	/* #################### PickUp method #################### */
+	
 	@Override
-	public void pickUpItem(IItem item) {
+	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException,
+			ItemNotOnSquareException, InventoryFullException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
-		if (item == null || !currentSquare.contains(item))
-			throw new IllegalArgumentException("The item does not exist on the square");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
+		if (item == null)
+			throw new IllegalArgumentException("The item cannot be null");
+		if (!currentSquare.contains(item)) {
+			throw new ItemNotOnSquareException("The specified item is not on the square.");
+		}
 		
 		// remove the item from the square
 		currentSquare.remove(item);
@@ -388,9 +396,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			inventory.addItem(item);
 		}
 		catch (IllegalArgumentException e) {
-			// the inventory is full, re-add the item
+			// the inventory is full, rollback
 			currentSquare.addItem(item);
-			throw e;
+			throw new InventoryFullException("The item cannot be added to the inventory.");
 		}
 		
 		// end the players action ...
@@ -398,15 +406,18 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.lightTrail.updateLightTrail();
 	}
 	
+	/* #################### UseItem method #################### */
+	
 	@Override
 	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
 			CannotPlaceLightGrenadeException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
+		if (i == null) {
+			throw new IllegalArgumentException("The specified item cannot be null.");
+		}
 		if (!inventory.hasItem(i))
-			throw new IllegalArgumentException("The item is not in the inventory");
-		// TODO are there any other exceptions?
+			throw new IllegalUseException("The item is not in the inventory");
 		
 		// remove the item from the inventory
 		inventory.removeItem(i);
@@ -502,7 +513,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	void destroy() {
 		this.playerDB = null;
-		this.currentSquare.removePlayer();
+		this.currentSquare.remove(this);
 		this.currentSquare = null;
 		this.id = -1;
 		this.inventory = null;
