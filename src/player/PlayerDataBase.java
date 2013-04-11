@@ -5,6 +5,7 @@ import grid.Grid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import javax.xml.stream.events.StartDocument;
 import square.ISquare;
 import square.Square;
 import com.sun.istack.internal.NotNull;
@@ -175,5 +176,23 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	private ISquare getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();
+	}
+	
+	/**
+	 * This method reports the db that the specified player has received a
+	 * {@link StartDocument} position. This means he's ready to
+	 * {@link Player#assignNewTurn() start playing}.
+	 * 
+	 * @param p
+	 *        The player reporting he's ready to start playing
+	 */
+	void reportReadyToStart(Player p) {
+		if (p.getCurrentLocation() == null) {
+			throw new IllegalStateException("looks like the player didn't receive start position");
+		}
+		
+		if (p.equals(getCurrentPlayer())) {
+			p.assignNewTurn();
+		}
 	}
 }
