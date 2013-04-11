@@ -2,7 +2,6 @@ package grid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import item.IItem;
@@ -10,7 +9,6 @@ import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
