@@ -92,19 +92,19 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * finished.
 	 * 
 	 * Finally this method will notify the observers (passing the
-	 * {@link PlayerState} of the player whos turn is ended as an argument) to
-	 * indicate a Player-switch has occurred.
+	 * {@link PlayerState} of the player whose turn is ended as an argument) to
+	 * indicate a Player switch has occurred.
 	 * 
 	 * @param player
-	 *        the player who wants to end his turn
-	 * 
-	 * @throws IllegalStateException
-	 *         Only the current player (i.e. {@link #getCurrentPlayer()}) can
-	 *         end his turn.
+	 *        The player who wants to end his turn. Only the current player can
+	 *        do this.
 	 */
-	void endPlayerTurn(Player player) throws IllegalStateException {
+	void endPlayerTurn(Player player) {
 		if (!player.equals(getCurrentPlayer())) {
-			throw new IllegalStateException("Only the current player can end his turn");
+			// Only the current player can end its turn. By returning instead of
+			// throwing, we actually handle this problem correctly without
+			// having to catch an exception on other places.
+			return;
 		}
 		
 		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {

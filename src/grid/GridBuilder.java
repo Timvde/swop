@@ -1,5 +1,6 @@
 package grid;
 
+import item.IItem;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -119,6 +120,7 @@ public class GridBuilder {
 	
 	private HashMap<Coordinate, ASquare>	grid;
 	private ArrayList<Wall>					walls;
+	private Map<Teleporter, Coordinate>		teleporterCoords;
 	
 	/**
 	 * Build a new grid object. The grid will be build with the parameters set
@@ -130,6 +132,7 @@ public class GridBuilder {
 	public Grid build() {
 		walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
+		teleporterCoords = new HashMap<Teleporter, Coordinate>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
 				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
@@ -353,7 +356,7 @@ public class GridBuilder {
 				int y = startCoord.getY() - 2 + rand.nextInt(5);
 				position = new Coordinate(x, y);
 			} while (!canPlaceItem(position));
-			((Square) getSquare(position)).addItem(new LightGrenade());
+			getSquare(position).addItem(new LightGrenade());
 		}
 		
 		// place other light grenades
@@ -361,12 +364,16 @@ public class GridBuilder {
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_GRENADES) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
-				((Square) getSquare(position)).addItem(new LightGrenade());
+				getSquare(position).addItem(new LightGrenade());
 				numberOfItems++;
 			}
 		}
 	}
 	
+	/**
+	 * Places the teleporters on the grid. This method returns the coordinates,
+	 * because they are needed to calculate the shortest path.
+	 */
 	private void placeTeleporters() {
 		int numberOfItems = 0;
 		List<Teleporter> teleporters = new ArrayList<Teleporter>();
@@ -375,7 +382,8 @@ public class GridBuilder {
 			if (canPlaceItem(position)) {
 				Teleporter teleporter = new Teleporter(getTeleporterDestination(teleporters),
 						getSquare(position));
-				((Square) getSquare(position)).addItem(teleporter);
+				teleporterCoords.put(teleporter, position);
+				getSquare(position).addItem(teleporter);
 				teleporters.add(teleporter);
 				numberOfItems++;
 			}
@@ -384,6 +392,13 @@ public class GridBuilder {
 		teleporter.setDestination(getTeleporterDestination(teleporters));
 	}
 	
+	/**
+	 * Places both normal identity disks and one charged one on the grid. Each
+	 * player will have at least one identity disk near him.
+	 * 
+	 * @param startingCoordinates
+	 *        The starting coordinates of the player
+	 */
 	private void placeIdentityDisks(List<Coordinate> startingCoordinates) {
 		// place normal identity disks
 		int numberOfItems = 0;
@@ -409,6 +424,13 @@ public class GridBuilder {
 			return teleporters.get(new Random().nextInt(teleporters.size()));
 	}
 	
+	/**
+	 * Returns a list of all possible locations for the charged identity disk.
+	 * To decide that, it compares the shortest path needed for both players to
+	 * reach the squares.
+	 * 
+	 * @return A list of possible locations for the charged identity disk
+	 */
 	private List<Coordinate> getPossibleCIDLocations(List<Coordinate> startingCoordinates) {
 		List<Map<Coordinate, Integer>> distances = new ArrayList<Map<Coordinate, Integer>>();
 		List<Coordinate> CIDLocations = new ArrayList<Coordinate>();
@@ -437,6 +459,14 @@ public class GridBuilder {
 		return CIDLocations;
 	}
 	
+	/**
+	 * Computes the travel distance to all squares, starting from a specified
+	 * coordinate.
+	 * 
+	 * @param coordinate
+	 *        The starting coordinate
+	 * @return A map of all coordinates on their travel distances
+	 */
 	private Map<Coordinate, Integer> getDistanceOfSquaresStartingAt(Coordinate coordinate) {
 		Map<Coordinate, Integer> distances = new HashMap<Coordinate, Integer>();
 		PriorityQueue<State> pq = new PriorityQueue<State>();
@@ -445,14 +475,25 @@ public class GridBuilder {
 		
 		while (!pq.isEmpty()) {
 			State current = pq.poll();
-			List<Coordinate> neighbours = getNeighboursOf(current.getCoordinate());
-			
-			for (Coordinate neighbour : neighbours) {
-				if (!distances.containsKey(neighbour)
-						|| current.getDistance() + 1 < distances.get(neighbour)) {
-					distances.put(neighbour, current.getDistance() + 1);
-					State neighbourState = new State(neighbour, current.getDistance() + 1);
-					pq.add(neighbourState);
+			Teleporter teleporter = getTeleporterOnLocation(current.getCoordinate());
+			if (teleporter != null) {
+				Coordinate goal = teleporterCoords.get(teleporter.getDestination());
+				if (!distances.containsKey(goal)
+						|| current.getDistance() < distances.get(goal)) {
+					distances.put(goal, current.getDistance());
+					State nextState = new State(goal, current.getDistance());
+					pq.add(nextState);
+				}
+			}
+			else {
+				List<Coordinate> neighbours = getNeighboursOf(current.getCoordinate());
+				for (Coordinate neighbour : neighbours) {
+					if (!distances.containsKey(neighbour)
+							|| current.getDistance() + 1 < distances.get(neighbour)) {
+						distances.put(neighbour, current.getDistance() + 1);
+						State neighbourState = new State(neighbour, current.getDistance() + 1);
+						pq.add(neighbourState);
+					}
 				}
 			}
 			
@@ -461,11 +502,20 @@ public class GridBuilder {
 		return distances;
 	}
 	
+	/**
+	 * Returns all neighbours of a specified coordinate, where a Player can move
+	 * to.
+	 * 
+	 * @param coordinate
+	 *        The coordinate to get the neighbours from
+	 * @return A list of neighbouring coordinates
+	 */
 	private List<Coordinate> getNeighboursOf(Coordinate coordinate) {
 		List<Coordinate> neighbours = coordinate.getAllNeighbours();
 		
 		for (int i = neighbours.size() - 1; i >= 0; i--) {
-			// Grid doesn't contain this neighbour or
+			// Grid doesn't contain this neighbour or a player can't be added to
+			// this square
 			if (!(grid.containsKey(neighbours.get(i))))
 				neighbours.remove(i);
 			else if (!grid.get(neighbours.get(i)).canAddPlayer())
@@ -473,6 +523,15 @@ public class GridBuilder {
 		}
 		
 		return neighbours;
+	}
+	
+	private Teleporter getTeleporterOnLocation(Coordinate coordinate) {
+		List<IItem> items = getSquare(coordinate).getAllItems();
+		for (IItem item : items) {
+			if (item instanceof Teleporter)
+				return (Teleporter) item;
+		}
+		return null;
 	}
 	
 	/**
@@ -496,7 +555,7 @@ public class GridBuilder {
 		else if (getSquare(coordinate).getClass() == WallPart.class)
 			return false;
 		// an item cannot be placed on another item
-		else if (!getSquare(coordinate).getCarryableItems().isEmpty())
+		else if (!getSquare(coordinate).getAllItems().isEmpty())
 			return false;
 		else
 			return true;
