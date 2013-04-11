@@ -1,33 +1,27 @@
 package player;
 
+import grid.Coordinate;
+import grid.Grid;
 import grid.GridBuilder;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import square.ASquare;
-import square.Direction;
-import square.Square;
-import square.WallPart;
 
-/**
- * Tests the creation of a {@link PlayerDataBase}. Player switching behavior is
- * tested in {@link PlayerTest}.
- * 
- */
 @SuppressWarnings("javadoc")
 public class PlayerDBTest {
 	
 	private PlayerDataBase	playerDB;
-	private Set<ASquare>	playerPositions;
 	
 	@Before
 	public void setUp() {
 		playerDB = new PlayerDataBase();
-		playerPositions = new GridBuilder().getPlayerStartingPositionsOnTestGrid();
-		playerDB.createNewDB(playerPositions);
+		List<Player> players = playerDB.createNewDB();
+		
+		// Needed to initialize the players properly
+		new GridBuilder(players).getPredefinedTestGrid(false);
 	}
 	
 	@Test
@@ -47,88 +41,12 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testCreateNewDB() {
-		// all players are different (set would throw an excption otherwise)
 		Set<IPlayer> set1 = getAllPlayerFromDB();
 		
-		// use the same starting positions
-		playerDB.createNewDB(playerPositions);
-		Set<IPlayer> set2 = getAllPlayerFromDB();
+		Set<IPlayer> set2 = new HashSet<IPlayer>(playerDB.createNewDB());
 		
 		// the two lists should contain different players
 		containDifferentPlayers(set1, set2);
-	}
-	
-	@Test
-	public void testCreateNewDBDiffStartingPos() {
-		// all players are different (set would throw an excption otherwise)
-		Set<IPlayer> set1 = getAllPlayerFromDB();
-		
-		// use different starting positions
-		playerDB.createNewDB(this.getPlayerStartingPosSetOfSize(PlayerDataBase.NUMBER_OF_PLAYERS));
-		Set<IPlayer> set2 = getAllPlayerFromDB();
-		
-		// the two lists should contain different players
-		containDifferentPlayers(set1, set2);
-	}
-	
-	@Test
-	public void testCreateNewDBIllegalInput() {
-		boolean exceptionThrown = false;
-		
-		// null
-		try {
-			playerDB.createNewDB(null);
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-		
-		// empty set
-		try {
-			playerDB.createNewDB(new HashSet<ASquare>());
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-		
-		// too large array
-		try {
-			playerDB.createNewDB(getPlayerStartingPosSetOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1));
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-		
-		// walls
-		try {
-			playerDB.createNewDB(getWallSetOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1));
-		}
-		catch (IllegalArgumentException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-	}
-	
-	/**
-	 * Genenerates a set with a specified number of newly created squares.
-	 */
-	private Set<ASquare> getPlayerStartingPosSetOfSize(int size) {
-		Set<ASquare> result = new HashSet<ASquare>();
-		for (int j = 0; j < size; j++) {
-			result.add(new Square(Collections.<Direction, ASquare> emptyMap()));
-		}
-		return result;
-	}
-	
-	private Set<ASquare> getWallSetOfSize(int size) {
-		Set<ASquare> result = new HashSet<ASquare>();
-		for (int j = 0; j < size; j++) {
-			result.add(new WallPart(Collections.<Direction, ASquare> emptyMap()));
-		}
-		return result;
 	}
 	
 	private void containDifferentPlayers(Set<IPlayer> set1, Set<IPlayer> set2) {
@@ -152,7 +70,7 @@ public class PlayerDBTest {
 			result.add(curPlayer);
 			
 			// let the cur player end his turn
-			playerDB.endPlayerTurn((Player) curPlayer);
+			playerDB.endPlayerTurn(curPlayer);
 			// now the curPlayer should have changed
 		}
 		return result;

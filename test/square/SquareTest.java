@@ -3,7 +3,6 @@ package square;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import grid.GridBuilder;
 import item.Item;
 import item.identitydisk.IdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
 import player.IPlayer;
-import player.Player;
 import player.PlayerDataBase;
 
 @SuppressWarnings("javadoc")
@@ -29,16 +27,9 @@ public class SquareTest {
 	public void setUp() {
 		square = new Square(Collections.<Direction, ASquare> emptyMap());
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
-		// db now placed the player on the square
+		db.createNewDB();
 		playerOnSquare = db.getCurrentPlayer();
-	}
-	
-	private IPlayer getNewRandomPlayer() {
-		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
-		// db now placed the player on the square
-		return db.getCurrentPlayer();
+		square.addPlayer(db.getCurrentPlayer());
 	}
 	
 	@Test
@@ -90,7 +81,7 @@ public class SquareTest {
 	@Test
 	public void testContains() {
 		// create some stuff but do not place it on the square
-		IPlayer player = getNewRandomPlayer();
+		IPlayer player = new DummyPlayer();
 		LightGrenade lightGrenade = new LightGrenade();
 		
 		// test if the square contains anything (i hope not)
@@ -272,31 +263,22 @@ public class SquareTest {
 	public void testAddPlayer_executeEffect() {
 		// make a player to test with
 		DummyPlayer player = new DummyPlayer();
+		Square newSquare = new Square(Collections.<Direction, ASquare> emptyMap());
 		
 		// create a square with power failure
-		new PowerFailure(square);
+		new PowerFailure(newSquare);
 		
 		// start testing
 		// when the player moves onto the square, he will suffer from this. He
 		// will be (hopefully) affected by a power failure.
 		
-		square.addPlayer(player);
+		newSquare.addPlayer(player);
 		assertTrue(player.isDamagedByPowerFailure());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testAddPlayer_nullArgument() {
-		assertFalse(square.canBeAdded((IPlayer) null));
-		square.addPlayer(null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
 	public void testAddPlayer_allreadyPlayerOnSquare() {
-		// place a player on the square
-		// create a second player
-		IPlayer p2 = getNewRandomPlayer();
-		
-		assertFalse(square.canBeAdded(p2));
-		square.addPlayer(p2);
+		assertFalse(square.canAddPlayer());
+		square.addPlayer(new DummyPlayer());
 	}
 }

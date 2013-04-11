@@ -34,9 +34,7 @@ public class MovePlayerTest {
 	public void setUp() {
 		Game game = new Game();
 		playerDB = new PlayerDataBase();
-		grid = new GridBuilder().getPredefinedTestGrid(false);
-		
-		playerDB.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
+		grid = new GridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		
 		game.start();
 		game.setGrid(grid);

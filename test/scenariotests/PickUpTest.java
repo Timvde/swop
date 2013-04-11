@@ -37,10 +37,8 @@ public class PickUpTest {
 		
 		playerDB = new PlayerDataBase();
 		
-		GridBuilder builder = new GridBuilder();
+		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
 		grid = builder.getPredefinedTestGrid(false);
-		
-		playerDB.createNewDB(builder.getPlayerStartingPositionsOnTestGrid());
 		
 		game.start();
 		game.setGrid(grid);

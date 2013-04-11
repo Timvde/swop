@@ -1,13 +1,11 @@
 package square;
 
 import static org.junit.Assert.*;
-import grid.GridBuilder;
 import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import player.Player;
-import player.PlayerDataBase;
+import player.DummyPlayer;
 
 @SuppressWarnings("javadoc")
 public class WallPartTest {
@@ -50,10 +48,7 @@ public class WallPartTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void addPlayer() {
-		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
-		
-		wall.addPlayer(db.getCurrentPlayer());
+		wall.addPlayer(new DummyPlayer());
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)

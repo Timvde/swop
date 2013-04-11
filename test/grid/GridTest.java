@@ -4,9 +4,12 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import player.Player;
+import player.PlayerDataBase;
 import square.ASquare;
 import square.Direction;
 import square.Square;
@@ -14,11 +17,15 @@ import square.Square;
 @SuppressWarnings("javadoc")
 public class GridTest {
 	
-	private Grid	grid;
+	private Grid			grid;
+	private PlayerDataBase	playerDb;
+	private List<Player>	players;
 	
 	@Before
 	public void setUp() throws Exception {
-		this.grid = new GridBuilder().getPredefinedTestGrid(false);
+		playerDb = new PlayerDataBase();
+		players = playerDb.createNewDB();
+		this.grid = new GridBuilder(players).getPredefinedTestGrid(false);
 	}
 	
 	@Test
@@ -49,7 +56,7 @@ public class GridTest {
 	
 	@Test
 	public final void testGetItemList() {
-		// does this needs testing? 
+		// does this needs testing?
 	}
 	
 	@Test

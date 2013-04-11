@@ -3,18 +3,17 @@ package player;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import grid.Grid;
 import grid.GridBuilder;
 import item.lightgrenade.LightGrenade;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import square.ASquare;
 import square.Direction;
-import square.Square;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -24,15 +23,18 @@ public class PlayerTest implements Observer {
 	private Player			player;
 	private PlayerDataBase	db;
 	private PlayerState		notifiedWithPlayerState;
+	private Grid			grid;
 	
 	@Before
 	public void setUp() {
 		db = new PlayerDataBase();
-		db.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
+		List<Player> players = db.createNewDB();
 		// make this class an observer for testing purposes
 		db.addObserver(this);
+		grid = new GridBuilder(players).getPredefinedTestGrid(false);
 		
 		player = (Player) db.getCurrentPlayer();
+		player.assignNewTurn();
 	}
 	
 	/* ######################### CONSTRUCTOR TESTS ######################### */
@@ -55,17 +57,7 @@ public class PlayerTest implements Observer {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullArgumentSquare() {
-		new Player(null, db);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testConstructor_nullArgumentPlayerDB() {
-		new Player(new Square(Collections.<Direction, ASquare> emptyMap()), null);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public void testConstructor_nullArguments() {
-		new Player(null, null);
+		new Player(null);
 	}
 	
 	/* ######################### TURN TESTS ######################### */

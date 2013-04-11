@@ -66,7 +66,7 @@ public class Teleporter extends Item {
 	 *        the object that will be teleported
 	 */
 	public void execute(TronObject object) {
-		// if we can teleport, do it ... 
+		// if we can teleport, do it ...
 		if (null != object.asTeleportable() && skipNextTeleport == false) {
 			destination.skipNextTeleport = true;
 			object.asTeleportable().teleportTo(destination.square);
@@ -95,5 +95,15 @@ public class Teleporter extends Item {
 			throw new IllegalStateException("The destination of a teleporter can only be set once!");
 		
 		this.destination = destination;
+	}
+	
+	/**
+	 * Returns the teleporter a TronObject will be teleported to when it passes
+	 * through this teleporter.
+	 * 
+	 * @return The destination teleporter
+	 */
+	public Teleporter getDestination() {
+		return destination;
 	}
 }

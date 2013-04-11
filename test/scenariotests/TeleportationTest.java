@@ -25,10 +25,8 @@ public class TeleportationTest {
 	@Before
 	public void setUp() throws Exception {
 		Game game = new Game();
-		grid = new GridBuilder().getPredefinedTestGrid(false);
 		playerDB = new PlayerDataBase();
-		
-		playerDB.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
+		grid = new GridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		game.setGrid(grid);
 		
 		game.start();
