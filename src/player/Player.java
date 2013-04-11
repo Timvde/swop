@@ -179,19 +179,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * This sets the number of actions a player has left to zero. This will end
-	 * a player's turn.
-	 */
-	private void resetNumberOfActionsLeft() {
-		skipNumberOfActions(getAllowedNumberOfActions());
-	}
-	
-	/**
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
 	private void checkEndTurn() {
 		if (getAllowedNumberOfActions() <= 0) {
+			// this method will return if it's not this player's turn
 			playerDB.endPlayerTurn(this);
 		}
 	}
@@ -219,12 +212,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.hasMoved = false;
 	}
 	
-	/**
-	 * Returns whether this player can perform an action.
-	 * 
-	 * @return true if the player can perform an action, else false
-	 */
-	private boolean canPerformAction() {
+	/* ############## PlayerState related methods ############## */
+	
+	@Override
+	public boolean canPerformAction() {
 		return this.state == PlayerState.ACTIVE && getStartingPosition() != null;
 	}
 	

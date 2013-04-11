@@ -26,8 +26,7 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the ID associated with this player.
 	 */
-	public int getID(); // TODO gaan we dit nog gebruiken?? ik denk het niet
-						// (bavo)
+	public int getID();
 	
 	/**
 	 * Returns the square this player has to reach to win the game.
@@ -75,6 +74,17 @@ public interface IPlayer extends TronObject {
 	 */
 	public boolean hasMovedYet();
 	
+	/* ############## PlayerState related methods ############## */
+	
+	/**
+	 * Returns whether this player can perform an action. A player can perform
+	 * an action if his state is {@link PlayerState#ACTIVE} and he is assigned a
+	 * starting position.
+	 * 
+	 * @return true if the player can perform an action, else false
+	 */
+	public boolean canPerformAction();
+	
 	/* #################### User methods #################### */
 	
 	/**
@@ -110,14 +120,15 @@ public interface IPlayer extends TronObject {
 	 *         {@link #isPreconditionMoveSatisfied()}. The grid must allow the
 	 *         player to do the move, i.e.
 	 *         <code>canMoveFromCoordInDirection(this.getCurrentLocation(),
-	 *         direction)</code>}
+	 *         direction)</code>
 	 * @throws IllegalArgumentException
 	 *         The specified direction must be a valid direction for this player
 	 *         to try to move in, i.e.
 	 *         <code>{@link #isValidDirection(Direction)}</code>.
 	 * @throws IllegalMoveException
 	 *         TODO
-	 */ //TODO rewrite documentation
+	 */
+	// TODO rewrite documentation
 	public void moveInDirection(Direction direction) throws IllegalStateException,
 			IllegalArgumentException, IllegalMoveException;
 	
@@ -161,9 +172,9 @@ public interface IPlayer extends TronObject {
 	 * @param i
 	 *        The item that will be used.
 	 * @throws IllegalArgumentException
-	 *         The item is not in the inventory 
-	 * @throws CannotPlaceLightGrenadeException 
-	 * 			The lightgrenade cannot be placed here.
+	 *         The item is not in the inventory
+	 * @throws CannotPlaceLightGrenadeException
+	 *         The lightgrenade cannot be placed here.
 	 */
 	public void useItem(IItem i) throws IllegalArgumentException, CannotPlaceLightGrenadeException;
 }
