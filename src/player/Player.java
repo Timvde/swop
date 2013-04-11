@@ -100,6 +100,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			throw new IllegalStateException("This player already has a starting position set");
 		this.startSquare = square;
 		this.currentSquare = square;
+		
+		// tell the DB you received a startposition (to tell this player is
+		// ready to start playing)
+		this.playerDB.reportReadyToStart(this);
 	}
 	
 	@Override
@@ -129,7 +133,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * This method is called by the {@link PlayerDataBase} when it assigns the
 	 * next player.
 	 */
-	public void assignNewTurn() {
+	// only the DB should assign turns --> package access
+	void assignNewTurn() {
 		// rest the turn related properties
 		this.resetHasMoved();
 		this.setPlayerState(PlayerState.ACTIVE);

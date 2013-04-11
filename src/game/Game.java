@@ -99,7 +99,6 @@ public class Game implements Observer {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		List<Player> players = playerDB.createNewDB();
 		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
-		players.get(0).assignNewTurn();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);

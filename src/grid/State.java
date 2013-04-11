@@ -26,6 +26,6 @@ public class State implements Comparable<State> {
 	
 	@Override
 	public int compareTo(State o) {
-		return Integer.compare(getDistance(), o.getDistance());
+		return Integer.valueOf(getDistance()).compareTo(Integer.valueOf(o.getDistance()));
 	}
 }
