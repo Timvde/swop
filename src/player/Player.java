@@ -12,7 +12,9 @@ import square.ISquare;
 import square.Square;
 import square.WallPart;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalStepException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
@@ -216,7 +218,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public boolean canPerformAction() {
-		return this.state == PlayerState.ACTIVE && getStartingPosition() != null;
+		return this.state == PlayerState.ACTIVE && getStartingPosition() != null
+				&& getAllowedNumberOfActions() > 0;
 	}
 	
 	/**
@@ -253,12 +256,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/* #################### User methods #################### */
 	
 	@Override
-	public void endTurn() throws IllegalStateException {
+	public void endTurn() throws IllegalActionException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
-		if (!isPreconditionEndTurnSatisfied())
-			throw new IllegalStateException("The endTurn-preconditions are not satisfied.");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
 		if (this.hasMovedYet()) {
 			// this player's turn will end;
@@ -273,21 +273,14 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public boolean isPreconditionEndTurnSatisfied() {
-		return getAllowedNumberOfActions() > 0;
-	}
-	
-	@Override
-	public void moveInDirection(Direction direction) throws IllegalMoveException {
+	public void moveInDirection(Direction direction) throws IllegalActionException,
+			IllegalMoveException, IllegalStepException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
-		if (!isPreconditionMoveSatisfied())
-			throw new IllegalMoveException("The move-preconditions are not satisfied.");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!isValidDirection(direction))
-			throw new IllegalMoveException("The specified direction is not valid.");
+			throw new IllegalArgumentException("The specified direction is not valid.");
 		if (!canMoveInDirection(direction))
-			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
+			throw new IllegalStepException("The player cannot move in given direction on the grid.");
 		
 		// remove this player from his current square
 		currentSquare.remove(this);
@@ -306,7 +299,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			oldSquare.addPlayer(this);
 			currentSquare = oldSquare;
 			throw new IllegalMoveException(
-					"The player cannot move in the given direction on the grid");
+					"The player can't be added to the square in the specified direction.");
 		}
 		
 		// update the light trail of this player
@@ -325,17 +318,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public boolean isPreconditionMoveSatisfied() {
-		return getAllowedNumberOfActions() > 0;
-	}
-	
-	/**
-	 * test whether the player can move in the specified direction.
-	 * 
-	 * @param direction
-	 *        the direction in which the player wants to move
-	 * @return whether the player can move in the specified direction
-	 */
 	public boolean canMoveInDirection(Direction direction) {
 		// test whether a square in the specified direction exists
 		if (currentSquare.getNeighbour(direction) == null)

@@ -5,9 +5,13 @@ import java.util.List;
 import square.ASquare;
 import square.Direction;
 import square.ISquare;
+import square.Square;
 import square.TronObject;
+import item.Effect;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalStepException;
 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 
@@ -78,10 +82,14 @@ public interface IPlayer extends TronObject {
 	
 	/**
 	 * Returns whether this player can perform an action. A player can perform
-	 * an action if his state is {@link PlayerState#ACTIVE} and he is assigned a
-	 * starting position.
+	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he is
+	 * assigned a starting position (i.e.
+	 * <code>{@link #getStartingPosition()} != null</code>)</li> <li>he has
+	 * performed less then {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his
+	 * current turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code>
+	 * ).</li>
 	 * 
-	 * @return true if the player can perform an action, else false
+	 * @return whether this player is allowed to perform an action.
 	 */
 	public boolean canPerformAction();
 	
@@ -90,57 +98,50 @@ public interface IPlayer extends TronObject {
 	/**
 	 * This method ends the turn of this player. This player will lose the game
 	 * if this method is called before he did a move action, (i.e. if
-	 * <code>this.hasMovedYet()</code> is false when calling this method, this
-	 * player loses the game).
+	 * <code>{@link #hasMovedYet()}</code> is false when calling this method,
+	 * this player loses the game).
 	 * 
-	 * @throws IllegalStateException
-	 *         The end turn preconditions must be satisfied, i.e.
-	 *         {@link #isPreconditionEndTurnSatisfied()}
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
 	 */
-	public void endTurn() throws IllegalStateException;
+	public void endTurn() throws IllegalActionException;
 	
 	/**
-	 * Returns whether this player is allowed to perform an end turn action. A
-	 * player is allowed to perform an end turn action if he has performed less
-	 * then {@link Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
-	 * {@link #getAllowedNumberOfActions()} > 0.
+	 * This method moves the player one {@link Square} in a specified
+	 * {@link Direction}. More formally the postconditions are:
 	 * 
-	 * @return whether this player is allowed to perform an end turn action.
-	 */
-	public boolean isPreconditionEndTurnSatisfied();
-	
-	/**
-	 * This method moves the player one square in the specified
-	 * {@link Direction}.
+	 * <li>The new location of this player is <code>{@link #getCurrentLocation() 
+	 * currentLocationBefore}{@link ASquare#getNeighbour(Direction) 
+	 * .getNeighbour(direction)}</code>.</li>
+	 * 
+	 * <li>The {@link Effect effects} of any items on the new Square will
+	 * be executed (as described in {@link ASquare#addPlayer(IPlayer)}).</li>
+	 * 
+	 * <li>The {@link LightTrail} of the player will be
+	 * {@link LightTrail#updateLightTrail(ASquare) updated}.</li>
+	 * 
+	 * <li>The player will have done a move during this turn:
+	 * <code>{@link #hasMovedYet()} = true</code>
 	 * 
 	 * @param direction
-	 *        the direction to move in
-	 * @throws IllegalStateException
-	 *         The move preconditions must be satisfied, i.e. this.
-	 *         {@link #isPreconditionMoveSatisfied()}. The grid must allow the
-	 *         player to do the move, i.e.
-	 *         <code>canMoveFromCoordInDirection(this.getCurrentLocation(),
-	 *         direction)</code>
-	 * @throws IllegalArgumentException
-	 *         The specified direction must be a valid direction for this player
-	 *         to try to move in, i.e.
-	 *         <code>{@link #isValidDirection(Direction)}</code>.
-	 * @throws IllegalMoveException
-	 *         TODO
-	 */
-	// TODO rewrite documentation
-	public void moveInDirection(Direction direction) throws IllegalStateException,
-			IllegalArgumentException, IllegalMoveException;
-	
-	/**
-	 * Returns whether this player is allowed to perform a move action. A player
-	 * is allowed to perform an move action if he has performed less then
-	 * {@link Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current turn,
-	 * {@link #getAllowedNumberOfActions()} > 0.
+	 *        The direction to move in
 	 * 
-	 * @return whether this player is allowed to perform a move action
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e. <code>
+	 *         {@link #canPerformAction()}</code>.
+	 * @throws IllegalArgumentException
+	 *         The specified direction must be valid, i.e.
+	 *         {@link #isValidDirection(Direction)}.
+	 * @throws IllegalStepException
+	 *         The player must be able to move in the given direction on the
+	 *         grid, i.e. {@link #canMoveInDirection(Direction)}.
+	 * @throws IllegalMoveException
+	 *         When the player can't be added to the square in the specified
+	 *         direction, i.e. {@link Square#canAddPlayer()}.
 	 */
-	public boolean isPreconditionMoveSatisfied();
+	public void moveInDirection(Direction direction) throws IllegalActionException,
+			IllegalArgumentException, IllegalMoveException, IllegalStepException;
 	
 	/**
 	 * Returns whether a specified direction is a valid direction for this
@@ -153,6 +154,15 @@ public interface IPlayer extends TronObject {
 	 *         player to try to move in
 	 */
 	public boolean isValidDirection(Direction direction);
+	
+	/**
+	 * Test whether the player can move in the specified direction on the grid.
+	 * 
+	 * @param direction
+	 *        the direction in which the player wants to move
+	 * @return whether the player can move in the specified direction.
+	 */
+	public boolean canMoveInDirection(Direction direction);
 	
 	/**
 	 * Pick up the given item. The item must be on the square the player is
