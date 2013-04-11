@@ -3,7 +3,6 @@ package player;
 import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,17 +14,14 @@ import org.junit.Test;
 public class PlayerDBTest {
 	
 	private PlayerDataBase	playerDB;
-	private Coordinate[]	exampleCoords;
-	private Grid			grid;
 	
 	@Before
 	public void setUp() {
 		playerDB = new PlayerDataBase();
-		exampleCoords = new Coordinate[] {
-				new Coordinate(GridBuilder.PREDIFINED_GRID_SIZE - 1,
-						GridBuilder.PREDIFINED_GRID_SIZE - 1), new Coordinate(0, 0) };
 		List<Player> players = playerDB.createNewDB();
-		grid = new GridBuilder(players).getPredefinedTestGrid(false);
+		
+		// Needed to initialize the players properly
+		new GridBuilder(players).getPredefinedTestGrid(false);
 	}
 	
 	@Test
@@ -47,83 +43,10 @@ public class PlayerDBTest {
 	public void testCreateNewDB() {
 		Set<IPlayer> set1 = getAllPlayerFromDB();
 		
-		;
 		Set<IPlayer> set2 = new HashSet<IPlayer>(playerDB.createNewDB());
 		
 		// the two lists should contain different players
 		containDifferentPlayers(set1, set2);
-	}
-	
-	// TODO: Deze test kan verwijderd worden, right?
-	// @Test
-	// public void testCreateNewDBIllegalInput() {
-	// boolean exceptionThrown = false;
-	//
-	// // null
-	// try {
-	// playerDB.createNewDB(null, null);
-	// }
-	// catch (IllegalArgumentException e) {
-	// exceptionThrown = true;
-	// }
-	// Assert.assertEquals(true, exceptionThrown);
-	//
-	// // empty array
-	// Coordinate[] playerStartingCoords = {};
-	// try {
-	// playerDB.createNewDB(playerStartingCoords, grid);
-	// }
-	// catch (IllegalArgumentException e) {
-	// exceptionThrown = true;
-	// }
-	// Assert.assertEquals(true, exceptionThrown);
-	//
-	// // too large array
-	// playerStartingCoords =
-	// randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS + 1);
-	// try {
-	// playerDB.createNewDB(playerStartingCoords, grid);
-	// }
-	// catch (IllegalArgumentException e) {
-	// exceptionThrown = true;
-	// }
-	// Assert.assertEquals(true, exceptionThrown);
-	//
-	// // duplicate coords
-	// playerStartingCoords =
-	// randomCoordArrayOfSize(PlayerDataBase.NUMBER_OF_PLAYERS);
-	// playerStartingCoords[playerStartingCoords.length - 1] =
-	// playerStartingCoords[0];
-	// try {
-	// playerDB.createNewDB(playerStartingCoords, grid);
-	// }
-	// catch (IllegalArgumentException e) {
-	// exceptionThrown = true;
-	// }
-	// Assert.assertEquals(true, exceptionThrown);
-	// }
-	//
-	// /**
-	// * Genenerates an array with a specified number of randomly created
-	// * coordinates in the grid defined by
-	// * {@link GridBuilder#getPredefinedTestGrid()}
-	// */
-	// private Coordinate[] randomCoordArrayOfSize(int size) {
-	// Coordinate[] result = new Coordinate[size];
-	// for (int j = 0; j < size; j++) {
-	// result[j] = GridBuilder.getRandomCoordOnTestGrid();
-	// }
-	// return result;
-	// }
-	
-	private void allDifferent(List<IPlayer> list) {
-		for (int i = 0; i < list.size() - 1; i++) {
-			IPlayer player1 = list.get(i);
-			for (int j = i + 1; j < list.size(); j++) {
-				IPlayer player2 = list.get(j);
-				Assert.assertNotSame(player1, player2);
-			}
-		}
 	}
 	
 	private void containDifferentPlayers(Set<IPlayer> set1, Set<IPlayer> set2) {

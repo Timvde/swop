@@ -328,7 +328,7 @@ public class GridBuilder {
 		else
 			// the positions are not aligned...
 			throw new IllegalArgumentException("The given positions " + start + ", " + end
-					+ " are not alligned!");
+					+ " are not aligned!");
 		return positions;
 	}
 	
@@ -411,10 +411,22 @@ public class GridBuilder {
 		}
 		
 		// place charged identity disk
-		Random rand = new Random();
+		Random rand = new Random(1);
 		List<Coordinate> CIDCoords = getPossibleCIDLocations(startingCoordinates);
+		Coordinate CIDCoord = null;
 		
-		getSquare(CIDCoords.get(rand.nextInt(CIDCoords.size()))).addItem(new ChargedIdentityDisk());
+		while (!CIDCoords.isEmpty()) {
+			CIDCoord = CIDCoords.get(rand.nextInt(CIDCoords.size()));
+			if (canPlaceItem(CIDCoord))
+				break;
+			
+			// We couldn't place it
+			CIDCoords.remove(CIDCoord);
+			CIDCoord = null;
+		}
+		
+		if (CIDCoord != null)
+			getSquare(CIDCoord).addItem(new ChargedIdentityDisk());
 	}
 	
 	private Teleporter getTeleporterDestination(List<Teleporter> teleporters) {
@@ -446,6 +458,10 @@ public class GridBuilder {
 			int max = min;
 			
 			for (int i = 1; i < distances.size(); ++i) {
+				if (!distances.get(i).containsKey(coord)) {
+					max = Integer.MAX_VALUE;
+					break;
+				}
 				if (distances.get(i).get(coord) < min)
 					min = distances.get(i).get(coord);
 				if (distances.get(i).get(coord) > max)
@@ -475,25 +491,23 @@ public class GridBuilder {
 		
 		while (!pq.isEmpty()) {
 			State current = pq.poll();
+			List<Coordinate> neighbours;
 			Teleporter teleporter = getTeleporterOnLocation(current.getCoordinate());
-			if (teleporter != null) {
-				Coordinate goal = teleporterCoords.get(teleporter.getDestination());
-				if (!distances.containsKey(goal)
-						|| current.getDistance() < distances.get(goal)) {
-					distances.put(goal, current.getDistance());
-					State nextState = new State(goal, current.getDistance());
-					pq.add(nextState);
-				}
-			}
+			
+			if (teleporter == null)
+				neighbours = getNeighboursOf(current.getCoordinate());
 			else {
-				List<Coordinate> neighbours = getNeighboursOf(current.getCoordinate());
-				for (Coordinate neighbour : neighbours) {
-					if (!distances.containsKey(neighbour)
-							|| current.getDistance() + 1 < distances.get(neighbour)) {
-						distances.put(neighbour, current.getDistance() + 1);
-						State neighbourState = new State(neighbour, current.getDistance() + 1);
-						pq.add(neighbourState);
-					}
+				Coordinate goal = teleporterCoords.get(teleporter.getDestination());
+				distances.put(goal, current.getDistance());
+				neighbours = getNeighboursOf(goal);
+			}
+			
+			for (Coordinate neighbour : neighbours) {
+				if (!distances.containsKey(neighbour)
+						|| current.getDistance() + 1 < distances.get(neighbour)) {
+					distances.put(neighbour, current.getDistance() + 1);
+					State neighbourState = new State(neighbour, current.getDistance() + 1);
+					pq.add(neighbourState);
 				}
 			}
 			
@@ -545,8 +559,10 @@ public class GridBuilder {
 	 * @return true if the coordinate can be placed on the board
 	 */
 	private boolean canPlaceItem(Coordinate coordinate) {
+		if (coordinate == null)
+			return false;
 		// an item must be placed on the board
-		if (!grid.containsKey(coordinate))
+		else if (!grid.containsKey(coordinate))
 			return false;
 		// an item cannot be place on the starting positions
 		else if (getSquare(coordinate).hasPlayer())
@@ -666,18 +682,6 @@ public class GridBuilder {
 		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
 		
 		return build(10, 10, walls, usePowerfailure);
-	}
-	
-	/**
-	 * Returns a randomly created coordinate that exists on the grid specified
-	 * by {@link GridBuilder#getPredefinedTestGrid(boolean)}. Used for testing
-	 * purposes.
-	 * 
-	 * @return A random coordinate on the test grid.
-	 */
-	public static Coordinate getRandomCoordOnTestGrid() {
-		return new Coordinate(new Random().nextInt(PREDIFINED_GRID_SIZE),
-				new Random().nextInt(PREDIFINED_GRID_SIZE));
 	}
 	
 	/**
