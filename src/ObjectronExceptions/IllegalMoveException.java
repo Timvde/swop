@@ -1,23 +1,16 @@
 package ObjectronExceptions;
 
+import player.IPlayer;
+
 /**
- * This class is an exception to represent an illegal move in the game.
- * 
- * @author tom
- *
+ * Thrown to indicate somethong went wrong with moving an {@link IPlayer}.
  */
-public class IllegalMoveException extends Exception {
-	
+public class IllegalMoveException extends IllegalActionException {
+
 	private static final long	serialVersionUID	= -4958248113296080339L;
-	private String message;
 	
 	@SuppressWarnings("javadoc")
 	public IllegalMoveException(String message) {
-		this.message = message;
-	}
-	
-	@Override
-	public String getMessage() {
-		return this.message;
+		super(message);
 	}
 }
