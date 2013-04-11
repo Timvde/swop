@@ -72,8 +72,6 @@ public class Square extends ASquare {
 	 * @return the items on this square
 	 */
 	public List<IItem> getAllItems() {
-		// Encapsulation isn't required, as this is a private method.
-		// NOT ANYMORE, IT'S NOT
 		return new ArrayList<IItem>(itemList);
 	}
 	
