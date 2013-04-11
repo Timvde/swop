@@ -45,7 +45,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
 	/** The starting square of this player */
-	private final ASquare			startSquare;
+	private ASquare					startSquare;
 	/** The square where the player is currently standing */
 	private ASquare					currentSquare;
 	/** The inventory of the player */
@@ -60,43 +60,46 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed number of actions of
-	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
-	 * starting position of the player. The default state of a player is
-	 * {@link PlayerState#WAITING}.
-	 * 
-	 * @param square
-	 *        The starting position of the player
-	 * @param playerDB
-	 *        The {@link PlayerDataBase playerDB} the player has to notify when
-	 *        his turn ends
-	 * @throws IllegalArgumentException
-	 *         The given arguments cannot be null.
-	 * @throws IllegalArgumentException
-	 *         It must be possible to add this player to the specified
-	 *         startSquare, i.e. {@link Square#canBeAdded(IPlayer)}.
+	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}.The default state of a player is
+	 * {@link PlayerState#WAITING}. One has to call
+	 * {@link #setStartingPosition(ASquare)} to set the starting position. Until
+	 * then and until the state is set to {@link PlayerState#ACTIVE} it will not
+	 * be able to perform any action.
 	 */
 	// User cannot create players himself. This is the responsability of
 	// the PlayerDB --> constructor package access
-	Player(ASquare square, PlayerDataBase playerDB) throws IllegalArgumentException {
-		if (square == null || playerDB == null)
-			throw new IllegalArgumentException("The given arguments cannot be null");
+	Player(PlayerDataBase playerDB) throws IllegalArgumentException {
+		if (playerDB == null)
+			throw new IllegalArgumentException("The database cannot be null");
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
 		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
-		this.startSquare = square;
-		this.currentSquare = square;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
-		// will throw IllegalArgumentException if player can't be added
-		square.addPlayer(this);
 	}
 	
 	@Override
 	public int getID() {
 		return id;
+	}
+	
+	/**
+	 * This method is used to initiate the starting position of the player. It
+	 * can be called only once.
+	 * 
+	 * @param square
+	 *        The square that should be the starting position of this player
+	 * @throws IllegalStateException
+	 *         When the player already has a starting position set
+	 */
+	public void setStartingPosition(ASquare square) throws IllegalStateException {
+		if (getStartingPosition() != null)
+			throw new IllegalStateException("This player already has a starting position set");
+		this.startSquare = square;
+		this.currentSquare = square;
 	}
 	
 	@Override
@@ -126,7 +129,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * This method is called by the {@link PlayerDataBase} when it assigns the
 	 * next player.
 	 */
-	void assignNewTurn() {
+	public void assignNewTurn() {
 		// rest the turn related properties
 		this.resetHasMoved();
 		this.setPlayerState(PlayerState.ACTIVE);
@@ -222,7 +225,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * @return true if the player can perform an action, else false
 	 */
 	private boolean canPerformAction() {
-		return this.state == PlayerState.ACTIVE;
+		return this.state == PlayerState.ACTIVE && getStartingPosition() != null;
 	}
 	
 	/**
@@ -495,7 +498,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			return false;
 		
 		// test if the square accepts players
-		else if (!destination.canBeAdded(this))
+		else if (!destination.canAddPlayer())
 			return false;
 		// anything else?
 		else

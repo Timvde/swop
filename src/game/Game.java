@@ -1,5 +1,6 @@
 package game;
 
+import java.util.List;
 import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
@@ -9,6 +10,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
 import square.ASquare;
@@ -95,15 +97,12 @@ public class Game implements Observer {
 	 */
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		this.grid = new GridBuilder().setGridWidth(width).setGridHeigth(height).build();
+		List<Player> players = playerDB.createNewDB();
+		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
+		players.get(0).assignNewTurn();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
-		
-		Set<ASquare> playerStartingPositions = new HashSet<ASquare>();
-		playerStartingPositions.add(grid.getGrid().get(new Coordinate(width - 1, 0)));
-		playerStartingPositions.add(grid.getGrid().get(new Coordinate(0, height - 1)));
-		playerDB.createNewDB(playerStartingPositions);
 	}
 	
 	@Override

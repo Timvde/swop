@@ -29,11 +29,10 @@ public class PlayerTeleportTest {
 		start = new Square(neighbours);
 		destination = new Square(neighbours);
 		PlayerDataBase db = new PlayerDataBase();
-		Set<ASquare> set = new HashSet<ASquare>();
-		set.add(start);
-		set.add(new Square(Collections.<Direction, ASquare> emptyMap()));
-		db.createNewDB(set);
+		db.createNewDB();
 		player = (Player) db.getCurrentPlayer();
+		start.addPlayer(player);
+		player.setStartingPosition(start);
 	}
 	
 	@Test

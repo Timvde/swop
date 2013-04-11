@@ -2,7 +2,6 @@ package scenariotests;
 
 import static org.junit.Assert.*;
 import game.Game;
-import grid.Coordinate;
 import grid.Grid;
 import grid.GridBuilder;
 import item.IItem;
@@ -40,10 +39,8 @@ public class UseItemTest {
 		
 		playerDB = new PlayerDataBase();
 		
-		GridBuilder builder = new GridBuilder();
+		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
 		grid = builder.getPredefinedTestGrid(false);
-		
-		playerDB.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 		
 		game.setGrid(grid);
 		

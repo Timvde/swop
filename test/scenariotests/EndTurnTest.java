@@ -31,10 +31,8 @@ public class EndTurnTest {
 		
 		playerDB = new PlayerDataBase();
 		
-		GridBuilder builder = new GridBuilder();
+		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
 		grid = builder.getPredefinedTestGrid(true);
-		
-		playerDB.createNewDB(new GridBuilder().getPlayerStartingPositionsOnTestGrid());
 		
 		game.start();
 		game.setGrid(grid);

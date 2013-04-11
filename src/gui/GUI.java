@@ -4,6 +4,7 @@ import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
 import item.Item;
+import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
@@ -75,6 +76,7 @@ public class GUI implements Runnable {
 	private Image					lightGrenadeExplodedImage;
 	private Image					teleporterImage;
 	private Image					identityDiskImage;
+	private Image					chargedIdentityDiskImage;
 	private Image					lightTrailImage;
 	private Image					finishBlue;
 	private Image					finishRed;
@@ -251,7 +253,10 @@ public class GUI implements Runnable {
 								graphics.drawImage(teleporterImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
-							if (i instanceof IdentityDisk) {
+							if (i instanceof ChargedIdentityDisk)
+								graphics.drawImage(chargedIdentityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							else if (i instanceof IdentityDisk) {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
@@ -296,6 +301,8 @@ public class GUI implements Runnable {
 				SQUARE_SIZE);
 		this.teleporterImage = gui.loadImage("icon.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.identityDiskImage = gui.loadImage("identity_disk.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.chargedIdentityDiskImage = gui.loadImage("charged_identity_disk.png", SQUARE_SIZE,
+				SQUARE_SIZE);
 		this.lightTrailImage = gui.loadImage("lighttrail_custom.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);

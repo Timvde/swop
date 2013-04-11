@@ -23,7 +23,7 @@ public class DummyPlayer extends Player {
 	 * square without any neighbours.
 	 */
 	public DummyPlayer() {
-		super(new Square(Collections.<Direction, ASquare> emptyMap()), new PlayerDataBase());
+		super(new PlayerDataBase());
 		this.damageByPowerFailure = false;
 		this.numberOfActionsSkipped = 0;
 	}
@@ -34,9 +34,9 @@ public class DummyPlayer extends Player {
 	}
 	
 	/**
-	 * returns whether this player is damaged by power failure
+	 * Returns whether this player is damaged by power failure
 	 * 
-	 * @return true if the player is damaged by power failure
+	 * @return True if the player is damaged by power failure
 	 */
 	public boolean isDamagedByPowerFailure() {
 		return damageByPowerFailure;
@@ -48,9 +48,9 @@ public class DummyPlayer extends Player {
 	}
 	
 	/**
-	 * returns the amount of actions the player has skipped
+	 * Returns the amount of actions the player has skipped
 	 * 
-	 * @return the amount of actions the player has skipped
+	 * @return The amount of actions the player has skipped
 	 */
 	public int getNumberOfActionsSkipped() {
 		return numberOfActionsSkipped;

@@ -72,8 +72,6 @@ public class Square extends ASquare {
 	 * @return the items on this square
 	 */
 	public List<IItem> getAllItems() {
-		// Encapsulation isn't required, as this is a private method.
-		// NOT ANYMORE, IT'S NOT
 		return new ArrayList<IItem>(itemList);
 	}
 	
@@ -147,7 +145,7 @@ public class Square extends ASquare {
 	@Override
 	public void addPlayer(IPlayer player) throws IllegalArgumentException{
 		// test whether the player can be added
-		if (!canBeAdded(player))
+		if (!canAddPlayer())
 			throw new IllegalArgumentException("the player cannot be added to this square!");
 		// set the player to this square
 		this.player = player;
@@ -182,22 +180,17 @@ public class Square extends ASquare {
 	 * Test whether a {@link IPlayer player} can be added to this square. A
 	 * player can be added, if there is no other player placed on this square.
 	 * More formally this method will return <code>true</code> if and only if<br>
-	 * <code>this.hasPlayer() == false</code>.
+	 * <code>this.hasPlayer() == false && this.hasLightTrail() == false</code>.
 	 * 
-	 * @param player
-	 *        the player that is to be added
-	 * @return true if the player can be added, else false
+	 * @return true if a player can be added, else false
 	 */
 	@Override
-	public boolean canBeAdded(IPlayer player) {
-		// check if the specified player exists
-		if (player == null)
-			return false;
+	public boolean canAddPlayer() {
 		// check if this square has a light trail
-		else if (this.hasLightTrail())
+		if (this.hasLightTrail())
 			return false;
 		// check if the square has already a player
-		else if (this.player != null)
+		else if (this.hasPlayer())
 			return false;
 		// everything looks OK ... 
 		else 
