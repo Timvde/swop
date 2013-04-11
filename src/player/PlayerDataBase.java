@@ -5,10 +5,8 @@ import grid.Grid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.util.Set;
 import square.ISquare;
 import square.Square;
-import square.ASquare;
 import com.sun.istack.internal.NotNull;
 
 /**
@@ -20,7 +18,6 @@ import com.sun.istack.internal.NotNull;
  * {@link Grid} will observe the database in order to update the powerfailured
  * {@link Square}s. {@link Game} ass well will observe the database to be
  * notified when a Player has won/lost the game.
- * 
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
@@ -45,20 +42,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/**
 	 * This method first clears the current database and then re-fills the
-	 * database with PlayerDataBase.NUMBER_OF_PLAYERS newly created
-	 * {@link Player}s.
-	 * 
-	 * The order of the players is determined by the specified starting
-	 * positions set's iterator and thus is not (necessary) deterministic. The
-	 * first player allowed to play, is the player that is returned first by the
-	 * specified set's iterator.
+	 * database with {@value #NUMBER_OF_PLAYERS} newly created {@link Player}s.
+	 * The Players will all have the {@link PlayerState#WAITING} state and will
+	 * have no starting position.
 	 * 
 	 * @return The newly created list of players.
-	 * 
-	 * @throws IllegalArgumentException
-	 *         The arguments cannot be null and the length of the specified
-	 *         playerStartingCoordinates set must be {@value #NUMBER_OF_PLAYERS}
-	 *         .
 	 */
 	public List<Player> createNewDB() {
 		Player.resetUniqueIdcounter();
@@ -82,10 +70,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-	 * End a players turn. This will set the state of the specified player to
-	 * {@link PlayerState#WAITING} and set the next player to
-	 * {@link PlayerState#ACTIVE}. This next player then receives
-	 * {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions for his turn.
+	 * Ends a player's turn. If the specified player is not the current player
+	 * (i.e. {@link #getCurrentPlayer()}), this method will return. Else it will
+	 * set the state of the specified player to {@link PlayerState#WAITING} and
+	 * set the next player to {@link PlayerState#ACTIVE}. This next player then
+	 * receives {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions for his
+	 * turn.
 	 * 
 	 * This method will also check whether the player has reached his finish
 	 * position. If this is the case he will set the state of the player to

@@ -60,9 +60,11 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed number of actions of
-	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}. The specified coordinate is the
-	 * starting position of the player. The default state of a player is
-	 * {@link PlayerState#WAITING}.
+	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}.The default state of a player is
+	 * {@link PlayerState#WAITING}. One has to call
+	 * {@link #setStartingPosition(ASquare)} to set the starting position. Until
+	 * then and until the state is set to {@link PlayerState#ACTIVE} it will not
+	 * be able to perform any action.
 	 */
 	// User cannot create players himself. This is the responsability of
 	// the PlayerDB --> constructor package access
@@ -223,7 +225,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * @return true if the player can perform an action, else false
 	 */
 	private boolean canPerformAction() {
-		return this.state == PlayerState.ACTIVE;
+		return this.state == PlayerState.ACTIVE && getStartingPosition() != null;
 	}
 	
 	/**
