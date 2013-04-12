@@ -81,8 +81,6 @@ public class GridBuilderTest {
 	public void testStaticGrid() {
 		Grid grid = new GridBuilder(players).getPredefinedTestGrid(false);
 		
-		System.out.println(grid.toString());
-		
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s w w w w w s \n" + "s s s s s s s l s s \n" + "s s l s s s s s l s \n"

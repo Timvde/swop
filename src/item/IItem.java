@@ -54,7 +54,7 @@ public interface IItem extends TronObject {
 	public void execute(TronObject object);
 	
 	/**
-	 * The representation of this item as a character. Used to print the grid.
+	 * The representation of this item as a character.
 	 * 
 	 * @return A character representing this item.
 	 */
