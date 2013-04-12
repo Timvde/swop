@@ -10,8 +10,8 @@ import grid.Coordinate;
  */
 public class Wall {
 	
-	private Coordinate		start;
-	private Coordinate		end;
+	private Coordinate	start;
+	private Coordinate	end;
 	
 	/**
 	 * Construct a Wall with the given start and end coordinates
@@ -46,14 +46,20 @@ public class Wall {
 		}
 	}
 	
-	/*
-	 * The following methods are package private, since they can be accessed by
-	 * Grid, to create a predefined test grid.
+	/**
+	 * Get the start coordinate of a wall. This will always be the one closest
+	 * to the origin.
 	 */
 	public Coordinate getStart() {
 		return start;
 	}
 	
+	/**
+	 * Get the end coordinate of a wall. This will always be the one furthest
+	 * from the origin.
+	 * 
+	 * @return The end coordinate
+	 */
 	public Coordinate getEnd() {
 		return end;
 	}
