@@ -199,30 +199,6 @@ public class GUI implements Runnable {
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
-						// Draw players if necessary
-						if (player != null) {
-							switch (player.getID()) {
-								case 1:
-									if (guiDataController.getCurrentPlayer().getID() == 1) {
-										graphics.drawImage(greenBackground, guiCoord.getX(),
-												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-									}
-									graphics.drawImage(playerBlueImage, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-									break;
-								case 2:
-									if (guiDataController.getCurrentPlayer().getID() == 2) {
-										graphics.drawImage(greenBackground, guiCoord.getX(),
-												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-									}
-									graphics.drawImage(playerRedImage, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-									break;
-								default:
-									break;
-							}
-						}
-						
 						// Draw wall if necessary
 						if (square.getClass() == WallPart.class) {
 							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
@@ -259,6 +235,30 @@ public class GUI implements Runnable {
 							else if (i instanceof IdentityDisk) {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+						}
+						
+						// Draw players if necessary, this should happen last.
+						if (player != null) {
+							switch (player.getID()) {
+								case 1:
+									if (guiDataController.getCurrentPlayer().getID() == 1) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(playerBlueImage, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									break;
+								case 2:
+									if (guiDataController.getCurrentPlayer().getID() == 2) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(playerRedImage, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									break;
+								default:
+									break;
 							}
 						}
 					}
