@@ -114,4 +114,9 @@ public class WallPart extends ASquare {
 	public boolean canAddPlayer() {
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return "w ";
+	}
 }
