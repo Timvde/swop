@@ -503,7 +503,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	@Override
 	public void damageByPowerFailure() {
-		this.endTurn();
+		this.skipNumberOfActions(getAllowedNumberOfActions());
 	}
 	
 	@Override
