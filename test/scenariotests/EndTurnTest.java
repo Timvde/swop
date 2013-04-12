@@ -1,10 +1,11 @@
 package scenariotests;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import game.Game;
 import grid.Grid;
 import grid.GridBuilder;
 import org.junit.Test;
+import player.IPlayer;
 import player.PlayerDataBase;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
@@ -42,21 +43,14 @@ public class EndTurnTest {
 	}
 	
 	@Test
-	public void testPlayerEnterPowerFailedSquare() throws IllegalStateException,
-			IllegalArgumentException, IllegalMoveException {
+	public void testEndTurn() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
 		newGame();
 		
-		// Player 1 actions
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		// Player 2 actions
-		moveCont.move(Direction.EAST);
-		endTurnCont.endTurn();
-		// Player 1 actions
-		moveCont.move(Direction.WEST);
+		IPlayer player = playerDB.getCurrentPlayer();
 		
-		// Check if player 1 his turn ended because of the power failure.
-		assertSame(2, playerDB.getCurrentPlayer().getID());
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		
+		assertFalse(player == playerDB.getCurrentPlayer());
 	}
 }

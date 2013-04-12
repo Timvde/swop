@@ -516,11 +516,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	void destroy() {
 		this.playerDB = null;
-		this.currentSquare.remove(this);
 		this.currentSquare = null;
 		this.id = -1;
 		this.inventory = null;
 		this.lightTrail = null;
 		this.state = null;
+		
+		if (currentSquare != null)
+			this.currentSquare.remove(this);
 	}
 }

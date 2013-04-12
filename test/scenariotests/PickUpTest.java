@@ -80,6 +80,8 @@ public class PickUpTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testItemNotOnSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+		newGame();
+		
 		moveCont.move(Direction.SOUTH);
 		pickUpCont.pickUpItem(new LightGrenade());
 	}

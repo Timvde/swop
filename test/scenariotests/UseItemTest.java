@@ -1,16 +1,21 @@
 package scenariotests;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import game.Game;
 import grid.Grid;
 import grid.GridBuilder;
+import gui.DummyGUI;
 import item.IItem;
+import item.identitydisk.IdentityDisk;
+import item.lightgrenade.LightGrenade;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
-import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
 import square.Direction;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalMoveException;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -34,27 +39,24 @@ public class UseItemTest {
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
 	
-	private void newGame() {
+	@Before
+	public void setUp() {
 		Game game = new Game();
-		
 		playerDB = new PlayerDataBase();
-		
-		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
-		grid = builder.getPredefinedTestGrid(false);
-		
-		game.setGrid(grid);
+		grid = new GridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		
 		game.start();
+		game.setGrid(grid);
 		
 		moveCont = new MoveController(playerDB);
-		pickUpCont = new PickUpItemController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
+		pickUpCont = new PickUpItemController(playerDB);
 		useItemCont = new UseItemController(playerDB);
 	}
 	
-	@Test 
-	public void testMaximumOneLightGrenadePerSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException, CannotPlaceLightGrenadeException {
-		newGame();
+	@Test
+	public void testMaximumOneLightGrenadePerSquare() throws IllegalStateException,
+			IllegalArgumentException, IllegalMoveException, CannotPlaceLightGrenadeException {
 		
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
@@ -74,13 +76,11 @@ public class UseItemTest {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		// Player 2 actions
-		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation()
-				.getCarryableItems();
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		moveCont.move(Direction.EAST);
-		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation()
-				.getCarryableItems();
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
 		// Player 1 actions
@@ -99,41 +99,39 @@ public class UseItemTest {
 		assertTrue(assertionThrown);
 	}
 	
-	@Test
-	public void testCannotPlaceLightGrenadeOnStartPositions() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
-		newGame();
-		
-		// Player 1 actions
-		moveCont.move(Direction.SOUTH);
-		endTurnCont.endTurn();
-		// Player 2 actions
-		moveCont.move(Direction.NORTHEAST);
-		moveCont.move(Direction.NORTHEAST);
-		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation()
-				.getCarryableItems();
-		IItem lightGrenade1 = items1.get(0);
-		pickUpCont.pickUpItem(lightGrenade1);
-		// player 1 Actions
-		moveCont.move(Direction.SOUTH);
-		endTurnCont.endTurn();
-		// Player 2 actions
-		moveCont.move(Direction.NORTHWEST);
-		moveCont.move(Direction.SOUTHWEST);
-		moveCont.move(Direction.SOUTH);
-		// Player 1 actions
-		moveCont.move(Direction.SOUTH);
-		endTurnCont.endTurn();
-		// Player 2 actions:
+	@Test(expected = IllegalArgumentException.class)
+	public void testUseItem_itemNotInInventory() throws IllegalStateException,
+			IllegalArgumentException, IllegalMoveException, CannotPlaceLightGrenadeException {
 		moveCont.move(Direction.SOUTH);
 		
-		boolean assertionThrown = false;
-		try {
-			useItemCont.useItem(lightGrenade1);
-		} // TODO specifieker
-		catch (Exception e) {
-			assertionThrown = true;
-			e.printStackTrace();
-		}
-		assertTrue(assertionThrown);
+		useItemCont.useItem(new LightGrenade());
 	}
+	
+	@Test
+	public void testUseIdentityDisc() throws IllegalStateException, IllegalArgumentException,
+			IllegalMoveException, CannotPlaceLightGrenadeException {
+		// set a DummyGUI, so we have control over the returned direction by
+		// DummyGUI#getBasicDirection()
+		useItemCont.setGUI(new DummyGUI());
+		
+		
+		// player 1
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentLocation()
+				.getAllItems().get(0);
+		pickUpCont.pickUpItem(id);
+		
+		
+		// player 2
+		moveCont.move(Direction.EAST);
+		endTurnCont.endTurn();
+		
+		// player 1
+		useItemCont.useItem(id);
+		
+		assertFalse(playerDB.getCurrentPlayer().getCurrentLocation().contains(id));
+		assertFalse(playerDB.getCurrentPlayer().getInventoryContent().contains(id));
+	}
+	
 }

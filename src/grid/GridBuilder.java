@@ -629,6 +629,9 @@ public class GridBuilder {
 		((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
 		((Square) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
 		
+		((Square) getSquare(new Coordinate(7, 0))).addItem(new UnchargedIdentityDisk());
+		((Square) getSquare(new Coordinate(2, 9))).addItem(new UnchargedIdentityDisk());
+		
 		Grid final_grid = new Grid(grid);
 		
 		if (usePowerfailure)
@@ -652,11 +655,12 @@ public class GridBuilder {
 	 * <li>t: teleporters (these teleport to the square right above)</li>
 	 * <li>d: destination of the teleporters</li>
 	 * <li>F: Power failure</li>
+	 * <li>i: Identity disc</li>
 	 * </ul>
 	 * 
 	 * <pre>
 	 *   _____________________________
-	 *  |  |  |  | F| F| F|  |  |  | 2|
+	 *  |  |  |  | F| F| F|  | i|  | 2|
 	 *  |  |  |  | F| F| F|  |  |  |  |
 	 *  |  |  |  | F| F| F|  | o|  |t1|
 	 *  |  |  |  |  |  |  |  |  |  |d2|
@@ -665,7 +669,7 @@ public class GridBuilder {
 	 *  |  |  |  |  |  |  |  | o|  |  |
 	 *  |t2|  | o|  |  |  |  |  | o|  |
 	 *  |d1|  |  |  |  | o| o| o| o|  |
-	 *  | 1|  |  |  |  |  |  |  |  |  |
+	 *  | 1|  | i|  |  |  |  |  |  |  |
 	 *  -------------------------------
 	 * </pre>
 	 * 
