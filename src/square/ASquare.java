@@ -96,7 +96,7 @@ public abstract class ASquare implements ISquare {
 	 * 
 	 * @throws IllegalArgumentException
 	 *         It must be possible to add the player to this square. More
-	 *         formally <code>{@link #canBeAdded(IPlayer)}</code> .
+	 *         formally <code>{@link #canAddPlayer()}</code> .
 	 */
 	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
 	

@@ -20,7 +20,7 @@ public class Teleporter extends Item {
 	/**
 	 * A boolean that indicates whether this teleporter should skip his next
 	 * teleport. This prevents an infinite loop when we teleport to an other
-	 * teleporter
+	 * teleporter.
 	 */
 	private boolean		skipNextTeleport;
 	
@@ -49,7 +49,6 @@ public class Teleporter extends Item {
 	
 	@Override
 	public boolean isCarriable() {
-		// a teleporter is not carriable
 		return false;
 	}
 	
@@ -66,12 +65,12 @@ public class Teleporter extends Item {
 	 *        the object that will be teleported
 	 */
 	public void execute(TronObject object) {
-		// if we can teleport, do it ...
+		// If we can teleport, do it ...
 		if (null != object.asTeleportable() && skipNextTeleport == false) {
 			destination.skipNextTeleport = true;
 			object.asTeleportable().teleportTo(destination.square);
 		}
-		// else we should tell that we have skipped a teleportation
+		// Otherwise we should tell that we have skipped a teleportation
 		else if (null != object.asTeleportable() && skipNextTeleport == true)
 			this.skipNextTeleport = false;
 	}
@@ -88,7 +87,7 @@ public class Teleporter extends Item {
 	 * teleporter is final during the lifetime of this teleporter.
 	 * 
 	 * @param destination
-	 *        the destination for this teleporter
+	 *        The destination for this teleporter
 	 */
 	public void setDestination(Teleporter destination) {
 		if (this.destination != null)

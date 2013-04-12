@@ -19,7 +19,7 @@ import square.TronObject;
  */
 public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPowerFailure {
 	
-	private int			range;
+	private int	range;
 	
 	/**
 	 * create a new identity disk
@@ -33,17 +33,13 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 		super.use(square);
 		range = 4;
 	}
-
-
-
+	
 	@Override
 	protected void moveDisk(Direction direction) {
 		super.moveDisk(direction);
 		range--;
 	}
-
-
-
+	
 	/**
 	 * Test whether the disk can be moved in the specified direction, a square
 	 * can be moved in a direction when it has any range left, if the current
@@ -58,8 +54,8 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 		// test if there is any range left to move
 		if (range <= 0)
 			return false;
-		else 
-			return super.canMoveDisk(direction);
+		
+		return super.canMoveDisk(direction);
 	}
 	
 	@Override

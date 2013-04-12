@@ -411,7 +411,7 @@ public class GridBuilder {
 		}
 		
 		// place charged identity disk
-		Random rand = new Random(1);
+		Random rand = new Random();
 		List<Coordinate> CIDCoords = getPossibleCIDLocations(startingCoordinates);
 		Coordinate CIDCoord = null;
 		
@@ -624,8 +624,6 @@ public class GridBuilder {
 		((Square) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
 		((Square) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
 		((Square) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
-		// ((Square) getSquare(new Coordinate(7, 7))).addItem(new
-		// LightGrenade());
 		((Square) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
 		((Square) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
 		((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
