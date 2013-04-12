@@ -6,7 +6,6 @@ import item.Item;
 import square.ASquare;
 import square.TronObject;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
-import com.sun.istack.internal.NotNull;
 
 /**
  * Light grenades are items that can be picked up and used by a player. There
@@ -24,7 +23,6 @@ import com.sun.istack.internal.NotNull;
  */
 public class LightGrenade extends Item {
 	
-	@NotNull
 	private LightGrenadeState	state;
 	private int					damage;
 	

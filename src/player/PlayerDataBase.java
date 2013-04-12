@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Observable;
 import square.ISquare;
 import square.Square;
-import com.sun.istack.internal.NotNull;
 
 /**
  * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
@@ -26,7 +25,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public static final int		NUMBER_OF_PLAYERS	= 2;
 	
-	@NotNull
 	private ArrayList<Player>	playerList;
 	private int					currentPlayerIndex;
 	

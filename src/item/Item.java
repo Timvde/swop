@@ -5,7 +5,6 @@ import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
 import square.AffectedByPowerFailure;
 import square.TronObject;
-import com.sun.istack.internal.NotNull;
 
 /**
  * an abstract implementation of the item interface. This class offers some
@@ -15,9 +14,7 @@ import com.sun.istack.internal.NotNull;
  */
 public abstract class Item implements IItem {
 	
-	@NotNull
 	private int						id;
-	@NotNull
 	private static AtomicInteger	nextID	= new AtomicInteger();
 	
 	public int getId() {
