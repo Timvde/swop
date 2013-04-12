@@ -105,4 +105,9 @@ public class Teleporter extends Item {
 	public Teleporter getDestination() {
 		return destination;
 	}
+	
+	@Override
+	public char toChar() {
+		return 't';
+	}
 }

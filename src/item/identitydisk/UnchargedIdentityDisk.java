@@ -86,4 +86,9 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 		// the object does nothing when an object/player steps on an identity
 		// disk
 	}
+	
+	@Override
+	public char toChar() {
+		return 'u';
+	}
 }

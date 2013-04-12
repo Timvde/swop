@@ -141,7 +141,7 @@ public class Square extends ASquare {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer player) throws IllegalArgumentException{
+	public void addPlayer(IPlayer player) throws IllegalArgumentException {
 		if (!canAddPlayer())
 			throw new IllegalArgumentException("The player cannot be added to this square!");
 		this.player = player;
@@ -150,8 +150,7 @@ public class Square extends ASquare {
 	
 	@Override
 	void removePowerFailure(PowerFailure powerFailure) {
-		if (this.powerFailure != null 
-				&& this.powerFailure.equals(powerFailure))
+		if (this.powerFailure != null && this.powerFailure.equals(powerFailure))
 			this.powerFailure = null;
 	}
 	
@@ -223,5 +222,18 @@ public class Square extends ASquare {
 	@Override
 	public void removePlayer() {
 		this.player = null;
+	}
+	
+	@Override
+	public String toString() {
+		String out = "";
+		for (IItem item : getAllItems()) {
+			out += item.toChar();
+			out += ' ';
+		}
+		if (out.equals(""))
+			out = (hasPowerFailure() ? "p " : "s ");
+		
+		return out;
 	}
 }

@@ -41,8 +41,9 @@ public abstract class Item implements IItem {
 	
 	/**
 	 * By default an item is not teleportable, therefore this method returns
-	 * null. Subclasses implementing the teleportable interface should override 
-	 * this method with the specification described {@link TronObject#asTeleportable() here}.
+	 * null. Subclasses implementing the teleportable interface should override
+	 * this method with the specification described
+	 * {@link TronObject#asTeleportable() here}.
 	 */
 	@Override
 	public Teleportable asTeleportable() {
@@ -51,8 +52,9 @@ public abstract class Item implements IItem {
 	
 	/**
 	 * By default an item is not explodable, therefore this method returns null.
-	 * Subclasses implementing the explodable interface should override 
-	 * this method with the specifications described {@link TronObject#asExplodable() here}.
+	 * Subclasses implementing the explodable interface should override this
+	 * method with the specifications described
+	 * {@link TronObject#asExplodable() here}.
 	 */
 	@Override
 	public Explodable asExplodable() {
@@ -60,12 +62,21 @@ public abstract class Item implements IItem {
 	}
 	
 	/**
-	 * By default an item is not affected by a power failure, therefore this method returns
-	 * null. Subclasses implementing the {@link AffectedByPowerFailure} interface should override
-	 * this method with the specifications described {@link TronObject#asAffectedByPowerFailure() here}.
+	 * By default an item is not affected by a power failure, therefore this
+	 * method returns null. Subclasses implementing the
+	 * {@link AffectedByPowerFailure} interface should override this method with
+	 * the specifications described
+	 * {@link TronObject#asAffectedByPowerFailure() here}.
 	 */
-	@Override 
+	@Override
 	public AffectedByPowerFailure asAffectedByPowerFailure() {
 		return null;
+	}
+	
+	/**
+	 * By default, any item returns 'i'. Specific items can overwrite this.
+	 */
+	public char toChar() {
+		return 'i';
 	}
 }
