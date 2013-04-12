@@ -8,7 +8,7 @@ import square.TronObject;
 
 /**
  * An Item is an object that can be placed on a {@link Square}. Each item has a
- * unique ID. Some Items can be picked up by a {@link Player}. 
+ * unique ID. Some Items can be picked up by a {@link Player}.
  */
 public interface IItem extends TronObject {
 	
@@ -24,8 +24,8 @@ public interface IItem extends TronObject {
 	 * use(Square) will be different for each subclass of item.
 	 * 
 	 * @param square
-	 *        the square on which the item was used. 
-	 * @throws CannotPlaceLightGrenadeException 
+	 *        the square on which the item was used.
+	 * @throws CannotPlaceLightGrenadeException
 	 */
 	public void use(ASquare square) throws CannotPlaceLightGrenadeException;
 	
@@ -52,4 +52,11 @@ public interface IItem extends TronObject {
 	 *        the object that is influenced by this item
 	 */
 	public void execute(TronObject object);
+	
+	/**
+	 * The representation of this item as a character. Used to print the grid.
+	 * 
+	 * @return A character representing this item.
+	 */
+	public char toChar();
 }

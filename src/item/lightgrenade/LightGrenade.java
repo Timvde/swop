@@ -155,6 +155,11 @@ public class LightGrenade extends Item {
 		System.out.println("Lightgrenade set to increased strength.");
 	}
 	
+	@Override
+	public char toChar() {
+		return 'l';
+	}
+	
 	/************************* LigthGrenadeEnum *************************/
 	
 	/**

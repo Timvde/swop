@@ -78,18 +78,12 @@ public class Grid implements IGrid, Observer {
 	@Override
 	public String toString() {
 		String str = "";
-		for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < getWidth(); j++) {
+			for (int i = 0; i < getHeight(); i++) {
 				if (grid.get(new Coordinate(i, j)) == null)
 					str += "  ";
-				else if (grid.get(new Coordinate(i, j)).getClass() == WallPart.class)
-					str += "w ";
-				else if (grid.get(new Coordinate(i, j)).getClass() == Square.class) {
-					if (grid.get(new Coordinate(i, j)).getCarryableItems().size() != 0)
-						str += "l ";
-					else
-						str += "s ";
-				}
+				else
+					str += grid.get(new Coordinate(i, j)).toString();
 			}
 			str += "\n";
 		}

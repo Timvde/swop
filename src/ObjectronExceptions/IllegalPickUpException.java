@@ -3,7 +3,7 @@ package ObjectronExceptions;
 import item.Item;
 
 /**
- * Thrown to indicate an {@link Item} could not successfully be picked up.
+ * Thrown to indicate an {@link Item item} could not successfully be picked up.
  */
 public class IllegalPickUpException extends IllegalActionException {
 	
