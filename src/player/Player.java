@@ -12,7 +12,12 @@ import square.ISquare;
 import square.Square;
 import square.WallPart;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalStepException;
+import ObjectronExceptions.IllegalUseException;
+import ObjectronExceptions.InventoryFullException;
+import ObjectronExceptions.ItemNotOnSquareException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
@@ -184,19 +189,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * This sets the number of actions a player has left to zero. This will end
-	 * a player's turn.
-	 */
-	private void resetNumberOfActionsLeft() {
-		skipNumberOfActions(getAllowedNumberOfActions());
-	}
-	
-	/**
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
 	private void checkEndTurn() {
 		if (getAllowedNumberOfActions() <= 0) {
+			// this method will return if it's not this player's turn
 			playerDB.endPlayerTurn(this);
 		}
 	}
@@ -224,13 +222,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.hasMoved = false;
 	}
 	
-	/**
-	 * Returns whether this player can perform an action.
-	 * 
-	 * @return true if the player can perform an action, else false
-	 */
-	private boolean canPerformAction() {
-		return this.state == PlayerState.ACTIVE && getStartingPosition() != null;
+	/* ############## PlayerState related methods ############## */
+	
+	@Override
+	public boolean canPerformAction() {
+		return this.state == PlayerState.ACTIVE && getStartingPosition() != null
+				&& getAllowedNumberOfActions() > 0;
 	}
 	
 	/**
@@ -247,8 +244,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	void setPlayerState(PlayerState state) throws IllegalArgumentException {
 		if (!this.state.isAllowedTransistionTo(state)) {
 			throw new IllegalArgumentException(
-					"The player is not allowed to switch his state from the current state "
-							+ this.state.name() + " to the specified state " + state.name());
+					"The player is not allowed to switch from the current state ("
+							+ this.state.name() + ") to the specified state (" + state.name() + ")");
 		}
 		
 		this.state = state;
@@ -263,15 +260,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return this.state;
 	}
 	
-	/* #################### User methods #################### */
+	/* #################### Move methods #################### */
 	
 	@Override
-	public void endTurn() throws IllegalStateException {
+	public void endTurn() throws IllegalActionException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
-		if (!isPreconditionEndTurnSatisfied())
-			throw new IllegalStateException("The endTurn-preconditions are not satisfied.");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
 		if (this.hasMovedYet()) {
 			// this player's turn will end;
@@ -286,21 +280,22 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public boolean isPreconditionEndTurnSatisfied() {
-		return getAllowedNumberOfActions() > 0;
-	}
-	
-	@Override
-	public void moveInDirection(Direction direction) throws IllegalMoveException {
+	/**
+	 * @throws IllegalStepException
+	 *         The player must be able to move in the given direction on the
+	 *         grid, i.e. {@link #canMoveInDirection(Direction)}.
+	 * @throws IllegalMoveException
+	 *         When the player can't be added to the square in the specified
+	 *         direction, i.e. {@link Square#canAddPlayer()}.
+	 */
+	public void moveInDirection(Direction direction) throws IllegalActionException,
+			IllegalMoveException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
-		if (!isPreconditionMoveSatisfied())
-			throw new IllegalMoveException("The move-preconditions are not satisfied.");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!isValidDirection(direction))
-			throw new IllegalMoveException("The specified direction is not valid.");
+			throw new IllegalArgumentException("The specified direction is not valid.");
 		if (!canMoveInDirection(direction))
-			throw new IllegalMoveException("The player cannot move in given direction on the grid.");
+			throw new IllegalStepException("The player cannot move in given direction on the grid.");
 		
 		// Update the player's square
 		currentSquare.remove(this);
@@ -316,7 +311,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			oldSquare.addPlayer(this);
 			currentSquare = oldSquare;
 			throw new IllegalMoveException(
-					"The player cannot move in the given direction on the grid");
+					"The player can't be added to the square in the specified direction.");
 		}
 		
 		// Moving succeeded. Update other stuff.
@@ -331,17 +326,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public boolean isPreconditionMoveSatisfied() {
-		return getAllowedNumberOfActions() > 0;
-	}
-	
-	/**
-	 * test whether the player can move in the specified direction.
-	 * 
-	 * @param direction
-	 *        the direction in which the player wants to move
-	 * @return whether the player can move in the specified direction
-	 */
 	public boolean canMoveInDirection(Direction direction) {
 		if (currentSquare.getNeighbour(direction) == null)
 			return false;
@@ -386,13 +370,25 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return true;
 	}
 	
+	/* #################### PickUp method #################### */
+	
+	/**
+	 * @throws ItemNotOnSquareException
+	 *         The item must be {@link Square#contains(Object) on} the square
+	 *         the player is currently on.
+	 * @throws InventoryFullException
+	 *         This players {@link Inventory} cannot be
+	 *         {@link Inventory#getMaxNumberOfItems() full}.
+	 */
 	@Override
-	public void pickUpItem(IItem item) {
+	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
-		if (item == null || !currentSquare.contains(item))
-			throw new IllegalArgumentException("The item does not exist on the square");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
+		if (item == null)
+			throw new IllegalArgumentException("The item cannot be null");
+		if (!currentSquare.contains(item)) {
+			throw new ItemNotOnSquareException("The specified item is not on the square.");
+		}
 		
 		// remove the item from the square
 		currentSquare.remove(item);
@@ -402,9 +398,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			inventory.addItem(item);
 		}
 		catch (IllegalArgumentException e) {
-			// the inventory is full, re-add the item
+			// the inventory is full, rollback
 			currentSquare.addItem(item);
-			throw e;
+			throw new InventoryFullException("The item cannot be added to the inventory.");
 		}
 		
 		// end the players action ...
@@ -412,15 +408,25 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.lightTrail.updateLightTrail();
 	}
 	
+	/* #################### UseItem method #################### */
+	
+	/**
+	 * @throws IllegalUseException
+	 *         The item must be in the {@link Inventory}.
+	 * @throws CannotPlaceLightGrenadeException
+	 *         When the specified item is a {@link LightGrenade} and it can't be
+	 *         added to the square the player is currently standing on.
+	 */
 	@Override
 	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
 			CannotPlaceLightGrenadeException {
 		if (!canPerformAction())
-			throw new IllegalStateException(
-					"The player cannot preform actions unless he is active!");
+			throw new IllegalActionException("The player must be allowed to perform an action.");
+		if (i == null) {
+			throw new IllegalArgumentException("The specified item cannot be null.");
+		}
 		if (!inventory.hasItem(i))
-			throw new IllegalArgumentException("The item is not in the inventory");
-		// TODO are there any other exceptions?
+			throw new IllegalUseException("The item is not in the inventory");
 		
 		// remove the item from the inventory
 		inventory.removeItem(i);
@@ -497,7 +503,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	@Override
 	public void damageByPowerFailure() {
-		this.endTurn();
+		this.skipNumberOfActions(getAllowedNumberOfActions());
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package square;
 
+import item.Effect;
 import item.IItem;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +90,8 @@ public abstract class ASquare implements ISquare {
 	
 	/**
 	 * Add a specified player to this square. This method will automatically
-	 * adds the effects of the items on this square to the player.
+	 * add the {@link Effect effects} of the items on this square to the
+	 * player.
 	 * 
 	 * @param p
 	 *        the player who wants to be placed on this square
