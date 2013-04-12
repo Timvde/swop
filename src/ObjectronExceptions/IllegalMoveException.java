@@ -3,7 +3,7 @@ package ObjectronExceptions;
 import player.IPlayer;
 
 /**
- * Thrown to indicate somethong went wrong with moving an {@link IPlayer}.
+ * Thrown to indicate an {@link IPlayer} could not finish his move.
  */
 public class IllegalMoveException extends IllegalActionException {
 
