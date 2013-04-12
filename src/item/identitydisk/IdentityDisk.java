@@ -8,8 +8,8 @@ import square.Square;
 import square.TronObject;
 
 /**
- * Charged Identity disk can be launched by players on the grid. The disk will then
- * travel until it hits a player, wall or reaches the end of the board. An
+ * Charged Identity disk can be launched by players on the grid. The disk will
+ * then travel until it hits a player, wall or reaches the end of the board. An
  * identity disk cannot travel trough walls or outside of the grid. When either
  * of those cases crosses the path of this disk, the disk will stop before the
  * wall or the end of the grid. When an identity disk hits a player that player
@@ -28,15 +28,12 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
 		
-		// set the location of the current square
 		currentSquare = square;
 		
-		// test if the disk can move
 		if (!canMoveDisk(direction))
-			// if not add it to the current square
+			// We can't move any further, so we'll have to drop here
 			currentSquare.addItem(this);
 		else
-			// else start moving the disk as long as it can ...
 			while (canMoveDisk(direction)) {
 				moveDisk(direction);
 				// test if we have hit a player (and hit him if we have)
@@ -62,13 +59,10 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	 * @return true if the disk can move in the specified direction, else false
 	 */
 	public boolean canMoveDisk(Direction direction) {
-		// test whether the square has a neighbour in the given direction
 		if (currentSquare.getNeighbour(direction) == null)
 			return false;
-		// test whether the disk can be added to the neighbour
 		else if (!currentSquare.getNeighbour(direction).canBeAdded(this))
 			return false;
-		// looks like the item can be added
 		return true;
 	}
 	
@@ -81,11 +75,8 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	protected void moveDisk(Direction direction) {
 		if (!canMoveDisk(direction))
 			throw new IllegalStateException("something happend, good look finding it ...");
-		// remove the item from the current square
 		currentSquare.remove(this);
-		// set the neighbour as the current square
 		currentSquare = currentSquare.getNeighbour(direction);
-		// add the square to the (new) current square
 		currentSquare.addItem(this);
 	}
 	
@@ -99,12 +90,9 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		if (destination == null)
 			throw new IllegalArgumentException("Cannot teleport to null!");
 		
-		// remove the disk from the current square
 		if (currentSquare != null)
 			currentSquare.remove(this);
-		// set the destination to the current square
 		currentSquare = (Square) destination;
-		// add the disk to a new square
 		currentSquare.addItem(this);
 	}
 	

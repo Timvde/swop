@@ -12,13 +12,13 @@ public class DirectionTest {
 	@Test
 	public final void testGetPrimeryDirections() {
 		// check for north
-		assertEquals(1, Direction.NORTH.getPrimeryDirections().size());
-		assertTrue(Direction.NORTH.getPrimeryDirections().contains(Direction.NORTH));
+		assertEquals(1, Direction.NORTH.getPrimaryDirections().size());
+		assertTrue(Direction.NORTH.getPrimaryDirections().contains(Direction.NORTH));
 		
 		// check for south east 
-		assertEquals(2, Direction.SOUTHEAST.getPrimeryDirections().size());
-		assertTrue(Direction.SOUTHEAST.getPrimeryDirections().contains(Direction.EAST));
-		assertTrue(Direction.SOUTHEAST.getPrimeryDirections().contains(Direction.SOUTH));
+		assertEquals(2, Direction.SOUTHEAST.getPrimaryDirections().size());
+		assertTrue(Direction.SOUTHEAST.getPrimaryDirections().contains(Direction.EAST));
+		assertTrue(Direction.SOUTHEAST.getPrimaryDirections().contains(Direction.SOUTH));
 	}
 	
 	@Test

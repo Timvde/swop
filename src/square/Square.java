@@ -40,11 +40,9 @@ public class Square extends ASquare {
 	
 	@Override
 	public void addItem(IItem item) {
-		// test whether the item can be placed on the square
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
 		
-		// place the item on this square
 		itemList.add(item);
 		
 		// execute an effect on the item
@@ -144,12 +142,9 @@ public class Square extends ASquare {
 	
 	@Override
 	public void addPlayer(IPlayer player) throws IllegalArgumentException{
-		// test whether the player can be added
 		if (!canAddPlayer())
-			throw new IllegalArgumentException("the player cannot be added to this square!");
-		// set the player to this square
+			throw new IllegalArgumentException("The player cannot be added to this square!");
 		this.player = player;
-		// add the effect to the player
 		this.executeEffect(player);
 	}
 	
@@ -182,24 +177,20 @@ public class Square extends ASquare {
 	 * More formally this method will return <code>true</code> if and only if<br>
 	 * <code>this.hasPlayer() == false && this.hasLightTrail() == false</code>.
 	 * 
-	 * @return true if a player can be added, else false
+	 * @return True if a player can be added, otherwise false
 	 */
 	@Override
 	public boolean canAddPlayer() {
-		// check if this square has a light trail
 		if (this.hasLightTrail())
 			return false;
-		// check if the square has already a player
 		else if (this.hasPlayer())
 			return false;
-		// everything looks OK ... 
-		else 
+		else
 			return true;
 	}
 	
 	@Override
 	public boolean canBeAdded(IItem item) {
-		// test whether the item exists
 		if (item == null)
 			return false;
 		// TODO are there any other preconditions?
@@ -213,7 +204,6 @@ public class Square extends ASquare {
 	 *        the object to be placed on this square
 	 */
 	private void executeEffect(TronObject object) {
-		// create a new effect
 		Effect effect = new Effect(object);
 		
 		// let the items on this square add to the effect
@@ -224,7 +214,6 @@ public class Square extends ASquare {
 		if (this.hasPowerFailure())
 			effect.addPowerFailure(powerFailure);
 		
-		// execute the effect
 		effect.execute();
 	}
 	

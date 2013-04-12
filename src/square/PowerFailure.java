@@ -35,14 +35,15 @@ public class PowerFailure {
 	public PowerFailure(ASquare square) {
 		squares = new ArrayList<ASquare>();
 		
-		// set the powerfailure for this square
-		square.addPowerFailure(this);
-		squares.add(square);
+		if (square instanceof Square) {
+			square.addPowerFailure(this);
+			squares.add(square);
+		}
 		
 		// add a power failure for the neighbours of the square
 		for (Direction direction : Direction.values())
 			if (square.getNeighbour(direction) != null) {
-				if (!(square.getNeighbour(direction) instanceof WallPart)) {
+				if (square.getNeighbour(direction) instanceof Square) {
 					square.getNeighbour(direction).addPowerFailure(this);
 					squares.add(square.getNeighbour(direction));
 				}
