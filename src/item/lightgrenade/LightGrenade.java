@@ -32,11 +32,11 @@ public class LightGrenade extends Item {
 	 * The default strength of a light grenade: the number of actions to skip
 	 * for {@link Explodable} objects when it explodes.
 	 */
-	static final int	DEFAULT_STRENGTH	= 3;
+	static final int			DEFAULT_STRENGTH	= 3;
 	/**
 	 * The enforced damage, when {@link #increaseStrength()} is called.
 	 */
-	static final int	INCREASED_STRENGHT	= 4;
+	static final int			INCREASED_STRENGHT	= 4;
 	
 	/**
 	 * create a new light grenade, the state of this light grenade will be
@@ -73,7 +73,7 @@ public class LightGrenade extends Item {
 					+ " to 'enabled'");
 		
 		this.state = LightGrenadeState.ACTIVE;
-		System.out.println("state: "+ this.state);
+		System.out.println("state: " + this.state);
 	}
 	
 	/**
@@ -107,9 +107,10 @@ public class LightGrenade extends Item {
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
-				throw new CannotPlaceLightGrenadeException("There is already a light grenade on the square");
+				throw new CannotPlaceLightGrenadeException(
+						"There is already a light grenade on the square");
 		
-		// try and add this light grenade to the square 
+		// try and add this light grenade to the square
 		square.addItem(this);
 		
 		this.enable();
@@ -138,7 +139,7 @@ public class LightGrenade extends Item {
 		object.asExplodable().skipNumberOfActions(damage);
 		this.explode();
 		
-		System.out.println("Lightgrenade exploded. Damage done: "+damage);
+		System.out.println("Lightgrenade exploded. Damage done: " + damage);
 	}
 	
 	/**
@@ -155,7 +156,7 @@ public class LightGrenade extends Item {
 	}
 	
 	/************************* LigthGrenadeEnum *************************/
-
+	
 	/**
 	 * An enumeration of the states a {@link LightGrenade} can have and the
 	 * allowed transitions between them.

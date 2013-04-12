@@ -185,7 +185,7 @@ public class Square extends ASquare {
 			return false;
 		else if (this.hasPlayer())
 			return false;
-		else 
+		else
 			return true;
 	}
 	
