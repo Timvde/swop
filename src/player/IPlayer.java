@@ -12,6 +12,7 @@ import square.TronObject;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalPickUpException;
 import ObjectronExceptions.IllegalStepException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.InventoryFullException;
@@ -137,15 +138,12 @@ public interface IPlayer extends TronObject {
 	 * @throws IllegalArgumentException
 	 *         The specified direction must be valid, i.e.
 	 *         {@link #isValidDirection(Direction)}.
-	 * @throws IllegalStepException
-	 *         The player must be able to move in the given direction on the
-	 *         grid, i.e. {@link #canMoveInDirection(Direction)}.
 	 * @throws IllegalMoveException
-	 *         When the player can't be added to the square in the specified
-	 *         direction, i.e. {@link Square#canAddPlayer()}.
+	 *         The player must be allowed to perform a move in the specified
+	 *         direction.
 	 */
 	public void moveInDirection(Direction direction) throws IllegalActionException,
-			IllegalArgumentException, IllegalMoveException, IllegalStepException;
+			IllegalArgumentException;
 	
 	/**
 	 * Returns whether a specified direction is a valid direction for this
@@ -179,15 +177,11 @@ public interface IPlayer extends TronObject {
 	 *         <code>{@link #canPerformAction()}</code>.
 	 * @throws IllegalArgumentException
 	 *         The item cannot be <code>null</code>.
-	 * @throws ItemNotOnSquareException
-	 *         The item must be {@link Square#contains(Object) on} the square
-	 *         the player is currently on.
-	 * @throws InventoryFullException
-	 *         This players {@link Inventory} cannot be
-	 *         {@link Inventory#getMaxNumberOfItems() full}.
+	 * @throws IllegalPickUpException
+	 *         The player must be able to pick up the specified item from the
+	 *         current square.
 	 */
-	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException,
-			ItemNotOnSquareException, InventoryFullException;
+	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException;
 	
 	/**
 	 * {@link IItem#use(ASquare) use} the given item. The item must be in the
@@ -201,11 +195,7 @@ public interface IPlayer extends TronObject {
 	 * @throws IllegalArgumentException
 	 *         The specified item cannot be <code>null</code>.
 	 * @throws IllegalUseException
-	 *         The item must be in the {@link Inventory}.
-	 * @throws CannotPlaceLightGrenadeException
-	 *         When the specified item is a {@link LightGrenade} and it can't be
-	 *         added to the square the player is currently standing on.
+	 *         The player must be allowed to use the item.
 	 */
-	public void useItem(IItem i) throws IllegalActionException, IllegalArgumentException,
-			IllegalUseException, CannotPlaceLightGrenadeException;
+	public void useItem(IItem i) throws IllegalActionException, IllegalArgumentException;
 }

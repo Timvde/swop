@@ -244,8 +244,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	void setPlayerState(PlayerState state) throws IllegalArgumentException {
 		if (!this.state.isAllowedTransistionTo(state)) {
 			throw new IllegalArgumentException(
-					"The player is not allowed to switch his state from the current state "
-							+ this.state.name() + " to the specified state " + state.name());
+					"The player is not allowed to switch from the current state ("
+							+ this.state.name() + ") to the specified state (" + state.name() + ")");
 		}
 		
 		this.state = state;
@@ -280,8 +280,16 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
+	/**
+	 * @throws IllegalStepException
+	 *         The player must be able to move in the given direction on the
+	 *         grid, i.e. {@link #canMoveInDirection(Direction)}.
+	 * @throws IllegalMoveException
+	 *         When the player can't be added to the square in the specified
+	 *         direction, i.e. {@link Square#canAddPlayer()}.
+	 */
 	public void moveInDirection(Direction direction) throws IllegalActionException,
-			IllegalMoveException, IllegalStepException {
+			IllegalMoveException {
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!isValidDirection(direction))
@@ -364,9 +372,16 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/* #################### PickUp method #################### */
 	
+	/**
+	 * @throws ItemNotOnSquareException
+	 *         The item must be {@link Square#contains(Object) on} the square
+	 *         the player is currently on.
+	 * @throws InventoryFullException
+	 *         This players {@link Inventory} cannot be
+	 *         {@link Inventory#getMaxNumberOfItems() full}.
+	 */
 	@Override
-	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException,
-			ItemNotOnSquareException, InventoryFullException {
+	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException {
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (item == null)
@@ -395,6 +410,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/* #################### UseItem method #################### */
 	
+	/**
+	 * @throws IllegalUseException
+	 *         The item must be in the {@link Inventory}.
+	 * @throws CannotPlaceLightGrenadeException
+	 *         When the specified item is a {@link LightGrenade} and it can't be
+	 *         added to the square the player is currently standing on.
+	 */
 	@Override
 	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
 			CannotPlaceLightGrenadeException {
