@@ -43,7 +43,7 @@ public enum Direction {
 	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST. 
 	 * @return the primary directions
 	 */
-	public List<Direction> getPrimeryDirections() {
+	public List<Direction> getPrimaryDirections() {
 		return primaryDirections;
 	}
 	

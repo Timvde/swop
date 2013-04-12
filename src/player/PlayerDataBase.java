@@ -99,24 +99,21 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
 			player.setPlayerState(PlayerState.FINISHED);
-			// notify observers
+			
 			this.setChanged();
 			this.notifyObservers(player.getPlayerState());
 		}
 		else {
-			// set the current player to waiting
+			// Switch players and assign a new turn
 			player.setPlayerState(PlayerState.WAITING);
-			
-			// find the next player and assign him a new turn
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
 			Player newPlayer = playerList.get(currentPlayerIndex);
 			
-			// notify observers a Player-change has occured
 			this.setChanged();
 			this.notifyObservers(player.getPlayerState());
 			
-			// assign new actions to the specified player and set him active
-			// this may introduce a new player switch (the resulting penalty
+			// Assign new actions to the specified player and set him active.
+			// This may introduce a new player switch (the resulting penalty
 			// after adding new actions may still be < 0)
 			newPlayer.assignNewTurn();
 		}
@@ -136,9 +133,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	void reportGameLost(Player player) {
 		if (player.getPlayerState() != PlayerState.LOST) {
 			throw new IllegalStateException(
-					"Looks like the player asking to loose the game isn't lost after all");
+					"Looks like the player asking to lose the game hasn't lost after all");
 		}
-		// notify observers to tell a player lost the game
 		this.setChanged();
 		this.notifyObservers(player.getPlayerState());
 	}
@@ -175,5 +171,23 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	private ISquare getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();
+	}
+	
+	/**
+	 * This method reports the db that the specified player has received a
+	 * {@link StartDocument} position. This means he's ready to
+	 * {@link Player#assignNewTurn() start playing}.
+	 * 
+	 * @param p
+	 *        The player reporting he's ready to start playing
+	 */
+	void reportReadyToStart(Player p) {
+		if (p.getCurrentLocation() == null) {
+			throw new IllegalStateException("looks like the player didn't receive start position");
+		}
+		
+		if (p.equals(getCurrentPlayer())) {
+			p.assignNewTurn();
+		}
 	}
 }

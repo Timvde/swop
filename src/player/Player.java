@@ -71,7 +71,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * then and until the state is set to {@link PlayerState#ACTIVE} it will not
 	 * be able to perform any action.
 	 */
-	// User cannot create players himself. This is the responsability of
+	// User cannot create players himself. This is the responsibility of
 	// the PlayerDB --> constructor package access
 	Player(PlayerDataBase playerDB) throws IllegalArgumentException {
 		if (playerDB == null)
@@ -105,6 +105,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			throw new IllegalStateException("This player already has a starting position set");
 		this.startSquare = square;
 		this.currentSquare = square;
+		
+		// tell the DB you received a startposition (to tell this player is
+		// ready to start playing)
+		this.playerDB.reportReadyToStart(this);
 	}
 	
 	@Override
@@ -134,7 +138,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * This method is called by the {@link PlayerDataBase} when it assigns the
 	 * next player.
 	 */
-	public void assignNewTurn() {
+	// only the DB should assign turns --> package access
+	void assignNewTurn() {
 		// rest the turn related properties
 		this.resetHasMoved();
 		this.setPlayerState(PlayerState.ACTIVE);
@@ -243,7 +248,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 							+ this.state.name() + " to the specified state " + state.name());
 		}
 		
-		// set the player state
 		this.state = state;
 	}
 	
@@ -285,15 +289,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		if (!canMoveInDirection(direction))
 			throw new IllegalStepException("The player cannot move in given direction on the grid.");
 		
-		// remove this player from his current square
+		// Update the player's square
 		currentSquare.remove(this);
-		
-		// set new position
 		ASquare oldSquare = currentSquare;
 		currentSquare = currentSquare.getNeighbour(direction);
 		
 		try {
-			// add the player to the new square
 			currentSquare.addPlayer(this);
 		}
 		catch (IllegalArgumentException e) {
@@ -305,13 +306,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 					"The player can't be added to the square in the specified direction.");
 		}
 		
-		// update the light trail of this player
+		// Moving succeeded. Update other stuff.
 		this.lightTrail.updateLightTrail(oldSquare);
-		
-		// the player is moving
 		this.setHasMoved();
-		
-		// end the players action ...
 		decreaseAllowedNumberOfActions();
 	}
 	
@@ -322,20 +319,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public boolean canMoveInDirection(Direction direction) {
-		// test whether a square in the specified direction exists
 		if (currentSquare.getNeighbour(direction) == null)
 			return false;
-		// test if there is a player in the specified direction
-		else if (currentSquare.getNeighbour(direction).hasPlayer())
+		else if (!currentSquare.getNeighbour(direction).canAddPlayer())
 			return false;
-		// test if the square in the specified direction is a wallpart
-		else if (currentSquare.getNeighbour(direction) instanceof WallPart)
-			return false;
-		// test if the square in the specified direction has a light trail
-		else if (currentSquare.getNeighbour(direction).hasLightTrail())
-			return false;
-		// test if the player would cross a light trail by moving in the
-		// specified direction
 		else if (crossesLightTrail(direction))
 			return false;
 		// darn, we could not stop the player moving
@@ -348,25 +335,25 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * specified direction
 	 * 
 	 * @param direction
-	 *        the direction to test
-	 * @return true if the player crosses a light trail, else false
+	 *        The direction to test
+	 * @return True if the player crosses a light trail, otherwise false
 	 */
 	private boolean crossesLightTrail(Direction direction) {
 		// test if we are moving sideways
-		if (direction.getPrimeryDirections().size() != 2)
+		if (direction.getPrimaryDirections().size() != 2)
 			return false;
 		
 		// test if the square has a neighbour in both directions
-		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(0)) == null)
+		else if (currentSquare.getNeighbour(direction.getPrimaryDirections().get(0)) == null)
 			return false;
-		else if (currentSquare.getNeighbour(direction.getPrimeryDirections().get(1)) == null)
+		else if (currentSquare.getNeighbour(direction.getPrimaryDirections().get(1)) == null)
 			return false;
 		
 		// test if both of the neighbours have a light trail
-		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(0))
+		else if (!currentSquare.getNeighbour(direction.getPrimaryDirections().get(0))
 				.hasLightTrail())
 			return false;
-		else if (!currentSquare.getNeighbour(direction.getPrimeryDirections().get(1))
+		else if (!currentSquare.getNeighbour(direction.getPrimaryDirections().get(1))
 				.hasLightTrail())
 			return false;
 		
