@@ -3,7 +3,7 @@ package game;
 import java.util.List;
 import grid.Coordinate;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.RandomGridBuilder;
 import gui.GUI;
 import java.util.HashSet;
 import java.util.Observable;
@@ -98,7 +98,7 @@ public class Game implements Observer {
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		List<Player> players = playerDB.createNewDB();
-		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
+		this.grid = ((RandomGridBuilder) new RandomGridBuilder(players).setGridWidth(width).setGridHeigth(height)).build();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);

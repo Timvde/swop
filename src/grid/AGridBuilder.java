@@ -15,7 +15,6 @@ import java.util.Random;
 import player.Player;
 import square.ASquare;
 import square.Direction;
-import square.ISquare;
 import square.Square;
 import square.Wall;
 import square.WallPart;
@@ -26,22 +25,23 @@ import square.WallPart;
  * 
  * @author Bavo Mees
  */
-public class GridBuilder {
+public abstract class AGridBuilder {
 	
 	private static final double	NUMBER_OF_GRENADES			= 0.02;
 	private static final double	NUMBER_OF_TELEPORTERS		= 0.03;
 	private static final double	NUMBER_OF_IDENTITY_DISKS	= 0.02;
-	private static final int	MINIMUM_WALL_SIZE			= 2;
 	
-	private double				maximalLengthOfWall;
-	private double				maximumNumberOfWalls;
-	private int					width;
-	private int					height;
-	private List<Player>		players;
+	protected int					width;
+	protected int					height;
+	protected List<Player>		players;
 	
 	// Constraints
 	private int					minimumGridWidth			= 10;
 	private int					minimumGridHeight			= 10;
+	
+	protected HashMap<Coordinate, ASquare>	grid; 
+	protected ArrayList<Wall>					walls;
+	protected Map<Teleporter, Coordinate>		teleporterCoords;
 	
 	/**
 	 * Create a new builder for the grid.
@@ -51,40 +51,13 @@ public class GridBuilder {
 	 * @throws IllegalArgumentException
 	 *         When the number of players is not two.
 	 */
-	public GridBuilder(List<Player> players) throws IllegalArgumentException {
+	public AGridBuilder(List<Player> players) throws IllegalArgumentException {
 		if (players.size() != 2)
 			throw new IllegalArgumentException(
 					"At this moment, only a fixed number of two players is supported.");
 		this.players = players;
-		this.maximalLengthOfWall = 0.50;
-		this.maximumNumberOfWalls = 0.20;
 		this.width = 10;
 		this.height = 10;
-	}
-	
-	/**
-	 * set the maximal length of a wall as a percentage of the grid's
-	 * length/width.
-	 * 
-	 * @param maximalLength
-	 *        the maximal length of a wall
-	 * @return this
-	 */
-	public GridBuilder setMaximalLengthOfWall(double maximalLength) {
-		this.maximalLengthOfWall = maximalLength;
-		return this;
-	}
-	
-	/**
-	 * set the maximum number of walls in the grid
-	 * 
-	 * @param maximum
-	 *        the maximum number of walls
-	 * @return this
-	 */
-	public GridBuilder setMaximumNumberOfWalls(int maximum) {
-		this.maximumNumberOfWalls = maximum;
-		return this;
 	}
 	
 	/**
@@ -96,7 +69,7 @@ public class GridBuilder {
 	 * @return this
 	 */
 	// @Requires("width > 0")
-	public GridBuilder setGridWidth(int width) {
+	public AGridBuilder setGridWidth(int width) {
 		if ((width <= 3 && height <= 3) || width < minimumGridWidth)
 			throw new IllegalArgumentException("False grid dimensions!");
 		this.width = width;
@@ -111,59 +84,18 @@ public class GridBuilder {
 	 * @return this
 	 */
 	// @Requires("height > 0")
-	public GridBuilder setGridHeigth(int height) {
+	public AGridBuilder setGridHeigth(int height) {
 		if ((width <= 3 && height <= 3) || height < minimumGridHeight)
 			throw new IllegalArgumentException("False grid dimensions!");
 		this.height = height;
 		return this;
 	}
 	
-	private HashMap<Coordinate, ASquare>	grid;
-	private ArrayList<Wall>					walls;
-	private Map<Teleporter, Coordinate>		teleporterCoords;
-	
-	/**
-	 * Build a new grid object. The grid will be build with the parameters set
-	 * in this builder. If these parameters were not set, the default values
-	 * will be used.
-	 * 
-	 * @return a new grid object
-	 */
-	public Grid build() {
-		walls = new ArrayList<Wall>();
-		grid = new HashMap<Coordinate, ASquare>();
-		teleporterCoords = new HashMap<Teleporter, Coordinate>();
-		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++) {
-				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
-			}
-		
-		// place players on the board
-		List<Coordinate> startingCoordinates = calculateStartingPositionsOfPlayers();
-		
-		for (int i = 0; i < players.size(); ++i) {
-			players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
-			getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
-		}
-		
-		// place walls on the grid
-		int max = MINIMUM_WALL_SIZE
-				+ (int) (maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - maximalLengthOfWall
-						* Math.max(width, height));
-		int maximumNumberOfWalls = new Random().nextInt(max);
-		while (maximumNumberOfWalls >= getNumberOfWallParts())
-			placeWall(maximumNumberOfWalls, maximalLengthOfWall);
-		
-		// place the items on the board
-		placeItemsOnBoard(startingCoordinates);
-		return new Grid(grid);
-	}
-	
 	/**
 	 * Will return the ASquare at the specified coordinate if there is any,
 	 * otherwise it will create a new Square.
 	 */
-	private ASquare getSquare(Coordinate coordinate) {
+	protected ASquare getSquare(Coordinate coordinate) {
 		if (grid.containsKey(coordinate))
 			return grid.get(coordinate);
 		
@@ -195,43 +127,6 @@ public class GridBuilder {
 	/* -------------------- grid building methods ------------------------ */
 	
 	/**
-	 * returns the number of walls in the grid
-	 * 
-	 * @return number of walls
-	 */
-	private int getNumberOfWallParts() {
-		int i = 0;
-		for (ISquare square : grid.values())
-			if (square.getClass() == WallPart.class)
-				i++;
-		return i;
-	}
-	
-	/**
-	 * place a new wall on the grid. This method will automatically determine
-	 * the maximum length of the wall.
-	 * 
-	 * @param maxPercentage
-	 *        The maximum percentage of walls on the grid
-	 */
-	private void placeWall(double maxPercentage, double maximalLengthOfWall) {
-		// generate random number between a minimum and a maximum
-		int max = getMaximumLengthOfWall(maxPercentage, maximalLengthOfWall);
-		int wallLength = new Random().nextInt(max - MINIMUM_WALL_SIZE + 1) + MINIMUM_WALL_SIZE;
-		
-		Coordinate start, end;
-		do {
-			start = Coordinate.random(width, height);
-			end = start.getRandomCoordinateWithDistance(wallLength);
-			// Logically, we should do -1 here, but wallLength is a random
-			// excluding the wallLength itself, so it implicitly already
-			// happened.
-		} while (!canPlaceWall(start, end));
-		// place the wall on the grid
-		placeWallOnGrid(start, end);
-	}
-	
-	/**
 	 * This method will place a wall on the grid with a specified start and end
 	 * position. If the wall cannot be placed on the board this method will
 	 * throw an {@link IllegalArgumentException}
@@ -243,33 +138,13 @@ public class GridBuilder {
 	 * @throws IllegalArgumentException
 	 *         if the wall cannot be placed on the board
 	 */
-	private void placeWallOnGrid(Coordinate start, Coordinate end) throws IllegalArgumentException {
+	protected void placeWallOnGrid(Coordinate start, Coordinate end) throws IllegalArgumentException {
 		if (!canPlaceWall(start, end))
 			throw new IllegalArgumentException("the wall cannot be placed on the board");
 		Wall wall = new Wall(start, end);
 		for (Coordinate coord : getWallPositions(start, end))
 			grid.put(coord, getWallPart(coord));
 		walls.add(wall);
-	}
-	
-	/**
-	 * Returns the maximum length for new wall that is to be placed on the
-	 * board. this method takes into account the maximum percentage of walls on
-	 * the board. This number will be rounded up.
-	 * 
-	 * @param maxPercentage
-	 *        the maximum percentage of walls on the board
-	 * @return the maximum length of a new wall
-	 */
-	private int getMaximumLengthOfWall(double maxPercentage, double maximalLengthOfWall) {
-		int maxLength = 0;
-		int walls = getNumberOfWallParts();
-		// increase maxLength until a maximum value is reached
-		while (maxPercentage >= (walls + maxLength++) / ((double) grid.size()));
-		
-		int maxLength2 = (int) (maximalLengthOfWall * Math.max(height, width));
-		
-		return Math.min(maxLength, maxLength2);
 	}
 	
 	/**
@@ -283,7 +158,7 @@ public class GridBuilder {
 	 * @return true if a wall can be placed, else false
 	 * 
 	 */
-	private boolean canPlaceWall(Coordinate start, Coordinate end) {
+	protected boolean canPlaceWall(Coordinate start, Coordinate end) {
 		// walls must be placed on the board
 		if (!grid.containsKey(start) || !grid.containsKey(end))
 			return false;
@@ -332,13 +207,13 @@ public class GridBuilder {
 		return positions;
 	}
 	
-	/**
+	/**  
 	 * Place a random number of items on the board. The number of items will be
 	 * a rounded percentage ({@value #NUMBER_OF_GRENADES}) of the total size of
 	 * the board. The items will be placed on the board with the following
 	 * {@link #canPlaceItem(Coordinate) constraints}.
 	 */
-	private void placeItemsOnBoard(List<Coordinate> startingCoordinates) {
+	protected void placeItemsOnBoard(List<Coordinate> startingCoordinates) {
 		placeLightGrenades(startingCoordinates);
 		placeTeleporters();
 		placeIdentityDisks(startingCoordinates);
@@ -582,7 +457,7 @@ public class GridBuilder {
 	 * 
 	 * @return A list containing the starting coordinates.
 	 */
-	private List<Coordinate> calculateStartingPositionsOfPlayers() {
+	protected List<Coordinate> calculateStartingPositionsOfPlayers() {
 		List<Coordinate> startingCoordinates = new ArrayList<Coordinate>();
 		
 		// The starting positions are hardcoded at this moment, we can change
@@ -602,7 +477,7 @@ public class GridBuilder {
 	 * deterministic grid we can use to test. This should not be used in
 	 * gameplay.
 	 */
-	private Grid build(int width, int height, List<Wall> walls, boolean usePowerfailure) {
+	private Grid buildTestGrid(int width, int height, List<Wall> walls, boolean usePowerfailure) {
 		this.walls = new ArrayList<Wall>();
 		grid = new HashMap<Coordinate, ASquare>();
 		for (int i = 0; i < width; i++)
@@ -683,12 +558,12 @@ public class GridBuilder {
 		List<Wall> walls = new ArrayList<Wall>();
 		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
 		
-		return build(10, 10, walls, usePowerfailure);
+		return buildTestGrid(10, 10, walls, usePowerfailure);
 	}
 	
 	/**
 	 * The size of the grid returned by
-	 * {@link GridBuilder#getPredefinedTestGrid(boolean)} Used for testing
+	 * {@link AGridBuilder#getPredefinedTestGrid(boolean)} Used for testing
 	 * purposes, should not be used in game play.
 	 */
 	public static final int	PREDIFINED_GRID_SIZE	= 10;

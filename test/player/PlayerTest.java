@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.AGridBuilder;
 import item.lightgrenade.LightGrenade;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +31,7 @@ public class PlayerTest implements Observer {
 		List<Player> players = db.createNewDB();
 		// make this class an observer for testing purposes
 		db.addObserver(this);
-		grid = new GridBuilder(players).getPredefinedTestGrid(false);
+		grid = new AGridBuilder(players).getPredefinedTestGrid(false);
 		
 		player = (Player) db.getCurrentPlayer();
 		player.assignNewTurn();

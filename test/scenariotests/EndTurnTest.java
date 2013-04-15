@@ -3,7 +3,7 @@ package scenariotests;
 import static org.junit.Assert.*;
 import game.Game;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.AGridBuilder;
 import org.junit.Test;
 import player.IPlayer;
 import player.PlayerDataBase;
@@ -32,7 +32,7 @@ public class EndTurnTest {
 		
 		playerDB = new PlayerDataBase();
 		
-		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
+		AGridBuilder builder = new AGridBuilder(playerDB.createNewDB());
 		grid = builder.getPredefinedTestGrid(true);
 		
 		game.start();

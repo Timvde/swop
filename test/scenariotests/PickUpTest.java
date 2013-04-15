@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import game.Game;
 import grid.Coordinate;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.AGridBuilder;
 import item.IItem;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
@@ -37,7 +37,7 @@ public class PickUpTest {
 		
 		playerDB = new PlayerDataBase();
 		
-		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
+		AGridBuilder builder = new AGridBuilder(playerDB.createNewDB());
 		grid = builder.getPredefinedTestGrid(false);
 		
 		game.start();
