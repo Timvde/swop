@@ -3,11 +3,11 @@ package controllers;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import grid.ASquare;
 import grid.Coordinate;
 import grid.Grid;
 import player.IPlayer;
 import player.PlayerDataBase;
+import square.ISquare;
 
 /**
  * The gui data controller that will fetch data from the game, for creating the GUI visuals.
@@ -63,7 +63,7 @@ public class GUIDataController {
 	 */
 	@SuppressWarnings("javadoc")
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
-		ASquare currSq = grid.getSquareAt(getCurrentPlayer().getCurrentLocation());
+		ISquare currSq = getCurrentPlayer().getCurrentLocation();
 		return currSq.getCarryableItems();
 	}
 	
@@ -86,7 +86,7 @@ public class GUIDataController {
 	 * @return An abstract square object that lies on the given coordinate on
 	 *         the grid. TODO wat als coordinate niet in grid??
 	 */
-	public ASquare getSquareAt(Coordinate c) {
+	public ISquare getSquareAt(Coordinate c) {
 		return grid.getSquareAt(c);
 	}
 	

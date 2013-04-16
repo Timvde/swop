@@ -1,7 +1,7 @@
 package controllers;
 
-import grid.Direction;
 import player.IPlayerDataBase;
+import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
 
 /**

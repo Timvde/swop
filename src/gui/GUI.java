@@ -1,21 +1,26 @@
 package gui;
 
-import grid.ASquare;
 import grid.Coordinate;
-import grid.Direction;
 import grid.Grid;
-import grid.WallPart;
 import item.IItem;
 import item.Item;
-import item.LightGrenade;
+import item.identitydisk.ChargedIdentityDisk;
+import item.identitydisk.IdentityDisk;
+import item.lightgrenade.LightGrenade;
+import item.lightgrenade.LightGrenade.LightGrenadeState;
+import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import ObjectronExceptions.IllegalMoveException;
 import player.IPlayer;
+import square.Direction;
+import square.ISquare;
+import square.WallPart;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalMoveException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -68,6 +73,10 @@ public class GUI implements Runnable {
 	private Image					playerBlueImage;
 	private Image					wallImage;
 	private Image					lightGrenadeImage;
+	private Image					lightGrenadeExplodedImage;
+	private Image					teleporterImage;
+	private Image					identityDiskImage;
+	private Image					chargedIdentityDiskImage;
 	private Image					lightTrailImage;
 	private Image					finishBlue;
 	private Image					finishRed;
@@ -168,11 +177,19 @@ public class GUI implements Runnable {
 						}
 					}
 					
+					// Draw the two finish squares:
+					Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
+					Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
+					graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
+							guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+					graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
+							guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+					
 					// Populate the grid squares with the correct images:
 					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
 					
 					for (Coordinate c : gridCoords) {
-						ASquare square = guiDataController.getSquareAt(c);
+						ISquare square = guiDataController.getSquareAt(c);
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
@@ -182,7 +199,46 @@ public class GUI implements Runnable {
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
-						// Draw players if necessary
+						// Draw wall if necessary
+						if (square.getClass() == WallPart.class) {
+							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
+						// Draw lighttrail if necessary
+						if (square.hasLightTrail()) {
+							graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
+						// Draw items if necessary
+						List<IItem> itemList = guiDataController.getItemList(c);
+						for (IItem i : itemList) {
+							if (i.getClass() == LightGrenade.class) {
+								LightGrenade l = (LightGrenade) i;
+								if (l.getState() == LightGrenadeState.INACTIVE) {
+									graphics.drawImage(lightGrenadeImage, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+								}
+								if (l.getState() == LightGrenadeState.EXPLODED) {
+									graphics.drawImage(lightGrenadeExplodedImage, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+								}
+							}
+							if (i.getClass() == Teleporter.class) {
+								graphics.drawImage(teleporterImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+							if (i instanceof ChargedIdentityDisk)
+								graphics.drawImage(chargedIdentityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							else if (i instanceof IdentityDisk) {
+								graphics.drawImage(identityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+						}
+						
+						// Draw players if necessary, this should happen last.
 						if (player != null) {
 							switch (player.getID()) {
 								case 1:
@@ -205,38 +261,6 @@ public class GUI implements Runnable {
 									break;
 							}
 						}
-						
-						// Draw wall if necessary
-						if (square.getClass() == WallPart.class) {
-							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
-									SQUARE_SIZE, SQUARE_SIZE, null);
-						}
-						
-						// Draw lighttrail if necessary
-						if (square.hasLightTrail()) {
-							graphics.drawImage(lightTrailImage, guiCoord.getX(), guiCoord.getY(),
-									SQUARE_SIZE, SQUARE_SIZE, null);
-						}
-						
-						// Draw the two finish squares:
-						Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0,
-								gridHeight - 1));
-						Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(
-								gridWidth - 1, 0));
-						graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-								guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
-								guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						
-						// Draw items if necessary
-						List<IItem> itemList = guiDataController.getItemList(c);
-						for (IItem i : itemList) {
-							if (i.getClass() == LightGrenade.class) {
-								graphics.drawImage(lightGrenadeImage, guiCoord.getX(),
-										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-							}
-						}
-						
 					}
 					
 					// Show the items in the list that the current player can
@@ -273,11 +297,18 @@ public class GUI implements Runnable {
 		this.playerBlueImage = gui.loadImage("player_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.wallImage = gui.loadImage("wall.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.lightTrailImage = gui.loadImage("cell_lighttrail.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.lightGrenadeExplodedImage = gui.loadImage("lightgrenade_exploded.png", SQUARE_SIZE,
+				SQUARE_SIZE);
+		this.teleporterImage = gui.loadImage("icon.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.identityDiskImage = gui.loadImage("identity_disk.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.chargedIdentityDiskImage = gui.loadImage("charged_identity_disk.png", SQUARE_SIZE,
+				SQUARE_SIZE);
+		this.lightTrailImage = gui.loadImage("lighttrail_custom.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.powerfailure = gui.loadImage("powerfailure.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.greenBackground = gui.loadImage("green_background.jpg", SQUARE_SIZE, SQUARE_SIZE);
+		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
+				SQUARE_SIZE);
 		
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
@@ -449,7 +480,13 @@ public class GUI implements Runnable {
 						// Use the inventoryListSelected to access the Item that
 						// is selected in the inventory!
 						if (inventoryListSelected != null) {
-							useItemController.useItem((IItem) inventoryListSelected);
+							try {
+								useItemController.useItem((IItem) inventoryListSelected);
+							}
+							catch (CannotPlaceLightGrenadeException e) {
+								JOptionPane.showMessageDialog(gui.getFrame(),
+										"Cannot place a lightgrenade here.");
+							}
 							inventoryListSelected = null;
 							gui.repaint();
 						}
@@ -554,5 +591,33 @@ public class GUI implements Runnable {
 		int y = (c.getY() * 40) + topLeftGridOffsetY;
 		
 		return new Coordinate(x, y);
+	}
+	
+	/**
+	 * Ask the user for a basic direction and return this.
+	 * 
+	 * @return the direction the user has chosen
+	 */
+	public Direction getBasicDirection() {
+		Object[] options = { "North", "East", "South", "West" };
+		
+		int response = JOptionPane
+				.showOptionDialog(null, "Choose a direction in which to fire the identity disk:",
+						"Identity disk", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+						null, options, options[0]);
+		
+		switch (response) {
+			case 0:
+				return Direction.NORTH;
+			case 1:
+				return Direction.EAST;
+			case 2:
+				return Direction.SOUTH;
+			case 3:
+				return Direction.WEST;
+			default:
+				throw new IllegalStateException("User chose illegal direction to fire ID");
+		}
+		
 	}
 }

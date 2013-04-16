@@ -1,19 +1,27 @@
 package grid;
 
 import item.IItem;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
+import player.PlayerDataBase;
+import square.ASquare;
+import square.ISquare;
+import square.PowerFailure;
+import square.Square;
+import square.WallPart;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
  * 
  * @author Bavo Mees
  */
-public class Grid implements IGrid {
+public class Grid implements IGrid, Observer {
 	
 	private Map<Coordinate, ASquare>	grid;
 	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
@@ -54,12 +62,12 @@ public class Grid implements IGrid {
 	 * @return returns the grid
 	 */
 	public Map<Coordinate, ASquare> getGrid() {
-		return grid; // FIXME clone ofzo?
+		return new HashMap<Coordinate, ASquare>(grid);
 	}
 	
 	@Override
 	public List<IItem> getItemList(Coordinate coordinate) {
-		return grid.get(coordinate).getCarryableItems();
+		return grid.get(coordinate).getAllItems();
 	}
 	
 	@Override
@@ -70,18 +78,12 @@ public class Grid implements IGrid {
 	@Override
 	public String toString() {
 		String str = "";
-		for (int j = 0; j < 10; j++) {
-			for (int i = 0; i < 10; i++) {
-				if (grid.get(new Coordinate(i, j)) == null)
+			for (int i = 0; i < getHeight(); i++) {
+				for (int j = 0; j < getWidth(); j++) {
+				if (grid.get(new Coordinate(j, i)) == null)
 					str += "  ";
-				else if (grid.get(new Coordinate(i, j)).getClass() == WallPart.class)
-					str += "w ";
-				else if (grid.get(new Coordinate(i, j)).getClass() == Square.class) {
-					if (grid.get(new Coordinate(i, j)).getCarryableItems().size() != 0)
-						str += "l ";
-					else
-						str += "s ";
-				}
+				else
+					str += grid.get(new Coordinate(j, i)).toString();
 			}
 			str += "\n";
 		}
@@ -124,76 +126,7 @@ public class Grid implements IGrid {
 	
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
-		return this.grid.keySet();
-	}
-	
-	@Override
-	public boolean canMoveFromCoordInDirection(Coordinate fromCoord, Direction direction) {
-		// direction and fromCoord must exist
-		if (direction == null || fromCoord == null)
-			return false;
-		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
-		// next coordinate must be on the grid
-		if (!grid.containsKey(toCoord))
-			return false;
-		// players cannot move through walls
-		if (grid.get(toCoord) instanceof WallPart)
-			return false;
-		// players cannot occupy the same position
-		Square toSquare = (Square) grid.get(toCoord);
-		if (toSquare.hasPlayer())
-			return false;
-		// players cannot move through light trails
-		if (this.crossesLightTrail(fromCoord, direction)) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * This method returns whether or not one crosses or ends in a lightTrail if
-	 * he moves one square from a specified coordinate in a specified direction.
-	 * 
-	 * @param fromCoord
-	 *        The coordinate one wants to leave.
-	 * 
-	 * @param direction
-	 *        he direction one wants to move in.
-	 * @return whether one crosses or ends in a lightTrail if he moves one
-	 *         square from a specified coordinate in a specified direction.
-	 */
-	private boolean crossesLightTrail(Coordinate fromCoord, Direction direction) {
-		// direction must exist and coordinates must exist on grid
-		if (fromCoord == null || direction == null
-				|| !grid.containsKey(fromCoord.getCoordinateInDirection(direction)))
-			return false;
-		
-		Coordinate toCoord = fromCoord.getCoordinateInDirection(direction);
-		// the diagonal squares must exist both on the grid (the grid is always
-		// a square)
-		if (!grid.containsKey(direction.getCrossingCoordinateOnYAxis(toCoord))
-				|| !grid.containsKey(direction.getCrossingCoordinateOnYAxis(toCoord))) {
-			return false;
-		}
-		
-		// players cannot move on light trails
-		if (grid.get(toCoord).hasLightTrail()) {
-			return true;
-		}
-		
-		ASquare diagSquare1 = grid.get(direction.getCrossingCoordinateOnXAxis(toCoord));
-		ASquare diagSquare2 = grid.get(direction.getCrossingCoordinateOnYAxis(toCoord));
-		
-		if (diagSquare1.equals(diagSquare2)) {
-			return false;
-		}
-		
-		// players cannot cross light trails diagonally
-		if ((diagSquare1.hasLightTrail() || diagSquare1.hasPlayer())
-				&& (diagSquare2.hasLightTrail() || diagSquare2.hasPlayer())) {
-			return true;
-		}
-		return false;
+		return new HashSet<Coordinate>(this.grid.keySet());
 	}
 	
 	/**
@@ -227,18 +160,13 @@ public class Grid implements IGrid {
 	 *        The coordinate to receive the power failure.
 	 */
 	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
-		List<Coordinate> coords = coordinate.getAllNeighbours();
-		List<ASquare> squares = new ArrayList<ASquare>();
-		coords.add(coordinate);
-		for (Coordinate coord : coords)
-			if (getSquareAt(coord) != null)
-				squares.add(getSquareAt(coord));
-		new PowerFailure(squares);
+		if (grid.containsKey(coordinate))
+			new PowerFailure(grid.get(coordinate));
 	}
 	
 	private Set<PowerFailure> getAllPowerFailures() {
 		Set<PowerFailure> failures = new HashSet<PowerFailure>();
-		for (ASquare square : getGrid().values()) {
+		for (ISquare square : getGrid().values()) {
 			if (square.hasPowerFailure())
 				failures.add(((Square) square).getPowerFailure());
 		}
@@ -255,5 +183,13 @@ public class Grid implements IGrid {
 	 */
 	public void enablePowerFailures(boolean enabled) {
 		this.ENABLE_POWER_FAILURE = enabled;
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o instanceof PlayerDataBase) {
+			this.updatePowerFailures();
+		}
+		// else do nothing; return
 	}
 }
