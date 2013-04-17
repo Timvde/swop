@@ -1,204 +1,191 @@
 package player;
 
-import grid.Coordinate;
+import game.Game;
 import grid.Grid;
-import grid.Square;
-import item.LightGrenade;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
-import com.sun.istack.internal.NotNull;
+import square.ISquare;
+import square.Square;
 
 /**
  * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
- * the current player allowed to play. The {@link PlayerDataBase} will observe
- * his players. A Player notifies the database (by calling
- * <code>notifyObservers()</code>) to indicate he wants to end his turn.
+ * the current player allowed to play. PlayerDataBase is an {@link Observable}
+ * and will notify its observers (passing the {@link PlayerState} of the player
+ * whos turn is ended as an argument) any time a player switch has occurered.
  * 
- * At the same time, Squares will observe the PlayerDataBase, which will notify
- * them at each player change, to calculate how long they should stay power
- * failured.
- * 
+ * {@link Grid} will observe the database in order to update the powerfailured
+ * {@link Square}s. {@link Game} ass well will observe the database to be
+ * notified when a Player has won/lost the game.
  */
-public class PlayerDataBase implements Observer, IPlayerDataBase {
+public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/**
 	 * The number of players involved in the game.
 	 */
 	public static final int		NUMBER_OF_PLAYERS	= 2;
 	
-	@NotNull
 	private ArrayList<Player>	playerList;
 	private int					currentPlayerIndex;
 	
-	// The player database should not know the grid, but at this point it is
-	// necessary to let it know that player switch has taken place.
-	// TODO: fix this at some point.
-	private Grid				grid;
-	
 	/**
-	 * Creates a new empty PlayerDataBase. to fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB(Coordinate[], Grid)
-	 * createNewDB}. Until then the {@link PlayerDataBase#getCurrentPlayer()}
-	 * method will throw an exception.
-	 * 
-	 * @param grid
-	 *        The grid we will play with.
+	 * Creates a new empty PlayerDataBase. To fill the database with players,
+	 * one has to call {@link PlayerDataBase#createNewDB() createNewDB}. Until
+	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
+	 * exception.
 	 */
-	public PlayerDataBase(Grid grid) {
+	public PlayerDataBase() {
 		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
-		this.grid = grid;
 	}
 	
 	/**
 	 * This method first clears the current database and then re-fills the
-	 * database with PlayerDataBase.NUMBER_OF_PLAYERS newly created
-	 * {@link Player} which it will observe.
+	 * database with {@value #NUMBER_OF_PLAYERS} newly created {@link Player}s.
+	 * The Players will all have the {@link PlayerState#WAITING} state and will
+	 * have no starting position.
 	 * 
-	 * The order of the players is determined by the specified starting
-	 * positions array. The first player allowed to play, is the player with the
-	 * first starting position in the specified array.
-	 * 
-	 * @param playerStartingPositions
-	 *        The specified starting coordinates for the players to create
-	 * 
-	 * @param grid
-	 *        The grid on which the players will move
-	 * 
-	 * @throws IllegalArgumentException
-	 *         The arguments cannot be null. The lenght of the specified
-	 *         playerStartingCoordinates array must be
-	 *         {@value #NUMBER_OF_PLAYERS} and no two given coordinates can be
-	 *         the same.
+	 * @return The newly created list of players.
 	 */
-	public void createNewDB(@NotNull Coordinate[] playerStartingPositions, Grid grid)
-			throws IllegalArgumentException {
-		if (playerStartingPositions == null || grid == null) {
-			throw new IllegalArgumentException("the given arguments cannot be null");
-		}
-		if (playerStartingPositions.length != NUMBER_OF_PLAYERS) {
-			throw new IllegalArgumentException("The number of player-starting-coordinates is wrong");
-		}
-		if (!allDifferent(playerStartingPositions)) {
-			throw new IllegalArgumentException(
-					"The specified player-starting-coordinates must all be different");
-		}
-		
-		this.grid = grid;
-		
+	public List<Player> createNewDB() {
 		Player.resetUniqueIdcounter();
-		this.playerList.clear();
+		this.clearDataBase();
 		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player(playerStartingPositions[i], grid);
+			Player newPlayer = new Player(this);
 			this.playerList.add(newPlayer);
-			newPlayer.addObserver(this);
 		}
-		
-		// Set the right upmost player as starting player.
+		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
-	}
-	
-	private boolean allDifferent(Coordinate[] playerStartingPositions) {
-		for (int i = 0; i < playerStartingPositions.length - 1; i++) {
-			Coordinate c1 = playerStartingPositions[i];
-			for (int j = i + 1; j < playerStartingPositions.length; j++) {
-				Coordinate c2 = playerStartingPositions[j];
-				if (c1.equals(c2)) {
-					return false;
-				}
-			}
-		}
-		return true;
+		
+		return playerList;
 	}
 	
 	@Override
 	public IPlayer getCurrentPlayer() throws IllegalStateException {
-		if (this.playerList.size() == 0) {
-			throw new IllegalStateException("The PlayerDatabase is empy.");
-		}
+		if (this.playerList.size() == 0)
+			throw new IllegalStateException("The PlayerDatabase is empty.");
+		
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 	
 	/**
-	 * This method is called whenever an observed object (i.e. a {@link Player})
-	 * notifies the database. A Player notifies the database to indicate he
-	 * wants to end his turn. This happens if <li>he has no actions left</li>
-	 * <li>he enters a {@link Square} with no power left and no active
-	 * {@link LightGrenade}</li> <li>if the user explicitly asks to end the
-	 * player's turn.</li> <br>
+	 * Ends a player's turn. If the specified player is not the current player
+	 * (i.e. {@link #getCurrentPlayer()}), this method will return. Else it will
+	 * set the state of the specified player to {@link PlayerState#WAITING} and
+	 * set the next player to {@link PlayerState#ACTIVE}. This next player then
+	 * receives {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions for his
+	 * turn.
 	 * 
-	 * A {@link PlayerDataBase} stores PlayerDataBase.NUMBER_OF_PLAYERS
-	 * {@link Player}s and appoints the current player allowed to play. The
-	 * {@link PlayerDataBase} will observe his players. A Player notifies the
-	 * database to indicate he wants to end his turn.
+	 * This method will also check whether the player has reached his finish
+	 * position. If this is the case he will set the state of the player to
+	 * finished.
 	 * 
-	 * The database will only switch players if the player asking to end his
-	 * turn is the current player ( <code>this.getCurrentPlayer</code>).
+	 * Finally this method will notify the observers (passing the
+	 * {@link PlayerState} of the player whose turn is ended as an argument) to
+	 * indicate a Player switch has occurred.
 	 * 
+	 * @param player
+	 *        The player who wants to end his turn. Only the current player can
+	 *        do this.
 	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		if (o instanceof Player) {
-			Player player = (Player) o;
+	void endPlayerTurn(Player player) {
+		if (!player.equals(getCurrentPlayer())) {
+			// Only the current player can end its turn. By returning instead of
+			// throwing, we actually handle this problem correctly without
+			// having to catch an exception on other places.
+			return;
+		}
+		
+		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
+			player.setPlayerState(PlayerState.FINISHED);
 			
-			/*
-			 * If a player for example enters a square with no power left and no
-			 * active lightgrenade, he will ask the database to switch players.
-			 * The player then decreases the number of actions done, this may
-			 * become zero and thus the player will ask the database again to
-			 * switch players. The database will not perform the second switch
-			 * because it will see the player asking to end his turn is not the
-			 * current player (which is switched in the first demand).
-			 */
-			if (player.equals(this.getCurrentPlayer())) {
-				this.endCurrentPlayerTurn();
-			}
+			this.setChanged();
+			this.notifyObservers(player.getPlayerState());
+		}
+		else {
+			// Switch players and assign a new turn
+			player.setPlayerState(PlayerState.WAITING);
+			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
+			Player newPlayer = playerList.get(currentPlayerIndex);
+			
+			this.setChanged();
+			this.notifyObservers(player.getPlayerState());
+			
+			// Assign new actions to the specified player and set him active.
+			// This may introduce a new player switch (the resulting penalty
+			// after adding new actions may still be < 0)
+			newPlayer.assignNewTurn();
 		}
 	}
 	
 	/**
-	 * Ends the turn of the current player (this.getCurrentPlayer()) and
-	 * appoints a next current player (circular shift).
+	 * This method is used when a player wants to tell he has lost the game
+	 * (e.g. by ending his turn before doing a move).
+	 * 
+	 * @param player
+	 *        The player telling he has lost the game
+	 * 
+	 * @throws IllegalStateException
+	 *         The player who tells he has lost the game must have a
+	 *         {@link PlayerState#LOST} state.
 	 */
-	private void endCurrentPlayerTurn() {
-		if (getCurrentPlayer().getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
-			System.out.println("Gewonnen!");
-			// TODO: Notify game
+	void reportGameLost(Player player) {
+		if (player.getPlayerState() != PlayerState.LOST) {
+			throw new IllegalStateException(
+					"Looks like the player asking to lose the game hasn't lost after all");
 		}
-		
-		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
-		updatePowerFailures();
-		
-		// If the player is on a square with a power failure, it can do one
-		// action less.
-		if (grid.getSquareAt(getCurrentPlayer().getCurrentLocation()).hasPowerFailure())
-			getCurrentPlayer().skipNumberOfActions(1);
+		this.setChanged();
+		this.notifyObservers(player.getPlayerState());
 	}
 	
 	/**
-	 * This method will notify the grid that a new turn started and it should
-	 * upgrade power failures.
+	 * Clears the current DB. Destroys all the players within so that no-one can
+	 * use an old Player reference to break the game.
 	 */
-	private void updatePowerFailures() {
-		grid.updatePowerFailures();
+	private void clearDataBase() {
+		for (Player p : this.playerList) {
+			// set all references of the player to null so that no-one can still
+			// play with an old player.
+			p.destroy();
+		}
+		this.playerList.clear();
 	}
 	
 	/**
 	 * Gets the other player
 	 * 
+	 * FOR TESTING PURPOSES ONLY
+	 * 
 	 * @return The other player
 	 */
-	private Player getOtherPlayer() {
-		return playerList.get((currentPlayerIndex + 1) % 2);
+	Player getOtherPlayer() {
+		return playerList.get((currentPlayerIndex + 1) % NUMBER_OF_PLAYERS);
 	}
 	
 	/**
 	 * Returns the finish square of the current player, i.e. the starting square
 	 * of the other player.
 	 * 
-	 * @return
+	 * @return The finish square of the current player.
 	 */
-	private Coordinate getFinishOfCurrentPlayer() {
+	private ISquare getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();
+	}
+	
+	/**
+	 * This method reports the db that the specified player has received a
+	 * {@link StartDocument} position. This means he's ready to
+	 * {@link Player#assignNewTurn() start playing}.
+	 * 
+	 * @param p
+	 *        The player reporting he's ready to start playing
+	 */
+	void reportReadyToStart(Player p) {
+		if (p.getCurrentLocation() == null) {
+			throw new IllegalStateException("looks like the player didn't receive start position");
+		}
+		
+		if (p.equals(getCurrentPlayer())) {
+			p.assignNewTurn();
+		}
 	}
 }

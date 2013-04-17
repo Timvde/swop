@@ -6,7 +6,7 @@ import java.util.List;
 import item.IItem;
 
 /**
- * A class representing an inventory of {@link Item}s that is carried by a
+ * An inventory of {@link Item}s that is carried by a
  * {@link Player}.
  */
 public class Inventory implements IInventory {
