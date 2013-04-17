@@ -147,7 +147,7 @@ public class ForceFieldTest {
 	}
 	
 	private ForceField getForceFieldBetween(ForceFieldGenerator ffg1, ForceFieldGenerator ffg2) {
-		// TODO Auto-generated method stub
+		// TODO implement...
 		return null;
 	}
 }

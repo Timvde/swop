@@ -203,4 +203,18 @@ public abstract class ASquare implements ISquare {
 	 * @return true if a player can be added, else false
 	 */
 	public abstract boolean canAddPlayer();
+
+	/**
+	 * TODO for testing
+	 * @param sqSecondary
+	 * @return
+	 */
+	public boolean isAdjacentTo(ASquare sqSecondary) {
+		for (Direction dir : Direction.values()) {
+			if (this.getNeighbour(dir).equals(sqSecondary)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

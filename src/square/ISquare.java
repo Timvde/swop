@@ -46,4 +46,10 @@ public interface ISquare {
 	 */
 	public abstract boolean hasPowerFailure();
 	
+	/**
+	 * FIXME This must be here for the scenario tests
+	 * @return
+	 */
+	public abstract PowerFailure getPowerFailure();
+	
 }

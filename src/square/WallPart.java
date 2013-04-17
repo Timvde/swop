@@ -119,4 +119,9 @@ public class WallPart extends ASquare {
 	public String toString() {
 		return "w ";
 	}
+
+	@Override
+	public PowerFailure getPowerFailure() {
+		throw new UnsupportedOperationException();
+	}
 }
