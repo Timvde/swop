@@ -5,7 +5,8 @@ import junit.framework.Assert;
 import game.Game;
 import grid.Coordinate;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.AGridBuilder;
+import grid.RandomGridBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import ObjectronExceptions.IllegalMoveException;
@@ -34,7 +35,7 @@ public class MovePlayerTest {
 	public void setUp() {
 		Game game = new Game();
 		playerDB = new PlayerDataBase();
-		grid = new GridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
+		grid = new RandomGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		
 		game.start();
 		game.setGrid(grid);

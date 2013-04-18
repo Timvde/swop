@@ -25,7 +25,7 @@ public class GridTest {
 	public void setUp() throws Exception {
 		playerDb = new PlayerDataBase();
 		players = playerDb.createNewDB();
-		this.grid = new GridBuilder(players).getPredefinedTestGrid(false);
+		this.grid = new RandomGridBuilder(players).getPredefinedTestGrid(false);
 	}
 	
 	@Test
