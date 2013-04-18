@@ -35,7 +35,7 @@ public class GridBuilderTest {
 	public void testConstructor() {
 		for (int j = 0; j < 100; j++) {
 			for (int i = 10; i < 20; i++) {
-				Grid grid = new AGridBuilder(players).setGridHeigth(i).setGridWidth(i).build();
+				Grid grid = new RandomGridBuilder(players).setGridHeigth(i).setGridWidth(i).build();
 				int numberOfSquares = i * i;
 				int numberOfWalls = 0;
 				int numberOfLightGrenades = 0;
@@ -79,7 +79,7 @@ public class GridBuilderTest {
 	
 	@Test
 	public void testStaticGrid() {
-		Grid grid = new AGridBuilder(players).getPredefinedTestGrid(false);
+		Grid grid = new RandomGridBuilder(players).getPredefinedTestGrid(false);
 		
 		assertEquals(grid.toString(), "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"

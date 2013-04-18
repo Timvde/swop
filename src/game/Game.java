@@ -1,19 +1,16 @@
 package game;
 
 import java.util.List;
-import grid.Coordinate;
+import grid.FileGridBuilder;
 import grid.Grid;
 import grid.RandomGridBuilder;
 import gui.GUI;
-import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
-import square.ASquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -98,7 +95,23 @@ public class Game implements Observer {
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		List<Player> players = playerDB.createNewDB();
-		this.grid = ((RandomGridBuilder) new RandomGridBuilder(players).setGridWidth(width).setGridHeigth(height)).build();
+		this.grid = new RandomGridBuilder(players).setGridWidth(width)
+				.setGridHeigth(height).build();
+		this.setGrid(this.grid);
+		this.guiDataCont.setGrid(this.grid);
+		this.gui.draw(this.grid);
+	}
+	
+	/**
+	 * Start a new game that is read from a file.
+	 * 
+	 * @param file
+	 *        The file the grid is located in.
+	 */
+	public void newGameFromFile(String file) {
+		System.out.println("Creating new game from file: " + file);
+		List<Player> players = playerDB.createNewDB();
+		this.grid = new FileGridBuilder(players).setFile(file).build();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
@@ -109,19 +122,21 @@ public class Game implements Observer {
 		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
 			this.handlePlayerDataBaseEvent((PlayerDataBase) o, (PlayerState) arg);
 		}
-		//else do nothing; return
+		// else do nothing; return
 	}
 	
 	/**
 	 * This method will be called each time {@link PlayerDataBase} reports a
 	 * Player-change (passing the {@link PlayerState} of the player whos turn is
 	 * ended as an argument).
-	 * @param endedPlayerState the {@link PlayerState} of the player whos turn is
-	 * ended
-	 * @param db 
+	 * 
+	 * @param endedPlayerState
+	 *        the {@link PlayerState} of the player whos turn is ended
+	 * @param db
 	 */
 	private void handlePlayerDataBaseEvent(PlayerDataBase db, PlayerState endedPlayerState) {
-		// only interested in finished or lost states; ignore active/waiting states
+		// only interested in finished or lost states; ignore active/waiting
+		// states
 		switch (endedPlayerState) {
 			case FINISHED:
 				this.endGameWithWinner(db.getCurrentPlayer());
@@ -131,15 +146,15 @@ public class Game implements Observer {
 				this.endGameWithLoser(db.getCurrentPlayer());
 		}
 	}
-
+	
 	private void endGameWithLoser(IPlayer player) {
 		// TODO Auto-generated method stub
 		System.out.println("game is finished with loser " + player);
 	}
-
+	
 	private void endGameWithWinner(IPlayer player) {
 		// TODO Auto-generated method stub
 		System.out.println("game is finished with winner " + player);
-
+		
 	}
 }

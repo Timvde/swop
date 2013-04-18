@@ -6,6 +6,7 @@ import game.Game;
 import grid.Coordinate;
 import grid.Grid;
 import grid.AGridBuilder;
+import grid.RandomGridBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import player.PlayerDataBase;
@@ -26,7 +27,7 @@ public class TeleportationTest {
 	public void setUp() throws Exception {
 		Game game = new Game();
 		playerDB = new PlayerDataBase();
-		grid = new AGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
+		grid = new RandomGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		game.setGrid(grid);
 		
 		game.start();

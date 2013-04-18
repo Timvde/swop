@@ -5,6 +5,7 @@ import game.Game;
 import grid.Coordinate;
 import grid.Grid;
 import grid.AGridBuilder;
+import grid.RandomGridBuilder;
 import item.IItem;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
@@ -37,8 +38,7 @@ public class PickUpTest {
 		
 		playerDB = new PlayerDataBase();
 		
-		AGridBuilder builder = new AGridBuilder(playerDB.createNewDB());
-		grid = builder.getPredefinedTestGrid(false);
+		grid = new RandomGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		
 		game.start();
 		game.setGrid(grid);

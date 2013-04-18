@@ -1,24 +1,29 @@
 package grid;
 
+import item.identitydisk.UnchargedIdentityDisk;
+import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import player.Player;
 import square.ASquare;
 import square.ISquare;
+import square.Square;
 import square.Wall;
 import square.WallPart;
 
 /**
+ * A grid builder for generating random grids.
  * 
- * @author tom
- *
+ * @author Tom
+ * 
  */
 public class RandomGridBuilder extends AGridBuilder {
 	
-	private static final int	MINIMUM_WALL_SIZE			= 2;
+	private static final int	MINIMUM_WALL_SIZE	= 2;
 	
 	private double				maximalLengthOfWall;
 	private double				maximumNumberOfWalls;
@@ -73,6 +78,87 @@ public class RandomGridBuilder extends AGridBuilder {
 	}
 	
 	/**
+	 * This method will place a wall on the grid with a specified start and end
+	 * position. If the wall cannot be placed on the board this method will
+	 * throw an {@link IllegalArgumentException}
+	 * 
+	 * @param start
+	 *        the start position of the grid
+	 * @param end
+	 *        the end position of the grid
+	 * @throws IllegalArgumentException
+	 *         if the wall cannot be placed on the board
+	 */
+	private void placeWallOnGrid(Coordinate start, Coordinate end) throws IllegalArgumentException {
+		if (!canPlaceWall(start, end))
+			throw new IllegalArgumentException("the wall cannot be placed on the board");
+		Wall wall = new Wall(start, end);
+		for (Coordinate coord : getWallPositions(start, end))
+			grid.put(coord, getWallPart(coord));
+		walls.add(wall);
+	}
+	
+	/**
+	 * returns whether a wall, specified by its start and end position, can be
+	 * placed on the board.
+	 * 
+	 * @param start
+	 *        the start position of the wall
+	 * @param end
+	 *        the end position of the wall
+	 * @return true if a wall can be placed, else false
+	 * 
+	 */
+	private boolean canPlaceWall(Coordinate start, Coordinate end) {
+		// walls must be placed on the board
+		if (!grid.containsKey(start) || !grid.containsKey(end))
+			return false;
+		// walls cannot be placed on start positions
+		if (getSquare(start).hasPlayer() || getSquare(end).hasPlayer())
+			return false;
+		// walls cannot touch other walls on the board
+		for (Wall w : walls)
+			if (w.touchesWall(new Wall(start, end)))
+				return false;
+		return true;
+	}
+	
+	/**
+	 * Return all the coordinates of a wall that starts and ends at two certain
+	 * points.
+	 * 
+	 * @param start
+	 *        The start position of the wall.
+	 * @param end
+	 *        The end position of the wall.
+	 * @return A collection of coordinates of this wall.
+	 * @throws IllegalArgumentException
+	 *         If the given positions are not aligned.
+	 */
+	private Collection<Coordinate> getWallPositions(Coordinate start, Coordinate end) {
+		Collection<Coordinate> positions = new ArrayList<Coordinate>();
+		
+		// start adding the coordinates
+		if (start.getX() == end.getX() && start.getY() < end.getY())
+			for (int i = start.getY(); i <= end.getY(); i++)
+				positions.add(new Coordinate(start.getX(), i));
+		else if (start.getX() == end.getX() && start.getY() > end.getY())
+			for (int i = start.getY(); i >= end.getY(); i--)
+				positions.add(new Coordinate(start.getX(), i));
+		else if (start.getY() == end.getY() && start.getX() < end.getX())
+			for (int i = start.getX(); i <= end.getX(); i++)
+				positions.add(new Coordinate(i, start.getY()));
+		else if (start.getY() == end.getY() && start.getX() > end.getX())
+			for (int i = start.getX(); i >= end.getX(); i--)
+				positions.add(new Coordinate(i, start.getY()));
+		else
+			// the positions are not aligned...
+			throw new IllegalArgumentException("The given positions " + start + ", " + end
+					+ " are not aligned!");
+		return positions;
+	}
+	
+	/**
 	 * place a new wall on the grid. This method will automatically determine
 	 * the maximum length of the wall.
 	 * 
@@ -93,7 +179,7 @@ public class RandomGridBuilder extends AGridBuilder {
 			// happened.
 		} while (!canPlaceWall(start, end));
 		// place the wall on the grid
-		placeWallOnGrid(start, end); 
+		placeWallOnGrid(start, end);
 	}
 	
 	/**
@@ -154,5 +240,103 @@ public class RandomGridBuilder extends AGridBuilder {
 		placeItemsOnBoard(startingCoordinates);
 		return new Grid(grid);
 	}
+	
+	/* -------------------- GRID FOR TESTING --------------------- */
+	
+	/**
+	 * This function should ONLY be used by getPredefinedGrid(), to get a
+	 * deterministic grid we can use to test. This should not be used in
+	 * gameplay.
+	 */
+	private Grid buildTestGrid(int width, int height, List<Wall> walls, boolean usePowerfailure) {
+		this.walls = new ArrayList<Wall>();
+		grid = new HashMap<Coordinate, ASquare>();
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++) {
+				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
+			}
+		
+		// place players on the board
+		List<Coordinate> startingCoordinates = calculateStartingPositionsOfPlayers();
+		
+		for (int i = 0; i < players.size(); ++i) {
+			players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
+			getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
+		}
+		
+		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
+		
+		((Square) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
+		((Square) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
+		
+		((Square) getSquare(new Coordinate(7, 0))).addItem(new UnchargedIdentityDisk());
+		((Square) getSquare(new Coordinate(2, 9))).addItem(new UnchargedIdentityDisk());
+		
+		Grid final_grid = new Grid(grid);
+		
+		if (usePowerfailure)
+			final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
+		
+		final_grid.enablePowerFailures(false);
+		
+		return final_grid;
+	}
+	
+	/*----------- Predefined testGrid methods -----------*/
+	
+	/**
+	 * This function returns a predefined grid which we can use to test. This
+	 * should not be used in game play. The returned grid is shown below. The
+	 * legend for this grid is a followed:
+	 * <ul>
+	 * <li>numbers: starting position of the players</li>
+	 * <li>x: walls</li>
+	 * <li>o: light grenades</li>
+	 * <li>t: teleporters (these teleport to the square right above)</li>
+	 * <li>d: destination of the teleporters</li>
+	 * <li>F: Power failure</li>
+	 * <li>i: Identity disc</li>
+	 * </ul>
+	 * 
+	 * <pre>
+	 *   _____________________________
+	 *  |  |  |  | F| F| F|  | i|  | 2|
+	 *  |  |  |  | F| F| F|  |  |  |  |
+	 *  |  |  |  | F| F| F|  | o|  |t1|
+	 *  |  |  |  |  |  |  |  |  |  |d2|
+	 *  |  |  |  |  |  |  |  |  |  |  |
+	 *  |  |  |  |  | x| x| x| x| x|  |
+	 *  |  |  |  |  |  |  |  | o|  |  |
+	 *  |t2|  | o|  |  |  |  |  | o|  |
+	 *  |d1|  |  |  |  | o| o| o| o|  |
+	 *  | 1|  | i|  |  |  |  |  |  |  |
+	 *  -------------------------------
+	 * </pre>
+	 * 
+	 * @param usePowerfailure
+	 *        Boolean to express if there must be a power failure in the test
+	 *        grid. Shown by F in the map above.
+	 * 
+	 * @return the new predefined grid
+	 */
+	public Grid getPredefinedTestGrid(boolean usePowerfailure) {
+		List<Wall> walls = new ArrayList<Wall>();
+		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
+		
+		return buildTestGrid(10, 10, walls, usePowerfailure);
+	}
+	
+	/**
+	 * The size of the grid returned by
+	 * {@link RandomGridBuilder#getPredefinedTestGrid(boolean)} Used for testing
+	 * purposes, should not be used in game play.
+	 */
+	public static final int	PREDIFINED_GRID_SIZE	= 10;
 	
 }

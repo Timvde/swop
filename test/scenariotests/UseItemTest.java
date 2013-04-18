@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import game.Game;
 import grid.Grid;
 import grid.AGridBuilder;
+import grid.RandomGridBuilder;
 import gui.DummyGUI;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
@@ -43,7 +44,7 @@ public class UseItemTest {
 	public void setUp() {
 		Game game = new Game();
 		playerDB = new PlayerDataBase();
-		grid = new AGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
+		grid = new RandomGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
 		
 		game.start();
 		game.setGrid(grid);

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import grid.Grid;
 import grid.AGridBuilder;
+import grid.RandomGridBuilder;
 import item.lightgrenade.LightGrenade;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,7 @@ public class PlayerTest implements Observer {
 		List<Player> players = db.createNewDB();
 		// make this class an observer for testing purposes
 		db.addObserver(this);
-		grid = new AGridBuilder(players).getPredefinedTestGrid(false);
+		grid = new RandomGridBuilder(db.createNewDB()).getPredefinedTestGrid(false);
 		
 		player = (Player) db.getCurrentPlayer();
 		player.assignNewTurn();
