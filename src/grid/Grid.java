@@ -33,12 +33,8 @@ public class Grid implements IGrid, Observer {
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
-	 * @param players
-	 *        a map that maps each player to its coordinate on the grid
-	 * 
-	 * 
 	 */
-	Grid(Map<Coordinate, ASquare> grid) {
+	public Grid(Map<Coordinate, ASquare> grid) {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;

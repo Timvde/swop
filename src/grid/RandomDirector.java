@@ -1,5 +1,6 @@
 package grid;
 
+import grid.builder.GridBuilder;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
@@ -8,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import player.Player;
 import square.ASquare;
 import square.ISquare;
 import square.Square;
@@ -21,22 +21,29 @@ import square.WallPart;
  * @author Tom
  * 
  */
-public class RandomGridBuilder extends AGridBuilder {
+public class RandomDirector extends RandomItemDirector {
 	
 	private static final int	MINIMUM_WALL_SIZE	= 2;
 	
 	private double				maximalLengthOfWall;
 	private double				maximumNumberOfWalls;
+	private int					height;
+	private int					width;
+	
+	private Collection<Wall>	walls;
 	
 	/**
+	 * @param builder
 	 * 
-	 * @param players
+	 * 
 	 */
-	public RandomGridBuilder(List<Player> players) {
-		super(players);
+	public RandomDirector(GridBuilder builder) {
+		super(builder);
 		
 		this.maximalLengthOfWall = 0.50;
 		this.maximumNumberOfWalls = 0.20;
+		this.height = 12;
+		this.width = 12;
 	}
 	
 	/**
@@ -47,9 +54,8 @@ public class RandomGridBuilder extends AGridBuilder {
 	 *        the maximal length of a wall
 	 * @return this
 	 */
-	public AGridBuilder setMaximalLengthOfWall(double maximalLength) {
+	public void setMaximalLengthOfWall(double maximalLength) {
 		this.maximalLengthOfWall = maximalLength;
-		return this;
 	}
 	
 	/**
@@ -59,9 +65,28 @@ public class RandomGridBuilder extends AGridBuilder {
 	 *        the maximum number of walls
 	 * @return this
 	 */
-	public AGridBuilder setMaximumNumberOfWalls(int maximum) {
+	public void setMaximumNumberOfWalls(int maximum) {
 		this.maximumNumberOfWalls = maximum;
-		return this;
+	}
+	
+	/**
+	 * set the width of the grid
+	 * 
+	 * @param width
+	 *        ...
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	
+	/**
+	 * set the height of the grid
+	 * 
+	 * @param height
+	 *        ...
+	 */
+	public void setHeight(int height) {
+		this.height = height;
 	}
 	
 	/**
@@ -71,9 +96,9 @@ public class RandomGridBuilder extends AGridBuilder {
 	 */
 	private int getNumberOfWallParts() {
 		int i = 0;
-		for (ISquare square : grid.values())
-			if (square.getClass() == WallPart.class)
-				i++;
+		for (Wall wall : walls) {
+			i += getWallPositions(wall.getStart(), wall.getEnd()).size();
+		}
 		return i;
 	}
 	
@@ -94,7 +119,7 @@ public class RandomGridBuilder extends AGridBuilder {
 			throw new IllegalArgumentException("the wall cannot be placed on the board");
 		Wall wall = new Wall(start, end);
 		for (Coordinate coord : getWallPositions(start, end))
-			grid.put(coord, getWallPart(coord));
+			builder.addWall(coord);
 		walls.add(wall);
 	}
 	
@@ -202,23 +227,13 @@ public class RandomGridBuilder extends AGridBuilder {
 		return Math.min(maxLength, maxLength2);
 	}
 	
-	/**
-	 * Build a new grid object. The grid will be build with the parameters set
-	 * in this builder. If these parameters were not set, the default values
-	 * will be used.
-	 * 
-	 * @return a new grid object
-	 */
-	public Grid build() {
+	public void construct() {
 		walls = new ArrayList<Wall>();
-		grid = new HashMap<Coordinate, ASquare>();
-		teleporterCoords = new HashMap<Teleporter, Coordinate>();
 		
 		// Populate the grid with squares
 		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++) {
-				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
-			}
+			for (int j = 0; j < height; j++)
+				builder.addSquare(new Coordinate(i, j));
 		
 		// place players on the board and set their starting positions
 		List<Coordinate> startingCoordinates = calculateStartingPositionsOfPlayers();
@@ -238,105 +253,109 @@ public class RandomGridBuilder extends AGridBuilder {
 		
 		// place the items on the board
 		placeItemsOnBoard(startingCoordinates);
-		return new Grid(grid);
 	}
 	
-	/* -------------------- GRID FOR TESTING --------------------- */
-	
-	/**
-	 * This function should ONLY be used by getPredefinedGrid(), to get a
-	 * deterministic grid we can use to test. This should not be used in
-	 * gameplay.
-	 */
-	private Grid buildTestGrid(int width, int height, List<Wall> walls, boolean usePowerfailure) {
-		this.walls = new ArrayList<Wall>();
-		grid = new HashMap<Coordinate, ASquare>();
-		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++) {
-				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
-			}
-		
-		// place players on the board
-		List<Coordinate> startingCoordinates = calculateStartingPositionsOfPlayers();
-		
-		for (int i = 0; i < players.size(); ++i) {
-			players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
-			getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
-		}
-		
-		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
-		
-		((Square) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
-		
-		((Square) getSquare(new Coordinate(7, 0))).addItem(new UnchargedIdentityDisk());
-		((Square) getSquare(new Coordinate(2, 9))).addItem(new UnchargedIdentityDisk());
-		
-		Grid final_grid = new Grid(grid);
-		
-		if (usePowerfailure)
-			final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
-		
-		final_grid.enablePowerFailures(false);
-		
-		return final_grid;
-	}
-	
-	/*----------- Predefined testGrid methods -----------*/
-	
-	/**
-	 * This function returns a predefined grid which we can use to test. This
-	 * should not be used in game play. The returned grid is shown below. The
-	 * legend for this grid is a followed:
-	 * <ul>
-	 * <li>numbers: starting position of the players</li>
-	 * <li>x: walls</li>
-	 * <li>o: light grenades</li>
-	 * <li>t: teleporters (these teleport to the square right above)</li>
-	 * <li>d: destination of the teleporters</li>
-	 * <li>F: Power failure</li>
-	 * <li>i: Identity disc</li>
-	 * </ul>
-	 * 
-	 * <pre>
-	 *   _____________________________
-	 *  |  |  |  | F| F| F|  | i|  | 2|
-	 *  |  |  |  | F| F| F|  |  |  |  |
-	 *  |  |  |  | F| F| F|  | o|  |t1|
-	 *  |  |  |  |  |  |  |  |  |  |d2|
-	 *  |  |  |  |  |  |  |  |  |  |  |
-	 *  |  |  |  |  | x| x| x| x| x|  |
-	 *  |  |  |  |  |  |  |  | o|  |  |
-	 *  |t2|  | o|  |  |  |  |  | o|  |
-	 *  |d1|  |  |  |  | o| o| o| o|  |
-	 *  | 1|  | i|  |  |  |  |  |  |  |
-	 *  -------------------------------
-	 * </pre>
-	 * 
-	 * @param usePowerfailure
-	 *        Boolean to express if there must be a power failure in the test
-	 *        grid. Shown by F in the map above.
-	 * 
-	 * @return the new predefined grid
-	 */
-	public Grid getPredefinedTestGrid(boolean usePowerfailure) {
-		List<Wall> walls = new ArrayList<Wall>();
-		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
-		
-		return buildTestGrid(10, 10, walls, usePowerfailure);
-	}
-	
-	/**
-	 * The size of the grid returned by
-	 * {@link RandomGridBuilder#getPredefinedTestGrid(boolean)} Used for testing
-	 * purposes, should not be used in game play.
-	 */
-	public static final int	PREDIFINED_GRID_SIZE	= 10;
+	// /* -------------------- GRID FOR TESTING --------------------- */
+	//
+	// /**
+	// * This function should ONLY be used by getPredefinedGrid(), to get a
+	// * deterministic grid we can use to test. This should not be used in
+	// * gameplay.
+	// */
+	// private Grid buildTestGrid(int width, int height, List<Wall> walls,
+	// boolean usePowerfailure) {
+	// this.walls = new ArrayList<Wall>();
+	// grid = new HashMap<Coordinate, ASquare>();
+	// for (int i = 0; i < width; i++)
+	// for (int j = 0; j < height; j++) {
+	// grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
+	// }
+	//
+	// // place players on the board
+	// List<Coordinate> startingCoordinates =
+	// calculateStartingPositionsOfPlayers();
+	//
+	// for (int i = 0; i < players.size(); ++i) {
+	// players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
+	// getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
+	// }
+	//
+	// placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
+	//
+	// ((Square) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
+	// ((Square) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
+	//
+	// ((Square) getSquare(new Coordinate(7, 0))).addItem(new
+	// UnchargedIdentityDisk());
+	// ((Square) getSquare(new Coordinate(2, 9))).addItem(new
+	// UnchargedIdentityDisk());
+	//
+	// Grid final_grid = new Grid(grid);
+	//
+	// if (usePowerfailure)
+	// final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
+	//
+	// final_grid.enablePowerFailures(false);
+	//
+	// return final_grid;
+	// }
+	//
+	// /*----------- Predefined testGrid methods -----------*/
+	//
+	// /**
+	// * This function returns a predefined grid which we can use to test. This
+	// * should not be used in game play. The returned grid is shown below. The
+	// * legend for this grid is a followed:
+	// * <ul>
+	// * <li>numbers: starting position of the players</li>
+	// * <li>x: walls</li>
+	// * <li>o: light grenades</li>
+	// * <li>t: teleporters (these teleport to the square right above)</li>
+	// * <li>d: destination of the teleporters</li>
+	// * <li>F: Power failure</li>
+	// * <li>i: Identity disc</li>
+	// * </ul>
+	// *
+	// * <pre>
+	// * _____________________________
+	// * | | | | F| F| F| | i| | 2|
+	// * | | | | F| F| F| | | | |
+	// * | | | | F| F| F| | o| |t1|
+	// * | | | | | | | | | |d2|
+	// * | | | | | | | | | | |
+	// * | | | | | x| x| x| x| x| |
+	// * | | | | | | | | o| | |
+	// * |t2| | o| | | | | | o| |
+	// * |d1| | | | | o| o| o| o| |
+	// * | 1| | i| | | | | | | |
+	// * -------------------------------
+	// * </pre>
+	// *
+	// * @param usePowerfailure
+	// * Boolean to express if there must be a power failure in the test
+	// * grid. Shown by F in the map above.
+	// *
+	// * @return the new predefined grid
+	// */
+	// public Grid getPredefinedTestGrid(boolean usePowerfailure) {
+	// List<Wall> walls = new ArrayList<Wall>();
+	// walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
+	//
+	// return buildTestGrid(10, 10, walls, usePowerfailure);
+	// }
+	//
+	// /**
+	// * The size of the grid returned by
+	// * {@link RandomGridBuilder#getPredefinedTestGrid(boolean)} Used for
+	// testing
+	// * purposes, should not be used in game play.
+	// */
+	// public static final int PREDIFINED_GRID_SIZE = 10;
 	
 }
