@@ -1,10 +1,11 @@
 package game;
 
-import java.util.List;
-import grid.FileGridBuilder;
+import grid.FileDirector;
 import grid.Grid;
-import grid.RandomGridBuilder;
+import grid.RandomDirector;
+import grid.builder.TronGridBuilder;
 import gui.GUI;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import player.IPlayer;
@@ -95,8 +96,14 @@ public class Game implements Observer {
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		List<Player> players = playerDB.createNewDB();
-		this.grid = new RandomGridBuilder(players).setGridWidth(width)
-				.setGridHeigth(height).build();
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		RandomDirector director = new RandomDirector(builder);
+		director.setHeight(height);
+		director.setWidth(width);
+		director.construct();
+		
+		grid = builder.getResult();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
@@ -111,7 +118,13 @@ public class Game implements Observer {
 	public void newGameFromFile(String file) {
 		System.out.println("Creating new game from file: " + file);
 		List<Player> players = playerDB.createNewDB();
-		this.grid = new FileGridBuilder(players).setFile(file).build();
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		FileDirector director = new FileDirector(builder);
+		director.setFile(file);
+		director.construct();
+		
+		grid = builder.getResult();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
