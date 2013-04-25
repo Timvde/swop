@@ -1,6 +1,6 @@
-package grid;
+package grid.builder;
 
-import grid.builder.GridBuilder;
+import grid.Grid;
 
 /**
  * A director manages the creation of the {@link Grid grid}. It uses 

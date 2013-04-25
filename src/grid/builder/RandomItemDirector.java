@@ -1,6 +1,6 @@
-package grid;
+package grid.builder;
 
-import grid.builder.GridBuilder;
+import grid.Coordinate;
 import item.IItem;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
@@ -66,8 +66,8 @@ public abstract class RandomItemDirector extends Director {
 		}
 		
 		// place other light grenades
-		while (((double) numberOfItems) / grid.size() < NUMBER_OF_GRENADES) {
-			Coordinate position = Coordinate.random(width, height);
+		while (((double) numberOfItems) / builder.size() < NUMBER_OF_GRENADES) {
+			Coordinate position = Coordinate.random(builder.size(), builder.size());
 			if (builder.canPlaceItem(position)) {
 				builder.placeLightGrenade(position);
 				numberOfItems++;
@@ -82,8 +82,8 @@ public abstract class RandomItemDirector extends Director {
 	private void placeTeleporters() {
 		int numberOfItems = 0;
 		List<Coordinate> teleporters = new ArrayList<Coordinate>();
-		while (((double) numberOfItems) / grid.size() < NUMBER_OF_TELEPORTERS) {
-			Coordinate position = Coordinate.random(width, height);
+		while (((double) numberOfItems) / builder.size() < NUMBER_OF_TELEPORTERS) {
+			Coordinate position = Coordinate.random(builder.size(), builder.size());
 			if (builder.canPlaceItem(position)) {
 				builder.placeTeleporter(position);
 				teleporters.add(position);
@@ -111,8 +111,8 @@ public abstract class RandomItemDirector extends Director {
 	private void placeIdentityDisks(List<Coordinate> startingCoordinates) {
 		// place normal identity disks
 		int numberOfItems = 0;
-		while (((double) numberOfItems) / grid.size() < NUMBER_OF_IDENTITY_DISKS) {
-			Coordinate position = Coordinate.random(width, height);
+		while (((double) numberOfItems) / builder.size() < NUMBER_OF_IDENTITY_DISKS) {
+			Coordinate position = Coordinate.random(builder.size(), builder.size());
 			if (builder.canPlaceItem(position)) {
 				builder.placeUnchargedIdentityDisc(position);
 				numberOfItems++;

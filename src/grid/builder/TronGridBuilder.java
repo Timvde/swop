@@ -153,5 +153,10 @@ public class TronGridBuilder implements GridBuilder {
 		
 		return new Grid(grid);
 	}
+
+	@Override
+	public int size() {
+		return grid.size();
+	}
 	
 }

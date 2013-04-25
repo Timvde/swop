@@ -1,4 +1,6 @@
-package grid;
+package grid.builder;
+
+import grid.Coordinate;
 
 /**
  * The State class is used in the algorithm to find the possible locations for a
