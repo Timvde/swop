@@ -1,8 +1,8 @@
 package game;
 
-import grid.FileDirector;
 import grid.Grid;
-import grid.RandomDirector;
+import grid.builder.FileDirector;
+import grid.builder.RandomDirector;
 import grid.builder.TronGridBuilder;
 import gui.GUI;
 import java.util.List;

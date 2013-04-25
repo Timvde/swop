@@ -1,19 +1,11 @@
-package grid;
+package grid.builder;
 
-import grid.builder.GridBuilder;
-import item.identitydisk.UnchargedIdentityDisk;
-import item.lightgrenade.LightGrenade;
-import item.teleporter.Teleporter;
+import grid.Coordinate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import square.ASquare;
-import square.ISquare;
-import square.Square;
 import square.Wall;
-import square.WallPart;
 
 /**
  * A grid builder for generating random grids.
@@ -52,7 +44,6 @@ public class RandomDirector extends RandomItemDirector {
 	 * 
 	 * @param maximalLength
 	 *        the maximal length of a wall
-	 * @return this
 	 */
 	public void setMaximalLengthOfWall(double maximalLength) {
 		this.maximalLengthOfWall = maximalLength;
@@ -63,7 +54,6 @@ public class RandomDirector extends RandomItemDirector {
 	 * 
 	 * @param maximum
 	 *        the maximum number of walls
-	 * @return this
 	 */
 	public void setMaximumNumberOfWalls(int maximum) {
 		this.maximumNumberOfWalls = maximum;
@@ -136,16 +126,55 @@ public class RandomDirector extends RandomItemDirector {
 	 */
 	private boolean canPlaceWall(Coordinate start, Coordinate end) {
 		// walls must be placed on the board
-		if (!grid.containsKey(start) || !grid.containsKey(end))
+		if (!isCoordinateInGrid(start) || !isCoordinateInGrid(end))
 			return false;
 		// walls cannot be placed on start positions
-		if (getSquare(start).hasPlayer() || getSquare(end).hasPlayer())
+		if (isStartingPosition(start) || isStartingPosition(end))
 			return false;
 		// walls cannot touch other walls on the board
 		for (Wall w : walls)
 			if (w.touchesWall(new Wall(start, end)))
 				return false;
 		return true;
+	}
+	
+	/**
+	 * Returns whether the specified coordinate is part of the grid
+	 * 
+	 * @param coordinate
+	 *        the coordinate to test
+	 * @return true if the coordinate is part of the grid
+	 */
+	private boolean isCoordinateInGrid(Coordinate coordinate) {
+		if (coordinate.getX() >= width || coordinate.getX() < 0)
+			return false;
+		else if (coordinate.getY() >= height || coordinate.getY() < 0)
+			return false;
+		else
+			return true;
+	}
+	
+	/**
+	 * Returns whether the specified coordinate is a starting position
+	 * 
+	 * @param coordinate
+	 *        the coordinate to test
+	 * @return true if the specified coordinate is a starting position
+	 */
+	private boolean isStartingPosition(Coordinate coordinate) {
+		return getStartingPositions().contains(coordinate);
+	}
+	
+	/**
+	 * Returns a list of the starting positions 
+	 * @return the starting positions for this grid
+	 */
+	private List<Coordinate> getStartingPositions() {
+		List<Coordinate> positions = new ArrayList<Coordinate>();
+		positions.add(new Coordinate(0, height));
+		positions.add(new Coordinate(width, 0));
+		
+		return positions;
 	}
 	
 	/**
@@ -220,7 +249,7 @@ public class RandomDirector extends RandomItemDirector {
 		int maxLength = 0;
 		int walls = getNumberOfWallParts();
 		// increase maxLength until a maximum value is reached
-		while (maxPercentage >= (walls + maxLength++) / ((double) grid.size()));
+		while (maxPercentage >= (walls + maxLength++) / ((double) width * height));
 		
 		int maxLength2 = (int) (maximalLengthOfWall * Math.max(height, width));
 		
@@ -235,127 +264,18 @@ public class RandomDirector extends RandomItemDirector {
 			for (int j = 0; j < height; j++)
 				builder.addSquare(new Coordinate(i, j));
 		
-		// place players on the board and set their starting positions
-		List<Coordinate> startingCoordinates = calculateStartingPositionsOfPlayers();
-		
-		for (int i = 0; i < players.size(); ++i) {
-			players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
-			getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
-		}
-		
 		// place walls on the grid
 		int max = MINIMUM_WALL_SIZE
-				+ (int) (maximumNumberOfWalls * grid.size() - MINIMUM_WALL_SIZE - maximalLengthOfWall
+				+ (int) (maximumNumberOfWalls * width * height - MINIMUM_WALL_SIZE - maximalLengthOfWall
 						* Math.max(width, height));
 		int maximumNumberOfWalls = new Random().nextInt(max);
 		while (maximumNumberOfWalls >= getNumberOfWallParts())
 			placeWall(maximumNumberOfWalls, maximalLengthOfWall);
 		
 		// place the items on the board
-		placeItemsOnBoard(startingCoordinates);
+		placeItemsOnBoard(getStartingPositions());
 	}
 	
-	// /* -------------------- GRID FOR TESTING --------------------- */
-	//
-	// /**
-	// * This function should ONLY be used by getPredefinedGrid(), to get a
-	// * deterministic grid we can use to test. This should not be used in
-	// * gameplay.
-	// */
-	// private Grid buildTestGrid(int width, int height, List<Wall> walls,
-	// boolean usePowerfailure) {
-	// this.walls = new ArrayList<Wall>();
-	// grid = new HashMap<Coordinate, ASquare>();
-	// for (int i = 0; i < width; i++)
-	// for (int j = 0; j < height; j++) {
-	// grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
-	// }
-	//
-	// // place players on the board
-	// List<Coordinate> startingCoordinates =
-	// calculateStartingPositionsOfPlayers();
-	//
-	// for (int i = 0; i < players.size(); ++i) {
-	// players.get(i).setStartingPosition(getSquare(startingCoordinates.get(i)));
-	// getSquare(startingCoordinates.get(i)).addPlayer(players.get(i));
-	// }
-	//
-	// placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
-	//
-	// ((Square) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
-	// ((Square) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
-	//
-	// ((Square) getSquare(new Coordinate(7, 0))).addItem(new
-	// UnchargedIdentityDisk());
-	// ((Square) getSquare(new Coordinate(2, 9))).addItem(new
-	// UnchargedIdentityDisk());
-	//
-	// Grid final_grid = new Grid(grid);
-	//
-	// if (usePowerfailure)
-	// final_grid.addPowerFailureAtCoordinate(new Coordinate(4, 1));
-	//
-	// final_grid.enablePowerFailures(false);
-	//
-	// return final_grid;
-	// }
-	//
-	// /*----------- Predefined testGrid methods -----------*/
-	//
-	// /**
-	// * This function returns a predefined grid which we can use to test. This
-	// * should not be used in game play. The returned grid is shown below. The
-	// * legend for this grid is a followed:
-	// * <ul>
-	// * <li>numbers: starting position of the players</li>
-	// * <li>x: walls</li>
-	// * <li>o: light grenades</li>
-	// * <li>t: teleporters (these teleport to the square right above)</li>
-	// * <li>d: destination of the teleporters</li>
-	// * <li>F: Power failure</li>
-	// * <li>i: Identity disc</li>
-	// * </ul>
-	// *
-	// * <pre>
-	// * _____________________________
-	// * | | | | F| F| F| | i| | 2|
-	// * | | | | F| F| F| | | | |
-	// * | | | | F| F| F| | o| |t1|
-	// * | | | | | | | | | |d2|
-	// * | | | | | | | | | | |
-	// * | | | | | x| x| x| x| x| |
-	// * | | | | | | | | o| | |
-	// * |t2| | o| | | | | | o| |
-	// * |d1| | | | | o| o| o| o| |
-	// * | 1| | i| | | | | | | |
-	// * -------------------------------
-	// * </pre>
-	// *
-	// * @param usePowerfailure
-	// * Boolean to express if there must be a power failure in the test
-	// * grid. Shown by F in the map above.
-	// *
-	// * @return the new predefined grid
-	// */
-	// public Grid getPredefinedTestGrid(boolean usePowerfailure) {
-	// List<Wall> walls = new ArrayList<Wall>();
-	// walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
-	//
-	// return buildTestGrid(10, 10, walls, usePowerfailure);
-	// }
-	//
-	// /**
-	// * The size of the grid returned by
-	// * {@link RandomGridBuilder#getPredefinedTestGrid(boolean)} Used for
-	// testing
-	// * purposes, should not be used in game play.
-	// */
-	// public static final int PREDIFINED_GRID_SIZE = 10;
+
 	
 }

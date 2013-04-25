@@ -90,7 +90,7 @@ public interface GridBuilder {
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This
 	 * method can only account for limitations by the grid invariants. If other
-	 * constraints are to be forced, then these must be checked by client. 
+	 * constraints are to be forced, then these must be checked by client.
 	 * 
 	 * @param coordinate
 	 *        the coordinate to test
@@ -98,4 +98,11 @@ public interface GridBuilder {
 	 *         false
 	 */
 	boolean canPlaceItem(Coordinate coordinate);
+	
+	/**
+	 * Returns the size of the currently constructed Grid.
+	 * 
+	 * @return size of the grid
+	 */
+	int size();
 }

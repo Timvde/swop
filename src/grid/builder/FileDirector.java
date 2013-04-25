@@ -1,6 +1,6 @@
-package grid;
+package grid.builder;
 
-import grid.builder.GridBuilder;
+import grid.Coordinate;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
