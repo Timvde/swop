@@ -1,5 +1,7 @@
 package item.identitydisk;
 
+import effect.Effect;
+
 /**
  * Charged Identity disk can be launched by players on the grid. The disk will
  * then travel until it hits a player, wall or reaches the end of the board. An
@@ -16,4 +18,11 @@ public class ChargedIdentityDisk extends IdentityDisk {
 	public char toChar() {
 		return 'c';
 	}
+
+	@Override
+	public Effect getEffect() {
+		return new IdentityDiscEffect();
+	}
+	
+	
 }

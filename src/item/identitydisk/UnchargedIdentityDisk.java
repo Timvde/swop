@@ -1,9 +1,9 @@
 package item.identitydisk;
 
+import effect.Effect;
 import square.ASquare;
 import square.AffectedByPowerFailure;
 import square.Direction;
-import square.TronObject;
 
 /**
  * Identity disk can be launched by players on the grid. The disk will then
@@ -82,13 +82,12 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 	}
 	
 	@Override
-	public void execute(TronObject object) {
-		// the object does nothing when an object/player steps on an identity
-		// disk
-	}
-	
-	@Override
 	public char toChar() {
 		return 'u';
+	}
+
+	@Override
+	public Effect getEffect() {
+		return new IdentityDiscEffect();
 	}
 }

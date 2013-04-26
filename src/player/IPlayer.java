@@ -1,22 +1,18 @@
 package player;
 
-import item.Effect;
+
 import item.IItem;
-import item.lightgrenade.LightGrenade;
 import java.util.List;
 import square.ASquare;
 import square.Direction;
 import square.ISquare;
 import square.Square;
 import square.TronObject;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalPickUpException;
-import ObjectronExceptions.IllegalStepException;
 import ObjectronExceptions.IllegalUseException;
-import ObjectronExceptions.InventoryFullException;
-import ObjectronExceptions.ItemNotOnSquareException;
+import effect.Effect;
 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 

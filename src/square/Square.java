@@ -1,7 +1,7 @@
 package square;
 
-import item.Effect;
 import item.IItem;
+import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -203,25 +203,8 @@ public class Square extends ASquare {
 	 *        the object to be placed on this square
 	 */
 	private void executeEffect(TronObject object) {
-		Effect effect = new Effect(object);
-		
-		// let the items on this square add to the effect
 		for (IItem item : itemList)
-			item.addToEffect(effect);
-		
-		// if the square has a power failure, add it to the effect
-		if (this.hasPowerFailure())
-			effect.addPowerFailure(powerFailure);
-		
-		effect.execute();
-	}
-	
-	/**
-	 * @deprecated see {@link ASquare#removePlayer() here}
-	 */
-	@Override
-	public void removePlayer() {
-		this.player = null;
+			((Item) item).getEffect().execute(object);
 	}
 	
 	@Override
