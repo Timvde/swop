@@ -1,8 +1,8 @@
 package game;
 
 import grid.Grid;
-import grid.builder.FileDirector;
-import grid.builder.RandomDirector;
+import grid.builder.FileGridBuilderDirector;
+import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import gui.GUI;
 import java.util.List;
@@ -98,7 +98,7 @@ public class Game implements Observer {
 		List<Player> players = playerDB.createNewDB();
 		
 		TronGridBuilder builder = new TronGridBuilder();
-		RandomDirector director = new RandomDirector(builder);
+		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.setHeight(height);
 		director.setWidth(width);
 		director.construct();
@@ -120,8 +120,7 @@ public class Game implements Observer {
 		List<Player> players = playerDB.createNewDB();
 		
 		TronGridBuilder builder = new TronGridBuilder();
-		FileDirector director = new FileDirector(builder);
-		director.setFile(file);
+		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
 		director.construct();
 		
 		grid = builder.getResult();

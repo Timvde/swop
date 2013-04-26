@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import player.Player;
 import square.ASquare;
 import square.Direction;
 import square.Square;
@@ -30,8 +31,13 @@ public class TronGridBuilder implements GridBuilder {
 	 * Create a new builder.
 	 */
 	public TronGridBuilder() {
-		grid = new HashMap<Coordinate, ASquare>();
-		incompleteTeleporters = new HashSet<Teleporter>();
+		this.createNewGrid();
+	}
+	
+	@Override
+	public void createNewGrid() {
+		this.grid = new HashMap<Coordinate, ASquare>();
+		this.incompleteTeleporters = new HashSet<Teleporter>();
 	}
 	
 	@Override
@@ -50,6 +56,12 @@ public class TronGridBuilder implements GridBuilder {
 		
 		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
 		grid.put(coordinate, new WallPart(neighbours));
+	}
+	
+	@Override
+	public void placePlayer(Coordinate coordinate) {
+		//TODO implement
+		//grid.get(coordinate).addPlayer(new Player());
 	}
 	
 	@Override

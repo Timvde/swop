@@ -22,6 +22,11 @@ import grid.Coordinate;
 public interface GridBuilder {
 	
 	/**
+	 * Make a new empty grid.
+	 */
+	void createNewGrid();
+	
+	/**
 	 * Add a {@link Square square} at the specified coordinate.
 	 * 
 	 * @param coordinate
@@ -36,6 +41,14 @@ public interface GridBuilder {
 	 *        the coordinate where the new square will be placed
 	 */
 	void addWall(Coordinate coordinate);
+	
+	/**
+	 * Place a {@link Player player} at the specified coordinate.
+	 * 
+	 * @param coordinate
+	 *        the coordinate where the new player will be placed.
+	 */
+	void placePlayer(Coordinate coordinate);
 	
 	/**
 	 * Place a {@link LightGrenade light grenade} at the specified coordinate.

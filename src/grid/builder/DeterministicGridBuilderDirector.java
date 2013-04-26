@@ -73,6 +73,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	}
 	
 	private void buildTestGrid(boolean usePowerfailure) {
+		builder.createNewGrid();
 		
 		for (int i = 0; i < PREDIFINED_GRID_SIZE; i++)
 			for (int j = 0; j < PREDIFINED_GRID_SIZE; j++)
@@ -93,5 +94,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.placeUnchargedIdentityDisc(new Coordinate(7, 0));
 		builder.placeUnchargedIdentityDisc(new Coordinate(2, 9));
 		
+		
+		//TODO place players
 	}
 }
