@@ -90,7 +90,7 @@ public class TronGridBuilder implements GridBuilder {
 	
 	@Override
 	public void connectTeleporters(Coordinate from, Coordinate to) {
-		if (getTeleporterOnLocation(from) ==  null || getTeleporterOnLocation(to) == null)
+		if (getTeleporterOnLocation(from) == null || getTeleporterOnLocation(to) == null)
 			throw new IllegalArgumentException("Teleporter not found on the square");
 		
 		Teleporter start = getTeleporterOnLocation(from);
@@ -107,7 +107,7 @@ public class TronGridBuilder implements GridBuilder {
 	private Teleporter getTeleporterOnLocation(Coordinate coordinate) {
 		if (grid.containsKey(coordinate)) {
 			List<IItem> items = grid.get(coordinate).getAllItems();
-			for (IItem item : items) 
+			for (IItem item : items)
 				if (item instanceof Teleporter)
 					return (Teleporter) item;
 		}
@@ -142,21 +142,36 @@ public class TronGridBuilder implements GridBuilder {
 		return neighbours;
 	}
 	
+	@Override
+	public List<Coordinate> getAllReachableNeighboursOf(Coordinate coordinate) {
+		List<Coordinate> neighbours = coordinate.getAllNeighbours();
+		
+		for (int i = neighbours.size() - 1; i >= 0; i--) {
+			// Grid doesn't contain this neighbour or a player can't be added to
+			// this square
+			if (!(grid.containsKey(neighbours.get(i))))
+				neighbours.remove(i);
+			else if (!grid.get(neighbours.get(i)).canAddPlayer())
+				neighbours.remove(i);
+		}
+		return neighbours;
+	}
+	
+	@Override
+	public int getNumberOfSquares() {
+		return grid.size();
+	}
+	
 	/**
-	 * Returns a new grid build with the parameters added.
+	 * Returns a new grid as build by the preceding construction-calls.
 	 * 
-	 * @return the grid
+	 * @return the constructed grid
 	 */
 	public Grid getResult() {
 		if (!incompleteTeleporters.isEmpty())
 			throw new IllegalStateException("Some teleporters have no destinations!");
 		
 		return new Grid(grid);
-	}
-
-	@Override
-	public int size() {
-		return grid.size();
 	}
 	
 }

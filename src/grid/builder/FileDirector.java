@@ -14,7 +14,7 @@ import java.util.List;
  * @author Tom
  * 
  */
-public class FileDirector extends RandomItemDirector {
+public class FileDirector extends RandomItemGridBuilderDirector {
 	
 	private String		fileName;
 	

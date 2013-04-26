@@ -1,5 +1,7 @@
 package grid.builder;
 
+import java.util.List;
+import player.Player;
 import item.IItem;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
@@ -13,8 +15,8 @@ import grid.Coordinate;
 /**
  * Builder for the grid objects of a board game. The board consists of
  * {@link ASquare abstract squares} , each square can be a {@link WallPart wall}
- * or a {@link Square square}. {@link IItem Items} can be placed on these
- * squares.
+ * or a {@link Square square}. {@link IItem Items} and {@link Player players}
+ * can be placed on these squares.
  * 
  */
 public interface GridBuilder {
@@ -90,7 +92,7 @@ public interface GridBuilder {
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This
 	 * method can only account for limitations by the grid invariants. If other
-	 * constraints are to be forced, then these must be checked by client.
+	 * constraints are to be forced, then these must be checked by the client.
 	 * 
 	 * @param coordinate
 	 *        the coordinate to test
@@ -100,9 +102,20 @@ public interface GridBuilder {
 	boolean canPlaceItem(Coordinate coordinate);
 	
 	/**
-	 * Returns the size of the currently constructed Grid.
+	 * Returns all neighbours of a specified coordinate, where one can directly move
+	 * to (i.e. teleporting is not included).
 	 * 
-	 * @return size of the grid
+	 * @param coordinate
+	 *        The coordinate to get the neighbours from
+	 * @return A list of neighbouring coordinates
 	 */
-	int size();
+	List<Coordinate> getAllReachableNeighboursOf(Coordinate coordinate);
+	
+	/**
+	 * Returns the number of {@link Square squares} on the currently constructed
+	 * Grid.
+	 * 
+	 * @return number of squares on the grid
+	 */
+	int getNumberOfSquares();
 }

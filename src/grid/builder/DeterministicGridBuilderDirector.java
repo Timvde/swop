@@ -1,23 +1,37 @@
 package grid.builder;
 
 import grid.Coordinate;
+import grid.Grid;
 import java.util.ArrayList;
 import java.util.List;
 import square.Wall;
 
 /**
- * Director to construct a new grid from a predefined grid.
+ * Director to construct a new deterministic (predefined) {@link Grid} (for
+ * testing purposes).
  * 
  */
-public class PredefinedDirector extends Director {
-	
-	private boolean usePowerfailure;
+public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	
 	/**
-	 * @param builder
+	 * The size of the predifined grid
 	 */
-	public PredefinedDirector(GridBuilder builder) {
+	public static final int	PREDIFINED_GRID_SIZE	= 10;
+	
+	private boolean			usePowerfailure;
+	
+	/**
+	 * Create a new DeterministicGridDirector which will use the specified
+	 * builder to build the predefined {@link Grid}.
+	 * 
+	 * @param builder
+	 *        The builder this director will use to build the grid.
+	 * @param usePowerFailure
+	 *        Whether or not to include powerfailure in the grid
+	 */
+	public DeterministicGridBuilderDirector(GridBuilder builder, boolean usePowerFailure) {
 		super(builder);
+		this.usePowerfailure = usePowerFailure;
 	}
 	
 	/**
@@ -58,18 +72,11 @@ public class PredefinedDirector extends Director {
 		buildTestGrid(usePowerfailure);
 	}
 	
-	
-	/**
-	 * This function should ONLY be used by getPredefinedGrid(), to get a
-	 * deterministic grid we can use to test. This should not be used in
-	 * gameplay.
-	 */
 	private void buildTestGrid(boolean usePowerfailure) {
-
+		
 		for (int i = 0; i < PREDIFINED_GRID_SIZE; i++)
 			for (int j = 0; j < PREDIFINED_GRID_SIZE; j++)
 				builder.addSquare(new Coordinate(i, j));
-		
 		
 		for (int i = 4; i <= 8; i++)
 			builder.addWall(new Coordinate(i, 5));
@@ -86,8 +93,5 @@ public class PredefinedDirector extends Director {
 		builder.placeUnchargedIdentityDisc(new Coordinate(7, 0));
 		builder.placeUnchargedIdentityDisc(new Coordinate(2, 9));
 		
-		
 	}
-	
-	public static final int	PREDIFINED_GRID_SIZE	= 10;
 }

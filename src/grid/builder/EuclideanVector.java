@@ -7,7 +7,7 @@ import grid.Coordinate;
  * charged identity disk. It couples a coordinate to its distance from some kind
  * of origin.
  */
-public class State implements Comparable<State> {
+public class EuclideanVector implements Comparable<EuclideanVector> {
 	
 	private Coordinate	coordinate;
 	private int			distance;
@@ -20,7 +20,7 @@ public class State implements Comparable<State> {
 	 * @param distance
 	 *        The distance to the origin
 	 */
-	public State(Coordinate coordinate, int distance) {
+	public EuclideanVector(Coordinate coordinate, int distance) {
 		this.coordinate = coordinate;
 		this.distance = distance;
 	}
@@ -40,7 +40,7 @@ public class State implements Comparable<State> {
 	}
 	
 	@Override
-	public int compareTo(State o) {
+	public int compareTo(EuclideanVector o) {
 		return Integer.valueOf(getDistance()).compareTo(Integer.valueOf(o.getDistance()));
 	}
 }

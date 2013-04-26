@@ -13,7 +13,7 @@ import square.Wall;
  * @author Tom
  * 
  */
-public class RandomDirector extends RandomItemDirector {
+public class RandomDirector extends RandomItemGridBuilderDirector {
 	
 	private static final int	MINIMUM_WALL_SIZE	= 2;
 	
