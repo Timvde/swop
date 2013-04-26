@@ -1,17 +1,17 @@
 package item.teleporter;
 
+import item.AbstractEffect;
 import square.TronObject;
-import effect.Effect;
 
 /**
- * The effect a teleporter has on {@link TronObject}
+ * A Teleportation effect
  * 
  */
-public class TeleporterEffect implements Effect {
+public class TeleportationEffect extends AbstractEffect {
 	
 	private Teleporter	teleporter;
 	
-	TeleporterEffect(Teleporter teleporter) {
+	TeleportationEffect(Teleporter teleporter) {
 		this.teleporter = teleporter;
 	}
 	
@@ -20,12 +20,15 @@ public class TeleporterEffect implements Effect {
 		// If we can teleport, do it ...
 		if (object.asTeleportable() != null) {
 			if (teleporter.getSkipNextTeleport() == false) {
-				teleporter.setSkipNextTeleport(true);
+				teleporter.getDestination().setSkipNextTeleport(true);
 				object.asTeleportable().teleportTo(teleporter.getDestination().getSquare());
 			}
 			// Otherwise we should tell that we have skipped a teleportation
 			else if (teleporter.getSkipNextTeleport() == true)
 				teleporter.setSkipNextTeleport(false);
 		}
+		
+		if (super.next != null)
+			super.next.execute(object);
 	}
 }

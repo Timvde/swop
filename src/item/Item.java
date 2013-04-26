@@ -5,7 +5,6 @@ import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
 import square.AffectedByPowerFailure;
 import square.TronObject;
-import effect.Effect;
 
 /**
  * an abstract implementation of the item interface. This class offers some

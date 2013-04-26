@@ -1,14 +1,14 @@
 package item.lightgrenade;
 
+import item.AbstractEffect;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
 import square.TronObject;
-import effect.Effect;
 
 /**
- * The effect the light grenade has on a {@link TronObject}
+ * An explosion effect
  * 
  */
-public class LightGrenadeEffect implements Effect {
+public class ExplodeEffect extends AbstractEffect {
 	
 	private static final int	DEFAULT_DAMAGE		= 3;
 	private static final int	INCREASED_DAMAGE	= 4;
@@ -16,7 +16,7 @@ public class LightGrenadeEffect implements Effect {
 	private LightGrenade		lightGrenade;
 	private int					damage;
 	
-	LightGrenadeEffect(LightGrenade lightGrenade) {
+	ExplodeEffect(LightGrenade lightGrenade) {
 		this.lightGrenade = lightGrenade;
 		this.damage = DEFAULT_DAMAGE;
 	}
@@ -27,6 +27,9 @@ public class LightGrenadeEffect implements Effect {
 			lightGrenade.explode();
 			object.asExplodable().skipNumberOfActions(damage);
 		}
+		
+		if (next != null)
+			super.next.execute(object);
 	}
 	
 	/**

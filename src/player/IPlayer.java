@@ -1,6 +1,7 @@
 package player;
 
 
+import item.Effect;
 import item.IItem;
 import java.util.List;
 import square.ASquare;
@@ -12,7 +13,6 @@ import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalPickUpException;
 import ObjectronExceptions.IllegalUseException;
-import effect.Effect;
 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 

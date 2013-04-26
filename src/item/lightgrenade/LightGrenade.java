@@ -1,6 +1,6 @@
 package item.lightgrenade;
 
-import effect.Effect;
+import item.Effect;
 import item.IItem;
 import item.Item;
 import square.ASquare;
@@ -187,6 +187,6 @@ public class LightGrenade extends Item {
 
 	@Override
 	public Effect getEffect() {
-		return new LightGrenadeEffect(this);
+		return new ExplodeEffect(this);
 	}
 }

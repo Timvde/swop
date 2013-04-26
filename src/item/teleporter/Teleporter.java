@@ -1,8 +1,8 @@
 package item.teleporter;
 
+import item.Effect;
 import item.Item;
 import square.ASquare;
-import effect.Effect;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -106,6 +106,6 @@ public class Teleporter extends Item {
 
 	@Override
 	public Effect getEffect() {
-		return new TeleporterEffect(this);
+		return new TeleportationEffect(this);
 	}
 }

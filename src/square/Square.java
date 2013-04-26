@@ -1,5 +1,7 @@
 package square;
 
+import item.Effect;
+import item.EmptyEffect;
 import item.IItem;
 import item.Item;
 import java.util.ArrayList;
@@ -203,8 +205,15 @@ public class Square extends ASquare {
 	 *        the object to be placed on this square
 	 */
 	private void executeEffect(TronObject object) {
+		Effect effect = new EmptyEffect(); 
+		
+		if (powerFailure != null) 
+			effect.addEffect(powerFailure.getEffect());
+		
 		for (IItem item : itemList)
-			((Item) item).getEffect().execute(object);
+			effect.addEffect(((Item) item).getEffect());
+		
+		effect.execute(object);
 	}
 	
 	@Override

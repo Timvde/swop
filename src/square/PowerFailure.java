@@ -1,9 +1,9 @@
 package square;
 
-import item.lightgrenade.LightGrenadeEffect;
+import item.Effect;
+import item.lightgrenade.ExplodeEffect;
 import java.util.ArrayList;
 import java.util.List;
-import effect.Effect;
 
 /**
  * This class represents a power failure. This is a state a square can be in
@@ -62,11 +62,9 @@ public class PowerFailure {
 	/**
 	 * Returns the effect this power failure has on an object.
 	 * 
-	 * @param effect
-	 *        A light grenade effect that can be modified
 	 * @return the effect of this power failure
 	 */
-	public Effect getEffect(LightGrenadeEffect effect) {
-		return new PowerFailureEffect(effect);
+	public Effect getEffect() {
+		return new PowerFailureEffect();
 	}
 }
