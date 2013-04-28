@@ -18,10 +18,11 @@ import java.util.Random;
 public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector {
 	
 	// The numbers are percentages of the number of squares on the grid
-	private static final double	PERCENTAGE_OF_GRENADES				= 0.02;
-	private static final double	PERCENTAGE_OF_TELEPORTERS			= 0.03;
-	private static final double	PERCENTAGE_OF_IDENTITY_DISKS		= 0.02;
-	private static final int	NUMBER_OF_CHARGED_IDENTITY_DISKS	= 1;
+	// (package access for testing puposes)
+	static final double	PERCENTAGE_OF_GRENADES				= 0.02;
+	static final double	PERCENTAGE_OF_TELEPORTERS			= 0.03;
+	static final double	PERCENTAGE_OF_IDENTITY_DISKS		= 0.02;
+	static final int	NUMBER_OF_CHARGED_IDENTITY_DISKS	= 1;
 	
 	/**
 	 * Create a new RandomItemGridBuilderDirector which will use the specified
@@ -109,32 +110,32 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * percentage ({@value #PERCENTAGE_OF_TELEPORTERS}) of the number of squares
 	 * on the grid.
 	 * 
-	 * @return a map of teleporter locations and their destionations (because
+	 * @return a map of teleporter locations and their destinations (because
 	 *         they are needed to calculate the shortest path).
 	 */
 	private Map<Coordinate, Coordinate> placeTeleporters(int maxX, int maxY) {
-		int numberOfPlacedTeleporters = 0;
-		List<Coordinate> teleporters = new ArrayList<Coordinate>();
-		while (((double) numberOfPlacedTeleporters) / builder.getNumberOfSquares() < PERCENTAGE_OF_TELEPORTERS) {
+		List<Coordinate> teleporterLocations = new ArrayList<Coordinate>();
+		while (((double) teleporterLocations.size()) / builder.getNumberOfSquares() < PERCENTAGE_OF_TELEPORTERS) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
 			if (builder.canPlaceItem(position)) {
-				builder.placeTeleporter(position);
-				teleporters.add(position);
-				numberOfPlacedTeleporters++;
+				teleporterLocations.add(position);
 			}
 		}
-		return setDestinationOfTeleporters(teleporters);
+		return addTeleportersToGrid(teleporterLocations);
 	}
 	
 	/**
-	 * Randomly interconnect the teleporters in a specified list.
+	 * This method will add teleporters to the grid on all the coordinates in a
+	 * specified list. It will randomly interconnect the specified teleporters.
+	 * 
+	 * @return a map of teleporter locations and their destinations
 	 */
-	private Map<Coordinate, Coordinate> setDestinationOfTeleporters(List<Coordinate> teleporters) {
+	private Map<Coordinate, Coordinate> addTeleportersToGrid(List<Coordinate> teleporters) {
 		Map<Coordinate, Coordinate> result = new HashMap<Coordinate, Coordinate>();
 		for (Coordinate teleporterLocation : teleporters) {
 			Coordinate teleporterDestination = teleporters.get(new Random().nextInt(teleporters
 					.size()));
-			builder.connectTeleporters(teleporterLocation, teleporterDestination);
+			builder.placeTeleporter(teleporterLocation, teleporterDestination);
 			result.put(teleporterLocation, teleporterDestination);
 		}
 		return result;

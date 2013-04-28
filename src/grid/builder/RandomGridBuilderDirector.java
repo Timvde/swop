@@ -22,11 +22,11 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	/** The minimum (default) height of the grid. */
 	public static final int		MINIMUM_GRID_HEIGHT				= 10;
 	/** the minimal number of squares in a wall */
-	private static final int	MINIMUM_WALL_LENGHT				= 2;
+	static final int	MINIMUM_WALL_LENGHT				= 2;
 	/** the maximal length of a wall as a percentage of the grid's length/width. */
-	private static final double	MAXIMUM_WALL_LENGHT_PERCENTAGE	= 0.50;
+	static final double	MAXIMUM_WALL_LENGHT_PERCENTAGE	= 0.50;
 	/** the maximal number of walls as a percentage of the nb of sq on the grid */
-	private static final double	MAXIMUM_WALL_NUMBER_PERCENTAGE	= 0.20;
+	static final double	MAXIMUM_WALL_NUMBER_PERCENTAGE	= 0.20;
 	
 	private int					height;
 	private int					width;
@@ -46,6 +46,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		this.height = MINIMUM_GRID_HEIGHT;
 		this.width = MINIMUM_GRID_WIDTH;
+		this.walls = new ArrayList<Wall>();
 	}
 	
 	/**
@@ -74,11 +75,19 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		this.height = height;
 	}
 	
+	/**
+	 * This method reset the created grid. I.e. the builder's datastructure and
+	 * the grid-specific variables will be cleared.
+	 */
+	private void resetCreatedGrid() {
+		// clear the builder data structure
+		builder.createNewEmptyGrid();
+		this.walls = new ArrayList<Wall>();
+	}
+	
 	@Override
 	public void construct() {
-		builder.createNewEmptyGrid();
-		
-		walls = new ArrayList<Wall>();
+		resetCreatedGrid();
 		
 		// Populate the grid with squares
 		for (int i = 0; i < width; i++)
@@ -93,7 +102,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 						* Math.max(width, height));
 		int numberOfWallParts = new Random().nextInt(maxNumberOfWallParts);
 		while (getNumberOfWallParts() <= numberOfWallParts)
-			placeWall();
+			placeNewWall();
 				
 		// place the items on the board
 		placeItemsOnBoard(getStartingPositions(), width, height);
@@ -110,6 +119,27 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 			i += getWallPositions(wall.getStart(), wall.getEnd()).size();
 		}
 		return i;
+	}
+	
+	/**
+	 * Place a new wall on the grid. This method will automatically determine
+	 * the maximum length of the wall.
+	 */
+	private void placeNewWall() {
+		// generate random number between a minimum and a maximum
+		int max = getMaximumLengthOfWall();
+		int wallLength = new Random().nextInt(max - MINIMUM_WALL_LENGHT + 1) + MINIMUM_WALL_LENGHT;
+		
+		Coordinate start, end;
+		do {
+			start = Coordinate.random(width, height);
+			end = start.getRandomCoordinateWithDistance(wallLength);
+			// Logically, we should do -1 here, but wallLength is a random
+			// excluding the wallLength itself, so it implicitly already
+			// happened.
+		} while (!canPlaceWall(start, end));
+		// place the wall on the grid
+		placeWallOnGrid(start, end);
 	}
 	
 	/**
@@ -231,27 +261,6 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 			throw new IllegalArgumentException("The given positions " + start + ", " + end
 					+ " are not aligned!");
 		return positions;
-	}
-	
-	/**
-	 * place a new wall on the grid. This method will automatically determine
-	 * the maximum length of the wall.
-	 */
-	private void placeWall() {
-		// generate random number between a minimum and a maximum
-		int max = getMaximumLengthOfWall();
-		int wallLength = new Random().nextInt(max - MINIMUM_WALL_LENGHT + 1) + MINIMUM_WALL_LENGHT;
-		
-		Coordinate start, end;
-		do {
-			start = Coordinate.random(width, height);
-			end = start.getRandomCoordinateWithDistance(wallLength);
-			// Logically, we should do -1 here, but wallLength is a random
-			// excluding the wallLength itself, so it implicitly already
-			// happened.
-		} while (!canPlaceWall(start, end));
-		// place the wall on the grid
-		placeWallOnGrid(start, end);
 	}
 	
 	/**

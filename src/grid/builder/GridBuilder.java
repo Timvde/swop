@@ -86,33 +86,24 @@ public interface GridBuilder {
 	void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException;
 	
 	/**
-	 * Place a new {@link Teleporter teleporter} at the specified coordinate.
-	 * Note that building a grid with teleporters can result in build errors
-	 * when no destination is set for one of the teleporters on the grid. A
-	 * teleporter can be connected to an other teleporter using
-	 * {@link #connectTeleporters(Coordinate, Coordinate)
-	 * connectTeleporters(from, to)}.
+	 * Place a new {@link Teleporter teleporter} at the specified coordinate
+	 * <code>from</code>. The destination of this teleporter will be the
+	 * specified coordinate <code>to</code>. If there's no teleporter on the
+	 * {@link Coordinate} <code>to</code> a new one (withouth a destination)
+	 * will be created.
 	 * 
-	 * @param coordinate
-	 *        the coordinate where the new teleporter will be placed
+	 * Note that building a grid with teleporters can result in build errors
+	 * when no destination is set for one of the teleporters on the grid.
+	 * 
+	 * @param from
+	 *        The coordinate where the new teleporter will be placed
+	 * @param to
+	 *        The coordinate which will be set as the destination
 	 * @throws CannotPlaceItemException
 	 *         When the item cannot be placed at the specified coordinate, i.e.
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeTeleporter(Coordinate coordinate) throws CannotPlaceItemException;
-	
-	/**
-	 * Connect two placed teleporters on the grid. The teleporter on the
-	 * specified coordinate <code>to</code> will be set as the destination for
-	 * the teleporter on the specified coordinate <code>from</code>.
-	 * 
-	 * @param from
-	 *        The coordinate of the teleporter which destination will be set
-	 * @param To
-	 *        The coordinate of the teleporter which will be set as the
-	 *        destination
-	 */
-	void connectTeleporters(Coordinate from, Coordinate To);
+	void placeTeleporter(Coordinate from, Coordinate to) throws CannotPlaceItemException;
 	
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This
@@ -129,6 +120,8 @@ public interface GridBuilder {
 	/**
 	 * Returns all neighbours of a specified coordinate, where one can directly
 	 * move to (i.e. teleporting is not included).
+	 * 
+	 * TODO include teleporting?
 	 * 
 	 * @param coordinate
 	 *        The coordinate to get the neighbours from

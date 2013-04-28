@@ -8,10 +8,8 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import square.ASquare;
 import square.Direction;
 import square.PlayerStartingPosition;
@@ -26,9 +24,9 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
  */
 public class TronGridBuilder implements GridBuilder {
 	
-	Map<Coordinate, ASquare>	grid;
-	Set<Teleporter>				incompleteTeleporters;
-	private int					numberOfSquares;
+	Map<Coordinate, ASquare>		grid;
+	HashMap<Coordinate, Teleporter>	teleporters;
+	private int						numberOfSquares;
 	
 	/**
 	 * Create a new builder with an empty grid.
@@ -40,7 +38,7 @@ public class TronGridBuilder implements GridBuilder {
 	@Override
 	public void createNewEmptyGrid() {
 		this.grid = new HashMap<Coordinate, ASquare>();
-		this.incompleteTeleporters = new HashSet<Teleporter>();
+		this.teleporters = new HashMap<Coordinate, Teleporter>();
 		this.numberOfSquares = 0;
 	}
 	
@@ -96,47 +94,57 @@ public class TronGridBuilder implements GridBuilder {
 		
 		grid.get(coordinate).addItem(new ChargedIdentityDisk());
 	}
-		
-	@Override
-	public void placeTeleporter(Coordinate coordinate) throws CannotPlaceItemException {
-		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
-		
-		ASquare square = grid.get(coordinate);
-		Teleporter teleporter = new Teleporter(null, square);
-		
-		square.addItem(teleporter);
-		incompleteTeleporters.add(teleporter);
-	}
 	
 	@Override
-	public void connectTeleporters(Coordinate from, Coordinate to) {
-		if (getTeleporterOnLocation(from) == null || getTeleporterOnLocation(to) == null)
-			throw new IllegalArgumentException("Teleporter not found on the square");
+	public void placeTeleporter(Coordinate from, Coordinate to) throws CannotPlaceItemException {
+		Teleporter start = getTeleporter(from);
+		Teleporter destination = getTeleporter(to);
 		
-		Teleporter start = getTeleporterOnLocation(from);
-		Teleporter destination = getTeleporterOnLocation(to);
-		
-		if (!incompleteTeleporters.contains(start))
-			throw new IllegalArgumentException("Teleporter has already a destination!");
+		if (start.getDestination() != null)
+			throw new IllegalArgumentException("Teleporter on coordinate " + from
+					+ " has already a destination!");
 		
 		start.setDestination(destination);
+	}
+	
+	/**
+	 * This method will return the {@link Teleporter} on a specified coordinate.
+	 * When there's no teleporter on the specified coordinate, this method will
+	 * create one.
+	 * 
+	 * @param coordinate
+	 *        the coordinate to add the teleporter to
+	 * @return The teleporter at the specified coordinate
+	 */
+	private Teleporter getTeleporter(Coordinate coordinate) {
+		if (teleporters.containsKey(coordinate))
+			return teleporters.get(coordinate);
 		
-		incompleteTeleporters.remove(start);
+		// teleporter doesn't exist yet; create new
+		return setTeleporter(coordinate);
 	}
 	
-	private Teleporter getTeleporterOnLocation(Coordinate coordinate) {
-		if (grid.containsKey(coordinate)) {
-			List<IItem> items = grid.get(coordinate).getAllItems();
-			for (IItem item : items)
-				if (item instanceof Teleporter)
-					return (Teleporter) item;
-		}
-		return null;
+	private Teleporter setTeleporter(Coordinate coordinate) throws CannotPlaceItemException {
+		if (!canPlaceItem(coordinate))
+			throw new CannotPlaceItemException("Cannot place a teleporter on " + coordinate);
+		
+		ASquare square = grid.get(coordinate);
+		Teleporter rv = new Teleporter(null, square);
+		teleporters.put(coordinate, rv);
+		square.addItem(rv);
+		return rv;
 	}
 	
+	/**
+	 * Returns whether an {@link IItem item} can be placed on the grid. The
+	 * constraints for a <i>TronGrid</i> are: <li>One cannot place an item when
+	 * there's no square on that coordinate. <li>One cannot place an item on a
+	 * {@link WallPart}.
+	 */
 	@Override
 	public boolean canPlaceItem(Coordinate coordinate) {
+		if (coordinate == null)
+			return false;
 		if (!grid.containsKey(coordinate))
 			return false;
 		else if (grid.get(coordinate) instanceof WallPart)
@@ -187,10 +195,14 @@ public class TronGridBuilder implements GridBuilder {
 	 * Returns a new grid as build by the preceding construction-calls.
 	 * 
 	 * @return the constructed grid
+	 * @throws GridBuildException
+	 *         When a teleporter has no destination
 	 */
-	public Grid getResult() {
-		if (!incompleteTeleporters.isEmpty())
-			throw new GridBuildException("Some teleporters have no destinations!");
+	public Grid getResult() throws GridBuildException {
+		for (Teleporter teleporter : this.teleporters.values()) {
+			if (teleporter.getDestination() == null)
+				throw new GridBuildException("Some teleporters have no destinations!");
+		}
 		
 		return new Grid(grid);
 	}

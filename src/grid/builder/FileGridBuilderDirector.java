@@ -156,11 +156,19 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * @return Whether or not the creates grid has unreachable islands.
 	 */
 	private boolean gridHasUnreachableIslands() {
-		Set<Coordinate> squaresReachableFromStart = new HashSet<Coordinate>(
-				builder.getAllReachableNeighboursOf(this.startingCoordinates.get(0)));
-		for (Coordinate coordinate : squaresReachableFromStart) {
-			squaresReachableFromStart.addAll(builder.getAllReachableNeighboursOf(coordinate));
+		Set<Coordinate> squaresReachableFromStart = new HashSet<Coordinate>();
+		List<Coordinate> coordinatesToVisit = builder
+				.getAllReachableNeighboursOf(this.startingCoordinates.get(0));
+		
+		while (!coordinatesToVisit.isEmpty()) {
+			Coordinate curCoordinate = coordinatesToVisit.remove(0);
+			List<Coordinate> coordsToAdd = builder.getAllReachableNeighboursOf(curCoordinate);
+			for (Coordinate coordinate : coordsToAdd)
+				if (squaresReachableFromStart.add(coordinate)) {
+					coordinatesToVisit.add(coordinate);
+				}
 		}
+		
 		if (squaresReachableFromStart.size() != builder.getNumberOfSquares()) {
 			return true;
 		}
