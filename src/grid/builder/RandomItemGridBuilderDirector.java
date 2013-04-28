@@ -5,10 +5,12 @@ import grid.Grid;
 import item.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * A RandomItemGridBuilderDirector offers a method to its subclasses to
@@ -65,7 +67,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			builder.addPlayerStartingPosition(coordinate);
 		}
 		placeLightGrenades(startingCoordinates, maxX, maxY);
-		Map<Coordinate, Coordinate> teleporters = placeTeleporters(maxX, maxY);
+		Map<Coordinate, Coordinate> teleporters = placeTeleporters(startingCoordinates, maxX, maxY);
 		placeIdentityDisks(startingCoordinates, teleporters, maxX, maxY);
 	}
 	
@@ -76,7 +78,9 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * each starting position.
 	 */
 	private void placeLightGrenades(List<Coordinate> startingCoordinates, int maxX, int maxY) {
-		int numberOfPlacedLightGrenades = 0;
+		int numberOfToPlaceLightGrenades = (int) Math.ceil(builder.getNumberOfSquares()
+				* PERCENTAGE_OF_GRENADES);
+		Set<Coordinate> placedLGCoordinates = new HashSet<Coordinate>();
 		
 		/*
 		 * A light grenade should be within a 3x3 square of each starting
@@ -90,17 +94,19 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 				int x = startCoord.getX() - 2 + rand.nextInt(5);
 				int y = startCoord.getY() - 2 + rand.nextInt(5);
 				position = new Coordinate(x, y);
-			} while (!builder.canPlaceItem(position));
+			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position)
+					|| startingCoordinates.contains(position));
 			builder.placeLightGrenade(position);
-			numberOfPlacedLightGrenades++;
+			placedLGCoordinates.add(position);
 		}
 		
 		// place other light grenades
-		while (((double) numberOfPlacedLightGrenades) / builder.getNumberOfSquares() < PERCENTAGE_OF_GRENADES) {
+		while (placedLGCoordinates.size() < numberOfToPlaceLightGrenades) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position)) {
+			if (builder.canPlaceItem(position) && !placedLGCoordinates.contains(position)
+					&& !startingCoordinates.contains(position)) {
 				builder.placeLightGrenade(position);
-				numberOfPlacedLightGrenades++;
+				placedLGCoordinates.add(position);
 			}
 		}
 	}
@@ -113,15 +119,18 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * @return a map of teleporter locations and their destinations (because
 	 *         they are needed to calculate the shortest path).
 	 */
-	private Map<Coordinate, Coordinate> placeTeleporters(int maxX, int maxY) {
-		List<Coordinate> teleporterLocations = new ArrayList<Coordinate>();
-		while (((double) teleporterLocations.size()) / builder.getNumberOfSquares() < PERCENTAGE_OF_TELEPORTERS) {
+	private Map<Coordinate, Coordinate> placeTeleporters(List<Coordinate> startingCoordinates,
+			int maxX, int maxY) {
+		int numberOfToPlaceTeleporters = (int) Math.ceil(builder.getNumberOfSquares()
+				* PERCENTAGE_OF_TELEPORTERS);
+		Set<Coordinate> teleporterLocations = new HashSet<Coordinate>();
+		while (teleporterLocations.size() < numberOfToPlaceTeleporters) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position)) {
+			if (builder.canPlaceItem(position) && !startingCoordinates.contains(position)) {
 				teleporterLocations.add(position);
 			}
 		}
-		return addTeleportersToGrid(teleporterLocations);
+		return addTeleportersToGrid(new ArrayList<Coordinate>(teleporterLocations));
 	}
 	
 	/**
@@ -133,8 +142,11 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	private Map<Coordinate, Coordinate> addTeleportersToGrid(List<Coordinate> teleporters) {
 		Map<Coordinate, Coordinate> result = new HashMap<Coordinate, Coordinate>();
 		for (Coordinate teleporterLocation : teleporters) {
-			Coordinate teleporterDestination = teleporters.get(new Random().nextInt(teleporters
-					.size()));
+			Coordinate teleporterDestination;
+			do {
+				teleporterDestination = teleporters.get(new Random().nextInt(teleporters.size()));
+			} while (teleporterDestination.equals(teleporterLocation));
+			
 			builder.placeTeleporter(teleporterLocation, teleporterDestination);
 			result.put(teleporterLocation, teleporterDestination);
 		}
@@ -151,12 +163,17 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	private void placeIdentityDisks(List<Coordinate> startingCoordinates,
 			Map<Coordinate, Coordinate> teleporters, int maxX, int maxY) {
 		// place normal identity disks
-		int numberOfPlacedIDdisks = 0;
-		while (((double) numberOfPlacedIDdisks) / builder.getNumberOfSquares() < PERCENTAGE_OF_IDENTITY_DISKS) {
+		int numberOfToPlaceIdentityDisks = (int) Math.ceil(builder.getNumberOfSquares()
+				* PERCENTAGE_OF_IDENTITY_DISKS);
+		Set<Coordinate> placedIdentityDisksCoordinates = new HashSet<Coordinate>();
+		while (numberOfToPlaceIdentityDisks > 0) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position)) {
+			if (builder.canPlaceItem(position)
+					&& !placedIdentityDisksCoordinates.contains(position)
+					&& !startingCoordinates.contains(position)) {
 				builder.placeUnchargedIdentityDisc(position);
-				numberOfPlacedIDdisks++;
+				numberOfToPlaceIdentityDisks--;
+				placedIdentityDisksCoordinates.add(position);
 			}
 		}
 		
@@ -168,7 +185,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			
 			while (!CIDCoords.isEmpty()) {
 				CIDCoord = CIDCoords.get(rand.nextInt(CIDCoords.size()));
-				if (builder.canPlaceItem(CIDCoord))
+				if (builder.canPlaceItem(CIDCoord) && !startingCoordinates.contains(CIDCoord))
 					break;
 				
 				// We couldn't place it
@@ -262,5 +279,4 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 		
 		return distances;
 	}
-	
 }

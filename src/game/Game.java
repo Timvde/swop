@@ -97,6 +97,9 @@ public class Game implements Observer {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		List<Player> players = playerDB.createNewDB();
 		
+		// TODO give a list of the created playerstartingpositions to the Db &&
+		// make all the squares observer of the db
+		
 		TronGridBuilder builder = new TronGridBuilder();
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.setHeight(height);

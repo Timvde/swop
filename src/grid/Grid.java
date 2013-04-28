@@ -93,13 +93,13 @@ public class Grid implements IGrid, Observer {
 	public int getHeight() {
 		Set<Coordinate> gridCoords = grid.keySet();
 		
-		int maxRowNum = 0;
+		int maxYCoord = 0;
 		for (Coordinate c : gridCoords) {
-			if (c.getY() > maxRowNum)
-				maxRowNum = c.getY();
+			if (c.getY() > maxYCoord)
+				maxYCoord = c.getY();
 		}
 		
-		return maxRowNum + 1;
+		return maxYCoord + 1;
 	}
 	
 	/**
@@ -110,13 +110,13 @@ public class Grid implements IGrid, Observer {
 	public int getWidth() {
 		Set<Coordinate> gridCoords = grid.keySet();
 		
-		int maxColNum = 0;
+		int maxXCoord = 0;
 		for (Coordinate c : gridCoords) {
-			if (c.getX() > maxColNum)
-				maxColNum = c.getX();
+			if (c.getX() > maxXCoord)
+				maxXCoord = c.getX();
 		}
 		
-		return maxColNum + 1;
+		return maxXCoord + 1;
 	}
 	
 	@Override

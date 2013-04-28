@@ -37,25 +37,25 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * <ul>
 	 * <li>numbers: starting position of the players</li>
 	 * <li>x: walls</li>
-	 * <li>o: light grenades</li>
+	 * <li>l: light grenades</li>
 	 * <li>t: teleporters (these teleport to the square right above)</li>
 	 * <li>d: destination of the teleporters</li>
 	 * <li>F: Power failure</li>
-	 * <li>i: Identity disc</li>
+	 * <li>u: Uncharged Identity disc</li>
 	 * </ul>
 	 * 
 	 * <pre>
 	 * _____________________________
-	 * |  |  |  | F| F| F|  | i|  | 2|
+	 * |  |  |  | F| F| F|  | u|  | 2|
 	 * |  |  |  | F| F| F|  |  |  |  |
-	 * |  |  |  | F| F| F|  | o|  |t1|
+	 * |  |  |  | F| F| F|  | l|  |t1|
 	 * |  |  |  |  |  |  |  |  |  |d2|
 	 * |  |  |  |  |  |  |  |  |  |  |
 	 * |  |  |  |  | x| x| x| x| x|  |
-	 * |  |  |  |  |  |  |  | o|  |  |
-	 * |t2|  | o|  |  |  |  |  | o|  |
-	 * |d1|  |  |  |  | o| o| o| o|  |
-	 * | 1|  | i|  |  |  |  |  |  |  |
+	 * |  |  |  |  |  |  |  | l|  |  |
+	 * |t2|  | l|  |  |  |  |  | l|  |
+	 * |d1|  |  |  |  | l| l| l| l|  |
+	 * | 1|  | u|  |  |  |  |  |  |  |
 	 * -------------------------------
 	 * </pre>
 	 * 
