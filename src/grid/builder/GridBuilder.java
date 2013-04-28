@@ -17,7 +17,6 @@ import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
  * {@link ASquare abstract squares} , each square can be a {@link WallPart wall}
  * or a {@link Square square}. {@link IItem Items} can be placed on these
  * squares.
- * 
  */
 public interface GridBuilder {
 	

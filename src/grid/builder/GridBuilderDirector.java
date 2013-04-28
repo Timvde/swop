@@ -4,9 +4,9 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 import grid.Grid;
 
 /**
- * A director manages the creation of a {@link Grid grid}. It uses a
- * {@link GridBuilder builder} for the actual creating of objects.
- * 
+ * A director manages the creation of a {@link Grid grid}. It uses the
+ * {@link GridBuilder builderinterface} for the actual creating of the domain
+ * concepts.
  */
 public abstract class GridBuilderDirector {
 	
@@ -28,7 +28,8 @@ public abstract class GridBuilderDirector {
 	
 	/**
 	 * Construct the grid. After calling this method the {@link GridBuilder
-	 * builder} specified in the constructor will return the corresponding grid.
+	 * builder} specified in the constructor will have build the corresponding
+	 * grid.
 	 * 
 	 * @throws GridBuildException
 	 *         When the grid cannot be constructed.

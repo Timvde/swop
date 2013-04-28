@@ -14,7 +14,6 @@ import square.ASquare;
 import square.ISquare;
 import square.PowerFailure;
 import square.Square;
-import square.WallPart;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.

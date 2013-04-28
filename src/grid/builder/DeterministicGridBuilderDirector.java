@@ -6,7 +6,6 @@ import grid.Grid;
 /**
  * Director to construct a new deterministic (predefined) {@link Grid} (for
  * testing purposes).
- * 
  */
 public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	
@@ -24,7 +23,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * @param builder
 	 *        The builder this director will use to build the grid.
 	 * @param usePowerFailure
-	 *        Whether or not to include powerfailure in the grid
+	 *        Whether or not to include powerfailure in the grid.
 	 */
 	public DeterministicGridBuilderDirector(GridBuilder builder, boolean usePowerFailure) {
 		super(builder);

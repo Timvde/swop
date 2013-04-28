@@ -13,7 +13,6 @@ import square.Wall;
  * game constraints. For the placement of items it will call the
  * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
  * supertype method}.
- * 
  */
 public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
@@ -69,7 +68,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 *        ...
 	 */
 	public void setHeight(int height) {
-		if (width < MINIMUM_GRID_HEIGHT) {
+		if (height < MINIMUM_GRID_HEIGHT) {
 			throw new IllegalArgumentException("height is smaller then minimum height");
 		}
 		this.height = height;

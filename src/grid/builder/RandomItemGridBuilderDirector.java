@@ -37,7 +37,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	
 	/**
 	 * Place all the {@link Item items} on the grid constructed. The placement
-	 * and number of the different item-types depends on the Tron game
+	 * and number of the different item-types are specified by the Tron game
 	 * constraints. The placement of items on the board is also limited by the
 	 * so called {@link GridBuilder#canPlaceItem(Coordinate) <i>hard
 	 * constraints</i>} (i.e. the invariants of the grid).
@@ -46,8 +46,8 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * grid.
 	 * 
 	 * <br>
-	 * <b>This method should only be called when the adding of squares to the
-	 * grid under construction is finished.</b>
+	 * <b>This method should only be called when the adding of squares and walls
+	 * to the grid under construction is finished.</b>
 	 * 
 	 * @param startingCoordinates
 	 *        a list with the starting coordinates of the players. This is

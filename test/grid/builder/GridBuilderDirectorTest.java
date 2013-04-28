@@ -1,6 +1,7 @@
 package grid.builder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import grid.Grid;
 import org.junit.Test;
@@ -18,7 +19,61 @@ public class GridBuilderDirectorTest {
 		
 		assertGridHasValidWallsAndItems(builder);
 	}
-
+	
+	@Test
+	public void testRandomDirectorCreatedGrid() {
+		TronGridBuilder builder = new TronGridBuilder();
+		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
+		director.construct();
+		
+		Grid grid = builder.getResult();
+		assertEquals(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, grid.getHeight());
+		assertEquals(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH, grid.getWidth());
+		
+		int width = RandomGridBuilderDirector.MINIMUM_GRID_WIDTH + 10;
+		int height = RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT + 15;
+		director.setHeight(height);
+		director.setWidth(width);
+		director.construct();
+		
+		Grid grid2 = builder.getResult();
+		assertFalse(grid.equals(grid2));
+		assertEquals(width, grid2.getWidth());
+		assertEquals(height, grid2.getHeight());
+	}
+	
+	@Test
+	public void testRandomDirectorInvalidInput() {
+		TestGridBuilder builder = new TestGridBuilder();
+		boolean exceptionThrown = false;
+		try {
+			new RandomGridBuilderDirector(null);
+		}
+		catch (IllegalArgumentException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
+		
+		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
+		exceptionThrown = false;
+		try {
+			director.setWidth(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH -1);
+		}
+		catch (IllegalArgumentException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
+		
+		exceptionThrown = false;
+		try {
+			director.setHeight(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT -1);
+		}
+		catch (IllegalArgumentException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
+	}
+	
 	@Test
 	public void testFileDirector() {
 		TestGridBuilder builder = new TestGridBuilder();
@@ -26,15 +81,6 @@ public class GridBuilderDirectorTest {
 		director.construct();
 		
 		assertGridHasValidWallsAndItems(builder);
-	}
-	
-	private void assertGridHasValidWallsAndItems(TestGridBuilder builder) {
-		assertTrue(builder.hasValidLightGrenades());
-		assertTrue(builder.hasValidIDdisks());
-		assertTrue(builder.hasValidTeleporters());
-		assertTrue(builder.hasValidWalls());
-		
-		assertTrue(builder.gridHasValidWallsAndItems());
 	}
 	
 	@Test
@@ -59,7 +105,8 @@ public class GridBuilderDirectorTest {
 		assertTrue(exceptionThrown);
 		
 		exceptionThrown = false;
-		GridBuilderDirector director = new FileGridBuilderDirector(builder, "file_that_doesn't exist");
+		GridBuilderDirector director = new FileGridBuilderDirector(builder,
+				"file_that_doesn't exist");
 		try {
 			director.construct();
 		}
@@ -72,7 +119,8 @@ public class GridBuilderDirectorTest {
 	@Test
 	public void testFileDirectorInvalidGridFile() {
 		TestGridBuilder builder = new TestGridBuilder();
-		GridBuilderDirector director = new FileGridBuilderDirector(builder, "grid_invalidCharacter.txt");
+		GridBuilderDirector director = new FileGridBuilderDirector(builder,
+				"grid_invalidCharacter.txt");
 		
 		boolean exceptionThrown = false;
 		try {
@@ -115,5 +163,14 @@ public class GridBuilderDirectorTest {
 				+ "s s s s s s s l s s \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
 				+ "s s s s w w w w w s \n" + "s s s s s s s l s s \n" + "s s l s s s s s l s \n"
 				+ "s s s s s l l l l s \n" + "s s s s s s s s s s \n");
+	}
+	
+	private void assertGridHasValidWallsAndItems(TestGridBuilder builder) {
+		assertTrue(builder.hasValidLightGrenades());
+		assertTrue(builder.hasValidIDdisks());
+		assertTrue(builder.hasValidTeleporters());
+		assertTrue(builder.hasValidWalls());
+		
+		assertTrue(builder.gridHasValidWallsAndItems());
 	}
 }

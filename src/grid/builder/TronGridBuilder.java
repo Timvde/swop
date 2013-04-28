@@ -19,8 +19,9 @@ import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
- * A {@link GridBuilder builder} specifically for the Tron game.
- * 
+ * A {@link GridBuilder builder} specifically for the Tron game. This builder
+ * offers a method {@link #getResult()} which returns the {@link Grid}
+ * corresponding to the preceding construction-calls.
  */
 public class TronGridBuilder implements GridBuilder {
 	

@@ -15,8 +15,10 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 /**
- * Director that will create a grid specified in a file.
- * 
+ * Director that will create a grid specified in a file. For the placement of
+ * items it will call the
+ * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
+ * supertype method}.
  */
 public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
@@ -61,6 +63,15 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		this.startingCoordinates = new ArrayList<Coordinate>();
 	}
 	
+	/**
+	 * Construct the grid specified in the file given in the constructor. This
+	 * method will also {@link RandomItemGridBuilderDirector <i>randomly</i>}
+	 * (i.e. as specified by the Tron game constraints) place items on the grid.
+	 * 
+	 * @throws InvalidGridFileException
+	 *         The grid file must adhere the correct rules and it cannot contain
+	 *         invalid characters.
+	 */
 	@Override
 	public void construct() throws InvalidGridFileException {
 		resetCreatedGrid();
