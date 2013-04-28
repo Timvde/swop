@@ -45,45 +45,60 @@ public class TestGridBuilder implements GridBuilder {
 	
 	@Override
 	public void addSquare(Coordinate coordinate) {
-		this.squares.add(coordinate);
+		if (!this.squares.add(coordinate))
+			throw new IllegalArgumentException("There's already a Square at this coordinate.");
+		if (playerStartingPositions.contains(coordinate) || wallParts.contains(coordinate))
+			throw new IllegalArgumentException("This coordinate is already used.");
 	}
 	
 	@Override
 	public void addWall(Coordinate coordinate) {
-		this.wallParts.add(coordinate);
+		if (!this.wallParts.add(coordinate))
+			throw new IllegalArgumentException("There's already a wall at this coordinate");
+		if (playerStartingPositions.contains(coordinate))
+			throw new IllegalArgumentException("This coordinate is already used");
+		// a wall may overwrite a square
+		this.squares.remove(coordinate);
 	}
 	
 	@Override
 	public void addPlayerStartingPosition(Coordinate coordinate) {
-		this.playerStartingPositions.add(coordinate);
+		if (!playerStartingPositions.add(coordinate))
+			throw new IllegalArgumentException("There's already a playerstart at this coordinate");
+		if (squares.contains(coordinate) || wallParts.contains(coordinate))
+			throw new IllegalArgumentException("This coordinate is already used");
 	}
 	
 	@Override
 	public void placeLightGrenade(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
 			throw new CannotPlaceItemException();
-		this.LGList.add(coordinate);
+		if (!LGList.add(coordinate))
+			throw new IllegalArgumentException("There's already a LG at this coordinate");
 	}
 	
 	@Override
 	public void placeUnchargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
 			throw new CannotPlaceItemException();
-		this.IDList.add(coordinate);
+		if (!IDList.add(coordinate))
+			throw new IllegalArgumentException("There's already an IDdisk at this coordinate");
 	}
 	
 	@Override
 	public void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
 			throw new CannotPlaceItemException();
-		this.CIDList.add(coordinate);
+		if (!CIDList.add(coordinate))
+			throw new IllegalArgumentException("There's already an CIDdisk at this coordinate");
 	}
 	
 	@Override
 	public void placeTeleporter(Coordinate from, Coordinate to) throws CannotPlaceItemException {
 		if (!canPlaceItem(from) || !canPlaceItem(to))
 			throw new CannotPlaceItemException();
-		this.teleporters.put(from, to);
+		if (teleporters.put(from, to) != null)
+			throw new IllegalArgumentException("Theres already a teleporter on this coordinates");
 	}
 	
 	@Override
@@ -158,9 +173,24 @@ public class TestGridBuilder implements GridBuilder {
 				.size())
 			return false;
 		
+		// The starting position of a player cannot contain an identity disc.
+		for (Coordinate c : playerStartingPositions) {
+			for (Coordinate c2 : IDList)
+				if (c.equals(c2))
+					return false;
+		}
+		
 		if (Math.ceil(getNumberOfSquares()
 				* RandomGridBuilderDirector.NUMBER_OF_CHARGED_IDENTITY_DISKS) <= CIDList.size())
 			return false;
+		
+		// The starting position of a player cannot contain a charged identity
+		// disc.
+		for (Coordinate c : playerStartingPositions) {
+			for (Coordinate c2 : CIDList)
+				if (c.equals(c2))
+					return false;
+		}
 		
 		return true;
 	}
@@ -176,6 +206,13 @@ public class TestGridBuilder implements GridBuilder {
 				.size())
 			return false;
 		
+		// The starting position of a player cannot contain a teleporter.
+		for (Coordinate c : playerStartingPositions) {
+			for (Coordinate c2 : teleporters.values())
+				if (c.equals(c2))
+					return false;
+		}
+		
 		return true;
 	}
 	
@@ -188,7 +225,7 @@ public class TestGridBuilder implements GridBuilder {
 	public boolean hasValidWalls() {
 		if (wallParts.size() < RandomGridBuilderDirector.MINIMUM_WALL_LENGHT)
 			return false;
-		if (wallParts.size() > Math.ceil(getNumberOfSquares()
+		if (wallParts.size() > Math.ceil((getNumberOfSquares() + wallParts.size())
 				* RandomGridBuilderDirector.MAXIMUM_WALL_NUMBER_PERCENTAGE))
 			return false;
 		
