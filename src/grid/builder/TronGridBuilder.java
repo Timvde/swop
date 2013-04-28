@@ -12,11 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import player.Player;
 import square.ASquare;
 import square.Direction;
+import square.PlayerStartingPosition;
 import square.Square;
 import square.WallPart;
+import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
+import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
  * A {@link GridBuilder builder} specifically for the Tron game.
@@ -26,72 +28,79 @@ public class TronGridBuilder implements GridBuilder {
 	
 	Map<Coordinate, ASquare>	grid;
 	Set<Teleporter>				incompleteTeleporters;
+	private int					numberOfSquares;
 	
 	/**
-	 * Create a new builder.
+	 * Create a new builder with an empty grid.
 	 */
 	public TronGridBuilder() {
-		this.createNewGrid();
+		this.createNewEmptyGrid();
 	}
 	
 	@Override
-	public void createNewGrid() {
+	public void createNewEmptyGrid() {
 		this.grid = new HashMap<Coordinate, ASquare>();
 		this.incompleteTeleporters = new HashSet<Teleporter>();
+		this.numberOfSquares = 0;
 	}
 	
 	@Override
 	public void addSquare(Coordinate coordinate) {
 		if (coordinate == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
 		grid.put(coordinate, new Square(neighbours));
+		numberOfSquares++;
 	}
 	
 	@Override
 	public void addWall(Coordinate coordinate) {
 		if (coordinate == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
 		grid.put(coordinate, new WallPart(neighbours));
 	}
 	
 	@Override
-	public void placePlayer(Coordinate coordinate) {
-		//TODO implement
-		//grid.get(coordinate).addPlayer(new Player());
+	public void addPlayerStartingPosition(Coordinate coordinate) {
+		if (coordinate == null)
+			throw new IllegalArgumentException("The specified coordinate cannot be null");
+		
+		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
+		grid.put(coordinate, new PlayerStartingPosition(neighbours));
+		numberOfSquares++;
 	}
 	
 	@Override
-	public void placeLightGrenade(Coordinate coordinate) {
+	public void placeLightGrenade(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
-			throw new IllegalArgumentException();
+			throw new CannotPlaceItemException();
 		
 		grid.get(coordinate).addItem(new LightGrenade());
 	}
 	
 	@Override
-	public void placeUnchargedIdentityDisc(Coordinate coordinate) {
+	public void placeUnchargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
-			throw new IllegalArgumentException();
+			throw new CannotPlaceItemException();
 		
 		grid.get(coordinate).addItem(new UnchargedIdentityDisk());
 	}
 	
 	@Override
-	public void placeChargedIdentityDisc(Coordinate coordinate) {
+	public void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
-			throw new IllegalArgumentException();
+			throw new CannotPlaceItemException();
 		
 		grid.get(coordinate).addItem(new ChargedIdentityDisk());
 	}
-	
+		
 	@Override
-	public void placeTeleporter(Coordinate coordinate) {
+	public void placeTeleporter(Coordinate coordinate) throws CannotPlaceItemException {
 		if (!canPlaceItem(coordinate))
-			throw new IllegalArgumentException();
+			throw new CannotPlaceItemException();
 		
 		ASquare square = grid.get(coordinate);
 		Teleporter teleporter = new Teleporter(null, square);
@@ -171,7 +180,7 @@ public class TronGridBuilder implements GridBuilder {
 	
 	@Override
 	public int getNumberOfSquares() {
-		return grid.size();
+		return numberOfSquares;
 	}
 	
 	/**
@@ -181,7 +190,7 @@ public class TronGridBuilder implements GridBuilder {
 	 */
 	public Grid getResult() {
 		if (!incompleteTeleporters.isEmpty())
-			throw new IllegalStateException("Some teleporters have no destinations!");
+			throw new GridBuildException("Some teleporters have no destinations!");
 		
 		return new Grid(grid);
 	}

@@ -1,22 +1,22 @@
 package grid.builder;
 
-import java.util.List;
-import player.Player;
+import grid.Coordinate;
 import item.IItem;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
+import java.util.List;
 import square.ASquare;
 import square.Square;
 import square.WallPart;
-import grid.Coordinate;
+import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
 
 /**
  * Builder for the grid objects of a board game. The board consists of
  * {@link ASquare abstract squares} , each square can be a {@link WallPart wall}
- * or a {@link Square square}. {@link IItem Items} and {@link Player players}
- * can be placed on these squares.
+ * or a {@link Square square}. {@link IItem Items} can be placed on these
+ * squares.
  * 
  */
 public interface GridBuilder {
@@ -24,7 +24,7 @@ public interface GridBuilder {
 	/**
 	 * Make a new empty grid.
 	 */
-	void createNewGrid();
+	void createNewEmptyGrid();
 	
 	/**
 	 * Add a {@link Square square} at the specified coordinate.
@@ -43,20 +43,23 @@ public interface GridBuilder {
 	void addWall(Coordinate coordinate);
 	
 	/**
-	 * Place a {@link Player player} at the specified coordinate.
+	 * Add a player startingposition at the specified coordinate.
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new player will be placed.
 	 */
-	void placePlayer(Coordinate coordinate);
+	void addPlayerStartingPosition(Coordinate coordinate);
 	
 	/**
 	 * Place a {@link LightGrenade light grenade} at the specified coordinate.
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new light grenade will be placed.
+	 * @throws CannotPlaceItemException
+	 *         When the item cannot be placed at the specified coordinate, i.e.
+	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeLightGrenade(Coordinate coordinate);
+	void placeLightGrenade(Coordinate coordinate) throws CannotPlaceItemException;
 	
 	/**
 	 * Place a new {@link UnchargedIdentityDisk uncharged identity disc} on the
@@ -64,8 +67,11 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new identity disc will be placed
+	 * @throws CannotPlaceItemException
+	 *         When the item cannot be placed at the specified coordinate, i.e.
+	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeUnchargedIdentityDisc(Coordinate coordinate);
+	void placeUnchargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException;
 	
 	/**
 	 * Place a new {@link ChargedIdentityDisk charged identity disc} on the
@@ -73,8 +79,11 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new identity disc will be placed
+	 * @throws CannotPlaceItemException
+	 *         When the item cannot be placed at the specified coordinate, i.e.
+	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeChargedIdentityDisc(Coordinate coordinate);
+	void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException;
 	
 	/**
 	 * Place a new {@link Teleporter teleporter} at the specified coordinate.
@@ -86,8 +95,11 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new teleporter will be placed
+	 * @throws CannotPlaceItemException
+	 *         When the item cannot be placed at the specified coordinate, i.e.
+	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeTeleporter(Coordinate coordinate);
+	void placeTeleporter(Coordinate coordinate) throws CannotPlaceItemException;
 	
 	/**
 	 * Connect two placed teleporters on the grid. The teleporter on the
@@ -115,8 +127,8 @@ public interface GridBuilder {
 	boolean canPlaceItem(Coordinate coordinate);
 	
 	/**
-	 * Returns all neighbours of a specified coordinate, where one can directly move
-	 * to (i.e. teleporting is not included).
+	 * Returns all neighbours of a specified coordinate, where one can directly
+	 * move to (i.e. teleporting is not included).
 	 * 
 	 * @param coordinate
 	 *        The coordinate to get the neighbours from

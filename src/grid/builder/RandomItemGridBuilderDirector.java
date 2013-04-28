@@ -41,6 +41,9 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * so called {@link GridBuilder#canPlaceItem(Coordinate) <i>hard
 	 * constraints</i>} (i.e. the invariants of the grid).
 	 * 
+	 * This method will also put the specified player starting positions on the
+	 * grid.
+	 * 
 	 * <br>
 	 * <b>This method should only be called when the adding of squares to the
 	 * grid under construction is finished.</b>
@@ -57,6 +60,9 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 *        (i.e. the maximal height).
 	 */
 	protected void placeItemsOnBoard(List<Coordinate> startingCoordinates, int maxX, int maxY) {
+		for (Coordinate coordinate : startingCoordinates) {
+			builder.addPlayerStartingPosition(coordinate);
+		}
 		placeLightGrenades(startingCoordinates, maxX, maxY);
 		Map<Coordinate, Coordinate> teleporters = placeTeleporters(maxX, maxY);
 		placeIdentityDisks(startingCoordinates, teleporters, maxX, maxY);

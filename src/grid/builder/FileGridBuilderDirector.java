@@ -5,12 +5,17 @@ import grid.Grid;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import ObjectronExceptions.builderExceptions.GridBuildException;
+import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 /**
- * A grid builder that will create a grid specified in a file.
+ * Director that will create a grid specified in a file.
  * 
  */
 public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
@@ -39,41 +44,59 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * 
 	 * @param file
 	 *        the name of the file the grid is located in.
-	 * @return this
 	 */
-	private FileGridBuilderDirector setFile(String file) {
+	private void setFile(String file) {
 		if (file == null)
 			throw new IllegalArgumentException("Cannot create grid from file if no file specified!");
 		this.fileName = file;
-		return this;
+	}
+	
+	/**
+	 * This method reset the created grid. I.e. the builder's datastructure and
+	 * the grid-specific variables will be cleared.
+	 */
+	private void resetCreatedGrid() {
+		// clear the builder data structure
+		builder.createNewEmptyGrid();
+		this.startingCoordinates = new ArrayList<Coordinate>();
 	}
 	
 	@Override
-	public void construct() {
-		builder.createNewGrid();
+	public void construct() throws InvalidGridFileException {
+		resetCreatedGrid();
 		
 		// read the file from the grid and get their starting positions
-		GridDimension gridDim = readGridFromFile(this.fileName);
+		GridDimension gridDim = readGridFromFile();
 		
 		// place the items on the board
 		placeItemsOnBoard(startingCoordinates, gridDim.getWidth(), gridDim.getHeight());
+		
+		checkGridAdheresRules();
 	}
 	
-	private GridDimension readGridFromFile(String filename) {
+	/**
+	 * This method will construct the grid as specified in the gridFile.
+	 * 
+	 * @return The dimensions of the read grid.
+	 * 
+	 * @throws InvalidGridFileException
+	 *         When the gridfile contains an invalid character.
+	 */
+	private GridDimension readGridFromFile() throws InvalidGridFileException {
 		try {
-			FileInputStream fis = new FileInputStream(filename);
+			FileInputStream fis = new FileInputStream(fileName);
 			DataInputStream dis = new DataInputStream(fis);
 			BufferedReader br = new BufferedReader(new InputStreamReader(dis));
 			String line;
 			
-			int height = 0;
-			int width = 0;
+			int numberOfRows = 0;
+			int numberOfColls = 0;
 			while ((line = br.readLine()) != null) {
 				// new line in file
-				for (width = 0; width < line.length(); width++) {
+				for (numberOfColls = 0; numberOfColls < line.length(); numberOfColls++) {
 					// new character on line
-					char c = line.charAt(width);
-					Coordinate coord = new Coordinate(width, height);
+					char c = line.charAt(numberOfColls);
+					Coordinate coord = new Coordinate(numberOfColls, numberOfRows);
 					if (c == ' ') {
 						builder.addSquare(coord);
 					}
@@ -85,26 +108,63 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 					}
 					else if (c == '1') {
 						startingCoordinates.add(coord);
-						builder.addSquare(coord);
-						builder.placePlayer(coord);
 					}
 					else if (c == '2') {
 						startingCoordinates.add(coord);
-						builder.addSquare(coord);
-						builder.placePlayer(coord);
+					}
+					else {
+						throw new InvalidGridFileException("Invalid grid-file character: " + c);
 					}
 				}
-				height++;
+				numberOfRows++;
 			}
-			
 			dis.close();
-			
-			return new GridDimension(width, height);
+			return new GridDimension(numberOfColls, numberOfRows);
 		}
-		catch (Exception e) {
-			System.err.println("File Read Error: " + e.getMessage());
-			return null;
+		catch (IOException e) {
+			throw new GridBuildException("IO error while processing file");
 		}
+	}
+	
+	/**
+	 * Checks whether the constructed grid adheres the correct rules.
+	 * 
+	 * @throws InvalidGridFileException
+	 *         If the grid doesn't adhere the rules.
+	 */
+	private void checkGridAdheresRules() throws InvalidGridFileException {
+		if (this.startingCoordinates.size() != 2) {
+			resetCreatedGrid();
+			throw new InvalidGridFileException("There must be exactly two starting locations.");
+		}
+		
+		if (gridHasUnreachableIslands()) {
+			resetCreatedGrid();
+			throw new InvalidGridFileException(
+					"There can be no unreachable `islands' of squares that are part of the grid");
+		}
+	}
+	
+	/**
+	 * There must be a path from each free square that is part of the grid to
+	 * each other free square that is part of the grid. That is, there can be no
+	 * unreachable `islands' of squares that are part of the grid.
+	 * 
+	 * The grid having no unreachable islands also means there is a path between
+	 * the two starting locations.
+	 * 
+	 * @return Whether or not the creates grid has unreachable islands.
+	 */
+	private boolean gridHasUnreachableIslands() {
+		Set<Coordinate> squaresReachableFromStart = new HashSet<Coordinate>(
+				builder.getAllReachableNeighboursOf(this.startingCoordinates.get(0)));
+		for (Coordinate coordinate : squaresReachableFromStart) {
+			squaresReachableFromStart.addAll(builder.getAllReachableNeighboursOf(coordinate));
+		}
+		if (squaresReachableFromStart.size() != builder.getNumberOfSquares()) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -126,6 +186,6 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		public int getHeight() {
 			return height;
-		}	
+		}
 	}
 }

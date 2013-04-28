@@ -1,5 +1,6 @@
 package grid.builder;
 
+import ObjectronExceptions.builderExceptions.GridBuildException;
 import grid.Grid;
 
 /**
@@ -19,12 +20,18 @@ public abstract class GridBuilderDirector {
 	 *        The builder this director will use to build the grid.
 	 */
 	public GridBuilderDirector(GridBuilder builder) {
+		if (builder == null) {
+			throw new IllegalArgumentException("The specified builder cannot be null");
+		}
 		this.builder = builder;
 	}
 	
 	/**
 	 * Construct the grid. After calling this method the {@link GridBuilder
 	 * builder} specified in the constructor will return the corresponding grid.
+	 * 
+	 * @throws GridBuildException
+	 *         When the grid cannot be constructed.
 	 */
-	public abstract void construct();
+	public abstract void construct() throws GridBuildException;
 }

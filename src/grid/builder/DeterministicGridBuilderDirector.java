@@ -2,9 +2,6 @@ package grid.builder;
 
 import grid.Coordinate;
 import grid.Grid;
-import java.util.ArrayList;
-import java.util.List;
-import square.Wall;
 
 /**
  * Director to construct a new deterministic (predefined) {@link Grid} (for
@@ -66,14 +63,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 */
 	@Override
 	public void construct() {
-		List<Wall> walls = new ArrayList<Wall>();
-		walls.add(new Wall(new Coordinate(4, 5), new Coordinate(8, 5)));
-		
-		buildTestGrid(usePowerfailure);
-	}
-	
-	private void buildTestGrid(boolean usePowerfailure) {
-		builder.createNewGrid();
+		builder.createNewEmptyGrid();
 		
 		for (int i = 0; i < PREDIFINED_GRID_SIZE; i++)
 			for (int j = 0; j < PREDIFINED_GRID_SIZE; j++)
@@ -94,7 +84,12 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.placeUnchargedIdentityDisc(new Coordinate(7, 0));
 		builder.placeUnchargedIdentityDisc(new Coordinate(2, 9));
 		
+		builder.addPlayerStartingPosition(new Coordinate(0, 0));
+		builder.addPlayerStartingPosition(new Coordinate(PREDIFINED_GRID_SIZE - 1,
+				PREDIFINED_GRID_SIZE - 1));
 		
-		//TODO place players
+		if (usePowerfailure) {
+			//TODO power failures
+		}
 	}
 }

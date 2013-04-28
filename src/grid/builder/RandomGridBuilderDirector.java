@@ -49,7 +49,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	}
 	
 	/**
-	 * set the width of the grid
+	 * Set the width of the grid.
 	 * 
 	 * @param width
 	 *        ...
@@ -62,7 +62,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	}
 	
 	/**
-	 * set the height of the grid
+	 * Set the height of the grid.
 	 * 
 	 * @param height
 	 *        ...
@@ -76,7 +76,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	@Override
 	public void construct() {
-		builder.createNewGrid();
+		builder.createNewEmptyGrid();
 		
 		walls = new ArrayList<Wall>();
 		
@@ -94,7 +94,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		int numberOfWallParts = new Random().nextInt(maxNumberOfWallParts);
 		while (getNumberOfWallParts() <= numberOfWallParts)
 			placeWall();
-		
+				
 		// place the items on the board
 		placeItemsOnBoard(getStartingPositions(), width, height);
 	}
@@ -194,7 +194,6 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		List<Coordinate> positions = new ArrayList<Coordinate>();
 		positions.add(new Coordinate(0, height));
 		positions.add(new Coordinate(width, 0));
-		//TODO place players
 		
 		return positions;
 	}
