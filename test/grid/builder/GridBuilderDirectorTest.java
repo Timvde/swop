@@ -8,7 +8,7 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 @SuppressWarnings("javadoc")
-public class GridBuilderTest {
+public class GridBuilderDirectorTest {
 	
 	@Test
 	public void testRandomDirector() {
