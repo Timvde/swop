@@ -1,6 +1,7 @@
 package grid.builder;
 
 import grid.Coordinate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -153,11 +154,8 @@ public class TestGridBuilder implements GridBuilder {
 			return false;
 		
 		// The starting position of a player cannot contain a light grenade.
-		for (Coordinate c : playerStartingPositions) {
-			for (Coordinate c2 : LGList)
-				if (c.equals(c2))
-					return false;
-		}
+		if (!Collections.disjoint(playerStartingPositions, LGList))
+			return false;
 		
 		return true;
 	}
@@ -174,11 +172,8 @@ public class TestGridBuilder implements GridBuilder {
 			return false;
 		
 		// The starting position of a player cannot contain an identity disc.
-		for (Coordinate c : playerStartingPositions) {
-			for (Coordinate c2 : IDList)
-				if (c.equals(c2))
-					return false;
-		}
+		if (!Collections.disjoint(playerStartingPositions, IDList))
+			return false;
 		
 		if (Math.ceil(getNumberOfSquares()
 				* RandomGridBuilderDirector.NUMBER_OF_CHARGED_IDENTITY_DISKS) <= CIDList.size())
@@ -186,11 +181,8 @@ public class TestGridBuilder implements GridBuilder {
 		
 		// The starting position of a player cannot contain a charged identity
 		// disc.
-		for (Coordinate c : playerStartingPositions) {
-			for (Coordinate c2 : CIDList)
-				if (c.equals(c2))
-					return false;
-		}
+		if (!Collections.disjoint(playerStartingPositions, CIDList))
+			return false;
 		
 		return true;
 	}
@@ -207,11 +199,8 @@ public class TestGridBuilder implements GridBuilder {
 			return false;
 		
 		// The starting position of a player cannot contain a teleporter.
-		for (Coordinate c : playerStartingPositions) {
-			for (Coordinate c2 : teleporters.values())
-				if (c.equals(c2))
-					return false;
-		}
+		if (!Collections.disjoint(playerStartingPositions, teleporters.values()))
+			return false;
 		
 		return true;
 	}
@@ -229,6 +218,9 @@ public class TestGridBuilder implements GridBuilder {
 				* RandomGridBuilderDirector.MAXIMUM_WALL_NUMBER_PERCENTAGE))
 			return false;
 		
+		if (!Collections.disjoint(playerStartingPositions, wallParts))
+			return false;
+
 		return true;
 	}
 }
