@@ -7,10 +7,10 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.List;
+import ObjectronExceptions.builderExceptions.GridBuildException;
 import square.ASquare;
 import square.Square;
 import square.WallPart;
-import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
 
 /**
  * Builder for the grid objects of a board game. The board consists of
@@ -54,11 +54,11 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new light grenade will be placed.
-	 * @throws CannotPlaceItemException
+	 * @throws GridBuildException
 	 *         When the item cannot be placed at the specified coordinate, i.e.
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeLightGrenade(Coordinate coordinate) throws CannotPlaceItemException;
+	void placeLightGrenade(Coordinate coordinate) throws GridBuildException;
 	
 	/**
 	 * Place a new {@link UnchargedIdentityDisk uncharged identity disc} on the
@@ -66,11 +66,11 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new identity disc will be placed
-	 * @throws CannotPlaceItemException
+	 * @throws GridBuildException
 	 *         When the item cannot be placed at the specified coordinate, i.e.
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeUnchargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException;
+	void placeUnchargedIdentityDisc(Coordinate coordinate) throws GridBuildException;
 	
 	/**
 	 * Place a new {@link ChargedIdentityDisk charged identity disc} on the
@@ -78,11 +78,11 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new identity disc will be placed
-	 * @throws CannotPlaceItemException
+	 * @throws GridBuildException
 	 *         When the item cannot be placed at the specified coordinate, i.e.
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException;
+	void placeChargedIdentityDisc(Coordinate coordinate) throws GridBuildException;
 	
 	/**
 	 * Place a new {@link Teleporter teleporter} at the specified coordinate
@@ -98,11 +98,11 @@ public interface GridBuilder {
 	 *        The coordinate where the new teleporter will be placed
 	 * @param to
 	 *        The coordinate which will be set as the destination
-	 * @throws CannotPlaceItemException
+	 * @throws GridBuildException
 	 *         When the item cannot be placed at the specified coordinate, i.e.
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeTeleporter(Coordinate from, Coordinate to) throws CannotPlaceItemException;
+	void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException;
 	
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This

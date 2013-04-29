@@ -16,7 +16,7 @@ import square.Square;
 @SuppressWarnings("javadoc")
 public class DeterministicDirectorTest {
 	
-	TronGridBuilder	builder;
+	private TronGridBuilder	builder;
 	
 	@Before
 	public void setUp() {

@@ -7,7 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuppressWarnings("javadoc")
 @RunWith(Suite.class)
 @SuiteClasses({ DeterministicDirectorTest.class, FileDirectorTest.class,
-		RandomDirectorTest.class })
+		RandomDirectorTest.class, TronGridBuilderTest.class})
 public class GridBuilderTestSuite {
 	
 }

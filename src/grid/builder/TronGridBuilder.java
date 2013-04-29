@@ -15,7 +15,6 @@ import square.Direction;
 import square.PlayerStartingPosition;
 import square.Square;
 import square.WallPart;
-import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
@@ -25,8 +24,8 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
  */
 public class TronGridBuilder implements GridBuilder {
 	
-	Map<Coordinate, ASquare>		grid;
-	HashMap<Coordinate, Teleporter>	teleporters;
+	private Map<Coordinate, ASquare>		grid;
+	private HashMap<Coordinate, Teleporter>	teleporters;
 	private int						numberOfSquares;
 	
 	/**
@@ -73,31 +72,31 @@ public class TronGridBuilder implements GridBuilder {
 	}
 	
 	@Override
-	public void placeLightGrenade(Coordinate coordinate) throws CannotPlaceItemException {
+	public void placeLightGrenade(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
 		grid.get(coordinate).addItem(new LightGrenade());
 	}
 	
 	@Override
-	public void placeUnchargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
+	public void placeUnchargedIdentityDisc(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
 		grid.get(coordinate).addItem(new UnchargedIdentityDisk());
 	}
 	
 	@Override
-	public void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
+	public void placeChargedIdentityDisc(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
 		grid.get(coordinate).addItem(new ChargedIdentityDisk());
 	}
 	
 	@Override
-	public void placeTeleporter(Coordinate from, Coordinate to) throws CannotPlaceItemException {
+	public void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException {
 		Teleporter start = getTeleporter(from);
 		Teleporter destination = getTeleporter(to);
 		
@@ -125,9 +124,9 @@ public class TronGridBuilder implements GridBuilder {
 		return setTeleporter(coordinate);
 	}
 	
-	private Teleporter setTeleporter(Coordinate coordinate) throws CannotPlaceItemException {
+	private Teleporter setTeleporter(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException("Cannot place a teleporter on " + coordinate);
+			throw new GridBuildException("Cannot place a teleporter on " + coordinate);
 		
 		ASquare square = grid.get(coordinate);
 		Teleporter rv = new Teleporter(null, square);

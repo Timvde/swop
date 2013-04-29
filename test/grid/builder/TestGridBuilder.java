@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import ObjectronExceptions.builderExceptions.CannotPlaceItemException;
+import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
  * An implementation of the {@link GridBuilder} interface to test the
@@ -64,40 +64,40 @@ public class TestGridBuilder implements GridBuilder {
 	
 	@Override
 	public void addPlayerStartingPosition(Coordinate coordinate) {
+		if (wallParts.contains(coordinate))
+			throw new IllegalArgumentException("This coordinate is already occupied by a wall");
 		if (!playerStartingPositions.add(coordinate))
 			throw new IllegalArgumentException("There's already a playerstart at this coordinate");
-		if (squares.contains(coordinate) || wallParts.contains(coordinate))
-			throw new IllegalArgumentException("This coordinate is already used");
 	}
 	
 	@Override
-	public void placeLightGrenade(Coordinate coordinate) throws CannotPlaceItemException {
+	public void placeLightGrenade(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		if (!LGList.add(coordinate))
 			throw new IllegalArgumentException("There's already a LG at this coordinate");
 	}
 	
 	@Override
-	public void placeUnchargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
+	public void placeUnchargedIdentityDisc(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		if (!IDList.add(coordinate))
 			throw new IllegalArgumentException("There's already an IDdisk at this coordinate");
 	}
 	
 	@Override
-	public void placeChargedIdentityDisc(Coordinate coordinate) throws CannotPlaceItemException {
+	public void placeChargedIdentityDisc(Coordinate coordinate) throws GridBuildException {
 		if (!canPlaceItem(coordinate))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		if (!CIDList.add(coordinate))
 			throw new IllegalArgumentException("There's already an CIDdisk at this coordinate");
 	}
 	
 	@Override
-	public void placeTeleporter(Coordinate from, Coordinate to) throws CannotPlaceItemException {
+	public void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException {
 		if (!canPlaceItem(from) || !canPlaceItem(to))
-			throw new CannotPlaceItemException();
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		if (teleporters.put(from, to) != null)
 			throw new IllegalArgumentException("Theres already a teleporter on this coordinates");
 	}

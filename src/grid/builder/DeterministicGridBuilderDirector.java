@@ -96,4 +96,13 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 			// TODO do we need support for powerfailures?
 		}
 	}
+	
+	/**
+	 * Returns a random coordinate on the test grid.
+	 * 
+	 * @return a random coordinate on the test grid
+	 */
+	public Coordinate getRandomCoordinateOnTestGrid() {
+		return Coordinate.random(PREDIFINED_GRID_SIZE, PREDIFINED_GRID_SIZE);
+	}
 }
