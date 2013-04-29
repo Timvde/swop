@@ -29,21 +29,12 @@ import ObjectronExceptions.ItemNotOnSquareException;
  */
 public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
 	
-	/** The maximum number of actions a Player is allowed to do in one turn */
-	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 3;
-	
-	/**
-	 * The number of actions that a player loses if he is standing on a power
-	 * failured square at the start of his turn.
-	 */
-	private static final int		POWER_FAILURE_PENALTY_AT_START_TURN	= 1;
-	
 	/**
 	 * The id of the player, not really used, but hey ... let's do something
 	 * crazy FIXME DO we stil need the id? in GUI?
 	 */
 	private int						id;
-	private static AtomicInteger	nextID								= new AtomicInteger();
+	private static AtomicInteger	nextID	= new AtomicInteger();
 	
 	/** The number of actions the player has left during this turn */
 	private int						allowedNumberOfActionsLeft;
@@ -81,7 +72,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
-		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
 	}
@@ -129,43 +119,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/* ############## ActionHistory related methods ############## */
 	
 	/**
-	 * This method will under normal circumstances increase the allowed number
-	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}.
-	 * 
-	 * When this player is on a power failured square, the number of actions
-	 * lost will be {@value #POWER_FAILURE_PENALTY_AT_START_TURN}.
-	 * 
-	 * This method is called by the {@link PlayerDataBase} when it assigns the
-	 * next player.
-	 */
-	// only the DB should assign turns --> package access
-	void assignNewTurn() {
-		// rest the turn related properties
-		this.resetHasMoved();
-		this.setPlayerState(PlayerState.ACTIVE);
-		
-		// increase the number of actions left by the number of actions per turn
-		// this cannot be more then the max number of actions
-		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
-				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
-		
-		// If the player is on a square with a power failure, it receives a
-		// penalty
-		if (this.getCurrentLocation().hasPowerFailure()) {
-			/*
-			 * decrease the allowed number of actions by the right amount (do
-			 * not use the method skipNumberOfActions() as this will call
-			 * checkEndTurn() and thus the checkEndTurn() below might throw an
-			 * exception
-			 */
-			this.allowedNumberOfActionsLeft -= POWER_FAILURE_PENALTY_AT_START_TURN;
-		}
-		
-		// allowed nb actions could be <= 0 because of penalties
-		checkEndTurn();
-	}
-	
-	/**
 	 * Called when this player performed an action, his allowed number of
 	 * actions must drop by one.
 	 * 
@@ -179,24 +132,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public int getAllowedNumberOfActions() {
-		return this.allowedNumberOfActionsLeft;
+		return playerDB.getAllowedNumberOfActions(this);
 	}
 	
 	@Override
 	public void skipNumberOfActions(int numberOfActionsToSkip) {
-		this.allowedNumberOfActionsLeft -= numberOfActionsToSkip;
-		checkEndTurn();
-	}
-	
-	/**
-	 * This method checks if a player has any actions left. If not, it ends its
-	 * turn.
-	 */
-	private void checkEndTurn() {
-		if (getAllowedNumberOfActions() <= 0) {
-			// this method will return if it's not this player's turn
-			playerDB.endPlayerTurn(this);
-		}
+		playerDB.skipNumberOfActions(this, numberOfActionsToSkip);
 	}
 	
 	@Override
@@ -218,7 +159,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * 
 	 * Postcondition: {@link #hasMoved this.hasMoved()} = false
 	 */
-	private void resetHasMoved() {
+	void resetHasMoved() {
 		this.hasMoved = false;
 	}
 	
@@ -252,11 +193,11 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * Returns the current state the player is in. (For testing purposes)
+	 * Returns the current state the player is in.
 	 * 
 	 * @return The current state the player is in.
 	 */
-	PlayerState getPlayerState() {
+	public PlayerState getPlayerState() {
 		return this.state;
 	}
 	

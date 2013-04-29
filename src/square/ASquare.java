@@ -5,12 +5,13 @@ import item.IItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 import player.IPlayer;
 
 /**
  * This class defines objects that represent a location on a Grid.
  */
-public abstract class ASquare implements ISquare {
+public abstract class ASquare implements ISquare, Observer {
 	
 	/** a map of the squares adjacent to this square */
 	private Map<Direction, ASquare>	neighbours;

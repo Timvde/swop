@@ -15,7 +15,6 @@ public class PowerFailure {
 	
 	private List<ASquare>	squares	= new ArrayList<ASquare>();
 	
-	// The time to live is 3 on creation
 	private int				timeToLive;
 	
 	/**

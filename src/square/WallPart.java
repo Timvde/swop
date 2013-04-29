@@ -4,6 +4,7 @@ import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import player.IPlayer;
 import player.Player;
 
@@ -118,5 +119,10 @@ public class WallPart extends ASquare {
 	@Override
 	public String toString() {
 		return "w ";
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// Wallparts don't have to do anything
 	}
 }
