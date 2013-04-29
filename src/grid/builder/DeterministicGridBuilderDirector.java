@@ -88,7 +88,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 				PREDIFINED_GRID_SIZE - 1));
 		
 		if (usePowerfailure) {
-			//TODO power failures
+			//TODO do we need support for powerfailures?
 		}
 	}
 }
