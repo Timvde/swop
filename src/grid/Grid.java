@@ -1,5 +1,7 @@
 package grid;
 
+import grid.builder.GridBuilder;
+import grid.builder.GridBuilderDirector;
 import item.IItem;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +30,10 @@ public class Grid implements IGrid, Observer {
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
+	 * 
+	 * <br>
+	 * <b>One should not use this constructor. Use a {@link GridBuilder builder}
+	 * and a {@link GridBuilderDirector director} instead.<b>
 	 * 
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
@@ -73,8 +79,8 @@ public class Grid implements IGrid, Observer {
 	@Override
 	public String toString() {
 		String str = "";
-			for (int i = 0; i < getHeight(); i++) {
-				for (int j = 0; j < getWidth(); j++) {
+		for (int i = 0; i < getHeight(); i++) {
+			for (int j = 0; j < getWidth(); j++) {
 				if (grid.get(new Coordinate(j, i)) == null)
 					str += "  ";
 				else

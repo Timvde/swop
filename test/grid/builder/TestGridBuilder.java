@@ -105,8 +105,7 @@ public class TestGridBuilder implements GridBuilder {
 	@Override
 	public boolean canPlaceItem(Coordinate coordinate) {
 		return coordinate != null
-				&& (this.squares.contains(coordinate) || this.playerStartingPositions
-						.contains(coordinate));
+				&& (this.squares.contains(coordinate));
 	}
 	
 	@Override

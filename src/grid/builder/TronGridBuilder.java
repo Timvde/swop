@@ -140,7 +140,8 @@ public class TronGridBuilder implements GridBuilder {
 	 * Returns whether an {@link IItem item} can be placed on the grid. The
 	 * constraints for a <i>TronGrid</i> are: <li>One cannot place an item when
 	 * there's no square on that coordinate. <li>One cannot place an item on a
-	 * {@link WallPart}.
+	 * {@link WallPart}. <li>One cannot place an item on a
+	 * {@link PlayerStartingPosition}.
 	 */
 	@Override
 	public boolean canPlaceItem(Coordinate coordinate) {
@@ -149,6 +150,8 @@ public class TronGridBuilder implements GridBuilder {
 		if (!grid.containsKey(coordinate))
 			return false;
 		else if (grid.get(coordinate) instanceof WallPart)
+			return false;
+		else if (grid.get(coordinate) instanceof PlayerStartingPosition)
 			return false;
 		else
 			return true;
