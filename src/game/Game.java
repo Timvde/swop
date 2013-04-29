@@ -12,6 +12,7 @@ import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
+import square.ASquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -78,11 +79,9 @@ public class Game implements Observer {
 	 */
 	public void setGrid(Grid grid) {
 		this.grid = grid;
-		// Grid must be notified of player switching to update the power
-		// failures
-		this.playerDB.addObserver(grid);
 		
-		// TODO is this method used for testing purposes??
+		for (ASquare square : grid.getGrid().values())
+			this.playerDB.addObserver(square);
 	}
 	
 	/**
@@ -134,8 +133,8 @@ public class Game implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
-			this.handlePlayerDataBaseEvent((PlayerDataBase) o, (PlayerState) arg);
+		if (o instanceof PlayerDataBase && arg.equals(TurnEvent.END_GAME)) {
+			this.handleEndGameEvent((PlayerDataBase) o);
 		}
 		// else do nothing; return
 	}
@@ -149,16 +148,20 @@ public class Game implements Observer {
 	 *        the {@link PlayerState} of the player whos turn is ended
 	 * @param db
 	 */
-	private void handlePlayerDataBaseEvent(PlayerDataBase db, PlayerState endedPlayerState) {
-		// only interested in finished or lost states; ignore active/waiting
-		// states
-		switch (endedPlayerState) {
+	private void handleEndGameEvent(PlayerDataBase db) {
+		switch (db.getCurrentPlayer().getPlayerState()) {
 			case FINISHED:
 				this.endGameWithWinner(db.getCurrentPlayer());
 				break;
 			
 			case LOST:
 				this.endGameWithLoser(db.getCurrentPlayer());
+				break;
+			default:
+				// only interested in finished or lost states; ignore
+				// active/waiting
+				// states
+				break;
 		}
 	}
 	
