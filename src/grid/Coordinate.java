@@ -191,7 +191,7 @@ public class Coordinate {
 	}
 	
 	/**
-	 * Returns a list of all the neighbours of this square. A square
+	 * Returns a list of all neigbouring coordinates.
 	 * 
 	 * @return A list of neighbours: all Coordinates in this list will have
 	 *         {@link #isNeighbour(Coordinate) isNeighbour(this)} == true

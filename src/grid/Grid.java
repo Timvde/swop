@@ -1,5 +1,7 @@
 package grid;
 
+import grid.builder.GridBuilder;
+import grid.builder.GridBuilderDirector;
 import item.IItem;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,15 +20,15 @@ public class Grid implements IGrid {
 	/**
 	 * Create a new grid with a specified grid and player map.
 	 * 
+	 * <br>
+	 * <b>One should not use this constructor. Use a {@link GridBuilder builder}
+	 * and a {@link GridBuilderDirector director} instead.<b>
+	 * 
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
-	 * @param players
-	 *        a map that maps each player to its coordinate on the grid
-	 * 
-	 * 
 	 */
-	Grid(Map<Coordinate, ASquare> grid) {
+	public Grid(Map<Coordinate, ASquare> grid) {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;
@@ -84,13 +86,13 @@ public class Grid implements IGrid {
 	public int getHeight() {
 		Set<Coordinate> gridCoords = grid.keySet();
 		
-		int maxRowNum = 0;
+		int maxYCoord = 0;
 		for (Coordinate c : gridCoords) {
-			if (c.getY() > maxRowNum)
-				maxRowNum = c.getY();
+			if (c.getY() > maxYCoord)
+				maxYCoord = c.getY();
 		}
 		
-		return maxRowNum + 1;
+		return maxYCoord + 1;
 	}
 	
 	/**
@@ -101,13 +103,13 @@ public class Grid implements IGrid {
 	public int getWidth() {
 		Set<Coordinate> gridCoords = grid.keySet();
 		
-		int maxColNum = 0;
+		int maxXCoord = 0;
 		for (Coordinate c : gridCoords) {
-			if (c.getX() > maxColNum)
-				maxColNum = c.getX();
+			if (c.getX() > maxXCoord)
+				maxXCoord = c.getX();
 		}
 		
-		return maxColNum + 1;
+		return maxXCoord + 1;
 	}
 	
 	@Override

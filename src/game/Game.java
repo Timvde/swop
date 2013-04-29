@@ -1,14 +1,13 @@
 package game;
 
-import java.util.List;
-import grid.Coordinate;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.builder.FileGridBuilderDirector;
+import grid.builder.RandomGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import gui.GUI;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
@@ -97,7 +96,37 @@ public class Game implements Observer {
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		List<Player> players = playerDB.createNewDB();
-		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
+		
+		// TODO give a list of the created playerstartingpositions to the Db &&
+		// make all the squares observer of the db
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
+		director.setHeight(height);
+		director.setWidth(width);
+		director.construct();
+		
+		grid = builder.getResult();
+		this.setGrid(this.grid);
+		this.guiDataCont.setGrid(this.grid);
+		this.gui.draw(this.grid);
+	}
+	
+	/**
+	 * Start a new game that is read from a file.
+	 * 
+	 * @param file
+	 *        The file the grid is located in.
+	 */
+	public void newGameFromFile(String file) {
+		System.out.println("Creating new game from file: " + file);
+		List<Player> players = playerDB.createNewDB();
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
+		director.construct();
+		
+		grid = builder.getResult();
 		this.setGrid(this.grid);
 		this.guiDataCont.setGrid(this.grid);
 		this.gui.draw(this.grid);
@@ -121,8 +150,6 @@ public class Game implements Observer {
 	 * @param db
 	 */
 	private void handleEndGameEvent(PlayerDataBase db) {
-		// only interested in finished or lost states; ignore active/waiting
-		// states
 		switch (db.getCurrentPlayer().getPlayerState()) {
 			case FINISHED:
 				this.endGameWithWinner(db.getCurrentPlayer());
@@ -132,6 +159,9 @@ public class Game implements Observer {
 				this.endGameWithLoser(db.getCurrentPlayer());
 				break;
 			default:
+				// only interested in finished or lost states; ignore
+				// active/waiting
+				// states
 				break;
 		}
 	}
