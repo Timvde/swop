@@ -68,14 +68,6 @@ public interface IPlayer extends TronObject {
 	public int getAllowedNumberOfActions();
 	
 	/**
-	 * This method lets the player lose a specified number of actions.
-	 * 
-	 * @param numberOfActionsToSkip
-	 *        The number of actions this player will skip
-	 */
-	public void skipNumberOfActions(int numberOfActionsToSkip);
-	
-	/**
 	 * Return whether or not this player has already done a move action during
 	 * this turn.
 	 * 
