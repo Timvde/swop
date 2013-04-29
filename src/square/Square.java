@@ -5,8 +5,11 @@ import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Random;
 import player.IPlayer;
 import player.Player;
+import player.TurnEvent;
 
 /**
  * A Square represents a place on a grid, which a player can stand on, as long
@@ -25,6 +28,8 @@ public class Square extends ASquare {
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
 	private PowerFailure	powerFailure;
+	private static float	POWER_FAILURE_CHANCE	= 0.02F;
+	private static boolean	ENABLE_POWER_FAILURE	= true;
 	
 	/**
 	 * Default constructor.
@@ -100,7 +105,7 @@ public class Square extends ASquare {
 	@Override
 	public IItem pickupItem(int ID) {
 		// try and retrieve the item
-		// only items that are carryable can be picked up!
+		// only items that are carriable can be picked up
 		for (IItem itemOnSquare : this.getCarryableItems())
 			if (ID == itemOnSquare.getId()) {
 				this.remove(itemOnSquare);
@@ -146,6 +151,37 @@ public class Square extends ASquare {
 			throw new IllegalArgumentException("The player cannot be added to this square!");
 		this.player = player;
 		this.executeEffect(player);
+	}
+	
+	/**
+	 * Enable or disable power failures.
+	 * 
+	 * @param enabled
+	 *        True if we want power failures in the game, false otherwise. By
+	 *        default, power failures will exist.
+	 */
+	public static void enablePowerFailures(boolean enabled) {
+		ENABLE_POWER_FAILURE = enabled;
+	}
+	
+	/**
+	 * This method updates all power failure related things.
+	 * 
+	 * <pre>
+	 * - Current power failures will lose a TTL counter and be removed
+	 *   if it drops to zero
+	 * - This Square has a chance of {@value #POWER_FAILURE_CHANCE} creating a new power failure
+	 * </pre>
+	 */
+	public void updatePowerFailures() {
+		if (powerFailure != null)
+			powerFailure.decreaseTimeToLive();
+		
+		if (ENABLE_POWER_FAILURE) {
+			Random rand = new Random();
+			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
+				addPowerFailure(new PowerFailure(this));
+		}
 	}
 	
 	@Override
@@ -235,5 +271,20 @@ public class Square extends ASquare {
 			out = (hasPowerFailure() ? "p " : "s ");
 		
 		return out;
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof TurnEvent) {
+			switch ((TurnEvent) arg) {
+				case END_ACTION:
+					break;
+				case END_TURN:
+					updatePowerFailures();
+					break;
+				default:
+					break;
+			}
+		}
 	}
 }
