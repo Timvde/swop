@@ -38,7 +38,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * <li>numbers: starting position of the players</li>
 	 * <li>x: walls</li>
 	 * <li>l: light grenades</li>
-	 * <li>t: teleporters (these teleport to the square right above)</li>
+	 * <li>t: teleporters (these teleport to each other)</li>
 	 * <li>d: destination of the teleporters</li>
 	 * <li>F: Power failure</li>
 	 * <li>u: Uncharged Identity disc</li>
@@ -49,12 +49,12 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * |  |  |  | F| F| F|  | u|  | 2|
 	 * |  |  |  | F| F| F|  |  |  |  |
 	 * |  |  |  | F| F| F|  | l|  |t1|
-	 * |  |  |  |  |  |  |  |  |  |d2|
+	 * |  |  |  |  |  |  |  |  |  |  |
 	 * |  |  |  |  |  |  |  |  |  |  |
 	 * |  |  |  |  | x| x| x| x| x|  |
 	 * |  |  |  |  |  |  |  | l|  |  |
 	 * |t2|  | l|  |  |  |  |  | l|  |
-	 * |d1|  |  |  |  | l| l| l| l|  |
+	 * |  |  |  |  |  | l| l| l| l|  |
 	 * | 1|  | u|  |  |  |  |  |  |  |
 	 * -------------------------------
 	 * </pre>
@@ -87,8 +87,13 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.addPlayerStartingPosition(new Coordinate(PREDIFINED_GRID_SIZE - 1,
 				PREDIFINED_GRID_SIZE - 1));
 		
+		Coordinate t1 = new Coordinate(PREDIFINED_GRID_SIZE - 1, 2);
+		Coordinate t2 = new Coordinate(0, PREDIFINED_GRID_SIZE - 3);
+		builder.placeTeleporter(t1, t2);
+		builder.placeTeleporter(t2, t1);
+		
 		if (usePowerfailure) {
-			//TODO do we need support for powerfailures?
+			// TODO do we need support for powerfailures?
 		}
 	}
 }
