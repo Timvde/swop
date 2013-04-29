@@ -81,7 +81,6 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * the grid-specific variables will be cleared.
 	 */
 	private void resetCreatedGrid() {
-		// clear the builder data structure
 		builder.createNewEmptyGrid();
 		this.walls = new ArrayList<Wall>();
 		this.numberOfWallParts = 0;
@@ -95,8 +94,6 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++)
 				builder.addSquare(new Coordinate(i, j));
-		// TODO if we add all squares here, the GB may not throw an exception if
-		// we put a wall over it...
 		
 		// place walls on the grid
 		int maxNumberOfWallParts = (int) Math.ceil(width * height * MAXIMUM_WALL_NUMBER_PERCENTAGE);
@@ -117,11 +114,11 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * @return number of walls
 	 */
 	private int getNumberOfWallParts() {
-		int i = 0;
+		int result = 0;
 		for (Wall wall : walls) {
-			i += getWallPositions(wall.getStart(), wall.getEnd()).size();
+			result += getWallPositions(wall.getStart(), wall.getEnd()).size();
 		}
-		return i;
+		return result;
 	}
 	
 	/**

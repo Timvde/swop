@@ -181,7 +181,7 @@ public class TronGridBuilder implements GridBuilder {
 		for (int i = neighbours.size() - 1; i >= 0; i--) {
 			// Grid doesn't contain this neighbour or a player can't be added to
 			// this square
-			if (!(grid.containsKey(neighbours.get(i))))
+			if (!grid.containsKey(neighbours.get(i)))
 				neighbours.remove(i);
 			else if (!grid.get(neighbours.get(i)).canAddPlayer())
 				neighbours.remove(i);

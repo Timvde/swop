@@ -117,7 +117,7 @@ public interface GridBuilder {
 	boolean canPlaceItem(Coordinate coordinate);
 	
 	// TODO maybe we need a canPlaceIDdisk method... instead of doing the
-	// "coordinate already contains" check a the director
+	// "coordinate already contains" check at the director
 	
 	/**
 	 * Returns all neighbours of a specified coordinate, where one can directly

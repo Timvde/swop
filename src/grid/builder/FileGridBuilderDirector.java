@@ -58,7 +58,6 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * the grid-specific variables will be cleared.
 	 */
 	private void resetCreatedGrid() {
-		// clear the builder data structure
 		builder.createNewEmptyGrid();
 		this.startingCoordinates = new ArrayList<Coordinate>();
 	}
@@ -76,10 +75,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	public void construct() throws InvalidGridFileException {
 		resetCreatedGrid();
 		
-		// read the file from the grid and get their starting positions
 		GridDimension gridDim = readGridFromFile();
-		
-		// place the items on the board
 		placeItemsOnBoard(startingCoordinates, gridDim.getWidth(), gridDim.getHeight());
 		
 		checkGridAdheresRules();

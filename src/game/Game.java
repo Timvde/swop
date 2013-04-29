@@ -12,6 +12,7 @@ import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
+import player.TurnEvent;
 import square.ASquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;

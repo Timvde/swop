@@ -67,7 +67,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			builder.addPlayerStartingPosition(coordinate);
 		}
 		placeLightGrenades(startingCoordinates, maxX, maxY);
-		Map<Coordinate, Coordinate> teleporters = placeTeleporters(startingCoordinates, maxX, maxY);
+		Map<Coordinate, Coordinate> teleporters = placeTeleporters(maxX, maxY);
 		placeIdentityDisks(startingCoordinates, teleporters, maxX, maxY);
 	}
 	
@@ -119,14 +119,13 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * @return a map of teleporter locations and their destinations (because
 	 *         they are needed to calculate the shortest path).
 	 */
-	private Map<Coordinate, Coordinate> placeTeleporters(List<Coordinate> startingCoordinates,
-			int maxX, int maxY) {
+	private Map<Coordinate, Coordinate> placeTeleporters(int maxX, int maxY) {
 		int numberOfToPlaceTeleporters = (int) Math.ceil(builder.getNumberOfSquares()
 				* PERCENTAGE_OF_TELEPORTERS);
 		Set<Coordinate> teleporterLocations = new HashSet<Coordinate>();
 		while (teleporterLocations.size() < numberOfToPlaceTeleporters) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position) && !startingCoordinates.contains(position)) {
+			if (builder.canPlaceItem(position)) {
 				teleporterLocations.add(position);
 			}
 		}
@@ -169,8 +168,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 		while (numberOfToPlaceIdentityDisks > 0) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
 			if (builder.canPlaceItem(position)
-					&& !placedIdentityDisksCoordinates.contains(position)
-					&& !startingCoordinates.contains(position)) {
+					&& !placedIdentityDisksCoordinates.contains(position)) {
 				builder.placeUnchargedIdentityDisc(position);
 				numberOfToPlaceIdentityDisks--;
 				placedIdentityDisksCoordinates.add(position);
@@ -185,7 +183,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			
 			while (!CIDCoords.isEmpty()) {
 				CIDCoord = CIDCoords.get(rand.nextInt(CIDCoords.size()));
-				if (builder.canPlaceItem(CIDCoord) && !startingCoordinates.contains(CIDCoord))
+				if (builder.canPlaceItem(CIDCoord))
 					break;
 				
 				// We couldn't place it
