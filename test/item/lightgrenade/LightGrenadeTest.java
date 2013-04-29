@@ -52,14 +52,14 @@ public class LightGrenadeTest {
 	@Test(expected = IllegalStateException.class)
 	public void testExecuteInactiveIllegalState_IllegalState() {
 		// one cannot execute an inexploded lightgrenade
-		lightGrenade.execute(affectedPlayer);
+		lightGrenade.getEffect().execute(affectedPlayer);
 	}
 	
 	@Test(expected = IllegalStateException.class)
 	public void testExecuteActiveIllegalState() throws CannotPlaceLightGrenadeException {
 		activateLightGrenade();
 		// one cannot execute an active lightgrenade
-		lightGrenade.execute(affectedPlayer);
+		lightGrenade.getEffect().execute(affectedPlayer);
 	}
 	
 	@Test

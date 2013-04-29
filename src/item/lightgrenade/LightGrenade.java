@@ -83,7 +83,7 @@ public class LightGrenade extends Item {
 	 *         current state:
 	 *         <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
 	 */
-	private void explode() throws IllegalStateException {
+	public void explode() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'exploded'");
@@ -114,30 +114,6 @@ public class LightGrenade extends Item {
 		this.enable();
 		
 		System.out.println("Lightgrenade enabled.");
-	}
-	
-	@Override
-	public void addToEffect(Effect effect) {
-		if (this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)) {
-			effect.addItem(this);
-		}
-	}
-	
-	@Override
-	public void execute(TronObject object) {
-		// Test whether this light grenade can explode
-		if (!this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED))
-			return;
-		
-		// Test whether the specified object can explode
-		if (object.asExplodable() == null)
-			throw new IllegalArgumentException("The specified object cannot explode");
-		
-		// explode
-		object.asExplodable().skipNumberOfActions(damage);
-		this.explode();
-		
-		System.out.println("Lightgrenade exploded. Damage done: " + damage);
 	}
 	
 	/**
@@ -207,5 +183,10 @@ public class LightGrenade extends Item {
 		 *         is allowed.
 		 */
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
+	}
+
+	@Override
+	public Effect getEffect() {
+		return new ExplodeEffect(this);
 	}
 }

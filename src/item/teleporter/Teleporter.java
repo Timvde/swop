@@ -3,7 +3,6 @@ package item.teleporter;
 import item.Effect;
 import item.Item;
 import square.ASquare;
-import square.TronObject;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -58,29 +57,6 @@ public class Teleporter extends Item {
 	}
 	
 	/**
-	 * Teleport the specified object to the destination square. If the object
-	 * cannot be {@link Teleportable teleported}, nothing will happen.
-	 * 
-	 * @param object
-	 *        the object that will be teleported
-	 */
-	public void execute(TronObject object) {
-		// If we can teleport, do it ...
-		if (null != object.asTeleportable() && skipNextTeleport == false) {
-			destination.skipNextTeleport = true;
-			object.asTeleportable().teleportTo(destination.square);
-		}
-		// Otherwise we should tell that we have skipped a teleportation
-		else if (null != object.asTeleportable() && skipNextTeleport == true)
-			this.skipNextTeleport = false;
-	}
-	
-	@Override
-	public void addToEffect(Effect effect) {
-		effect.addItem(this);
-	}
-	
-	/**
 	 * Set the destination of this teleporter to a specified destination. This
 	 * operation can only be executed when the destination of the teleporter was
 	 * left blank at initialization. This ensures that the destination of the
@@ -106,8 +82,30 @@ public class Teleporter extends Item {
 		return destination;
 	}
 	
+	/**
+	 * Returns the square where this teleporter is placed on.
+	 * 
+	 * @return the current square
+	 */
+	public ASquare getSquare() {
+		return square;
+	}
+	
+	boolean getSkipNextTeleport() {
+		return skipNextTeleport;
+	}
+	
+	void setSkipNextTeleport(boolean skipNextTurn) {
+		this.skipNextTeleport = skipNextTurn;
+	}
+	
 	@Override
 	public char toChar() {
 		return 't';
+	}
+
+	@Override
+	public Effect getEffect() {
+		return new TeleportationEffect(this);
 	}
 }

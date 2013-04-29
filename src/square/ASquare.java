@@ -104,19 +104,6 @@ public abstract class ASquare implements ISquare, Observer {
 	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
 	
 	/**
-	 * This method removes a player from a square. This method is enforced:
-	 * setPlayer(null) will throw. This is for both readability's sake and to
-	 * prevent errors.
-	 * 
-	 * @deprecated The method {@link #remove(Object)} can be used if a player is
-	 *             to be removed from this square. This method needs a reference
-	 *             to the player, but if you do not have one it is probably not
-	 *             up to you to remove a player from this square ...
-	 */
-	@Deprecated
-	public abstract void removePlayer();
-	
-	/**
 	 * Adds a power failure to this ASquare
 	 * 
 	 * @param powerFailure
