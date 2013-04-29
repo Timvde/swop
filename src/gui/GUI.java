@@ -44,6 +44,15 @@ public class GUI implements Runnable {
 	private Grid					grid				= null;
 	
 	/**
+	 * These variables are used for drawing and remembering the finish
+	 * locations. These depend on the starting positions of the players.
+	 */
+	private static boolean			drewFinish1			= false;
+	private static boolean			drewFinish2			= false;
+	private static Coordinate		finish1;
+	private static Coordinate		finish2;
+	
+	/**
 	 * The following values are not final and will be updated with each redraw,
 	 * depending on the Grid object dimension. These are just temp start values.
 	 */
@@ -82,6 +91,7 @@ public class GUI implements Runnable {
 	private Image					finishRed;
 	private Image					powerfailure;
 	private Image					greenBackground;
+	private Image					squareBackground;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -97,6 +107,12 @@ public class GUI implements Runnable {
 	 */
 	private static TextField		gridWidthTextField;
 	private static TextField		gridHeightTextField;
+	
+	/**
+	 * The grid file textfield that needs to be a static instance field for
+	 * refferal reasons.
+	 */
+	private static TextField		gridFileTextField;
 	
 	/**
 	 * Offsets that determine where the top left position of the grid will be.
@@ -136,7 +152,7 @@ public class GUI implements Runnable {
 	 */
 	public void run() {
 		// These initial width and height only show the New Game button.
-		this.gui = new AGUI("Objectron  |  Groep 9", 140, 85) {
+		this.gui = new AGUI("Objectron  |  Groep 9", 140, 160) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
@@ -146,8 +162,8 @@ public class GUI implements Runnable {
 					
 					// Draw some labels:
 					graphics.drawString("x", 64, 35);
-					graphics.drawString("items on square:", 10, 236);
-					graphics.drawString("items in inventory:", 10, 364);
+					graphics.drawString("items on square:", 10, 316);
+					graphics.drawString("items in inventory:", 10, 444);
 					graphics.drawString("CURRENT PLAYER:", 550, 19);
 					graphics.drawString(guiDataController.getCurrentPlayer().getID() + "", 666, 19);
 					graphics.drawString("ACTIONS LEFT:", 550, 32);
@@ -160,8 +176,8 @@ public class GUI implements Runnable {
 					
 					int GUIheight = 100 + (SQUARE_SIZE * gridHeight);
 					int GUIwidth = 180 + (SQUARE_SIZE * gridWidth);
-					if (GUIheight < 530)
-						GUIheight = 530;
+					if (GUIheight < 610)
+						GUIheight = 610;
 					if (GUIwidth < 720)
 						GUIwidth = 720;
 					
@@ -177,16 +193,28 @@ public class GUI implements Runnable {
 						}
 					}
 					
-					// Draw the two finish squares:
-					Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
-					Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
-					graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-							guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-					graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
-							guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-					
 					// Populate the grid squares with the correct images:
 					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
+					
+					// draw the square backgrounds. This is done in a seperate
+					// loop for layering reasons.
+					for (Coordinate c : gridCoords) {
+						Coordinate guiCoord = toGUIGridCoord(c);
+						
+						graphics.drawImage(squareBackground, guiCoord.getX() + 1,
+								guiCoord.getY() + 1, SQUARE_SIZE - 1, SQUARE_SIZE - 1, null);
+					}
+					
+					// Draw the finish lines if they are known already
+					if (drewFinish1 && drewFinish2) {
+						Coordinate finishBlueCoord = finish1;
+						Coordinate finishRedCoord = finish2;
+						
+						graphics.drawImage(finishBlue, toGUIGridCoord(finishBlueCoord).getX(),
+								toGUIGridCoord(finishBlueCoord).getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						graphics.drawImage(finishRed, toGUIGridCoord(finishRedCoord).getX(),
+								toGUIGridCoord(finishRedCoord).getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+					}
 					
 					for (Coordinate c : gridCoords) {
 						ISquare square = guiDataController.getSquareAt(c);
@@ -248,6 +276,16 @@ public class GUI implements Runnable {
 									}
 									graphics.drawImage(playerBlueImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									// Draw and remember the finish of the other
+									// player
+									if (!drewFinish2) {
+										graphics.drawImage(finishRed, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+										
+										drewFinish2 = true;
+										finish2 = c;
+									}
 									break;
 								case 2:
 									if (guiDataController.getCurrentPlayer().getID() == 2) {
@@ -256,6 +294,16 @@ public class GUI implements Runnable {
 									}
 									graphics.drawImage(playerRedImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									// Draw and remember the finish of the other
+									// player
+									if (!drewFinish1) {
+										graphics.drawImage(finishBlue, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+										
+										drewFinish1 = true;
+										finish1 = c;
+									}
 									break;
 								default:
 									break;
@@ -309,6 +357,7 @@ public class GUI implements Runnable {
 		this.powerfailure = gui.loadImage("powerfailure.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
 				SQUARE_SIZE);
+		this.squareBackground = gui.loadImage("square_background.png", SQUARE_SIZE, SQUARE_SIZE);
 		
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
@@ -316,11 +365,15 @@ public class GUI implements Runnable {
 		gridWidthTextField.setText("12");
 		gridHeightTextField.setText("12");
 		
+		// create the grid from file text field
+		gridFileTextField = gui.createTextField(11, 90, 119, 20);
+		gridFileTextField.setText("grid.txt");
+		
 		/* ---- ---- ---- ---- MOVE ARROWS ---- ---- ---- ---- */
 		
 		// Use the two offsets below to move all arrows at once
 		int moveArrowsOffsetX = 10;
-		int moveArrowsOffsetY = 85;
+		int moveArrowsOffsetY = 166;
 		
 		Button upButton = gui.createButton(moveArrowsOffsetX + 40, moveArrowsOffsetY + 0, 40, 40,
 				new Runnable() {
@@ -498,7 +551,7 @@ public class GUI implements Runnable {
 				});
 		useItemButton.setText("Use item");
 		// ----
-		Button newGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
+		Button randomGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
 				120, 30, new Runnable() {
 					
 					public void run() {
@@ -506,9 +559,26 @@ public class GUI implements Runnable {
 						int height = Integer.parseInt(gridHeightTextField.getText());
 						
 						newGameController.newGame(width, height);
+						
+						drewFinish1 = false;
+						drewFinish2 = false;
 					}
 				});
-		newGameButton.setText("New Game");
+		randomGameButton.setText("Rndm Game");
+		// ----
+		Button fileGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 111,
+				120, 30, new Runnable() {
+					
+					public void run() {
+						String fileName = gridFileTextField.getText();
+						
+						newGameController.newGame(fileName);
+						
+						drewFinish1 = false;
+						drewFinish2 = false;
+					}
+				});
+		fileGameButton.setText("File Game");
 		// ----
 		Button endTurnButton = gui.createButton(actionButtonsOffsetX + 400, actionButtonsOffsetY,
 				120, 30, new Runnable() {
@@ -533,7 +603,7 @@ public class GUI implements Runnable {
 		
 		/* ---- ---- ---- ---- LISTS ---- ---- ---- ---- */
 		int listsOffsetX = 10;
-		int listsOffsetY = 240;
+		int listsOffsetY = 320;
 		
 		itemList = gui.createList(listsOffsetX, listsOffsetY, 120, 100, new Runnable() {
 			

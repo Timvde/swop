@@ -1,8 +1,6 @@
 package player;
 
-import grid.Coordinate;
-import grid.Grid;
-import grid.GridBuilder;
+import grid.RandomGridBuilder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +19,7 @@ public class PlayerDBTest {
 		List<Player> players = playerDB.createNewDB();
 		
 		// Needed to initialize the players properly
-		new GridBuilder(players).getPredefinedTestGrid(false);
+		new RandomGridBuilder(players).getPredefinedTestGrid(false);
 	}
 	
 	@Test
