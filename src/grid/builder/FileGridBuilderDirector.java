@@ -140,7 +140,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 *         If the grid doesn't adhere the rules.
 	 */
 	private void checkGridAdheresRules() throws InvalidGridFileException {
-		if (this.startingCoordinates.size() != 2) {
+		if (this.startingCoordinates.size() != NUMBER_OF_PLAYERS) {
 			resetCreatedGrid();
 			throw new InvalidGridFileException("There must be exactly two starting locations.");
 		}

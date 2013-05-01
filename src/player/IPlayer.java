@@ -2,21 +2,16 @@ package player;
 
 import item.Effect;
 import item.IItem;
-import item.lightgrenade.LightGrenade;
 import java.util.List;
 import square.ASquare;
 import square.Direction;
-import square.ISquare;
+import square.PlayerStartingPosition;
 import square.Square;
 import square.TronObject;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalPickUpException;
-import ObjectronExceptions.IllegalStepException;
 import ObjectronExceptions.IllegalUseException;
-import ObjectronExceptions.InventoryFullException;
-import ObjectronExceptions.ItemNotOnSquareException;
 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 
@@ -42,7 +37,7 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the square this player has to reach to win the game.
 	 */
-	public ISquare getStartingPosition();
+	public PlayerStartingPosition getStartingPosition();
 	
 	/**
 	 * Returns the square this player currently stands on.
@@ -82,7 +77,7 @@ public interface IPlayer extends TronObject {
 	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he is
 	 * assigned a starting position (i.e.
 	 * <code>{@link #getStartingPosition()} != null</code>)</li> <li>he has
-	 * performed less then {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his
+	 * performed less then {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his
 	 * current turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code>
 	 * ).</li>
 	 * 

@@ -237,7 +237,7 @@ public class PlayerTest implements Observer {
 		assertEquals(player, db.getCurrentPlayer());
 		assertEquals(PlayerState.ACTIVE, player.getPlayerState());
 		
-		assertEquals(PlayerState.WAITING, db.getOtherPlayer().getPlayerState());
+		assertEquals(PlayerState.WAITING, db.getNextPlayer().getPlayerState());
 	}
 	
 	private void assertIsNotCurrentPlayerTurn() {

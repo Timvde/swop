@@ -216,11 +216,13 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	}
 	
 	/**
-	 * Returns a list of the starting positions
+	 * Returns a list of the player starting positions.
 	 * 
-	 * @return the starting positions for this grid
+	 * @return the player starting positions for this grid.
 	 */
 	private List<Coordinate> getStartingPositions() {
+		// The starting positions are hardcoded at this moment, we can change
+		// this here if needed at some point
 		List<Coordinate> positions = new ArrayList<Coordinate>();
 		positions.add(new Coordinate(0, height));
 		positions.add(new Coordinate(width, 0));

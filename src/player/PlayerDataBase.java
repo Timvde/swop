@@ -7,25 +7,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Set;
 import square.ISquare;
+import square.PlayerStartingPosition;
 import square.Square;
 
 /**
- * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
- * the current player allowed to play. PlayerDataBase is an {@link Observable}
- * and will notify its observers (passing the {@link PlayerState} of the player
- * whos turn is ended as an argument) any time a player switch has occurered.
+ * A class to store {@link Player players}, to appoint the current player
+ * allowed to play and to manage his number of alllowed actions. PlayerDataBase
+ * is an {@link Observable} and will notify its observers (passing the
+ * {@link PlayerState} of the player whos turn is ended as an argument) any time
+ * a player switch has occurered.
  * 
  * {@link Grid} will observe the database in order to update the powerfailured
- * {@link Square}s. {@link Game} ass well will observe the database to be
+ * {@link Square}s. {@link Game} as well will observe the database to be
  * notified when a Player has won/lost the game.
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
-	
-	/**
-	 * The number of players involved in the game.
-	 */
-	public static final int			NUMBER_OF_PLAYERS					= 2;
 	
 	/** The maximum number of actions a Player is allowed to do in one turn */
 	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 3;
@@ -42,35 +40,41 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/**
 	 * Creates a new empty PlayerDataBase. To fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB() createNewDB}. Until
-	 * then the {@link PlayerDataBase#getCurrentPlayer()} method will throw an
-	 * exception.
+	 * one has to call {@link PlayerDataBase#createNewDB(Set) createNewDB}.
+	 * Until then the {@link PlayerDataBase#getCurrentPlayer()} method will
+	 * throw an exception.
 	 */
 	public PlayerDataBase() {
-		this.playerList = new ArrayList<Player>(NUMBER_OF_PLAYERS);
+		this.playerList = new ArrayList<Player>();
 		this.actionsLeft = new HashMap<Player, Integer>();
 	}
 	
 	/**
-	 * This method first clears the current database and then re-fills the
-	 * database with {@value #NUMBER_OF_PLAYERS} newly created {@link Player}s.
-	 * The Players will all have the {@link PlayerState#WAITING} state and will
-	 * have no starting position.
+	 * This method creates a new database with {@link Player players} with the
+	 * specified starting positions. The Players will all have the
+	 * {@link PlayerState#WAITING} state.
 	 * 
-	 * @return The newly created list of players.
+	 * The order of the players is determined by the specified starting
+	 * positions set's iterator and thus is not (necessary) deterministic. The
+	 * first player allowed to play, is the player that is returned first by the
+	 * specified set's iterator.
+	 * 
+	 * @param startingPositions
+	 *        The startingpositions for the players to create.
+	 * 
 	 */
-	public List<Player> createNewDB() {
+	public void createNewDB(Set<PlayerStartingPosition> startingPositions) {
 		Player.resetUniqueIdcounter();
 		this.clearDataBase();
-		for (int i = 0; i < NUMBER_OF_PLAYERS; i++) {
-			Player newPlayer = new Player(this);
+		
+		for (PlayerStartingPosition playerStartingPosition : startingPositions) {
+			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
 			this.actionsLeft.put(newPlayer, 0);
 		}
+		
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
-		
-		return playerList;
 	}
 	
 	@Override
@@ -118,7 +122,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		else {
 			// Switch players and assign a new turn
 			player.setPlayerState(PlayerState.WAITING);
-			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % NUMBER_OF_PLAYERS;
+			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.playerList.size();
 			Player newPlayer = playerList.get(currentPlayerIndex);
 			
 			this.setChanged();
@@ -235,14 +239,14 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-	 * Gets the other player
+	 * Gets the next player
 	 * 
-	 * FOR TESTING PURPOSES ONLY
+	 * <b>FOR TESTING PURPOSES ONLY</b>
 	 * 
 	 * @return The other player
 	 */
-	Player getOtherPlayer() {
-		return playerList.get((currentPlayerIndex + 1) % NUMBER_OF_PLAYERS);
+	Player getNextPlayer() {
+		return playerList.get((currentPlayerIndex + 1) % this.playerList.size());
 	}
 	
 	/**
@@ -252,12 +256,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * @return The finish square of the current player.
 	 */
 	private ISquare getFinishOfCurrentPlayer() {
-		return getOtherPlayer().getStartingPosition();
+		return getNextPlayer().getStartingPosition();
 	}
 	
 	/**
 	 * This method reports the db that the specified player has received a
-	 * {@link StartDocument} position. This means he's ready to
+	 * {@link PlayerStartingPosition position}. This means he's ready to
 	 * {@link Player#assignNewTurn() start playing}.
 	 * 
 	 * @param player
