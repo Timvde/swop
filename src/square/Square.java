@@ -18,11 +18,11 @@ import player.Player;
 public class Square extends ASquare {
 	
 	/** the list of items in this square */
-	private List<IItem>		itemList;
+	private List<IItem>			itemList;
 	/** the player on this square */
-	private IPlayer			player;
+	private IPlayer				player;
 	/** a boolean representing whether there is a light trail on this square */
-	private boolean			lightTrail;
+	private boolean				lightTrail;
 	// Having one PowerFailure object at this moment is enough. Since they all
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
@@ -64,6 +64,17 @@ public class Square extends ASquare {
 	@Override
 	public boolean hasPowerFailure() {
 		return powerFailure != null;
+	}
+	
+	@Override
+	public Direction getDirectionOfNeighbour(ASquare neighbour) {
+		for (Direction dir : Direction.values()) {
+			if (getNeighbour(dir) == neighbour) {
+				return dir;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -161,7 +172,7 @@ public class Square extends ASquare {
 	 * 
 	 * @return power failure
 	 */
-	public PowerFailure getPowerFailure() {
+	public PowerFailure getPowerFailure() { 
 		return this.powerFailure;
 	}
 	
@@ -205,9 +216,9 @@ public class Square extends ASquare {
 	 *        the object to be placed on this square
 	 */
 	private void executeEffect(TronObject object) {
-		Effect effect = new EmptyEffect(); 
+		Effect effect = new EmptyEffect();
 		
-		if (powerFailure != null) 
+		if (powerFailure != null)
 			effect.addEffect(powerFailure.getEffect());
 		
 		for (IItem item : itemList)

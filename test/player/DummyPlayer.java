@@ -4,12 +4,12 @@ import java.util.Collections;
 import player.Player;
 import square.ASquare;
 import square.Direction;
-import square.PowerFailure;
+import square.PrimaryPowerFailure;
 import square.Square;
 
 /**
  * A dummy implementation of {@link Player}. This implementation of player
- * focuses on the testing of the {@link PowerFailure} class. The method
+ * focuses on the testing of the {@link PrimaryPowerFailure} class. The method
  * {@link Player#damageByPowerFailure()} is overwritten for testing purposes.
  * 
  */

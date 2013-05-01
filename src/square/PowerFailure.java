@@ -1,53 +1,37 @@
 package square;
 
 import item.Effect;
-import item.lightgrenade.ExplodeEffect;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * This class represents a power failure. This is a state a square can be in
- * with the following properties: - If a Square is power failured, its
- * neighbours are, too -
  * 
+ * @author tom
+ *
  */
-public class PowerFailure {
+public abstract class PowerFailure {
 	
-	private List<ASquare>	squares	= new ArrayList<ASquare>();
+	/** The square this powerfailure affects */
+	private ASquare	square;
 	
-	// The time to live is 3 on creation
-	private int				timeToLive;
+	/** The time this powerfailure still has to live. This is counted as actions or turns,
+	 * depending on what kind of powerfailure.
+	 */
+	protected int timeToLive; 
 	
 	/**
-	 * Create a power failure for a given square. This will also impact the
-	 * neigbhours of the specified square.
+	 * Create a new powerfailure that is active on the given square.
 	 * 
-	 * @param square
-	 *        The square that is impacted by this power failure.
+	 * @param square The square this powerfailure will affect.
 	 */
 	public PowerFailure(ASquare square) {
-		squares = new ArrayList<ASquare>();
-		
 		if (square instanceof Square) {
 			square.addPowerFailure(this);
-			squares.add(square);
+			this.square = square;
 		}
-		
-		// add a power failure for the neighbours of the square
-		for (Direction direction : Direction.values())
-			if (square.getNeighbour(direction) != null) {
-				if (square.getNeighbour(direction) instanceof Square) {
-					square.getNeighbour(direction).addPowerFailure(this);
-					squares.add(square.getNeighbour(direction));
-				}
-			}
-		
-		timeToLive = 3;
 	}
 	
 	/**
-	 * When a turn ends, a PowerFailure has to decrease the number of turns left
-	 * it is power failured. When it is set to zero, the power failure will be
+	 * When a turn ends, a PowerFailure has to decrease the number of turns or
+	 * actions left it is power failured. When it is set to zero, the power failure will be
 	 * released.
 	 */
 	public void decreaseTimeToLive() {
@@ -55,8 +39,30 @@ public class PowerFailure {
 			timeToLive--;
 		// No else if, timeToLive could be 1 before and 0 now.
 		if (timeToLive == 0)
-			for (ASquare square : squares)
-				square.removePowerFailure(this);
+			this.square.removePowerFailure(this);
+	}
+	
+	/**
+	 * Return the time to live for this powerfailure. This can be counted as actions
+	 * or turns, depending on the kind of powerfailure.
+	 */
+	@SuppressWarnings("javadoc")
+	public int getTimeToLive() {
+		return this.timeToLive;
+	}
+	
+	/**
+	 * Return the square this powerfailure is located on.
+	 */
+	protected ASquare getSquare() {
+		return this.square;
+	}
+	
+	/**
+	 * Set the square this powerfailure is located on.
+	 */
+	protected void setSquare(ASquare square) {
+		this.square = square;
 	}
 	
 	/**

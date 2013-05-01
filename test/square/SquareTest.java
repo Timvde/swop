@@ -128,7 +128,7 @@ public class SquareTest {
 		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
 		neighbours.put(Direction.NORTH, square);
 		Square sq = new Square(neighbours);
-		PowerFailure powerFailure = new PowerFailure(sq);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(sq);
 		
 		// test if both squares suffer from power failures
 		assertTrue(square.hasPowerFailure());
@@ -148,14 +148,14 @@ public class SquareTest {
 	
 	@Test
 	public void testRemovePowerFailure() {
-		PowerFailure powerFailure = new PowerFailure(square);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
 		
 		// null arguments should not be remove
 		square.removePowerFailure(null);
 		assertEquals(powerFailure, square.getPowerFailure());
 		
 		// other power failures should also not remove the current power failure
-		square.removePowerFailure(new PowerFailure(new Square(Collections
+		square.removePowerFailure(new PrimaryPowerFailure(new Square(Collections
 				.<Direction, ASquare> emptyMap())));
 		assertEquals(powerFailure, square.getPowerFailure());
 		
@@ -266,7 +266,7 @@ public class SquareTest {
 		Square newSquare = new Square(Collections.<Direction, ASquare> emptyMap());
 		
 		// create a square with power failure
-		new PowerFailure(newSquare);
+		new PrimaryPowerFailure(newSquare);
 		
 		// start testing
 		// when the player moves onto the square, he will suffer from this. He

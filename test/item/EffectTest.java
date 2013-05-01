@@ -13,7 +13,7 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
 import square.ASquare;
 import square.Direction;
-import square.PowerFailure;
+import square.PrimaryPowerFailure;
 import square.Square;
 
 @SuppressWarnings("javadoc")
@@ -44,7 +44,7 @@ public class EffectTest {
 	@Test
 	public void testAddPowerFailure() {
 		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
-		PowerFailure powerFailure = new PowerFailure(square);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
 		
 		effect.addPowerFailure(powerFailure);
 		effect.execute();
@@ -97,7 +97,7 @@ public class EffectTest {
 		
 		// add a power failure to the effect
 		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
-		PowerFailure powerFailure = new PowerFailure(square);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
 		effect.addPowerFailure(powerFailure);
 		
 		// execute the effect

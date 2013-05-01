@@ -12,7 +12,7 @@ import java.util.Set;
 import player.PlayerDataBase;
 import square.ASquare;
 import square.ISquare;
-import square.PowerFailure;
+import square.PrimaryPowerFailure;
 import square.Square;
 import square.WallPart;
 
@@ -139,7 +139,7 @@ public class Grid implements IGrid, Observer {
 	 * </pre>
 	 */
 	public void updatePowerFailures() {
-		for (PowerFailure failure : getAllPowerFailures())
+		for (PrimaryPowerFailure failure : getAllPowerFailures())
 			failure.decreaseTimeToLive();
 		
 		if (ENABLE_POWER_FAILURE) {
@@ -161,11 +161,11 @@ public class Grid implements IGrid, Observer {
 	 */
 	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
 		if (grid.containsKey(coordinate))
-			new PowerFailure(grid.get(coordinate));
+			new PrimaryPowerFailure(grid.get(coordinate));
 	}
 	
-	private Set<PowerFailure> getAllPowerFailures() {
-		Set<PowerFailure> failures = new HashSet<PowerFailure>();
+	private Set<PrimaryPowerFailure> getAllPowerFailures() {
+		Set<PrimaryPowerFailure> failures = new HashSet<PrimaryPowerFailure>();
 		for (ISquare square : getGrid().values()) {
 			if (square.hasPowerFailure())
 				failures.add(((Square) square).getPowerFailure());

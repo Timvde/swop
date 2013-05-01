@@ -120,6 +120,16 @@ public abstract class ASquare implements ISquare {
 	abstract void removePowerFailure(PowerFailure powerFailure);
 	
 	/**
+	 * Get the direction in which a specific neighbour square is located.
+	 * 
+	 * @param neighbour
+	 *        The neighbour square of which we want the direction to.
+	 * @return Returns the direction where a given neighbour is located. Returns
+	 *         null if the given square is not a neighbour.
+	 */
+	abstract Direction getDirectionOfNeighbour(ASquare neighbour);
+	
+	/**
 	 * This method sets the haslightTrail for this square. <br>
 	 * <br>
 	 * <b>Do NOT use this method.</b> The light trail is automatically updated
@@ -168,7 +178,7 @@ public abstract class ASquare implements ISquare {
 	 */
 	public abstract void remove(Object object);
 	
-	/**
+	/**  
 	 * returns all the items on this square
 	 * 
 	 * @return the items on this square
