@@ -129,7 +129,7 @@ public class Game implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase && arg.equals(TurnEvent.END_GAME)) {
+		if (o instanceof PlayerDataBase && arg == TurnEvent.END_GAME) {
 			this.handleEndGameEvent((PlayerDataBase) o);
 		}
 		// else do nothing; return

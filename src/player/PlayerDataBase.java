@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
+import java.util.SortedSet;
 import square.ISquare;
 import square.PlayerStartingPosition;
 import square.Square;
@@ -64,6 +65,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * 
 	 */
 	public void createNewDB(Set<PlayerStartingPosition> startingPositions) {
+		if (startingPositions == null || startingPositions.size() == 0)
+			throw new IllegalArgumentException(
+					"the specified playerlist cannot be null and must contain at least one position");
+		
 		Player.resetUniqueIdcounter();
 		this.clearDataBase();
 		
@@ -75,6 +80,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
+		assignNewTurn(playerList.get(currentPlayerIndex));
 	}
 	
 	@Override
@@ -222,7 +228,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 					"Looks like the player asking to lose the game hasn't lost after all");
 		}
 		this.setChanged();
-		this.notifyObservers(player.getPlayerState());
+		this.notifyObservers(TurnEvent.END_GAME);
 	}
 	
 	/**
@@ -257,23 +263,5 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	private ISquare getFinishOfCurrentPlayer() {
 		return getNextPlayer().getStartingPosition();
-	}
-	
-	/**
-	 * This method reports the db that the specified player has received a
-	 * {@link PlayerStartingPosition position}. This means he's ready to
-	 * {@link Player#assignNewTurn() start playing}.
-	 * 
-	 * @param player
-	 *        The player reporting he's ready to start playing
-	 */
-	void reportReadyToStart(Player player) {
-		if (player.getCurrentLocation() == null) {
-			throw new IllegalStateException("looks like the player didn't receive start position");
-		}
-		
-		if (player.equals(getCurrentPlayer())) {
-			assignNewTurn(player);
-		}
 	}
 }

@@ -85,12 +85,11 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 *        The square that should be the starting position of this player
 	 */
 	private void setStartingPosition(PlayerStartingPosition square) {
+		if (square == null) {
+			throw new IllegalArgumentException("the given square cannot be null");
+		}
 		this.startSquare = square;
 		this.currentSquare = square;
-		
-		// tell the DB you received a startposition (to tell this player is
-		// ready to start playing)
-		this.playerDB.reportReadyToStart(this);
 	}
 	
 	@Override

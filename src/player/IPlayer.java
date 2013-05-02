@@ -74,12 +74,10 @@ public interface IPlayer extends TronObject {
 	
 	/**
 	 * Returns whether this player can perform an action. A player can perform
-	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he is
-	 * assigned a starting position (i.e.
-	 * <code>{@link #getStartingPosition()} != null</code>)</li> <li>he has
-	 * performed less then {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his
-	 * current turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code>
-	 * ).</li>
+	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he has
+	 * performed less then
+	 * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current
+	 * turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code> ).</li>
 	 * 
 	 * @return whether this player is allowed to perform an action.
 	 */
