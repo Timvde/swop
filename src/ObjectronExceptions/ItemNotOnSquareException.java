@@ -1,11 +1,11 @@
 package ObjectronExceptions;
 
-import square.Square;
+import square.NormalSquare;
 import item.Item;
 
 /**
  * Thrown to indicate the specified {@link Item} to pickup on a specified
- * {@link Square} is not on the square.
+ * {@link NormalSquare} is not on the square.
  */
 public class ItemNotOnSquareException extends IllegalPickUpException {
 	

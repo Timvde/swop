@@ -2,9 +2,9 @@ package item.identitydisk;
 
 import item.Item;
 import item.teleporter.Teleportable;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 import square.TronObject;
 
 /**
@@ -19,11 +19,11 @@ import square.TronObject;
  */
 public abstract class IdentityDisk extends Item implements Teleportable {
 	
-	private ASquare		currentSquare;
+	private AbstractSquare		currentSquare;
 	private Direction	direction;
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(AbstractSquare square) {
 		if (direction == null)
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
@@ -86,13 +86,13 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	}
 	
 	@Override
-	public void teleportTo(ASquare destination) {
+	public void teleportTo(AbstractSquare destination) {
 		if (destination == null)
 			throw new IllegalArgumentException("Cannot teleport to null!");
 		
 		if (currentSquare != null)
 			currentSquare.remove(this);
-		currentSquare = (Square) destination;
+		currentSquare = (NormalSquare) destination;
 		currentSquare.addItem(this);
 	}
 	

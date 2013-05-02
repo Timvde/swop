@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
@@ -68,7 +68,7 @@ public class TronGridBuilderTest {
 		
 		for (int i = 0; i < 100; i++) {
 			Coordinate squarePosition = director.getRandomCoordinateOnTestGrid();
-			ASquare square = builder.getResult().getSquareAt(squarePosition);
+			AbstractSquare square = builder.getResult().getSquareAt(squarePosition);
 			
 			// calculate reachable neigbours of square
 			List<Coordinate> neigbours = new ArrayList<Coordinate>();

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class PowerFailure {
 	
-	private List<ASquare>	squares	= new ArrayList<ASquare>();
+	private List<AbstractSquare>	squares	= new ArrayList<AbstractSquare>();
 	
 	private int				timeToLive;
 	
@@ -31,10 +31,10 @@ public class PowerFailure {
 	 * @param square
 	 *        The square that is impacted by this power failure.
 	 */
-	public PowerFailure(ASquare square) {
-		squares = new ArrayList<ASquare>();
+	public PowerFailure(AbstractSquare square) {
+		squares = new ArrayList<AbstractSquare>();
 		
-		if (square instanceof Square) {
+		if (square instanceof NormalSquare) {
 			square.addPowerFailure(this);
 			squares.add(square);
 		}
@@ -42,7 +42,7 @@ public class PowerFailure {
 		// add a power failure for the neighbours of the square
 		for (Direction direction : Direction.values())
 			if (square.getNeighbour(direction) != null) {
-				if (square.getNeighbour(direction) instanceof Square) {
+				if (square.getNeighbour(direction) instanceof NormalSquare) {
 					square.getNeighbour(direction).addPowerFailure(this);
 					squares.add(square.getNeighbour(direction));
 				}
@@ -61,7 +61,7 @@ public class PowerFailure {
 			timeToLive--;
 		// No else if, timeToLive could be 1 before and 0 now.
 		if (timeToLive == 0)
-			for (ASquare square : squares)
+			for (AbstractSquare square : squares)
 				square.removePowerFailure(this);
 	}
 	

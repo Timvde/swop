@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import square.ISquare;
 import square.Square;
+import square.NormalSquare;
 
 /**
  * A class to store {@value #NUMBER_OF_PLAYERS} {@link Player}s and to appoint
@@ -17,7 +17,7 @@ import square.Square;
  * whos turn is ended as an argument) any time a player switch has occurered.
  * 
  * {@link Grid} will observe the database in order to update the powerfailured
- * {@link Square}s. {@link Game} ass well will observe the database to be
+ * {@link NormalSquare}s. {@link Game} ass well will observe the database to be
  * notified when a Player has won/lost the game.
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
@@ -251,7 +251,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * 
 	 * @return The finish square of the current player.
 	 */
-	private ISquare getFinishOfCurrentPlayer() {
+	private Square getFinishOfCurrentPlayer() {
 		return getOtherPlayer().getStartingPosition();
 	}
 	

@@ -1,6 +1,6 @@
 package player;
 
-import square.ISquare;
+import square.Square;
 
 /**
  * PlayerState controls the actions of a player. A player can only perform

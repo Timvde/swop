@@ -4,7 +4,7 @@ import grid.Coordinate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import square.ASquare;
+import square.AbstractSquare;
 
 /**
  * LightTrail is an impenetrable wall (for other players) which trails the
@@ -18,7 +18,7 @@ import square.ASquare;
 public class LightTrail {
 	
 	/** the lightTrail of the player */
-	private LinkedList<ASquare>	lightTrail;
+	private LinkedList<AbstractSquare>	lightTrail;
 	
 	/** the maximum length of this light trail */
 	private static final int	MAXIMUM_LENGTH	= 3;
@@ -28,7 +28,7 @@ public class LightTrail {
 	 * lightTrail will be zero.
 	 */
 	public LightTrail() {
-		lightTrail = new LinkedList<ASquare>();
+		lightTrail = new LinkedList<AbstractSquare>();
 	}
 	
 	/**
@@ -44,10 +44,10 @@ public class LightTrail {
 	 *        the new square which the light trail should cover
 	 * @throws IllegalArgumentException
 	 *         if the specified coordinate is not a
-	 *         {@link #isValidNewSquare(ASquare) valid} new coordinate for this
+	 *         {@link #isValidNewSquare(AbstractSquare) valid} new coordinate for this
 	 *         lightTrail
 	 */
-	public void updateLightTrail(ASquare currentSquare) throws IllegalArgumentException {
+	public void updateLightTrail(AbstractSquare currentSquare) throws IllegalArgumentException {
 		if (!isValidNewSquare(currentSquare))
 			throw new IllegalArgumentException(
 					"the specified square could not be added to the lightTrail!");
@@ -70,7 +70,7 @@ public class LightTrail {
 	 * @return whether the new coordinate can be set as a new part of the
 	 *         lightTrail
 	 */
-	public boolean isValidNewSquare(ASquare currentSquare) {
+	public boolean isValidNewSquare(AbstractSquare currentSquare) {
 		// null cannot be added to the list
 		if (currentSquare == null)
 			return false;
@@ -110,7 +110,7 @@ public class LightTrail {
 	 * 
 	 * @return a list of the squares
 	 */
-	List<ASquare> getLightTrailSquares() {
-		return new ArrayList<ASquare>(lightTrail);
+	List<AbstractSquare> getLightTrailSquares() {
+		return new ArrayList<AbstractSquare>(lightTrail);
 	}
 }

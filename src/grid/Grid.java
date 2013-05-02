@@ -8,14 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import square.ASquare;
+import square.AbstractSquare;
 
 /**
- * A grid that consists of abstract {@link ASquare squares}.
+ * A grid that consists of abstract {@link AbstractSquare squares}.
  */
 public class Grid implements IGrid {
 	
-	private Map<Coordinate, ASquare>	grid;
+	private Map<Coordinate, AbstractSquare>	grid;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -28,7 +28,7 @@ public class Grid implements IGrid {
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
 	 */
-	public Grid(Map<Coordinate, ASquare> grid) {
+	public Grid(Map<Coordinate, AbstractSquare> grid) {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;
@@ -49,8 +49,8 @@ public class Grid implements IGrid {
 	 * 
 	 * @return returns the grid
 	 */
-	public Map<Coordinate, ASquare> getGrid() {
-		return new HashMap<Coordinate, ASquare>(grid);
+	public Map<Coordinate, AbstractSquare> getGrid() {
+		return new HashMap<Coordinate, AbstractSquare>(grid);
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public ASquare getSquareAt(Coordinate coordinate) {
+	public AbstractSquare getSquareAt(Coordinate coordinate) {
 		return grid.get(coordinate);
 	}
 	

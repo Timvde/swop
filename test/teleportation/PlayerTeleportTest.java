@@ -11,23 +11,23 @@ import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 import player.PlayerDataBase;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class PlayerTeleportTest {
 	
-	private Square	start;
-	private Square	destination;
+	private NormalSquare	start;
+	private NormalSquare	destination;
 	private Player	player;
 	
 	@Before
 	public void setUp() throws Exception {
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
-		start = new Square(neighbours);
-		destination = new Square(neighbours);
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, ASquare>();
+		start = new NormalSquare(neighbours);
+		destination = new NormalSquare(neighbours);
 		PlayerDataBase db = new PlayerDataBase();
 		db.createNewDB();
 		player = (Player) db.getCurrentPlayer();
@@ -53,6 +53,6 @@ public class PlayerTeleportTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testTeleportation_wallArgument() {
-		player.teleportTo(new WallPart(new HashMap<Direction, ASquare>()));
+		player.teleportTo(new WallPart(new HashMap<Direction, AbstractSquare>()));
 	}
 }

@@ -11,14 +11,14 @@ import player.Player;
 /**
  * A class that represents a part of a wall.
  */
-public class WallPart extends ASquare {
+public class WallPart extends AbstractSquare {
 	
 	/**
 	 * Create a new wall part 
 	 * @param neighbours
 	 * 	the neighbours of this square
 	 */
-	public WallPart(Map<Direction, ASquare> neighbours) {
+	public WallPart(Map<Direction, AbstractSquare> neighbours) {
 		super(neighbours);
 	}
 	
@@ -49,13 +49,7 @@ public class WallPart extends ASquare {
 	public boolean hasPlayer() {
 		return false;
 	}
-	
-	@Override
-	public void removePlayer() {
-		throw new UnsupportedOperationException(
-				"Can not remove a player on a wallpart! No players are supposed to be on it.");
-	}
-	
+
 	@Override
 	public boolean hasPowerFailure() {
 		return false;

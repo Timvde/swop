@@ -11,7 +11,7 @@ import item.teleporter.Teleporter;
 import org.junit.Before;
 import org.junit.Test;
 import square.PlayerStartingPosition;
-import square.Square;
+import square.NormalSquare;
 
 @SuppressWarnings("javadoc")
 public class DeterministicDirectorTest {
@@ -63,7 +63,7 @@ public class DeterministicDirectorTest {
 	}
 	
 	private Teleporter getTeleporterAtLocation(Coordinate coordinate) {
-		Square teleporterLocation1 = (Square) builder.getResult().getSquareAt(coordinate);
+		NormalSquare teleporterLocation1 = (NormalSquare) builder.getResult().getSquareAt(coordinate);
 		
 		for (IItem item : teleporterLocation1.getAllItems()) {
 			if (item instanceof Teleporter) {

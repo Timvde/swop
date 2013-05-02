@@ -8,14 +8,14 @@ import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.List;
 import ObjectronExceptions.builderExceptions.GridBuildException;
-import square.ASquare;
-import square.Square;
+import square.AbstractSquare;
+import square.NormalSquare;
 import square.WallPart;
 
 /**
  * Builder for the grid objects of a board game. The board consists of
- * {@link ASquare abstract squares} , each square can be a {@link WallPart wall}
- * or a {@link Square square}. {@link IItem Items} can be placed on these
+ * {@link AbstractSquare abstract squares} , each square can be a {@link WallPart wall}
+ * or a {@link NormalSquare square}. {@link IItem Items} can be placed on these
  * squares.
  */
 public interface GridBuilder {
@@ -26,7 +26,7 @@ public interface GridBuilder {
 	void createNewEmptyGrid();
 	
 	/**
-	 * Add a {@link Square square} at the specified coordinate.
+	 * Add a {@link NormalSquare square} at the specified coordinate.
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new square will be placed
@@ -132,7 +132,7 @@ public interface GridBuilder {
 	List<Coordinate> getAllReachableNeighboursOf(Coordinate coordinate);
 	
 	/**
-	 * Returns the number of {@link Square squares} on the currently constructed
+	 * Returns the number of {@link NormalSquare squares} on the currently constructed
 	 * Grid.
 	 * 
 	 * @return number of squares on the grid

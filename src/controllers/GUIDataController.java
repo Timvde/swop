@@ -7,7 +7,7 @@ import grid.Coordinate;
 import grid.Grid;
 import player.IPlayer;
 import player.PlayerDataBase;
-import square.ISquare;
+import square.Square;
 
 /**
  * The gui data controller that will fetch data from the game, for creating the GUI visuals.
@@ -63,7 +63,7 @@ public class GUIDataController {
 	 */
 	@SuppressWarnings("javadoc")
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
-		ISquare currSq = getCurrentPlayer().getCurrentLocation();
+		Square currSq = getCurrentPlayer().getCurrentLocation();
 		return currSq.getCarryableItems();
 	}
 	
@@ -86,7 +86,7 @@ public class GUIDataController {
 	 * @return An abstract square object that lies on the given coordinate on
 	 *         the grid. TODO wat als coordinate niet in grid??
 	 */
-	public ISquare getSquareAt(Coordinate c) {
+	public Square getSquareAt(Coordinate c) {
 		return grid.getSquareAt(c);
 	}
 	

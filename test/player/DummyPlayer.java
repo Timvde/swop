@@ -2,10 +2,10 @@ package player;
 
 import java.util.Collections;
 import player.Player;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
 import square.PowerFailure;
-import square.Square;
+import square.NormalSquare;
 
 /**
  * A dummy implementation of {@link Player}. This implementation of player

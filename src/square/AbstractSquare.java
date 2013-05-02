@@ -11,10 +11,10 @@ import player.IPlayer;
 /**
  * This class defines objects that represent a location on a Grid.
  */
-public abstract class ASquare implements ISquare, Observer {
+public abstract class AbstractSquare implements Square, Observer {
 	
 	/** a map of the squares adjacent to this square */
-	private Map<Direction, ASquare>	neighbours;
+	private Map<Direction, AbstractSquare>	neighbours;
 	
 	/**
 	 * Create a new abstract square with specified neighbours, after this method
@@ -33,7 +33,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 * @param neighbours
 	 *        the neighbours of this square
 	 */
-	public ASquare(Map<Direction, ASquare> neighbours) {
+	public AbstractSquare(Map<Direction, AbstractSquare> neighbours) {
 		
 		// check if the parameter is valid
 		if (!canHaveAsNeighbours(neighbours))
@@ -41,7 +41,7 @@ public abstract class ASquare implements ISquare, Observer {
 					"the specified neighbours could not be set as the neighbours for this square!");
 		
 		// set the neighbours as the neighbours for this square
-		this.neighbours = new HashMap<Direction, ASquare>(neighbours);
+		this.neighbours = new HashMap<Direction, AbstractSquare>(neighbours);
 		
 		// for each neighbour of this square, set this square as the neighbour
 		// in the opposite direction
@@ -58,7 +58,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 *        the neighbours to be tested
 	 * @return true if the neighours can be set for this square, else false
 	 */
-	private boolean canHaveAsNeighbours(Map<Direction, ASquare> neighbours) {
+	private boolean canHaveAsNeighbours(Map<Direction, AbstractSquare> neighbours) {
 		if (neighbours == null)
 			return false;
 		return true;
@@ -104,20 +104,7 @@ public abstract class ASquare implements ISquare, Observer {
 	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
 	
 	/**
-	 * This method removes a player from a square. This method is enforced:
-	 * setPlayer(null) will throw. This is for both readability's sake and to
-	 * prevent errors.
-	 * 
-	 * @deprecated The method {@link #remove(Object)} can be used if a player is
-	 *             to be removed from this square. This method needs a reference
-	 *             to the player, but if you do not have one it is probably not
-	 *             up to you to remove a player from this square ...
-	 */
-	@Deprecated
-	public abstract void removePlayer();
-	
-	/**
-	 * Adds a power failure to this ASquare
+	 * Adds a power failure to this AbstractSquare
 	 * 
 	 * @param powerFailure
 	 *        The power failure to add
@@ -169,7 +156,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 *        the direction of the neighbour
 	 * @return the neighbour in the specified direction
 	 */
-	public ASquare getNeighbour(Direction direction) {
+	public AbstractSquare getNeighbour(Direction direction) {
 		return neighbours.get(direction);
 	}
 	

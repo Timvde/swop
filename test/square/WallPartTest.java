@@ -14,7 +14,7 @@ public class WallPartTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		wall = new WallPart(Collections.<Direction, ASquare> emptyMap());
+		wall = new WallPart(Collections.<Direction, AbstractSquare> emptyMap());
 	}
 	
 	@Test
@@ -49,11 +49,6 @@ public class WallPartTest {
 	@Test(expected = UnsupportedOperationException.class)
 	public void addPlayer() {
 		wall.addPlayer(new DummyPlayer());
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void removePlayer() {
-		wall.removePlayer();
 	}
 	
 	@Test

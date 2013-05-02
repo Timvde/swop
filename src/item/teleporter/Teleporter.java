@@ -2,7 +2,7 @@ package item.teleporter;
 
 import item.Effect;
 import item.Item;
-import square.ASquare;
+import square.AbstractSquare;
 import square.TronObject;
 
 /**
@@ -16,7 +16,7 @@ public class Teleporter extends Item {
 	/** The destination of the teleporter */
 	private Teleporter	destination;
 	/** The square where this teleporter is placed on */
-	private ASquare		square;
+	private AbstractSquare		square;
 	/**
 	 * A boolean that indicates whether this teleporter should skip his next
 	 * teleport. This prevents an infinite loop when we teleport to an other
@@ -36,13 +36,13 @@ public class Teleporter extends Item {
 	 * @param square
 	 *        the square where this teleporter is placed on
 	 */
-	public Teleporter(Teleporter destination, ASquare square) {
+	public Teleporter(Teleporter destination, AbstractSquare square) {
 		this.destination = destination;
 		this.square = square;
 	}
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(AbstractSquare square) {
 		throw new UnsupportedOperationException(
 				"A teleporter cannot be pickup and thus be placed on an item by a player !!");
 	}

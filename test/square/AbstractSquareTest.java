@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("javadoc")
-public class ASquareTest {
+public class AbstractSquareTest {
 	
 	@Before
 	public void setUp() throws Exception {
@@ -18,16 +18,16 @@ public class ASquareTest {
 	@Test
 	public void testConstructor() {
 		// make a new empty map, since there is no square
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		// create a new square
-		Square square = new Square(neighbours);
+		NormalSquare square = new NormalSquare(neighbours);
 		// check if there are any neighbours set
 		for (Direction direction : Direction.values())
 			assertNull(square.getNeighbour(direction));
 		
 		// create a new neighbour
 		neighbours.put(Direction.NORTH, square);
-		Square neighbour = new Square(neighbours);
+		NormalSquare neighbour = new NormalSquare(neighbours);
 		
 		// check if the neighbour is set correctly with both squares
 		assertEquals(square, neighbour.getNeighbour(Direction.NORTH));
@@ -36,7 +36,7 @@ public class ASquareTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testConstructor_nullArgument() {
-		new Square(null);
+		new NormalSquare(null);
 	}
 	
 }

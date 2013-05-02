@@ -14,9 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 import player.PlayerDataBase;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 
 @SuppressWarnings("javadoc")
 public class GridTest {
@@ -37,8 +37,8 @@ public class GridTest {
 	@Test
 	public final void testGrid() {
 		// create a new map
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
-		Map<Coordinate, ASquare> map = new HashMap<Coordinate, ASquare>();
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Map<Coordinate, AbstractSquare> map = new HashMap<Coordinate, AbstractSquare>();
 		map.put(new Coordinate(0, 0), square);
 		grid = new Grid(map);
 		

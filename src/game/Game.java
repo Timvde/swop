@@ -13,7 +13,7 @@ import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
 import player.TurnEvent;
-import square.ASquare;
+import square.AbstractSquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -81,7 +81,7 @@ public class Game implements Observer {
 	public void setGrid(Grid grid) {
 		this.grid = grid;
 		
-		for (ASquare square : grid.getGrid().values())
+		for (AbstractSquare square : grid.getGrid().values())
 			this.playerDB.addObserver(square);
 	}
 	

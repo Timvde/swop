@@ -3,7 +3,7 @@ package item.lightgrenade;
 import item.Effect;
 import item.IItem;
 import item.Item;
-import square.ASquare;
+import square.AbstractSquare;
 import square.TronObject;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
@@ -101,7 +101,7 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void use(ASquare square) throws CannotPlaceLightGrenadeException {
+	public void use(AbstractSquare square) throws CannotPlaceLightGrenadeException {
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
