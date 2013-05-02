@@ -26,7 +26,7 @@ public class TronGridBuilder implements GridBuilder {
 	
 	private Map<Coordinate, ASquare>		grid;
 	private HashMap<Coordinate, Teleporter>	teleporters;
-	private int						numberOfSquares;
+	private int								numberOfSquares;
 	
 	/**
 	 * Create a new builder with an empty grid.
@@ -48,8 +48,8 @@ public class TronGridBuilder implements GridBuilder {
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
-		grid.put(coordinate, new Square(neighbours));
-		numberOfSquares++;
+		if (grid.put(coordinate, new Square(neighbours)) == null)
+			numberOfSquares++;
 	}
 	
 	@Override
@@ -58,7 +58,8 @@ public class TronGridBuilder implements GridBuilder {
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
-		grid.put(coordinate, new WallPart(neighbours));
+		if (grid.put(coordinate, new WallPart(neighbours)) != null)
+			numberOfSquares--;
 	}
 	
 	@Override
@@ -67,8 +68,8 @@ public class TronGridBuilder implements GridBuilder {
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
-		grid.put(coordinate, new PlayerStartingPosition(neighbours));
-		numberOfSquares++;
+		if (grid.put(coordinate, new PlayerStartingPosition(neighbours)) == null)
+			numberOfSquares++;
 	}
 	
 	@Override
@@ -206,6 +207,8 @@ public class TronGridBuilder implements GridBuilder {
 			if (teleporter.getDestination() == null)
 				throw new GridBuildException("Some teleporters have no destinations!");
 		}
+		
+		System.out.println("WALLS = " + (grid.size() - numberOfSquares));
 		
 		return new Grid(grid);
 	}

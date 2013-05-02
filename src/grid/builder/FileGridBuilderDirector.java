@@ -129,7 +129,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 			return new GridDimension(numberOfColls, numberOfRows);
 		}
 		catch (IOException e) {
-			throw new GridBuildException("IO error while processing file");
+			throw new GridBuildException("IO error while processing gridfile");
 		}
 	}
 	

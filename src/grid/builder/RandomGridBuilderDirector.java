@@ -224,8 +224,8 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		// The starting positions are hardcoded at this moment, we can change
 		// this here if needed at some point
 		List<Coordinate> positions = new ArrayList<Coordinate>();
-		positions.add(new Coordinate(0, height));
-		positions.add(new Coordinate(width, 0));
+		positions.add(new Coordinate(0, height - 1));
+		positions.add(new Coordinate(width - 1, 0));
 		
 		return positions;
 	}

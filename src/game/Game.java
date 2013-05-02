@@ -77,6 +77,8 @@ public class Game implements Observer {
 	 *        The grid to set.
 	 */
 	public void setGrid(Grid grid) {
+		if (grid == null)
+			throw new IllegalArgumentException("grid cannot be null");
 		this.grid = grid;
 		
 		for (ASquare square : grid.getGrid().values())
@@ -93,7 +95,7 @@ public class Game implements Observer {
 	 */
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-				
+		
 		TronGridBuilder builder = new TronGridBuilder();
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.setHeight(height);
@@ -118,11 +120,11 @@ public class Game implements Observer {
 		
 		startGameWithGrid(builder.getResult());
 	}
-
+	
 	private void startGameWithGrid(Grid grid) {
-		this.setGrid(this.grid);
-		this.guiDataCont.setGrid(this.grid);
-		this.gui.draw(this.grid);
+		this.setGrid(grid);
+		this.guiDataCont.setGrid(grid);
+		this.gui.draw(grid);
 		
 		this.playerDB.createNewDB(grid.getAllStartingPositions());
 	}
