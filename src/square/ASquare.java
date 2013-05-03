@@ -130,7 +130,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 */
 	public Direction getDirectionOfNeighbour(ASquare neighbour) {
 		for (Direction dir : Direction.values()) {
-			if (getNeighbour(dir).equals(neighbour)) {
+			if (getNeighbour(dir) == neighbour) {
 				return dir;
 			}
 		}
@@ -209,4 +209,6 @@ public abstract class ASquare implements ISquare, Observer {
 	 * @return true if a player can be added, else false
 	 */
 	public abstract boolean canAddPlayer();
+	
+	public abstract boolean isWall();
 }
