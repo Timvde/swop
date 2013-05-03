@@ -1,11 +1,11 @@
 package item.lightgrenade;
 
-import square.PowerFailure;
+import square.PrimaryPowerFailure;
 import item.lightgrenade.LightGrenade;
 
 /**
  * A dummy implementation of {@link LightGrenade}. This implementation of this light grenade
- * focuses on the testing of the {@link PowerFailure} class. The method
+ * focuses on the testing of the {@link PrimaryPowerFailure} class. The method
  * {@link LightGrenade#increaseStrength()} is overwritten for testing purposes.
  * 
  */

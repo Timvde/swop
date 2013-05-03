@@ -104,19 +104,6 @@ public abstract class ASquare implements ISquare, Observer {
 	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
 	
 	/**
-	 * This method removes a player from a square. This method is enforced:
-	 * setPlayer(null) will throw. This is for both readability's sake and to
-	 * prevent errors.
-	 * 
-	 * @deprecated The method {@link #remove(Object)} can be used if a player is
-	 *             to be removed from this square. This method needs a reference
-	 *             to the player, but if you do not have one it is probably not
-	 *             up to you to remove a player from this square ...
-	 */
-	@Deprecated
-	public abstract void removePlayer();
-	
-	/**
 	 * Adds a power failure to this ASquare
 	 * 
 	 * @param powerFailure
@@ -132,6 +119,16 @@ public abstract class ASquare implements ISquare, Observer {
 	 *        The power failure to remove
 	 */
 	abstract void removePowerFailure(PowerFailure powerFailure);
+	
+	/**
+	 * Get the direction in which a specific neighbour square is located.
+	 * 
+	 * @param neighbour
+	 *        The neighbour square of which we want the direction to.
+	 * @return Returns the direction where a given neighbour is located. Returns
+	 *         null if the given square is not a neighbour.
+	 */
+	abstract Direction getDirectionOfNeighbour(ASquare neighbour);
 	
 	/**
 	 * This method sets the haslightTrail for this square. <br>
@@ -182,7 +179,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 */
 	public abstract void remove(Object object);
 	
-	/**
+	/**  
 	 * returns all the items on this square
 	 * 
 	 * @return the items on this square

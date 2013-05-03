@@ -51,23 +51,17 @@ public class WallPart extends ASquare {
 	}
 	
 	@Override
-	public void removePlayer() {
-		throw new UnsupportedOperationException(
-				"Can not remove a player on a wallpart! No players are supposed to be on it.");
-	}
-	
-	@Override
 	public boolean hasPowerFailure() {
 		return false;
 	}
 	
 	@Override
-	void addPowerFailure(PowerFailure powerFailure) {
+	void addPowerFailure(PrimaryPowerFailure powerFailure) {
 		throw new UnsupportedOperationException("A WallPart cannot have a power failure.");
 	}
 	
 	@Override
-	void removePowerFailure(PowerFailure powerFailure) {
+	void removePowerFailure(PrimaryPowerFailure powerFailure) {
 		throw new UnsupportedOperationException("A WallPart does not have any power failures.");
 	}
 

@@ -5,7 +5,6 @@ import item.teleporter.Teleportable;
 import square.ASquare;
 import square.Direction;
 import square.Square;
-import square.TronObject;
 
 /**
  * Charged Identity disk can be launched by players on the grid. The disk will
@@ -107,12 +106,6 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	@Override
 	public Teleportable asTeleportable() {
 		return this;
-	}
-	
-	@Override
-	public void execute(TronObject object) {
-		// the object does nothing when an object/player steps on an identity
-		// disk
 	}
 	
 	/**

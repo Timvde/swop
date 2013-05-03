@@ -7,9 +7,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import square.ASquare;
 import square.PlayerStartingPosition;
+import square.ISquare;
+import square.PowerFailure;
+import square.PrimaryPowerFailure;
+import square.Square;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -17,6 +22,8 @@ import square.PlayerStartingPosition;
 public class Grid implements IGrid {
 	
 	private Map<Coordinate, ASquare>	grid;
+	private static final float			POWER_FAILURE_CHANCE	= 0.01F;
+	private boolean						ENABLE_POWER_FAILURE;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -119,8 +126,32 @@ public class Grid implements IGrid {
 	}
 	
 	/**
-	 * Returns a set of all the {@link PlayerStartingPosition startingpositions}
-	 * on the grid.
+	 * <<<<<<< HEAD Returns a set of all the {@link PlayerStartingPosition
+	 * startingpositions} on the grid. ======= This method updates all power
+	 * failure related things.
+	 * 
+	 * <pre>
+	 * - Current power failures will lose a TTL counter and be removed
+	 *   if it drops to zero
+	 * - Each Square has a 5% chance to become power failured
+	 * </pre>
+	 */
+	public void updatePowerFailures() {
+		for (PowerFailure failure : getAllPowerFailures())
+			failure.decreaseTimeToLive();
+		
+		if (ENABLE_POWER_FAILURE) {
+			Random rand = new Random();
+			for (Coordinate coordinate : getGrid().keySet()) {
+				if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
+					addPowerFailureAtCoordinate(coordinate);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Get all the starting positions.
 	 * 
 	 * @return a set of all the startingpositions on the grid.
 	 */
@@ -131,6 +162,27 @@ public class Grid implements IGrid {
 				result.add((PlayerStartingPosition) square);
 		}
 		return result;
+	}
+	
+	/**
+	 * Add a primary powerfailure at the given coordinate. This possibly results
+	 * in the creation of a secondary and tertiary powerfailure.
+	 * 
+	 * @param coordinate
+	 *        The coordinate on which to add a powerfailure.
+	 */
+	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
+		if (grid.containsKey(coordinate))
+			new PrimaryPowerFailure(grid.get(coordinate));
+	}
+	
+	private Set<PowerFailure> getAllPowerFailures() {
+		Set<PowerFailure> failures = new HashSet<PowerFailure>();
+		for (ISquare square : getGrid().values()) {
+			if (square.hasPowerFailure())
+				failures.add(((Square) square).getPowerFailure());
+		}
+		return failures;
 	}
 	
 }

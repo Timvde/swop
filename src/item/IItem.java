@@ -36,27 +36,11 @@ public interface IItem extends TronObject {
 	 */
 	public boolean isCarriable();
 	
-	/**
-	 * This method instructs an Item to tell an Effect if it results in a
-	 * penalty for stepping on it.
-	 * 
-	 * @param effect
-	 *        The Effect which will be used to calculate the penalty
-	 */
-	public void addToEffect(Effect effect);
 	
 	/**
-	 * Executes the functions of the item on a specified object.
+	 * Returns this object as a char. 
 	 * 
-	 * @param object
-	 *        the object that is influenced by this item
-	 */
-	public void execute(TronObject object);
-	
-	/**
-	 * The representation of this item as a character.
-	 * 
-	 * @return A character representing this item.
+	 * @return A character representation of this object.
 	 */
 	public char toChar();
 }

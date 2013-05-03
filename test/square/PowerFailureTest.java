@@ -12,11 +12,11 @@ import player.DummyPlayer;
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
 	
-	private PowerFailure	powerFailure;
+	private PrimaryPowerFailure	powerFailure;
 
 	@Before
 	public void setUp() throws Exception {
-		powerFailure = new PowerFailure(new Square(Collections.<Direction, ASquare> emptyMap()));
+		powerFailure = new PrimaryPowerFailure(new Square(Collections.<Direction, ASquare> emptyMap()));
 	}
 	
 	@Test
@@ -32,7 +32,7 @@ public class PowerFailureTest {
 		neighbours.remove(Direction.NORTH);
 		Square sq3 = new Square(neighbours);
 		
-		PowerFailure pf = new PowerFailure(sq);
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
 		assertEquals(pf, sq.getPowerFailure());
 		assertEquals(pf, sq1.getPowerFailure());
 		assertEquals(pf, sq2.getPowerFailure());
@@ -52,7 +52,7 @@ public class PowerFailureTest {
 		neighbours.remove(Direction.NORTH);
 		Square sq3 = new Square(neighbours);
 		
-		PowerFailure pf = new PowerFailure(sq);
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
 		
 		pf.decreaseTimeToLive();
 		pf.decreaseTimeToLive();

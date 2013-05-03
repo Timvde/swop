@@ -33,12 +33,6 @@ public abstract class Item implements IItem {
 	 */
 	public abstract String toString();
 	
-	@Override
-	public void addToEffect(Effect effect) {
-		// Do nothing by default. This shouldn't be abstract though, some items
-		// really don't have to do anything.
-	}
-	
 	/**
 	 * By default an item is not teleportable, therefore this method returns
 	 * null. Subclasses implementing the teleportable interface should override
@@ -74,8 +68,12 @@ public abstract class Item implements IItem {
 	}
 	
 	/**
-	 * By default, any item returns 'i'. Specific items can overwrite this.
+	 * Returns the effect this item has on an {@link TronObject object}.
+	 * @return the effect of the item
 	 */
+	public abstract Effect getEffect();
+	
+	@Override
 	public char toChar() {
 		return 'i';
 	}
