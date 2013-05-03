@@ -199,6 +199,12 @@ public class GUI implements Runnable {
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
+						// Draw finish lines
+						if (guiDataController.isPlayerStartingPosition(square)) {
+							graphics.drawImage(finish, guiCoord.getX(),
+									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
 						// Draw powerfailures if necessary
 						if (square.hasPowerFailure()) {
 							graphics.drawImage(powerfailure, guiCoord.getX(), guiCoord.getY(),
@@ -242,12 +248,6 @@ public class GUI implements Runnable {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
-						}
-						
-						// Draw finish lines
-						if (guiDataController.isPlayerStartingPosition(square)) {
-							graphics.drawImage(finish, guiCoord.getX(),
-									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
 						// Draw players if necessary, this should happen last.

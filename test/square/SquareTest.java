@@ -97,7 +97,7 @@ public class SquareTest {
 		assertFalse(square.contains(lightGrenade));
 		
 		// add a player to the square
-		square.removePlayer();
+		square.remove(playerOnSquare);
 		square.addPlayer(player);
 		assertTrue(square.contains(player));
 		assertFalse(square.contains(lightGrenade));
@@ -128,20 +128,24 @@ public class SquareTest {
 	
 	@Test
 	public void testHasPowerFailure() {
-		// check if we start clean
-		assertFalse(square.hasPowerFailure());
-		
 		// setup (add a neighbour and create a powerfailure)
 		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
-		neighbours.put(Direction.NORTH, square);
+		for (Direction direction : Direction.values()) {
+			neighbours.put(direction, new Square(Collections.<Direction, ASquare> emptyMap()));
+		}
 		Square sq = new Square(neighbours);
 		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(sq);
 		
-		// test if both squares suffer from power failures
-		assertTrue(square.hasPowerFailure());
+		// test if the primary power failure is set
 		assertTrue(sq.hasPowerFailure());
-		assertEquals(powerFailure, sq.getPowerFailure());
-		assertEquals(powerFailure, square.getPowerFailure());
+		
+		// Test if exactly one of the neighbours has a power failure too
+		int numberOfPowerFailures = 0;
+		for (Direction direction : Direction.values()) {
+			if (neighbours.get(direction).hasPowerFailure())
+				numberOfPowerFailures++;
+		}
+		assertEquals(1,numberOfPowerFailures);
 		
 		// make the power failure run out of lives
 		powerFailure.decreaseTimeToLive();
@@ -149,7 +153,6 @@ public class SquareTest {
 		powerFailure.decreaseTimeToLive();
 		
 		// check the squares again
-		assertFalse(square.hasPowerFailure());
 		assertFalse(sq.hasPowerFailure());
 	}
 	
