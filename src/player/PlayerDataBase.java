@@ -75,7 +75,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
 			this.actionsLeft.put(newPlayer, 0);
-			playerStartingPosition.addPlayer(newPlayer);
 		}
 		
 		// Set the first player as starting player.
