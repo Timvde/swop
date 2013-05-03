@@ -56,12 +56,12 @@ public class WallPart extends ASquare {
 	}
 	
 	@Override
-	void addPowerFailure(PrimaryPowerFailure powerFailure) {
+	void addPowerFailure(PowerFailure powerFailure) {
 		throw new UnsupportedOperationException("A WallPart cannot have a power failure.");
 	}
 	
 	@Override
-	void removePowerFailure(PrimaryPowerFailure powerFailure) {
+	void removePowerFailure(PowerFailure powerFailure) {
 		throw new UnsupportedOperationException("A WallPart does not have any power failures.");
 	}
 

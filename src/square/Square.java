@@ -71,17 +71,6 @@ public class Square extends ASquare {
 		return powerFailure != null;
 	}
 	
-	@Override
-	public Direction getDirectionOfNeighbour(ASquare neighbour) {
-		for (Direction dir : Direction.values()) {
-			if (getNeighbour(dir).equals(neighbour)) {
-				return dir;
-			}
-		}
-		
-		return null;
-	}
-	
 	/**
 	 * returns all the items on this square
 	 * 
@@ -193,7 +182,7 @@ public class Square extends ASquare {
 		if (ENABLE_POWER_FAILURE) {
 			Random rand = new Random();
 			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
-				addPowerFailure(new PowerFailure(this));
+				addPowerFailure(new PrimaryPowerFailure(this));
 		}
 	}
 	

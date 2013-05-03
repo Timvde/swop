@@ -90,6 +90,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 	
 	// TODO dit oproepen als 2 actions gebeurd zijn (rotationCounter nul is
 	// geworden)
+	// TODO PF op muur mag niet etc?
 	private void rotateSecondaryPowerFailure() {
 		// only do the rotation if there is a secondary powerfailure, and if it
 		// is still located on a square.

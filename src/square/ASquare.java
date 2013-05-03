@@ -107,7 +107,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 * Adds a power failure to this ASquare
 	 * 
 	 * @param powerFailure
-	 *        The power failure to add
+	 *        The primary power failure to add
 	 */
 	abstract void addPowerFailure(PowerFailure powerFailure);
 	
@@ -128,7 +128,15 @@ public abstract class ASquare implements ISquare, Observer {
 	 * @return Returns the direction where a given neighbour is located. Returns
 	 *         null if the given square is not a neighbour.
 	 */
-	abstract Direction getDirectionOfNeighbour(ASquare neighbour);
+	public Direction getDirectionOfNeighbour(ASquare neighbour) {
+		for (Direction dir : Direction.values()) {
+			if (getNeighbour(dir).equals(neighbour)) {
+				return dir;
+			}
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * This method sets the haslightTrail for this square. <br>
