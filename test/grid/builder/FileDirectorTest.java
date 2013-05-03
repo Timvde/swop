@@ -10,16 +10,16 @@ public class FileDirectorTest {
 	
 	@Test
 	public void testFileDirector() {
-		TestGridBuilder builder = new TestGridBuilder();
+		DummyGridBuilder builder = new DummyGridBuilder();
 		GridBuilderDirector director = new FileGridBuilderDirector(builder, "grid.txt");
 		director.construct();
 		
-		assertGridHasValidWallsAndItems(builder);
+		builder.assertIsValidGrid();
 	}
 	
 	@Test
 	public void testFileDirectorInvalidInput() {
-		TestGridBuilder builder = new TestGridBuilder();
+		DummyGridBuilder builder = new DummyGridBuilder();
 		boolean exceptionThrown = false;
 		try {
 			new FileGridBuilderDirector(null, "grid.txt");
@@ -52,7 +52,7 @@ public class FileDirectorTest {
 	
 	@Test
 	public void testFileDirectorInvalidGridFile() {
-		TestGridBuilder builder = new TestGridBuilder();
+		DummyGridBuilder builder = new DummyGridBuilder();
 		GridBuilderDirector director = new FileGridBuilderDirector(builder,
 				"grid_invalidCharacter.txt");
 		
@@ -84,14 +84,5 @@ public class FileDirectorTest {
 			exceptionThrown = true;
 		}
 		assertTrue(exceptionThrown);
-	}
-	
-	private void assertGridHasValidWallsAndItems(TestGridBuilder builder) {
-		assertTrue(builder.hasValidLightGrenades());
-		assertTrue(builder.hasValidIDdisks());
-		assertTrue(builder.hasValidTeleporters());
-		assertTrue(builder.hasValidWalls());
-		
-		assertTrue(builder.gridHasValidWallsAndItems());
 	}
 }

@@ -21,7 +21,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	/** The minimum (default) height of the grid. */
 	public static final int		MINIMUM_GRID_HEIGHT				= 10;
 	/** the minimal number of squares in a wall */
-	static final int			MINIMUM_WALL_LENGHT				= 1;
+	static final int			MINIMUM_WALL_LENGHT				= 2;
 	/** the maximal length of a wall as a percentage of the grid's length/width. */
 	static final double			MAXIMUM_WALL_LENGHT_PERCENTAGE	= 0.50;
 	/** the maximal number of walls as a percentage of the nb of sq on the grid */
@@ -31,7 +31,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	private int					width;
 	
 	private Collection<Wall>	walls;
-	private int					numberOfWallParts;
+	private int					numberOfWallPartsToPlace;
 	
 	/**
 	 * Create a new GridBuilderDirector which will use the specified builder to
@@ -47,7 +47,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		this.height = MINIMUM_GRID_HEIGHT;
 		this.width = MINIMUM_GRID_WIDTH;
 		this.walls = new ArrayList<Wall>();
-		this.numberOfWallParts = 0;
+		this.numberOfWallPartsToPlace = 0;
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	private void resetCreatedGrid() {
 		builder.createNewEmptyGrid();
 		this.walls = new ArrayList<Wall>();
-		this.numberOfWallParts = 0;
+		this.numberOfWallPartsToPlace = 0;
 	}
 	
 	@Override
@@ -97,11 +97,11 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		// place walls on the grid
 		int maxNumberOfWallParts = (int) Math.ceil(width * height * MAXIMUM_WALL_NUMBER_PERCENTAGE);
-		this.numberOfWallParts = new Random().nextInt(maxNumberOfWallParts - MINIMUM_WALL_LENGHT
+		this.numberOfWallPartsToPlace = new Random().nextInt(maxNumberOfWallParts - MINIMUM_WALL_LENGHT
 				+ 1)
 				+ MINIMUM_WALL_LENGHT;
 		
-		while (getNumberOfWallParts() < numberOfWallParts)
+		while ((numberOfWallPartsToPlace - getNumberOfWallParts()) >= MINIMUM_WALL_LENGHT)
 			placeNewWall();
 		
 		// place the items on the board
@@ -133,10 +133,10 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		Coordinate start, end;
 		do {
 			start = Coordinate.random(width, height);
-			end = start.getRandomCoordinateWithDistance(wallLength);
-			// Logically, we should do -1 here, but wallLength is a random
-			// excluding the wallLength itself, so it implicitly already
-			// happened.
+			end = start.getRandomCoordinateWithDistance(wallLength - 1);
+			// We should do -1 here, because an end square placed (n)
+			// squares from the start square produces a wall of length
+			// (n+1)
 		} while (!canPlaceWall(start, end));
 		// place the wall on the grid
 		placeWallOnGrid(start, end);
@@ -278,7 +278,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		int maxLength2 = (int) (MAXIMUM_WALL_LENGHT_PERCENTAGE * Math.max(height, width));
 		
-		int maxLenght3 = this.numberOfWallParts - getNumberOfWallParts();
+		int maxLenght3 = this.numberOfWallPartsToPlace - getNumberOfWallParts();
 		
 		return Math.min(Math.min(maxLength, maxLength2), maxLenght3);
 	}
