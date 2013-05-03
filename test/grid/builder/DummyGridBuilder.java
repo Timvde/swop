@@ -59,10 +59,10 @@ public class DummyGridBuilder implements GridBuilder {
 	
 	@Override
 	public void addWall(Coordinate coordinate) {
-		if (!wallParts.add(coordinate))
-			throw new IllegalArgumentException("There's already a wall at this coordinate");
 		if (playerStartingPositions.contains(coordinate))
 			throw new IllegalArgumentException("a startingpos cannot contain a wall");
+		if (!wallParts.add(coordinate))
+			throw new IllegalArgumentException("There's already a wall at this coordinate");
 		// a wall may overwrite a square
 		this.squares.remove(coordinate);
 	}
