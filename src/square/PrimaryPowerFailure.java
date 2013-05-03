@@ -127,11 +127,21 @@ public class PrimaryPowerFailure extends PowerFailure {
 	}
 	
 	@Override
-	void update(TurnEvent event) {
+	void updateStatus(TurnEvent event) {
 		// A turn was ended, so decrease the time to live for this
 		// powerfailure
 		if (event == TurnEvent.END_TURN) {
 			decreaseTimeToLive();
+			
+			// Check if this primary powerfailure ended. If so, remove the
+			// secondary powerfailure, if there is one.
+			if (this.getSquare() == null) {
+				if (this.secondaryPF != null && this.secondaryPF.getSquare() != null) {
+					this.secondaryPF.getSquare().removePowerFailure(this.secondaryPF);
+					this.secondaryPF.setSquare(null);
+					this.secondaryPF = null;
+				}
+			}
 		}
 		
 		// An action was ended. Update the rotation counter and rotate

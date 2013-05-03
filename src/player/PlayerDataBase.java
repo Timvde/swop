@@ -75,6 +75,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
 			this.actionsLeft.put(newPlayer, 0);
+			playerStartingPosition.addPlayer(newPlayer);
 		}
 		
 		// Set the first player as starting player.
@@ -225,8 +226,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * no more actions left, his turn will end.
 	 */
 	void decreaseAllowedNumberOfActions(Player player) {
-		skipNumberOfActions(player, 1);
 		notifyTurnEvent(TurnEvent.END_ACTION);
+		skipNumberOfActions(player, 1);
 	}
 	
 	/**

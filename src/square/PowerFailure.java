@@ -87,5 +87,5 @@ public abstract class PowerFailure {
 	 * @param event
 	 *        The turn event to let the powerfailure know about.
 	 */
-	abstract void update(TurnEvent event);
+	abstract void updateStatus(TurnEvent event);
 }
