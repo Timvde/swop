@@ -81,6 +81,9 @@ public class GUI implements Runnable {
 	private Image					powerfailure;
 	private Image					greenBackground;
 	private Image					squareBackground;
+	private Image					ffGenActive;
+	private Image					ffGenInactive;
+	private Image					forceField;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -201,13 +204,19 @@ public class GUI implements Runnable {
 						
 						// Draw finish lines
 						if (guiDataController.isPlayerStartingPosition(square)) {
-							graphics.drawImage(finish, guiCoord.getX(),
-									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							graphics.drawImage(finish, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
 						// Draw powerfailures if necessary
 						if (square.hasPowerFailure()) {
 							graphics.drawImage(powerfailure, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
+						// Draw force field if necessary
+						if (square.hasForceField()) {
+							graphics.drawImage(forceField, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
@@ -241,6 +250,20 @@ public class GUI implements Runnable {
 								graphics.drawImage(teleporterImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
+							
+							if (i.getClass() == ForceFieldGenerator.class) {
+								ForceFieldGenerator gen = (ForceFieldGenerator) i;
+								
+								if (gen.getState() == ForceFieldState.ACTIVE) {
+									graphics.drawImage(ffGenActive, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+								}
+								if (gen.getState() == ForceFieldState.INACTIVE) {
+									graphics.drawImage(ffGenInactive, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+								}
+							}
+							
 							if (i instanceof ChargedIdentityDisk)
 								graphics.drawImage(chargedIdentityDiskImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
@@ -322,7 +345,9 @@ public class GUI implements Runnable {
 		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
 				SQUARE_SIZE);
 		this.squareBackground = gui.loadImage("square_background.png", SQUARE_SIZE, SQUARE_SIZE);
-		
+		this.ffGenActive = gui.loadImage("ff_generator_active.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.ffGenInactive = gui.loadImage("ff_generator_inactive.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.forceField = gui.loadImage("force_field.png", SQUARE_SIZE, SQUARE_SIZE);
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
 		gridHeightTextField = gui.createTextField(75, 20, 25, 20);
@@ -501,8 +526,7 @@ public class GUI implements Runnable {
 								useItemController.useItem((IItem) inventoryListSelected);
 							}
 							catch (IllegalUseException e) {
-								JOptionPane.showMessageDialog(gui.getFrame(),
-										e.getMessage());
+								JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
 							}
 							inventoryListSelected = null;
 							gui.repaint();
