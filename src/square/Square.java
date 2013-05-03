@@ -45,5 +45,10 @@ public interface Square {
 	 * @return Whether or not this ASquare has a power failure.
 	 */
 	public abstract boolean hasPowerFailure();
+	
+	/** 
+	 * @return Whether or not this ASquare has a force field.
+	 */
+	public boolean hasForceField(); 
 	 
 }

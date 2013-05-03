@@ -136,5 +136,10 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		square.addPlayer(player, effect);
 	}
 	
+	@Override
+	public boolean hasForceField() {
+		return square.hasForceField();
+	}
+	
 	
 }

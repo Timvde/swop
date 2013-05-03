@@ -66,6 +66,30 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 			}
 		}
 	}
-	
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((powerfailure == null) ? 0 : powerfailure.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PowerFailureDecorator other = (PowerFailureDecorator) obj;
+		if (powerfailure == null) {
+			if (other.powerfailure != null)
+				return false;
+		}
+		else if (!powerfailure.equals(other.powerfailure))
+			return false;
+		return true;
+	}
 }

@@ -2,6 +2,7 @@ package grid.builder;
 
 import grid.Coordinate;
 import item.IItem;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -102,6 +103,18 @@ public interface GridBuilder {
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
 	void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException;
+	
+	/**
+	 * Place a new {@link ForceFieldGenerator force field generator} on the
+	 * specified coordinate.
+	 * 
+	 * @param coordinate
+	 *        the coordinate where the new generator will be placed
+	 * @throws GridBuildException
+	 *         When the item cannot be placed at the specified coordinate, i.e.
+	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
+	 */
+	void placeForceFieldGenerator(Coordinate Coordinate) throws GridBuildException;
 	
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This

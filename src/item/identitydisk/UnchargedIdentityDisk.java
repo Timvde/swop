@@ -1,10 +1,10 @@
 package item.identitydisk;
 
+import powerfailure.AffectedByPowerFailure;
 import item.Effect;
 import item.EmptyEffect;
-import square.AbstractSquare;
-import square.AffectedByPowerFailure;
 import square.Direction;
+import square.SquareContainer;
 
 /**
  * Identity disk can be launched by players on the grid. The disk will then
@@ -30,7 +30,7 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 	}
 	
 	@Override
-	public void use(AbstractSquare square) {
+	public void use(SquareContainer square) {
 		super.use(square);
 		range = 4;
 	}

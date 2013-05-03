@@ -1,10 +1,10 @@
 package item;
 
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.Player;
-import square.AbstractSquare;
 import square.NormalSquare;
+import square.SquareContainer;
 import square.TronObject;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
  * An Item is an object that can be placed on a {@link NormalSquare}. Each item has a
@@ -27,7 +27,7 @@ public interface IItem extends TronObject {
 	 *        the square on which the item was used.
 	 * @throws CannotPlaceLightGrenadeException
 	 */
-	public void use(AbstractSquare square) throws CannotPlaceLightGrenadeException;
+	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException;
 	
 	/**
 	 * Return whether or not this item can be picked up by a {@link Player}.

@@ -4,6 +4,7 @@ import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
 import item.Item;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -82,6 +83,8 @@ public class GUI implements Runnable {
 	private Image					powerfailure;
 	private Image					greenBackground;
 	private Image					squareBackground;
+	private Image					generatorInactive;
+	private Image					forceField;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -201,7 +204,7 @@ public class GUI implements Runnable {
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// Draw finish lines
-						if (guiDataController.isPlayerStartingPosition(square)) {
+						if (((AbstractSquare) square).isStartingPosition()) {
 							graphics.drawImage(finish, guiCoord.getX(),
 									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						}
@@ -209,6 +212,12 @@ public class GUI implements Runnable {
 						// Draw powerfailures if necessary
 						if (square.hasPowerFailure()) {
 							graphics.drawImage(powerfailure, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
+						// Draw force fields 
+						if (square.hasForceField()) {
+							graphics.drawImage(forceField, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
@@ -247,6 +256,10 @@ public class GUI implements Runnable {
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							else if (i instanceof IdentityDisk) {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+							if (i instanceof ForceFieldGenerator) {
+								graphics.drawImage(generatorInactive, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
 						}
@@ -323,6 +336,8 @@ public class GUI implements Runnable {
 		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
 				SQUARE_SIZE);
 		this.squareBackground = gui.loadImage("square_background.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.generatorInactive = gui.loadImage("generator_inactive.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.forceField = gui.loadImage("forcefield.png", SQUARE_SIZE, SQUARE_SIZE);
 		
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);

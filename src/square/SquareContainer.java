@@ -20,8 +20,8 @@ import powerfailure.PrimaryPowerFailure;
  */
 public class SquareContainer extends AbstractSquare {
 	
-	private static final boolean					ENABLE_POWER_FAILURE	= false;
-	private static final float						POWER_FAILURE_CHANCE	= 1F;
+	private static final boolean					ENABLE_POWER_FAILURE	= true;
+	private static final float						POWER_FAILURE_CHANCE	= 0.01F;
 	private AbstractSquare							square;
 	private HashMap<Direction, SquareContainer>		neighbours;
 	private Map<Property, AbstractSquareDecorator>	decorators;
@@ -153,6 +153,11 @@ public class SquareContainer extends AbstractSquare {
 	
 	public boolean hasLightTrail() {
 		return square.hasLightTrail();
+	}
+	
+	@Override
+	public boolean hasForceField() {
+		return square.hasForceField();
 	}
 	
 	public boolean contains(Object object) {

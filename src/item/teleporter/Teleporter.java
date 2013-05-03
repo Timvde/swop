@@ -3,6 +3,7 @@ package item.teleporter;
 import item.Effect;
 import item.Item;
 import square.AbstractSquare;
+import square.SquareContainer;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -15,7 +16,7 @@ public class Teleporter extends Item {
 	/** The destination of the teleporter */
 	private Teleporter	destination;
 	/** The square where this teleporter is placed on */
-	private AbstractSquare		square;
+	private SquareContainer		square;
 	/**
 	 * A boolean that indicates whether this teleporter should skip his next
 	 * teleport. This prevents an infinite loop when we teleport to an other
@@ -35,13 +36,13 @@ public class Teleporter extends Item {
 	 * @param square
 	 *        the square where this teleporter is placed on
 	 */
-	public Teleporter(Teleporter destination, AbstractSquare square) {
+	public Teleporter(Teleporter destination, SquareContainer square) {
 		this.destination = destination;
 		this.square = square;
 	}
 	
 	@Override
-	public void use(AbstractSquare square) {
+	public void use(SquareContainer square) {
 		throw new UnsupportedOperationException(
 				"A teleporter cannot be pickup and thus be placed on an item by a player !!");
 	}
@@ -87,7 +88,7 @@ public class Teleporter extends Item {
 	 * 
 	 * @return the current square
 	 */
-	public AbstractSquare getSquare() {
+	public SquareContainer getSquare() {
 		return square;
 	}
 	

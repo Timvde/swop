@@ -3,6 +3,7 @@ package grid.builder;
 import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -94,6 +95,14 @@ public class TronGridBuilder implements GridBuilder {
 			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
 		grid.get(coordinate).addItem(new ChargedIdentityDisk());
+	}
+	
+	@Override
+	public void placeForceFieldGenerator(Coordinate coordinate) throws GridBuildException {
+		if (!canPlaceItem(coordinate))
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
+		
+		grid.get(coordinate).addItem(new ForceFieldGenerator());
 	}
 	
 	@Override

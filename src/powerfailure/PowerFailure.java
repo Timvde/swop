@@ -1,12 +1,11 @@
 package powerfailure;
 
+import item.Effect;
 import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.Property;
-import square.Square;
 import square.SquareContainer;
-import item.Effect;
 
 /**
  * This class represents a powerfailure. A powerfailure can either be a primary
@@ -46,7 +45,7 @@ public abstract class PowerFailure implements Property {
 		if (timeToLive > 0)
 			timeToLive--;
 		// No else if, timeToLive could be 1 before and 0 now.
-		if (timeToLive == 0) {
+		if (timeToLive <= 0 && square != null) {
 			this.square.removeProperty(this);
 			this.square = null;
 		}
@@ -55,8 +54,8 @@ public abstract class PowerFailure implements Property {
 	/**
 	 * Return the time to live for this powerfailure. This can be counted as
 	 * actions or turns, depending on the kind of powerfailure.
+	 * @return the time to live
 	 */
-	@SuppressWarnings("javadoc")
 	public int getTimeToLive() {
 		return this.timeToLive;
 	}

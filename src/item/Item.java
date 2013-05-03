@@ -3,7 +3,7 @@ package item;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
-import square.AffectedByPowerFailure;
+import powerfailure.AffectedByPowerFailure;
 import square.TronObject;
 
 /**

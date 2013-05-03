@@ -6,10 +6,10 @@ import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import powerfailure.AffectedByPowerFailure;
 import square.AbstractSquare;
-import square.AffectedByPowerFailure;
 import square.Direction;
-import square.PlayerStartingPosition;
+import square.NormalSquare;
 import square.Square;
 import square.SquareContainer;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
@@ -91,6 +91,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.startSquare.addPlayer(this);
 		this.currentSquare = square;
 		
+	}
+	
+	
+	@Override 
+	public void setSquare(SquareContainer square) {
+		this.currentSquare = square;
 	}
 	
 	@Override

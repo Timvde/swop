@@ -4,7 +4,6 @@ import item.Item;
 import item.teleporter.Teleportable;
 import square.AbstractSquare;
 import square.Direction;
-import square.NormalSquare;
 import square.SquareContainer;
 
 /**
@@ -23,7 +22,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	private Direction		direction;
 	
 	@Override
-	public void use(AbstractSquare square) {
+	public void use(SquareContainer square) {
 		if (direction == null)
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
@@ -106,6 +105,10 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+	
+	public void setSquare(SquareContainer square) {
+		this.currentSquare = square;
 	}
 	
 }

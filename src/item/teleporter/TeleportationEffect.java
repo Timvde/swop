@@ -3,6 +3,7 @@ package item.teleporter;
 import item.AbstractEffect;
 import item.IItem;
 import player.IPlayer;
+import square.SquareContainer;
 import square.TronObject;
 import square.AbstractSquare;
 
@@ -34,7 +35,7 @@ public class TeleportationEffect extends AbstractEffect {
 		super.execute(object);
 	}
 
-	private void teleport(TronObject object, AbstractSquare destinationSquare) {
+	private void teleport(TronObject object, SquareContainer destinationSquare) {
 		if (destinationSquare == null)
 			throw new IllegalArgumentException("Cannot teleport to null!");
 		if (teleporter.getSquare() == null)
@@ -42,11 +43,13 @@ public class TeleportationEffect extends AbstractEffect {
 		
 		AbstractSquare currentSquare  = teleporter.getSquare();
 		
-		currentSquare.remove(this);
+		currentSquare.remove(object);
 		
 		if (object instanceof IItem)
-			destinationSquare.addItem((IItem) this);
+			destinationSquare.addItem((IItem) object);
 		else if (object instanceof IPlayer)
 			destinationSquare.addPlayer((IPlayer) object);
+		
+		object.asTeleportable().setSquare(destinationSquare);
 	}
 }

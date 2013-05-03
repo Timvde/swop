@@ -1,6 +1,5 @@
-package square;
+package powerfailure;
 
-import powerfailure.PowerFailure;
 
 
 /**
