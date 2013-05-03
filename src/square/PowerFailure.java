@@ -1,5 +1,6 @@
 package square;
 
+import player.TurnEvent;
 import item.Effect;
 
 /**
@@ -38,7 +39,7 @@ public abstract class PowerFailure {
 	 * actions left it is power failured. When it is set to zero, the power
 	 * failure will be released.
 	 */
-	public void decreaseTimeToLive() {
+	protected void decreaseTimeToLive() {
 		if (timeToLive > 0)
 			timeToLive--;
 		// No else if, timeToLive could be 1 before and 0 now.
@@ -79,4 +80,12 @@ public abstract class PowerFailure {
 	public Effect getEffect() {
 		return new PowerFailureEffect();
 	}
+	
+	/**
+	 * Let the powerfailure know about a new turn event.
+	 * 
+	 * @param event
+	 *        The turn event to let the powerfailure know about.
+	 */
+	abstract void update(TurnEvent event);
 }

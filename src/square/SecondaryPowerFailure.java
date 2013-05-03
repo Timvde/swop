@@ -1,5 +1,7 @@
 package square;
 
+import player.TurnEvent;
+
 /**
  * This class represents a secondary powerfailure.
  */
@@ -17,6 +19,13 @@ public class SecondaryPowerFailure extends PowerFailure {
 		super(square);
 		
 		timeToLive = TIME_TO_LIVE;
+	}
+
+	@Override
+	void update(TurnEvent event) {
+		if (event == TurnEvent.END_ACTION) {
+			decreaseTimeToLive();
+		}
 	}
 	
 }

@@ -1,6 +1,7 @@
 package square;
 
 import java.util.Random;
+import player.TurnEvent;
 
 /**
  * This class represents a primary powerfailure. It keeps track of a secondary
@@ -46,7 +47,8 @@ public class PrimaryPowerFailure extends PowerFailure {
 		
 		// Check if we selected a square that is part of the grid. If so,
 		// check if there is not yet a powerfailure. If so, create the secondary
-		// powerfailure, which results in the creation of a tertiary powerfailure.
+		// powerfailure, which results in the creation of a tertiary
+		// powerfailure.
 		if (secPFSquare != null && !secPFSquare.hasPowerFailure()) {
 			this.secondaryPF = new SecondaryPowerFailure(secPFSquare);
 			secPFSquare.addPowerFailure(this.secondaryPF);
@@ -78,7 +80,8 @@ public class PrimaryPowerFailure extends PowerFailure {
 		Random rnd = new Random();
 		Direction tertiaryPFDirection = possibleTertiaryPFDirs[rnd.nextInt(3)];
 		
-		// Create the tertiary powerfailure, if it is located on the grid and the
+		// Create the tertiary powerfailure, if it is located on the grid and
+		// the
 		// chosen square does not yet have a powerfailure.
 		ASquare tertPFSquare = this.secondaryPF.getSquare().getNeighbour(tertiaryPFDirection);
 		
@@ -88,8 +91,6 @@ public class PrimaryPowerFailure extends PowerFailure {
 		}
 	}
 	
-	// TODO dit oproepen als 2 actions gebeurd zijn (rotationCounter nul is
-	// geworden)
 	// TODO PF op muur mag niet etc?
 	private void rotateSecondaryPowerFailure() {
 		// only do the rotation if there is a secondary powerfailure, and if it
@@ -122,9 +123,28 @@ public class PrimaryPowerFailure extends PowerFailure {
 				// Create the new tertiary powerfailure
 				createTertiaryPowerFailure();
 			}
-			
-			// Reset the rotation counter
-			rotationCounter = ROTATION_COUNTER_MAX;
 		}
+	}
+	
+	@Override
+	void update(TurnEvent event) {
+		// A turn was ended, so decrease the time to live for this
+		// powerfailure
+		if (event == TurnEvent.END_TURN) {
+			decreaseTimeToLive();
+		}
+		
+		// An action was ended. Update the rotation counter and rotate
+		// the secondary powerfailure if necessary.
+		if (event == TurnEvent.END_ACTION) {
+			this.rotationCounter--;
+			if (this.rotationCounter == 0) {
+				rotateSecondaryPowerFailure();
+				
+				// Reset the rotation counter
+				rotationCounter = ROTATION_COUNTER_MAX;
+			}
+		}
+		
 	}
 }

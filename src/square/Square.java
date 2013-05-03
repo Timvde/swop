@@ -30,7 +30,7 @@ public class Square extends ASquare {
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
 	private PowerFailure	powerFailure;
-	private static float	POWER_FAILURE_CHANCE	= 0.02F;
+	private static float	POWER_FAILURE_CHANCE	= 0.01F;
 	private static boolean	ENABLE_POWER_FAILURE	= true;
 	
 	/**
@@ -170,15 +170,10 @@ public class Square extends ASquare {
 	 * This method updates all power failure related things.
 	 * 
 	 * <pre>
-	 * - Current power failures will lose a TTL counter and be removed
-	 *   if it drops to zero
-	 * - This Square has a chance of {@value #POWER_FAILURE_CHANCE} creating a new power failure
+	 * - This Square has a certain chance of creating a new power failure
 	 * </pre>
 	 */
-	public void updatePowerFailures() {
-		if (powerFailure != null)
-			powerFailure.decreaseTimeToLive();
-		
+	public void updatePowerFailure() {
 		if (ENABLE_POWER_FAILURE) {
 			Random rand = new Random();
 			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
@@ -270,9 +265,10 @@ public class Square extends ASquare {
 		if (arg instanceof TurnEvent) {
 			switch ((TurnEvent) arg) {
 				case END_ACTION:
+					getPowerFailure().update(TurnEvent.END_ACTION);
 					break;
 				case END_TURN:
-					updatePowerFailures();
+					getPowerFailure().update(TurnEvent.END_TURN);
 					break;
 				default:
 					break;
