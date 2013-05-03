@@ -1,20 +1,22 @@
 package square;
 
 import static org.junit.Assert.*;
-import item.lightgrenade.DummyLightGrenade;
+import item.Effect;
+import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
 import player.TurnEvent;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
-
+	
+	private static final int	INCREASED_DAMAGE	= 4;
+	
 	@Test
-	public final void testPowerFailure() { 
+	public final void testPowerFailure() {
 		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
 		
 		Square sq1 = new Square(Collections.<Direction, ASquare> emptyMap());
@@ -54,7 +56,6 @@ public class PowerFailureTest {
 		pf.updateStatus(TurnEvent.END_TURN);
 		
 		assertEquals(pf, sq.getPowerFailure());
-		
 		pf.updateStatus(TurnEvent.END_TURN);
 		
 		assertEquals(pf, sq.getPowerFailure());
@@ -64,4 +65,18 @@ public class PowerFailureTest {
 		assertNull(sq.getPowerFailure());
 	}
 	
+	@Test
+	public final void testExecute_alreadyModifiedAnItem() {
+		Square emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(emptySquare);
+		DummyPlayer player = new DummyPlayer();
+		LightGrenade lightGrenade = new LightGrenade();
+		lightGrenade.use(emptySquare);
+		Effect effect = powerFailure.getEffect();
+		effect.addEffect(lightGrenade.getEffect());
+		effect.execute(player);
+		
+		assertFalse(player.isDamagedByPowerFailure());
+		assertEquals(INCREASED_DAMAGE, player.getNumberOfActionsSkipped());
+	}
 }
