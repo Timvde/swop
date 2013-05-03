@@ -9,12 +9,15 @@ import grid.Grid;
  */
 public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	
-	/**
-	 * The size of the predifined grid
-	 */
-	public static final int	PREDIFINED_GRID_SIZE	= 10;
-	
-	private boolean			usePowerfailure;
+	/** The size of the predifined grid */
+	public static final int			PREDIFINED_GRID_SIZE	= 10;
+	/** The coordinate of the startingpostion of the first player */
+	public static final Coordinate	PLAYER1_START_POS		= new Coordinate(
+																	PREDIFINED_GRID_SIZE - 1, 0);
+	/** The coordinate of the startingposition of the second player */
+	public static final Coordinate	PLAYER2_START_POS		= new Coordinate(0,
+																	PREDIFINED_GRID_SIZE - 1);
+	private boolean					usePowerfailure;
 	
 	/**
 	 * Create a new DeterministicGridDirector which will use the specified
@@ -44,9 +47,12 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * <li>u: Uncharged Identity disc</li>
 	 * </ul>
 	 * 
+	 * <i>(The origin (0,0) is in the top left corner and the top right corner
+	 * is (9,0).)</i>
+	 * 
 	 * <pre>
 	 * _____________________________
-	 * |  |  |  | F| F| F|  | u|  | 2|
+	 * |  |  |  | F| F| F|  | u|  | 1|
 	 * |  |  |  | F| F| F|  |  |  |  |
 	 * |  |  |  | F| F| F|  | l|  |t1|
 	 * |  |  |  |  |  |  |  |  |  |  |
@@ -55,7 +61,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * |  |  |  |  |  |  |  | l|  |  |
 	 * |t2|  | l|  |  |  |  |  | l|  |
 	 * |  |  |  |  |  | l| l| l| l|  |
-	 * | 1|  | u|  |  |  |  |  |  |  |
+	 * | 2|  | u|  |  |  |  |  |  |  |
 	 * -------------------------------
 	 * </pre>
 	 * 
@@ -83,9 +89,8 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.placeUnchargedIdentityDisc(new Coordinate(7, 0));
 		builder.placeUnchargedIdentityDisc(new Coordinate(2, 9));
 		
-		builder.addPlayerStartingPosition(new Coordinate(0, 0));
-		builder.addPlayerStartingPosition(new Coordinate(PREDIFINED_GRID_SIZE - 1,
-				PREDIFINED_GRID_SIZE - 1));
+		builder.addPlayerStartingPosition(PLAYER1_START_POS);
+		builder.addPlayerStartingPosition(PLAYER2_START_POS);
 		
 		Coordinate t1 = new Coordinate(PREDIFINED_GRID_SIZE - 1, 2);
 		Coordinate t2 = new Coordinate(0, PREDIFINED_GRID_SIZE - 3);

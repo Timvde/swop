@@ -3,6 +3,8 @@ package square;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import item.Item;
 import item.identitydisk.IdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
@@ -26,8 +28,13 @@ public class SquareTest {
 	@Before
 	public void setUp() {
 		square = new Square(Collections.<Direction, ASquare> emptyMap());
+		
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		new DeterministicGridBuilderDirector(builder, false).construct();
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB();
+		db.createNewDB(builder.getResult().getAllStartingPositions());
+		
 		playerOnSquare = db.getCurrentPlayer();
 		square.addPlayer(db.getCurrentPlayer());
 	}

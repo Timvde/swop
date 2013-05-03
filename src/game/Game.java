@@ -5,11 +5,9 @@ import grid.builder.FileGridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import gui.GUI;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import player.IPlayer;
-import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
 import player.TurnEvent;
@@ -79,6 +77,8 @@ public class Game implements Observer {
 	 *        The grid to set.
 	 */
 	public void setGrid(Grid grid) {
+		if (grid == null)
+			throw new IllegalArgumentException("grid cannot be null");
 		this.grid = grid;
 		
 		for (ASquare square : grid.getGrid().values())
@@ -95,10 +95,6 @@ public class Game implements Observer {
 	 */
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		List<Player> players = playerDB.createNewDB();
-		
-		// TODO give a list of the created playerstartingpositions to the Db &&
-		// make all the squares observer of the db
 		
 		TronGridBuilder builder = new TronGridBuilder();
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
@@ -106,10 +102,7 @@ public class Game implements Observer {
 		director.setWidth(width);
 		director.construct();
 		
-		grid = builder.getResult();
-		this.setGrid(this.grid);
-		this.guiDataCont.setGrid(this.grid);
-		this.gui.draw(this.grid);
+		startGameWithGrid(builder.getResult());
 	}
 	
 	/**
@@ -120,21 +113,25 @@ public class Game implements Observer {
 	 */
 	public void newGameFromFile(String file) {
 		System.out.println("Creating new game from file: " + file);
-		List<Player> players = playerDB.createNewDB();
 		
 		TronGridBuilder builder = new TronGridBuilder();
 		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
 		director.construct();
 		
-		grid = builder.getResult();
-		this.setGrid(this.grid);
-		this.guiDataCont.setGrid(this.grid);
-		this.gui.draw(this.grid);
+		startGameWithGrid(builder.getResult());
+	}
+	
+	private void startGameWithGrid(Grid grid) {
+		this.setGrid(grid);
+		this.guiDataCont.setGrid(grid);
+		this.gui.draw(grid);
+		
+		this.playerDB.createNewDB(grid.getAllStartingPositions());
 	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase && arg.equals(TurnEvent.END_GAME)) {
+		if (o instanceof PlayerDataBase && arg == TurnEvent.END_GAME) {
 			this.handleEndGameEvent((PlayerDataBase) o);
 		}
 		// else do nothing; return

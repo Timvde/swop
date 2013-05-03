@@ -8,11 +8,9 @@ import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import player.Player;
 import player.PlayerDataBase;
 import square.ASquare;
 import square.Direction;
@@ -23,15 +21,14 @@ public class GridTest {
 	
 	private Grid			grid;
 	private PlayerDataBase	playerDb;
-	private List<Player>	players;
 	
 	@Before
 	public void setUp() throws Exception {
 		playerDb = new PlayerDataBase();
-		players = playerDb.createNewDB();
 		TronGridBuilder builder = new TronGridBuilder();
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		this.grid = builder.getResult();
+		playerDb.createNewDB(grid.getAllStartingPositions());
 	}
 	
 	@Test
