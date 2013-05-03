@@ -6,8 +6,11 @@ import item.IItem;
 import java.util.List;
 import square.AbstractSquare;
 import square.Direction;
+
+import square.PlayerStartingPosition;
 import square.Square;
 import square.NormalSquare;
+import square.SquareContainer;
 import square.TronObject;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -38,7 +41,7 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the square this player has to reach to win the game.
 	 */
-	public Square getStartingPosition();
+	public SquareContainer getStartingPosition();
 	
 	/**
 	 * Returns the square this player currently stands on.
@@ -64,14 +67,6 @@ public interface IPlayer extends TronObject {
 	public int getAllowedNumberOfActions();
 	
 	/**
-	 * This method lets the player lose a specified number of actions.
-	 * 
-	 * @param numberOfActionsToSkip
-	 *        The number of actions this player will skip
-	 */
-	public void skipNumberOfActions(int numberOfActionsToSkip);
-	
-	/**
 	 * Return whether or not this player has already done a move action during
 	 * this turn.
 	 * 
@@ -83,12 +78,10 @@ public interface IPlayer extends TronObject {
 	
 	/**
 	 * Returns whether this player can perform an action. A player can perform
-	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he is
-	 * assigned a starting position (i.e.
-	 * <code>{@link #getStartingPosition()} != null</code>)</li> <li>he has
-	 * performed less then {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his
-	 * current turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code>
-	 * ).</li>
+	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he has
+	 * performed less then
+	 * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current
+	 * turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code> ).</li>
 	 * 
 	 * @return whether this player is allowed to perform an action.
 	 */

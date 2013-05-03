@@ -2,11 +2,10 @@ package teleportation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;
@@ -29,10 +28,16 @@ public class PlayerTeleportTest {
 		start = new NormalSquare(neighbours);
 		destination = new NormalSquare(neighbours);
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB();
+		TronGridBuilder builder = new TronGridBuilder();
+		new DeterministicGridBuilderDirector(builder, false).construct();
+		db.createNewDB(builder.getResult().getAllStartingPositions());
+		
 		player = (Player) db.getCurrentPlayer();
-		start.addPlayer(player);
-		player.setStartingPosition(start);
+		// start.addPlayer(player);
+		// player.setStartingPosition(start);
+		
+		// TODO change setup so it uses the teleporters of the deterministic
+		// grid
 	}
 	
 	@Test

@@ -1,10 +1,12 @@
 package powerfailure;
 
+import java.util.Observable;
 import item.Effect;
 import item.IItem;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import player.IPlayer;
+import player.TurnEvent;
 
 /**
  * A decorator to modify a square with a power failure effect.
@@ -44,6 +46,27 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 		return true;
 	}
 	
+	@Override 
+	public void update(Observable o, Object arg) {
+		square.update(o, arg);
+		
+		if (arg instanceof TurnEvent) {
+			switch ((TurnEvent) arg) {
+				case END_ACTION:
+					if (hasPowerFailure()) {
+						powerfailure.updateStatus(TurnEvent.END_ACTION);
+					}
+					break;
+				case END_TURN:
+					if (hasPowerFailure()) {
+						powerfailure.updateStatus(TurnEvent.END_TURN);
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	}
 	
 	
 }

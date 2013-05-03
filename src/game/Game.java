@@ -1,19 +1,18 @@
 package game;
 
-import java.util.List;
-import grid.Coordinate;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.builder.FileGridBuilderDirector;
+import grid.builder.RandomGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import gui.GUI;
-import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 import player.IPlayer;
-import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
+import player.TurnEvent;
 import square.AbstractSquare;
+import square.Square;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -79,12 +78,12 @@ public class Game implements Observer {
 	 *        The grid to set.
 	 */
 	public void setGrid(Grid grid) {
+		if (grid == null)
+			throw new IllegalArgumentException("grid cannot be null");
 		this.grid = grid;
-		// Grid must be notified of player switching to update the power
-		// failures
-		this.playerDB.addObserver(grid);
 		
-		// TODO is this method used for testing purposes??
+		for (AbstractSquare square : grid.getGrid().values())
+			this.playerDB.addObserver(square);
 	}
 	
 	/**
@@ -97,49 +96,82 @@ public class Game implements Observer {
 	 */
 	public void newGame(int width, int height) {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
-		List<Player> players = playerDB.createNewDB();
-		this.grid = new GridBuilder(players).setGridWidth(width).setGridHeigth(height).build();
-		this.setGrid(this.grid);
-		this.guiDataCont.setGrid(this.grid);
-		this.gui.draw(this.grid);
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
+		director.setHeight(height);
+		director.setWidth(width);
+		director.construct();
+		
+		startGameWithGrid(builder.getResult());
+	}
+	
+	/**
+	 * Start a new game that is read from a file.
+	 * 
+	 * @param file
+	 *        The file the grid is located in.
+	 */
+	public void newGameFromFile(String file) {
+		System.out.println("Creating new game from file: " + file);
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
+		director.construct();
+		
+		startGameWithGrid(builder.getResult());
+	}
+	
+	private void startGameWithGrid(Grid grid) {
+		this.setGrid(grid);
+		this.guiDataCont.setGrid(grid);
+		this.gui.draw(grid);
+		
+		this.playerDB.createNewDB(grid.getAllStartingPositions());
 	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
-			this.handlePlayerDataBaseEvent((PlayerDataBase) o, (PlayerState) arg);
+		if (o instanceof PlayerDataBase && arg == TurnEvent.END_GAME) {
+			this.handleEndGameEvent((PlayerDataBase) o);
 		}
-		//else do nothing; return
+		// else do nothing; return
 	}
 	
 	/**
 	 * This method will be called each time {@link PlayerDataBase} reports a
 	 * Player-change (passing the {@link PlayerState} of the player whos turn is
 	 * ended as an argument).
-	 * @param endedPlayerState the {@link PlayerState} of the player whos turn is
-	 * ended
-	 * @param db 
+	 * 
+	 * @param endedPlayerState
+	 *        the {@link PlayerState} of the player whos turn is ended
+	 * @param db
 	 */
-	private void handlePlayerDataBaseEvent(PlayerDataBase db, PlayerState endedPlayerState) {
-		// only interested in finished or lost states; ignore active/waiting states
-		switch (endedPlayerState) {
+	private void handleEndGameEvent(PlayerDataBase db) {
+		switch (db.getCurrentPlayer().getPlayerState()) {
 			case FINISHED:
 				this.endGameWithWinner(db.getCurrentPlayer());
 				break;
 			
 			case LOST:
 				this.endGameWithLoser(db.getCurrentPlayer());
+				break;
+			default:
+				// only interested in finished or lost states; ignore
+				// active/waiting
+				// states
+				break;
 		}
 	}
-
+	
 	private void endGameWithLoser(IPlayer player) {
 		// TODO Auto-generated method stub
 		System.out.println("game is finished with loser " + player);
 	}
-
+	
 	private void endGameWithWinner(IPlayer player) {
 		// TODO Auto-generated method stub
 		System.out.println("game is finished with winner " + player);
-
+		
 	}
 }

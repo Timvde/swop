@@ -6,9 +6,13 @@ import item.IItem;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Random;
 import player.IPlayer;
 import player.Player;
+import player.TurnEvent;
 import powerfailure.PowerFailure;
+import powerfailure.PrimaryPowerFailure;
 
 /**
  * A Square represents a place on a grid, which a player can stand on, as long
@@ -17,6 +21,8 @@ import powerfailure.PowerFailure;
  */
 public class NormalSquare extends AbstractSquare {
 	
+	private static final boolean	ENABLE_POWER_FAILURE	= false;
+	private static final float	POWER_FAILURE_CHANCE	= 0;
 	/** the list of items in this square */
 	private List<IItem>		itemList;
 	/** the player on this square */
@@ -159,7 +165,7 @@ public class NormalSquare extends AbstractSquare {
 	 */
 	protected void addPlayer(IPlayer player, Effect effect) {
 		if (!canAddPlayer())
-			throw new IllegalArgumentException("The player cannot be added to this square!");
+			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		this.player = player;
 		this.executeEffect(player, effect);
 	}
@@ -226,5 +232,10 @@ public class NormalSquare extends AbstractSquare {
 			out = (hasPowerFailure() ? "p " : "s ");
 		
 		return out;
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		// nothing to do 
 	}
 }

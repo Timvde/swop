@@ -3,6 +3,8 @@ package square;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import item.Item;
 import item.identitydisk.IdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
@@ -17,6 +19,7 @@ import player.DummyPlayer;
 import player.IPlayer;
 import player.PlayerDataBase;
 import powerfailure.PowerFailure;
+import powerfailure.PrimaryPowerFailure;
 
 @SuppressWarnings("javadoc")
 public class SquareTest {
@@ -27,8 +30,13 @@ public class SquareTest {
 	@Before
 	public void setUp() {
 		square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		
+		
+		TronGridBuilder builder = new TronGridBuilder();
+		new DeterministicGridBuilderDirector(builder, false).construct();
 		PlayerDataBase db = new PlayerDataBase();
-		db.createNewDB();
+		db.createNewDB(builder.getResult().getAllStartingPositions());
+		
 		playerOnSquare = db.getCurrentPlayer();
 		square.addPlayer(db.getCurrentPlayer());
 	}
@@ -129,7 +137,7 @@ public class SquareTest {
 		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		neighbours.put(Direction.NORTH, square);
 		NormalSquare sq = new NormalSquare(neighbours);
-		PowerFailure powerFailure = new PowerFailure(sq);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(sq);
 		
 		// test if both squares suffer from power failures
 		assertTrue(square.hasPowerFailure());
@@ -149,15 +157,16 @@ public class SquareTest {
 	
 	@Test
 	public void testRemovePowerFailure() {
-		PowerFailure powerFailure = new PowerFailure(square);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
 		
 		// null arguments should not be remove
 		square.removePowerFailure(null);
 		assertEquals(powerFailure, square.getPowerFailure());
 		
 		// other power failures should also not remove the current power failure
-		square.removePowerFailure(new PowerFailure(new NormalSquare(Collections
-				.<Direction, AbstractSquare> emptyMap())));
+	
+		square.removePowerFailure(new PrimaryPowerFailure(new Square(Collections
+				.<Direction, ASquare> emptyMap())));
 		assertEquals(powerFailure, square.getPowerFailure());
 		
 		// default case ... not much to say
@@ -267,7 +276,7 @@ public class SquareTest {
 		NormalSquare newSquare = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		
 		// create a square with power failure
-		new PowerFailure(newSquare);
+		new PrimaryPowerFailure(newSquare);
 		
 		// start testing
 		// when the player moves onto the square, he will suffer from this. He

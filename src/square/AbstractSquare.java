@@ -4,12 +4,13 @@ import item.Effect;
 import item.EmptyEffect;
 import item.IItem;
 import java.util.List;
+import java.util.Observer;
 import player.IPlayer;
 
 /**
  * This class defines objects that represent a location on a Grid.
  */
-public abstract class AbstractSquare implements Square {
+public abstract class AbstractSquare implements Square, Observer {
 	
 	/**
 	 * This method can be used to pick up an item with a given IDfrom a square.
@@ -130,5 +131,23 @@ public abstract class AbstractSquare implements Square {
 	 *        added
 	 */
 	protected abstract void addItem(IItem item, Effect effect);
+	
+	/**
+	 * Returns whether this square represents a wall
+	 * 
+	 * @return true if this square represents a wall
+	 */
+	public boolean isWall() {
+		return false;
+	}
+	
+	/**
+	 * returns whether this square is a starting position
+	 * 
+	 * @return true if this square is a starting position
+	 */
+	public boolean isStartingPosition() {
+		return false;
+	}
 	
 }

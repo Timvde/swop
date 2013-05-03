@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import square.AbstractSquare;
 import square.AffectedByPowerFailure;
 import square.Direction;
-import square.NormalSquare;
+import square.PlayerStartingPosition;
 import square.Square;
 import square.SquareContainer;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
@@ -23,35 +23,25 @@ import ObjectronExceptions.ItemNotOnSquareException;
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
- * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
- * during a turn. These actions are {@link #moveInDirection(Direction) move},
+ * game a player can perform
+ * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions during a turn.
+ * These actions are {@link #moveInDirection(Direction) move},
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
 public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
-	
-	/** The maximum number of actions a Player is allowed to do in one turn */
-	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 3;
-	
-	/**
-	 * The number of actions that a player loses if he is standing on a power
-	 * failured square at the start of his turn.
-	 */
-	private static final int		POWER_FAILURE_PENALTY_AT_START_TURN	= 1;
 	
 	/**
 	 * The id of the player, not really used, but hey ... let's do something
 	 * crazy FIXME DO we stil need the id? in GUI?
 	 */
 	private int						id;
-	private static AtomicInteger	nextID								= new AtomicInteger();
+	private static AtomicInteger	nextID	= new AtomicInteger();
 	
-	/** The number of actions the player has left during this turn */
-	private int						allowedNumberOfActionsLeft;
 	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
 	/** The starting square of this player */
-	private AbstractSquare					startSquare;
+	private SquareContainer	startSquare;
 	/** The square where the player is currently standing */
 	private SquareContainer					currentSquare;
 	/** The inventory of the player */
@@ -66,15 +56,15 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed number of actions of
-	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}.The default state of a player is
-	 * {@link PlayerState#WAITING}. One has to call
-	 * {@link #setStartingPosition(AbstractSquare)} to set the starting position. Until
-	 * then and until the state is set to {@link PlayerState#ACTIVE} it will not
-	 * be able to perform any action.
+	 * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN}. The default state
+	 * of a player is {@link PlayerState#WAITING}. Until the state is set to
+	 * {@link PlayerState#ACTIVE} the player will not be able to perform any
+	 * action.
 	 */
 	// User cannot create players himself. This is the responsibility of
 	// the PlayerDB --> constructor package access
-	Player(PlayerDataBase playerDB) throws IllegalArgumentException {
+	Player(PlayerDataBase playerDB, SquareContainer startingPosition)
+			throws IllegalArgumentException {
 		if (playerDB == null)
 			throw new IllegalArgumentException("The database cannot be null");
 		
@@ -82,38 +72,35 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
 		this.hasMoved = false;
-		this.allowedNumberOfActionsLeft = MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
+		this.setStartingPosition(startingPosition);
+	}
+	
+	/**
+	 * This method is used to initiate the starting position of the player.
+	 * 
+	 * @param square
+	 *        The square that should be the starting position of this player
+	 */
+	private void setStartingPosition(SquareContainer square) {
+		if (square == null) {
+			throw new IllegalArgumentException("the given square cannot be null");
+		}
+		this.startSquare = square;
+		this.startSquare.addPlayer(this);
+		this.currentSquare = square;
+		
 	}
 	
 	@Override
+	
 	public int getID() {
 		return id;
 	}
 	
-	/**
-	 * This method is used to initiate the starting position of the player. It
-	 * can be called only once.
-	 * 
-	 * @param square
-	 *        The square that should be the starting position of this player
-	 * @throws IllegalStateException
-	 *         When the player already has a starting position set
-	 */
-	public void setStartingPosition(SquareContainer square) throws IllegalStateException {
-		if (getStartingPosition() != null)
-			throw new IllegalStateException("This player already has a starting position set");
-		this.startSquare = square;
-		this.currentSquare = square;
-		
-		// tell the DB you received a startposition (to tell this player is
-		// ready to start playing)
-		this.playerDB.reportReadyToStart(this);
-	}
-	
 	@Override
-	public Square getStartingPosition() {
+	public SquareContainer getStartingPosition() {
 		return this.startSquare;
 	}
 	
@@ -129,75 +116,15 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/* ############## ActionHistory related methods ############## */
 	
-	/**
-	 * This method will under normal circumstances increase the allowed number
-	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}.
-	 * 
-	 * When this player is on a power failured square, the number of actions
-	 * lost will be {@value #POWER_FAILURE_PENALTY_AT_START_TURN}.
-	 * 
-	 * This method is called by the {@link PlayerDataBase} when it assigns the
-	 * next player.
-	 */
-	// only the DB should assign turns --> package access
-	void assignNewTurn() {
-		// rest the turn related properties
-		this.resetHasMoved();
-		this.setPlayerState(PlayerState.ACTIVE);
-		
-		// increase the number of actions left by the number of actions per turn
-		// this cannot be more then the max number of actions
-		this.allowedNumberOfActionsLeft = Math.min(allowedNumberOfActionsLeft
-				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN);
-		
-		// If the player is on a square with a power failure, it receives a
-		// penalty
-		if (this.getCurrentLocation().hasPowerFailure()) {
-			/*
-			 * decrease the allowed number of actions by the right amount (do
-			 * not use the method skipNumberOfActions() as this will call
-			 * checkEndTurn() and thus the checkEndTurn() below might throw an
-			 * exception
-			 */
-			this.allowedNumberOfActionsLeft -= POWER_FAILURE_PENALTY_AT_START_TURN;
-		}
-		
-		// allowed nb actions could be <= 0 because of penalties
-		checkEndTurn();
-	}
-	
-	/**
-	 * Called when this player performed an action, his allowed number of
-	 * actions must drop by one.
-	 * 
-	 * If after decreasing the allowed number of actions by one, this player has
-	 * no more actions left, he will notify the {@link PlayerDataBase} to
-	 * indicate he wants to end his turn.
-	 */
-	private void decreaseAllowedNumberOfActions() {
-		skipNumberOfActions(1);
-	}
 	
 	@Override
 	public int getAllowedNumberOfActions() {
-		return this.allowedNumberOfActionsLeft;
+		return playerDB.getAllowedNumberOfActions(this);
 	}
 	
 	@Override
 	public void skipNumberOfActions(int numberOfActionsToSkip) {
-		this.allowedNumberOfActionsLeft -= numberOfActionsToSkip;
-		checkEndTurn();
-	}
-	
-	/**
-	 * This method checks if a player has any actions left. If not, it ends its
-	 * turn.
-	 */
-	private void checkEndTurn() {
-		if (getAllowedNumberOfActions() <= 0) {
-			// this method will return if it's not this player's turn
-			playerDB.endPlayerTurn(this);
-		}
+		playerDB.skipNumberOfActions(this, numberOfActionsToSkip);
 	}
 	
 	@Override
@@ -219,7 +146,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * 
 	 * Postcondition: {@link #hasMoved this.hasMoved()} = false
 	 */
-	private void resetHasMoved() {
+	void resetHasMoved() {
 		this.hasMoved = false;
 	}
 	
@@ -253,11 +180,11 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * Returns the current state the player is in. (For testing purposes)
+	 * Returns the current state the player is in.
 	 * 
 	 * @return The current state the player is in.
 	 */
-	PlayerState getPlayerState() {
+	public PlayerState getPlayerState() {
 		return this.state;
 	}
 	
@@ -318,7 +245,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		// Moving succeeded. Update other stuff.
 		this.lightTrail.updateLightTrail(oldSquare);
 		this.setHasMoved();
-		decreaseAllowedNumberOfActions();
+		playerDB.decreaseAllowedNumberOfActions(this);
 	}
 	
 	@Override
@@ -405,7 +332,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// end the players action ...
-		decreaseAllowedNumberOfActions();
+		playerDB.decreaseAllowedNumberOfActions(this);
 		this.lightTrail.updateLightTrail();
 	}
 	
@@ -443,13 +370,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// end the players action ...
-		this.decreaseAllowedNumberOfActions();
+		playerDB.decreaseAllowedNumberOfActions(this);
 		lightTrail.updateLightTrail();
 	}
 	
 	@Override
 	public String toString() {
-		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + allowedNumberOfActionsLeft
+		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + getAllowedNumberOfActions()
 				+ ", hasMoved=" + hasMoved + ", currentSquare=" + currentSquare + ", state="
 				+ state + "]";
 	}

@@ -10,7 +10,9 @@ import player.PlayerDataBase;
 import square.Square;
 
 /**
- * The gui data controller that will fetch data from the game, for creating the GUI visuals.
+ * The gui data controller that will fetch data from the game, for creating the
+ * GUI visuals.
+ * 
  * @author tom
  *
  */
@@ -33,6 +35,18 @@ public class GUIDataController {
 	}
 	
 	/**
+	 * Check if the gui data controller is configured with a grid.
+	 * 
+	 * @return True if this data controller is linked to a grid.
+	 */
+	public boolean hasGrid() {
+		if (this.grid != null)
+			return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Set the grid of the controller to a new grid.
 	 * 
 	 * @param g
@@ -45,7 +59,6 @@ public class GUIDataController {
 	/**
 	 * Return the current player in the game.
 	 */
-	@SuppressWarnings("javadoc")
 	public IPlayer getCurrentPlayer() {
 		return this.playerDB.getCurrentPlayer();
 	}
@@ -53,15 +66,14 @@ public class GUIDataController {
 	/**
 	 * Return a list of items in the inventory of the current player.
 	 */
-	@SuppressWarnings("javadoc")
 	public List<IItem> getCurrentPlayerInventoryItems() {
 		return getCurrentPlayer().getInventoryContent();
 	}
 	
 	/**
-	 * Return a list of items that are located on the square that the current player resides on.
+	 * Return a list of items that are located on the square that the current
+	 * player resides on.
 	 */
-	@SuppressWarnings("javadoc")
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
 		Square currSq = getCurrentPlayer().getCurrentLocation();
 		return currSq.getCarryableItems();
@@ -73,7 +85,6 @@ public class GUIDataController {
 	 * @param c
 	 *        The coordinate of the square we want the items of.
 	 */
-	@SuppressWarnings("javadoc")
 	public List<IItem> getItemList(Coordinate c) {
 		return grid.getItemList(c);
 	}
@@ -84,7 +95,7 @@ public class GUIDataController {
 	 * @param c
 	 *        The coordinate of the square.
 	 * @return An abstract square object that lies on the given coordinate on
-	 *         the grid. TODO wat als coordinate niet in grid??
+	 *         the grid.
 	 */
 	public Square getSquareAt(Coordinate c) {
 		return grid.getSquareAt(c);
@@ -97,6 +108,21 @@ public class GUIDataController {
 	 */
 	public Set<Coordinate> getAllGridCoordinates() {
 		return grid.getAllGridCoordinates();
+	}
+	
+	/**
+	 * Check if the given square is a starting position of a player.
+	 * 
+	 * @param s
+	 *        The square to test.
+	 * @return True if the given square is a player starting position.
+	 */
+	public boolean isPlayerStartingPosition(Square s) {
+		for (Square sq : grid.getAllStartingPositions()) {
+			if (sq.equals(s))
+				return true;
+		}
+		return false;
 	}
 	
 	/**

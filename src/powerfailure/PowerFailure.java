@@ -1,63 +1,80 @@
 package powerfailure;
 
-import item.Effect;
-import java.util.ArrayList;
-import java.util.List;
+import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
-import square.Direction;
 import square.Property;
+import square.Square;
 import square.SquareContainer;
+import item.Effect;
 
 /**
- * This class represents a power failure. This is a state a square can be in
- * with the following properties: - If a Square is power failured, its
- * neighbours are, too -
+ * This class represents a powerfailure. A powerfailure can either be a primary
+ * powerfailure, a secondary powerfailure and a tertiary powerfailure.
+ * 
+ * @author tom
  * 
  */
-public class PowerFailure implements Property {
+public abstract class PowerFailure implements Property {
 	
-	private List<SquareContainer>	squares;
-	
-	// The time to live is 3 on creation
-	private int						timeToLive;
+	/** The square this powerfailure affects */
+	private SquareContainer	square;
 	
 	/**
-	 * Create a power failure for a given square. This will also impact the
-	 * neigbhours of the specified square.
+	 * The time this powerfailure still has to live. This is counted as actions
+	 * or turns, depending on what kind of powerfailure.
+	 */
+	protected int	timeToLive;
+	
+	/**
+	 * Create a new powerfailure that is active on the given square.
 	 * 
 	 * @param square
-	 *        The square that is impacted by this power failure.
+	 *        The square this powerfailure will affect.
 	 */
 	public PowerFailure(SquareContainer square) {
-		squares = new ArrayList<SquareContainer>();
-		square.addProperty(this);
-		squares.add(square);
-		
-		// add a power failure for the neighbours of the square
-		for (Direction direction : Direction.values())
-			if (square.getNeighbourIn(direction) != null) {
-				if (square.getNeighbourIn(direction) instanceof SquareContainer) {
-					square.getNeighbourIn(direction).addProperty(this);
-					squares.add(square.getNeighbourIn(direction));
-				}
-			}
-		
-		timeToLive = 3;
+		if (square instanceof Square) {
+			square.addProperty(this);
+			this.square = square;
+		}
 	}
 	
 	/**
-	 * When a turn ends, a PowerFailure has to decrease the number of turns left
-	 * it is power failured. When it is set to zero, the power failure will be
-	 * released.
+	 * When a turn ends, a PowerFailure has to decrease the number of turns or
+	 * actions left it is power failured. When it is set to zero, the power
+	 * failure will be released.
 	 */
-	public void decreaseTimeToLive() {
+	protected void decreaseTimeToLive() {
 		if (timeToLive > 0)
 			timeToLive--;
 		// No else if, timeToLive could be 1 before and 0 now.
-		if (timeToLive == 0)
-			for (SquareContainer square : squares)
-				square.removeProperty(this);
+		if (timeToLive == 0) {
+			this.square.removeProperty(this);
+			this.square = null;
+		}
+	}
+	
+	/**
+	 * Return the time to live for this powerfailure. This can be counted as
+	 * actions or turns, depending on the kind of powerfailure.
+	 */
+	@SuppressWarnings("javadoc")
+	public int getTimeToLive() {
+		return this.timeToLive;
+	}
+	
+	/**
+	 * Return the square this powerfailure is located on.
+	 */
+	protected SquareContainer getSquare() {
+		return this.square;
+	}
+	
+	/**
+	 * Set the square this powerfailure is located on.
+	 */
+	protected void setSquare(SquareContainer square) {
+		this.square = square;
 	}
 	
 	/**
@@ -73,4 +90,12 @@ public class PowerFailure implements Property {
 	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
 		return new PowerFailureDecorator(square, this);
 	}
+
+	/**
+	 * Let the powerfailure know about a new turn event.
+	 * 
+	 * @param event
+	 *        The turn event to let the powerfailure know about.
+	 */
+	public abstract void updateStatus(TurnEvent event);
 }

@@ -33,4 +33,14 @@ public class NewGameController {
 	public void newGame(int width, int height) {
 		this.game.newGame(width, height);
 	}
+	
+	/**
+	 * Create a new game that is read from a file.
+	 * 
+	 * @param file
+	 * 			The file the grid is located in.
+	 */
+	public void newGame(String file) {
+		this.game.newGameFromFile(file);
+	}
 }

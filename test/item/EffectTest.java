@@ -12,9 +12,11 @@ import org.junit.Test;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
 import powerfailure.PowerFailure;
+import powerfailure.PrimaryPowerFailure;
 import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
+
 
 @SuppressWarnings("javadoc")
 public class EffectTest {
@@ -44,7 +46,7 @@ public class EffectTest {
 	@Test
 	public void testAddPowerFailure() {
 		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		PowerFailure powerFailure = new PowerFailure(square);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
 		
 		effect.addPowerFailure(powerFailure);
 		effect.execute();
@@ -97,7 +99,7 @@ public class EffectTest {
 		
 		// add a power failure to the effect
 		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		PowerFailure powerFailure = new PowerFailure(square);
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
 		effect.addPowerFailure(powerFailure);
 		
 		// execute the effect

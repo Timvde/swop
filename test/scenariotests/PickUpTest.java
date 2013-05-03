@@ -1,17 +1,23 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
-import game.Game;
-import grid.Coordinate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import grid.Grid;
-import grid.GridBuilder;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import item.IItem;
 import item.lightgrenade.LightGrenade;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import org.junit.Before;
 import org.junit.Test;
-import ObjectronExceptions.IllegalMoveException;
 import player.PlayerDataBase;
 import square.Direction;
+import square.PlayerStartingPosition;
+import ObjectronExceptions.InventoryFullException;
+import ObjectronExceptions.ItemNotOnSquareException;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -32,16 +38,24 @@ public class PickUpTest {
 	private static Grid					grid;
 	private static PlayerDataBase		playerDB;
 	
-	private void newGame() {
-		Game game = new Game();
+	@Before
+	public void setUp() {
+		TronGridBuilder builder = new TronGridBuilder();
+		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
+				false);
+		director.construct();
+		grid = builder.getResult();
+		
+		//make a set with the startingpostions in a deterministic order
+		Set<PlayerStartingPosition> playerstartingpositions = new LinkedHashSet<PlayerStartingPosition>();
+		playerstartingpositions.add((PlayerStartingPosition) grid
+				.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS));
+		playerstartingpositions.add((PlayerStartingPosition) grid
+				.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS));
 		
 		playerDB = new PlayerDataBase();
-		
-		GridBuilder builder = new GridBuilder(playerDB.createNewDB());
-		grid = builder.getPredefinedTestGrid(false);
-		
-		game.start();
-		game.setGrid(grid);
+		playerDB.createNewDB(playerstartingpositions);
+		assertEquals(1, playerDB.getCurrentPlayer().getID());
 		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
@@ -49,9 +63,7 @@ public class PickUpTest {
 	}
 	
 	@Test
-	public void testPickup() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
-		newGame();
+	public void testPickup() {
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
@@ -78,19 +90,14 @@ public class PickUpTest {
 		assertFalse(playerDB.getCurrentPlayer().getCurrentLocation().contains(lightGrenade1));
 	}
 	
-	@Test (expected = IllegalArgumentException.class)
-	public void testItemNotOnSquare() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
-		newGame();
-		
+	@Test(expected = ItemNotOnSquareException.class)
+	public void testItemNotOnSquare() {
 		moveCont.move(Direction.SOUTH);
 		pickUpCont.pickUpItem(new LightGrenade());
 	}
 	
 	@Test
-	public void testPlayerCanCarryMaximum6Items() throws IllegalStateException,
-			IllegalArgumentException, IllegalMoveException {
-		newGame();
-		
+	public void testPlayerCanCarryMaximum6Items() {
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
@@ -160,13 +167,13 @@ public class PickUpTest {
 		List<IItem> items7 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
 		IItem lightGrenade7 = items7.get(0);
 		
-		boolean assertionThrown = false;
+		boolean exceptionThrown = false;
 		try {
 			pickUpCont.pickUpItem(lightGrenade7);
 		}
-		catch (IllegalArgumentException e) {
-			assertionThrown = true;
+		catch (InventoryFullException e) {
+			exceptionThrown = true;
 		}
-		assertTrue(assertionThrown);
+		assertTrue(exceptionThrown);
 	}
 }

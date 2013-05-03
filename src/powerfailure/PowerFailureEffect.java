@@ -1,6 +1,7 @@
 package powerfailure;
 
 import square.TronObject;
+import item.AbstractEffect;
 import item.Effect;
 import item.lightgrenade.ExplodeEffect;
 
@@ -8,10 +9,9 @@ import item.lightgrenade.ExplodeEffect;
  * The effect a power failure has on an {@link TronObject object}
  * 
  */
-public class PowerFailureEffect implements Effect {
+public class PowerFailureEffect extends AbstractEffect {
 	
 	private boolean	execute;
-	private Effect	next;
 	
 	PowerFailureEffect() {
 		this.execute = true;
@@ -19,11 +19,11 @@ public class PowerFailureEffect implements Effect {
 	
 	@Override
 	public void execute(TronObject object) {
-		if (execute && object.asAffectedByPowerFailure() != null)
+		if (execute && object.asAffectedByPowerFailure() != null) {
 			object.asAffectedByPowerFailure().damageByPowerFailure();
+		}
 		
-		if (next != null)
-			next.execute(object);
+		super.execute(object);
 	}
 	
 	@Override
@@ -35,9 +35,6 @@ public class PowerFailureEffect implements Effect {
 			this.execute = false;
 		}
 		
-		if (next == null)
-			this.next = effect;
-		else
-			next.addEffect(effect);
+		super.addEffect(effect);
 	}
 }

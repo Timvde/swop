@@ -1,49 +1,42 @@
 package grid;
 
+import grid.builder.GridBuilder;
+import grid.builder.GridBuilderDirector;
 import item.IItem;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Random;
 import java.util.Set;
-import player.PlayerDataBase;
-import powerfailure.PowerFailure;
+import powerfailure.PrimaryPowerFailure;
 import square.AbstractSquare;
+import square.PlayerStartingPosition;
 import square.Square;
-import square.NormalSquare;
-import square.WallPart;
+import square.SquareContainer;
 
 /**
  * A grid that consists of abstract {@link AbstractSquare squares}.
  * 
- * @author Bavo Mees
  */
-public class Grid implements IGrid, Observer {
+public class Grid implements IGrid {
 	
-	private Map<Coordinate, AbstractSquare>	grid;
-	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
-	private boolean						ENABLE_POWER_FAILURE;
+	private Map<Coordinate, SquareContainer>	grid;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
 	 * 
+	 * <br>
+	 * <b>One should not use this constructor. Use a {@link GridBuilder builder}
+	 * and a {@link GridBuilderDirector director} instead.<b>
+	 * 
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
-	 * @param players
-	 *        a map that maps each player to its coordinate on the grid
-	 * 
-	 * 
 	 */
-	Grid(Map<Coordinate, AbstractSquare> grid) {
+	public Grid(Map<Coordinate, SquareContainer> grid) {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;
-		
-		ENABLE_POWER_FAILURE = true;
 	}
 	
 	/**
@@ -78,8 +71,8 @@ public class Grid implements IGrid, Observer {
 	@Override
 	public String toString() {
 		String str = "";
-			for (int i = 0; i < getHeight(); i++) {
-				for (int j = 0; j < getWidth(); j++) {
+		for (int i = 0; i < getHeight(); i++) {
+			for (int j = 0; j < getWidth(); j++) {
 				if (grid.get(new Coordinate(j, i)) == null)
 					str += "  ";
 				else
@@ -98,13 +91,13 @@ public class Grid implements IGrid, Observer {
 	public int getHeight() {
 		Set<Coordinate> gridCoords = grid.keySet();
 		
-		int maxRowNum = 0;
+		int maxYCoord = 0;
 		for (Coordinate c : gridCoords) {
-			if (c.getY() > maxRowNum)
-				maxRowNum = c.getY();
+			if (c.getY() > maxYCoord)
+				maxYCoord = c.getY();
 		}
 		
-		return maxRowNum + 1;
+		return maxYCoord + 1;
 	}
 	
 	/**
@@ -115,13 +108,13 @@ public class Grid implements IGrid, Observer {
 	public int getWidth() {
 		Set<Coordinate> gridCoords = grid.keySet();
 		
-		int maxColNum = 0;
+		int maxXCoord = 0;
 		for (Coordinate c : gridCoords) {
-			if (c.getX() > maxColNum)
-				maxColNum = c.getX();
+			if (c.getX() > maxXCoord)
+				maxXCoord = c.getX();
 		}
 		
-		return maxColNum + 1;
+		return maxXCoord + 1;
 	}
 	
 	@Override
@@ -130,66 +123,29 @@ public class Grid implements IGrid, Observer {
 	}
 	
 	/**
-	 * This method updates all power failure related things.
+	 * Get all the starting positions.
 	 * 
-	 * <pre>
-	 * - Current power failures will lose a TTL counter and be removed
-	 *   if it drops to zero
-	 * - Each Square has a 5% chance to become power failured
-	 * </pre>
+	 * @return a set of all the startingpositions on the grid.
 	 */
-	public void updatePowerFailures() {
-		for (PowerFailure failure : getAllPowerFailures())
-			failure.decreaseTimeToLive();
-		
-		if (ENABLE_POWER_FAILURE) {
-			Random rand = new Random();
-			for (Coordinate coordinate : getGrid().keySet()) {
-				if (rand.nextFloat() < POWER_FAILURE_CHANCE) {
-					addPowerFailureAtCoordinate(coordinate);
-				}
-			}
+	public Set<SquareContainer> getAllStartingPositions() {
+		Set<SquareContainer> result = new HashSet<SquareContainer>();
+		for (SquareContainer square : grid.values()) {
+			if (square.isStartingPosition())
+				result.add(square);
 		}
+		return result;
 	}
 	
 	/**
-	 * Add a power failure at a given coordinate. This method will also make
-	 * sure the surrounding squares are power failured.
+	 * Add a primary powerfailure at the given coordinate. This possibly results
+	 * in the creation of a secondary and tertiary powerfailure.
 	 * 
 	 * @param coordinate
-	 *        The coordinate to receive the power failure.
+	 *        The coordinate on which to add a powerfailure.
 	 */
 	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
 		if (grid.containsKey(coordinate))
-			new PowerFailure(grid.get(coordinate));
-	}
-	
-	private Set<PowerFailure> getAllPowerFailures() {
-		Set<PowerFailure> failures = new HashSet<PowerFailure>();
-		for (Square square : getGrid().values()) {
-			if (square.hasPowerFailure())
-				failures.add(((NormalSquare) square).getPowerFailure());
-		}
-		return failures;
-	}
-	
-	/**
-	 * Enable or disable power failures.
-	 * 
-	 * @param enabled
-	 *        True if we want power failures in the game, false otherwise. By
-	 *        default, power failures will exist. This has been added for
-	 *        debugging purposes.
-	 */
-	public void enablePowerFailures(boolean enabled) {
-		this.ENABLE_POWER_FAILURE = enabled;
-	}
-	
-	@Override
-	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase) {
-			this.updatePowerFailures();
-		}
-		// else do nothing; return
+			
+			new PrimaryPowerFailure(grid.get(coordinate));
 	}
 }

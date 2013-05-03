@@ -9,15 +9,16 @@ import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
 import powerfailure.PowerFailure;
+import powerfailure.PrimaryPowerFailure;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
 	
-	private PowerFailure	powerFailure;
+	private PrimaryPowerFailure	powerFailure;
 
 	@Before
 	public void setUp() throws Exception {
-		powerFailure = new PowerFailure(new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap()));
+		powerFailure = new PrimaryPowerFailure(new Square(Collections.<Direction, ASquare> emptyMap()));
 	}
 	
 	@Test
