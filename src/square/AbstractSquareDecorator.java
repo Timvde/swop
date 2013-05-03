@@ -2,6 +2,7 @@ package square;
 
 import item.IItem;
 import java.util.List;
+import java.util.Observable;
 import player.IPlayer;
 import item.Effect;
 
@@ -14,7 +15,7 @@ import item.Effect;
  */
 public abstract class AbstractSquareDecorator extends AbstractSquare {
 	
-	private AbstractSquare	square;
+	protected AbstractSquare	square;
 	
 	/**
 	 * Create a new abstract square decorator
@@ -23,9 +24,26 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	 *        the square to decorate
 	 */
 	public AbstractSquareDecorator(AbstractSquare square) {
+		if (square == null)
+			throw new IllegalArgumentException();
 		this.square = square;
 	}
 	
+	@Override
+	public void update(Observable o, Object arg) {
+		square.update(o, arg);
+	}
+
+	@Override
+	public boolean isWall() {
+		return square.isWall();
+	}
+
+	@Override
+	public boolean isStartingPosition() {
+		return square.isStartingPosition();
+	}
+
 	final AbstractSquare getSquare() {
 		return square;
 	}
@@ -110,9 +128,12 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.toString();
 	}
 	
-	@Override
-	protected Effect effectHook() {
-		return square.effectHook();
+	protected void addItem(IItem item, Effect effect) {
+		square.addItem(item, effect);
+	}
+	
+	protected void addPlayer(IPlayer player, Effect effect) {
+		square.addPlayer(player, effect);
 	}
 	
 	public boolean isWall() {

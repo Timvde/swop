@@ -1,8 +1,10 @@
 package square;
 
+import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 import player.IPlayer;
 import player.Player;
 
@@ -12,10 +14,9 @@ import player.Player;
 public class WallPart extends AbstractSquare {
 	
 	/**
-	 * Create a new wall part 
+	 * Create a new wall part
 	 */
-	public WallPart() {
-	}
+	public WallPart() {}
 	
 	@Override
 	public List<IItem> getCarryableItems() {
@@ -49,37 +50,37 @@ public class WallPart extends AbstractSquare {
 	public boolean hasPowerFailure() {
 		return false;
 	}
-
+	
 	@Override
 	public boolean contains(Object object) {
 		return false;
 	}
-
+	
 	@Override
 	public void addPlayer(IPlayer p) {
 		throw new UnsupportedOperationException("Players cannot be added to a wall!");
 	}
-
+	
 	@Override
 	public void placeLightTrail() {
 		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
-
+	
 	@Override
 	public void removeLightTrail() {
 		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
-
+	
 	@Override
 	public void addItem(IItem item) {
-		throw new UnsupportedOperationException("items cannot be added to light trails");
+		throw new UnsupportedOperationException("items cannot be added to wall parts");
 	}
-
+	
 	@Override
 	public void remove(Object object) {
 		// there are no items on a wall part, so nothing is to be done
 	}
-
+	
 	@Override
 	public List<IItem> getAllItems() {
 		return new ArrayList<IItem>();
@@ -99,9 +100,24 @@ public class WallPart extends AbstractSquare {
 	public String toString() {
 		return "w ";
 	}
-
+	
 	@Override
 	public boolean isWall() {
 		return true;
+	}
+	
+	@Override
+	protected void addPlayer(IPlayer player, Effect effect) {
+		this.addPlayer(player);
+	}
+	
+	@Override
+	protected void addItem(IItem item, Effect effect) {
+		this.addItem(item);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		// Wallparts don't have to do anything
 	}
 }

@@ -41,7 +41,7 @@ public interface Square {
 	 */
 	public abstract boolean hasPlayer();
 	
-	/**
+	/** 
 	 * @return Whether or not this ASquare has a power failure.
 	 */
 	public abstract boolean hasPowerFailure();

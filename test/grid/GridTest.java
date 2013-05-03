@@ -1,14 +1,16 @@
 package grid;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import player.Player;
 import player.PlayerDataBase;
 import square.AbstractSquare;
 import square.Direction;
@@ -19,13 +21,14 @@ public class GridTest {
 	
 	private Grid			grid;
 	private PlayerDataBase	playerDb;
-	private List<Player>	players;
 	
 	@Before
 	public void setUp() throws Exception {
 		playerDb = new PlayerDataBase();
-		players = playerDb.createNewDB();
-		this.grid = new GridBuilder(players).getPredefinedTestGrid(false);
+		TronGridBuilder builder = new TronGridBuilder();
+		new DeterministicGridBuilderDirector(builder, false).construct();
+		this.grid = builder.getResult();
+		playerDb.createNewDB(grid.getAllStartingPositions());
 	}
 	
 	@Test

@@ -1,10 +1,14 @@
 package square;
 
+import item.Effect;
 import item.IItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Random;
 import player.IPlayer;
+import powerfailure.PrimaryPowerFailure;
 
 /**
  * Square container manages the decorators for square. Because the lifetime of
@@ -15,6 +19,9 @@ import player.IPlayer;
  * 
  */
 public class SquareContainer extends AbstractSquare {
+	
+	private static final boolean					ENABLE_POWER_FAILURE	= false;
+	private static final float						POWER_FAILURE_CHANCE	= 0;
 	private AbstractSquare							square;
 	private HashMap<Direction, SquareContainer>		neighbours;
 	private Map<Property, AbstractSquareDecorator>	decorators;
@@ -204,7 +211,63 @@ public class SquareContainer extends AbstractSquare {
 		return square.toString();
 	}
 	
+	@Override
+	protected void addPlayer(IPlayer player, Effect effect) {
+		square.addPlayer(player, effect);
+	}
+	
+	@Override
+	protected void addItem(IItem item, Effect effect) {
+		square.addItem(item, effect);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		square.update(o, arg);
+		this.updatePowerFailure();
+	}
+	
+	/**
+	 * This method updates all power failure related things.
+	 * 
+	 * <pre>
+	 * - This Square has a certain chance of creating a new power failure
+	 * </pre>
+	 */
+	public void updatePowerFailure() {
+		if (ENABLE_POWER_FAILURE) {
+			Random rand = new Random();
+			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
+				new PrimaryPowerFailure(this);
+		}
+	}
+	
+	/**
+	 * Get the direction in which a specific neighbour square is located.
+	 * 
+	 * @param neighbour
+	 *        The neighbour square of which we want the direction to.
+	 * @return Returns the direction where a given neighbour is located. Returns
+	 *         null if the given square is not a neighbour.
+	 */
+	public Direction getDirectionOfNeighbour(SquareContainer neighbour) {
+		for (Direction dir : Direction.values()) {
+			if (getNeighbourIn(dir) == neighbour) {
+				return dir;
+			}
+		}
+		
+		return null;
+	}
+	
+	@Override
 	public boolean isWall() {
 		return square.isWall();
 	}
+	
+	@Override
+	public boolean isStartingPosition() {
+		return square.isStartingPosition();
+	}
+	
 }

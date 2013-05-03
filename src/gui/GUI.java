@@ -19,8 +19,8 @@ import player.IPlayer;
 import square.Direction;
 import square.Square;
 import square.WallPart;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalUseException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -41,7 +41,6 @@ import controllers.UseItemController;
 public class GUI implements Runnable {
 	
 	private AGUI					gui;
-	private Grid					grid				= null;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -78,10 +77,10 @@ public class GUI implements Runnable {
 	private Image					identityDiskImage;
 	private Image					chargedIdentityDiskImage;
 	private Image					lightTrailImage;
-	private Image					finishBlue;
-	private Image					finishRed;
+	private Image					finish;
 	private Image					powerfailure;
 	private Image					greenBackground;
+	private Image					squareBackground;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -97,6 +96,12 @@ public class GUI implements Runnable {
 	 */
 	private static TextField		gridWidthTextField;
 	private static TextField		gridHeightTextField;
+	
+	/**
+	 * The grid file textfield that needs to be a static instance field for
+	 * refferal reasons.
+	 */
+	private static TextField		gridFileTextField;
 	
 	/**
 	 * Offsets that determine where the top left position of the grid will be.
@@ -136,18 +141,18 @@ public class GUI implements Runnable {
 	 */
 	public void run() {
 		// These initial width and height only show the New Game button.
-		this.gui = new AGUI("Objectron  |  Groep 9", 140, 85) {
+		this.gui = new AGUI("Objectron  |  Groep 9", 140, 160) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
 				// Only paint if a new game started, meaning there is a grid.
-				if (grid != null) {
+				if (guiDataController.hasGrid()) {
 					// This block is executed with each repaint():
 					
 					// Draw some labels:
 					graphics.drawString("x", 64, 35);
-					graphics.drawString("items on square:", 10, 236);
-					graphics.drawString("items in inventory:", 10, 364);
+					graphics.drawString("items on square:", 10, 316);
+					graphics.drawString("items in inventory:", 10, 444);
 					graphics.drawString("CURRENT PLAYER:", 550, 19);
 					graphics.drawString(guiDataController.getCurrentPlayer().getID() + "", 666, 19);
 					graphics.drawString("ACTIONS LEFT:", 550, 32);
@@ -160,8 +165,8 @@ public class GUI implements Runnable {
 					
 					int GUIheight = 100 + (SQUARE_SIZE * gridHeight);
 					int GUIwidth = 180 + (SQUARE_SIZE * gridWidth);
-					if (GUIheight < 530)
-						GUIheight = 530;
+					if (GUIheight < 610)
+						GUIheight = 610;
 					if (GUIwidth < 720)
 						GUIwidth = 720;
 					
@@ -177,21 +182,28 @@ public class GUI implements Runnable {
 						}
 					}
 					
-					// Draw the two finish squares:
-					Coordinate guiCoordFinishRed = toGUIGridCoord(new Coordinate(0, gridHeight - 1));
-					Coordinate guiCoordFinishBlue = toGUIGridCoord(new Coordinate(gridWidth - 1, 0));
-					graphics.drawImage(finishBlue, guiCoordFinishBlue.getX(),
-							guiCoordFinishBlue.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-					graphics.drawImage(finishRed, guiCoordFinishRed.getX(),
-							guiCoordFinishRed.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-					
 					// Populate the grid squares with the correct images:
 					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
+					
+					// draw the square backgrounds. This is done in a seperate
+					// loop for layering reasons.
+					for (Coordinate c : gridCoords) {
+						Coordinate guiCoord = toGUIGridCoord(c);
+						
+						graphics.drawImage(squareBackground, guiCoord.getX() + 1,
+								guiCoord.getY() + 1, SQUARE_SIZE - 1, SQUARE_SIZE - 1, null);
+					}
 					
 					for (Coordinate c : gridCoords) {
 						Square square = guiDataController.getSquareAt(c);
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
+						
+						// Draw finish lines
+						if (guiDataController.isPlayerStartingPosition(square)) {
+							graphics.drawImage(finish, guiCoord.getX(),
+									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						}
 						
 						// Draw powerfailures if necessary
 						if (square.hasPowerFailure()) {
@@ -256,6 +268,7 @@ public class GUI implements Runnable {
 									}
 									graphics.drawImage(playerRedImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
 									break;
 								default:
 									break;
@@ -304,11 +317,11 @@ public class GUI implements Runnable {
 		this.chargedIdentityDiskImage = gui.loadImage("charged_identity_disk.png", SQUARE_SIZE,
 				SQUARE_SIZE);
 		this.lightTrailImage = gui.loadImage("lighttrail_custom.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.finish = gui.loadImage("cell_finish.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.powerfailure = gui.loadImage("powerfailure.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
 				SQUARE_SIZE);
+		this.squareBackground = gui.loadImage("square_background.png", SQUARE_SIZE, SQUARE_SIZE);
 		
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
@@ -316,11 +329,15 @@ public class GUI implements Runnable {
 		gridWidthTextField.setText("12");
 		gridHeightTextField.setText("12");
 		
+		// create the grid from file text field
+		gridFileTextField = gui.createTextField(11, 90, 119, 20);
+		gridFileTextField.setText("grid.txt");
+		
 		/* ---- ---- ---- ---- MOVE ARROWS ---- ---- ---- ---- */
 		
 		// Use the two offsets below to move all arrows at once
 		int moveArrowsOffsetX = 10;
-		int moveArrowsOffsetY = 85;
+		int moveArrowsOffsetY = 166;
 		
 		Button upButton = gui.createButton(moveArrowsOffsetX + 40, moveArrowsOffsetY + 0, 40, 40,
 				new Runnable() {
@@ -483,9 +500,9 @@ public class GUI implements Runnable {
 							try {
 								useItemController.useItem((IItem) inventoryListSelected);
 							}
-							catch (CannotPlaceLightGrenadeException e) {
+							catch (IllegalUseException e) {
 								JOptionPane.showMessageDialog(gui.getFrame(),
-										"Cannot place a lightgrenade here.");
+										e.getMessage());
 							}
 							inventoryListSelected = null;
 							gui.repaint();
@@ -498,7 +515,7 @@ public class GUI implements Runnable {
 				});
 		useItemButton.setText("Use item");
 		// ----
-		Button newGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
+		Button randomGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
 				120, 30, new Runnable() {
 					
 					public void run() {
@@ -508,7 +525,18 @@ public class GUI implements Runnable {
 						newGameController.newGame(width, height);
 					}
 				});
-		newGameButton.setText("New Game");
+		randomGameButton.setText("Rndm Game");
+		// ----
+		Button fileGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 111,
+				120, 30, new Runnable() {
+					
+					public void run() {
+						String fileName = gridFileTextField.getText();
+						
+						newGameController.newGame(fileName);
+					}
+				});
+		fileGameButton.setText("File Game");
 		// ----
 		Button endTurnButton = gui.createButton(actionButtonsOffsetX + 400, actionButtonsOffsetY,
 				120, 30, new Runnable() {
@@ -533,7 +561,7 @@ public class GUI implements Runnable {
 		
 		/* ---- ---- ---- ---- LISTS ---- ---- ---- ---- */
 		int listsOffsetX = 10;
-		int listsOffsetY = 240;
+		int listsOffsetY = 320;
 		
 		itemList = gui.createList(listsOffsetX, listsOffsetY, 120, 100, new Runnable() {
 			
@@ -568,11 +596,11 @@ public class GUI implements Runnable {
 	/**
 	 * Draw a whole Grid object on the GUI.
 	 * 
-	 * @param g
+	 * @param grid
 	 *        The Grid to draw.
 	 */
-	public void draw(Grid g) {
-		this.grid = g;
+	public void draw(Grid grid) {
+		this.guiDataController.setGrid(grid);
 		
 		if (this.gui != null)
 			gui.repaint();

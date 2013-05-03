@@ -28,7 +28,6 @@ public class TeleportationEffect extends AbstractEffect {
 				teleporter.setSkipNextTeleport(false);
 		}
 		
-		if (super.next != null)
-			super.next.execute(object);
+		super.execute(object);
 	}
 }

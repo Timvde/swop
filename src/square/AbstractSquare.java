@@ -4,12 +4,13 @@ import item.Effect;
 import item.EmptyEffect;
 import item.IItem;
 import java.util.List;
+import java.util.Observer;
 import player.IPlayer;
 
 /**
  * This class defines objects that represent a location on a Grid.
  */
-public abstract class AbstractSquare implements Square {
+public abstract class AbstractSquare implements Square, Observer {
 	
 	/**
 	 * This method can be used to pick up an item with a given IDfrom a square.
@@ -110,22 +111,42 @@ public abstract class AbstractSquare implements Square {
 	public abstract boolean canAddPlayer();
 	
 	/**
-	 * A hook for adding {@link Effect effects} to any object that is placed on
-	 * a square. This method will be called before the effects are added. All
-	 * the other effects will be added after this effect. This gives great
-	 * flexibility for modifying or adding extra effects.
+	 * Add a player to the square and execute a specified effect on it.
 	 * 
-	 * @return a new effect that will execute an object that is placed on this
-	 *         square
+	 * @param player
+	 *        the player to add
+	 * @param effect
+	 *        the effect to execute on the player after the player has been
+	 *        added
 	 */
-	protected Effect effectHook() {
-		return new EmptyEffect();
-	}
-
+	protected abstract void addPlayer(IPlayer player, Effect effect);
+	
 	/**
-	 * Test whether this square is a wall
+	 * Add a item to the square and execute a specified effect on it.
 	 * 
-	 * @return True if this is a wall, false if this is not.
+	 * @param item
+	 *        the item to add
+	 * @param effect
+	 *        the effect to execute on the player after the player has been
+	 *        added
 	 */
-	public abstract boolean isWall();
+	protected abstract void addItem(IItem item, Effect effect);
+	
+	/**
+	 * Returns whether this square represents a wall
+	 * 
+	 * @return true if this square represents a wall
+	 */
+	public boolean isWall() {
+		return false;
+	}
+	
+	/**
+	 * returns whether this square is a starting position
+	 * 
+	 * @return true if this square is a starting position
+	 */
+	public boolean isStartingPosition() {
+		return false;
+	}
 }

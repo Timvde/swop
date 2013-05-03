@@ -2,6 +2,7 @@ package square;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A Direction enumeration class.
@@ -11,7 +12,7 @@ import java.util.List;
 public enum Direction {
 	
 	@SuppressWarnings("javadoc")
-	NORTH ,
+	NORTH,
 	
 	@SuppressWarnings("javadoc")
 	SOUTH,
@@ -23,7 +24,7 @@ public enum Direction {
 	WEST,
 	
 	@SuppressWarnings("javadoc")
-	NORTHEAST ,
+	NORTHEAST,
 	
 	@SuppressWarnings("javadoc")
 	NORTHWEST,
@@ -37,14 +38,57 @@ public enum Direction {
 	/** A list of the primary directions */
 	private List<Direction>	primaryDirections;
 	/** the opposite direction */
-	private Direction oppositeDirection;
+	private Direction		oppositeDirection;
+	
+	private Direction		nextClockwiseDirection;
+	private Direction		nextCounterClockwiseDirection;
+	
+	private Direction[]		adjacentDirections = new Direction[2];
 	
 	/**
-	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST. 
+	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.
+	 * 
 	 * @return the primary directions
 	 */
 	public List<Direction> getPrimaryDirections() {
 		return primaryDirections;
+	}
+	
+	private void setNextClockwiseDirection(Direction d) {
+		this.nextClockwiseDirection = d;
+	}
+	
+	private void setNextCounterClockwiseDirection(Direction d) {
+		this.nextCounterClockwiseDirection = d;
+	}
+	
+	/**
+	 * Return the direction that is the next direction seen clockwise.
+	 */
+	public Direction getNextClockwiseDirection() {
+		return this.nextClockwiseDirection;
+	}
+	
+	/**
+	 * Return the directions that are adjacent to this direction.
+	 */
+	public Direction[] getAdjacentDirections() {
+		return this.adjacentDirections;
+	}
+	
+	private void setFirstAdjacentDirection(Direction d) {
+		this.adjacentDirections[0] = d;
+	}
+	
+	private void setSecondAdjacentDirection(Direction d) {
+		this.adjacentDirections[1] = d;
+	}
+	
+	/**
+	 * Return the direction that is the next direction seen counterclockwise.
+	 */
+	public Direction getNextCounterClockwiseDirection() {
+		return this.nextCounterClockwiseDirection;
 	}
 	
 	/**
@@ -55,38 +99,48 @@ public enum Direction {
 	}
 	
 	/**
-	 * returns the opposite direction to this direction, e.g. 
+	 * returns the opposite direction to this direction, e.g.
 	 * <code> NORTH.getOppositeDirection() == SOUTH</code>
+	 * 
 	 * @return the opposite direction
 	 */
 	public Direction getOppositeDirection() {
 		return oppositeDirection;
 	}
 	
+	/**
+	 * Return a random direction.
+	 * 
+	 * @return A random Direction.
+	 */
+	public static Direction getRandomDirection() {
+		Random rnd = new Random();
+		return Direction.values()[rnd.nextInt(8)];
+	}
+	
 	private void setOppositeDirection(Direction direction) {
 		this.oppositeDirection = direction;
 	}
 	
-	
-	// initialize the fields of the enum
+	// Initialize the fields of the enum
 	static {
 		List<Direction> directions = new ArrayList<Direction>();
 		directions.add(NORTH);
-		NORTH.setPrimarydirections(new ArrayList<Direction> (directions));
+		NORTH.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.add(EAST);
-		NORTHEAST.setPrimarydirections(new ArrayList<Direction> (directions));
+		NORTHEAST.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.remove(NORTH);
-		EAST.setPrimarydirections(new ArrayList<Direction> (directions));
+		EAST.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.add(SOUTH);
-		SOUTHEAST.setPrimarydirections(new ArrayList<Direction> (directions));
+		SOUTHEAST.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.remove(EAST);
-		SOUTH.setPrimarydirections(new ArrayList<Direction> (directions));
+		SOUTH.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.add(WEST);
-		SOUTHWEST.setPrimarydirections(new ArrayList<Direction> (directions));
+		SOUTHWEST.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.remove(SOUTH);
-		WEST.setPrimarydirections(new ArrayList<Direction> (directions));
+		WEST.setPrimarydirections(new ArrayList<Direction>(directions));
 		directions.add(NORTH);
-		NORTHWEST.setPrimarydirections(new ArrayList<Direction> (directions));
+		NORTHWEST.setPrimarydirections(new ArrayList<Direction>(directions));
 		
 		NORTH.setOppositeDirection(SOUTH);
 		EAST.setOppositeDirection(WEST);
@@ -97,5 +151,46 @@ public enum Direction {
 		NORTHWEST.setOppositeDirection(SOUTHEAST);
 		SOUTHEAST.setOppositeDirection(NORTHWEST);
 		SOUTHWEST.setOppositeDirection(NORTHEAST);
+		
+		NORTH.setNextClockwiseDirection(NORTHEAST);
+		NORTH.setNextCounterClockwiseDirection(NORTHWEST);
+		NORTHEAST.setNextClockwiseDirection(EAST);
+		NORTHEAST.setNextCounterClockwiseDirection(NORTH);
+		EAST.setNextClockwiseDirection(SOUTHEAST);
+		EAST.setNextCounterClockwiseDirection(NORTHEAST);
+		SOUTHEAST.setNextClockwiseDirection(SOUTH);
+		SOUTHEAST.setNextCounterClockwiseDirection(EAST);
+		SOUTH.setNextClockwiseDirection(SOUTHWEST);
+		SOUTH.setNextCounterClockwiseDirection(SOUTHEAST);
+		SOUTHWEST.setNextClockwiseDirection(WEST);
+		SOUTHWEST.setNextCounterClockwiseDirection(SOUTH);
+		WEST.setNextClockwiseDirection(NORTHWEST);
+		WEST.setNextCounterClockwiseDirection(SOUTHWEST);
+		NORTHWEST.setNextClockwiseDirection(NORTH);
+		NORTHWEST.setNextCounterClockwiseDirection(WEST);
+		
+		NORTH.setFirstAdjacentDirection(Direction.NORTHWEST);
+		NORTH.setSecondAdjacentDirection(Direction.NORTHEAST);
+		
+		EAST.setFirstAdjacentDirection(Direction.NORTHEAST);
+		EAST.setSecondAdjacentDirection(Direction.SOUTHEAST);
+		
+		SOUTH.setFirstAdjacentDirection(Direction.SOUTHEAST);
+		SOUTH.setSecondAdjacentDirection(Direction.SOUTHWEST);
+		
+		WEST.setFirstAdjacentDirection(Direction.SOUTHWEST);
+		WEST.setSecondAdjacentDirection(Direction.NORTHWEST);
+		
+		NORTHEAST.setFirstAdjacentDirection(Direction.NORTH);
+		NORTHEAST.setSecondAdjacentDirection(Direction.EAST);
+		
+		SOUTHEAST.setFirstAdjacentDirection(Direction.EAST);
+		SOUTHEAST.setSecondAdjacentDirection(Direction.SOUTH);
+		
+		SOUTHWEST.setFirstAdjacentDirection(Direction.SOUTH);
+		SOUTHWEST.setSecondAdjacentDirection(Direction.WEST);
+		
+		NORTHWEST.setFirstAdjacentDirection(Direction.WEST);
+		NORTHWEST.setSecondAdjacentDirection(Direction.NORTH);
 	}
 }

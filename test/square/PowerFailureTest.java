@@ -8,16 +8,21 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
+<<<<<<< HEAD
 import properties.powerfailure.PowerFailure;
+import properties.powerfailure.PrimaryPowerFailure;
+=======
+import powerfailure.PowerFailure;
+>>>>>>> decorators_try2
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
 	
-	private PowerFailure	powerFailure;
+	private PrimaryPowerFailure	powerFailure;
 
 	@Before
 	public void setUp() throws Exception {
-		powerFailure = new PowerFailure(new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap()));
+		powerFailure = new PrimaryPowerFailure(new Square(Collections.<Direction, ASquare> emptyMap()));
 	}
 	
 	@Test

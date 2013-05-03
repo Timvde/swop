@@ -4,12 +4,10 @@ import gui.GUI;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import player.IPlayerDataBase;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalUseException;
 
 /**
  * A controller for handling the use item actions of the GUI.
- * 
- * 
  */
 public class UseItemController {
 	
@@ -46,11 +44,10 @@ public class UseItemController {
 	 * 
 	 * @param item
 	 *        The item that will be used.
-	 * @throws CannotPlaceLightGrenadeException 
-	 * @throws IllegalStateException 
-	 * @throws IllegalArgumentException 
+	 * @throws IllegalUseException 
+	 * 		The item cannot be used.
 	 */
-	public void useItem(IItem item) throws IllegalArgumentException, IllegalStateException, CannotPlaceLightGrenadeException {
+	public void useItem(IItem item) throws IllegalUseException {
 		// If the item used is an identity disk, a direction must be set before
 		// the item
 		// can be used. As described in the documentation of identity disk.

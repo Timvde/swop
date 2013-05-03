@@ -1,13 +1,18 @@
 package square;
 
 import item.Effect;
+import item.EmptyEffect;
 import item.IItem;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Random;
 import player.IPlayer;
 import player.Player;
 import properties.powerfailure.PowerFailure;
+import player.TurnEvent;
+import powerfailure.PrimaryPowerFailure;
 
 /**
  * A Square represents a place on a grid, which a player can stand on, as long
@@ -16,6 +21,8 @@ import properties.powerfailure.PowerFailure;
  */
 public class NormalSquare extends AbstractSquare {
 	
+	private static final boolean	ENABLE_POWER_FAILURE	= false;
+	private static final float	POWER_FAILURE_CHANCE	= 0;
 	/** the list of items in this square */
 	private List<IItem>		itemList;
 	/** the player on this square */
@@ -38,13 +45,17 @@ public class NormalSquare extends AbstractSquare {
 	
 	@Override
 	public void addItem(IItem item) {
+		addItem(item, new EmptyEffect());
+	}
+	
+	protected void addItem(IItem item, Effect effect) {
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
 		
 		itemList.add(item);
 		
 		// execute an effect on the item
-		this.executeEffect(item);
+		this.executeEffect(item, effect);
 	}
 	
 	@Override
@@ -139,11 +150,24 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer player) throws IllegalArgumentException {
+	public void addPlayer(IPlayer player) {
+		addPlayer(player, new EmptyEffect());
+	}
+	
+	/**
+	 * Add a player to the square and execute a specified effect on it.
+	 * 
+	 * @param player
+	 *        the player to add
+	 * @param effect
+	 *        the effect to execute on the player after the player has been
+	 *        added
+	 */
+	protected void addPlayer(IPlayer player, Effect effect) {
 		if (!canAddPlayer())
-			throw new IllegalArgumentException("The player cannot be added to this square!");
+			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		this.player = player;
-		this.executeEffect(player);
+		this.executeEffect(player, effect);
 	}
 	
 	/**
@@ -182,20 +206,14 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Executes a new effect to a {@link TronObject}.
-	 * 
-	 * <p>
-	 * The effects returned by the {@link #effectHook()} method will be added to
-	 * the effects of the player. For more information check the documentation
-	 * of the method.
-	 * </p>
+	 * Executes a new effect to a {@link TronObject}. Additional effects can be
+	 * added to this method. If there are no additional effects, an
+	 * {@link EmptyEffect} should
 	 * 
 	 * @param object
 	 *        the object to be placed on this square
 	 */
-	private void executeEffect(TronObject object) {
-		
-		Effect effect = effectHook();
+	private void executeEffect(TronObject object, Effect effect) {
 		
 		for (IItem item : itemList)
 			effect.addEffect(((Item) item).getEffect());
@@ -215,9 +233,9 @@ public class NormalSquare extends AbstractSquare {
 		
 		return out;
 	}
-
+	
 	@Override
-	public boolean isWall() {
-		return false;
+	public void update(Observable o, Object arg) {
+		// nothing to do
 	}
 }

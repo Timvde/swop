@@ -1,5 +1,6 @@
 package properties.forcefield;
 
+import java.util.Observable;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import player.IPlayer;
@@ -48,6 +49,11 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 		 */
 		if (forceField.getState() == ForceFieldState.INACTIVE || !(item instanceof IdentityDisk))
 			super.addItem(item);
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		square.update(o, arg);
 	}
 	
 }

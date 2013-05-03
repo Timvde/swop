@@ -84,7 +84,7 @@ public class LightGrenade extends Item {
 	 *         current state:
 	 *         <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
 	 */
-	public void explode() throws IllegalStateException {
+	void explode() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'exploded'");
@@ -154,7 +154,7 @@ public class LightGrenade extends Item {
 			}
 		},
 		/**
-		 * the grenade is armed
+		 * The grenade is armed. Hide your kids, hide your wives!
 		 */
 		ACTIVE {
 			
@@ -164,13 +164,13 @@ public class LightGrenade extends Item {
 			}
 		},
 		/**
-		 * the grenade is exploded. (It is worthless now)
+		 * The grenade is exploded. (It is worthless now)
 		 */
 		EXPLODED {
 			
 			@Override
 			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return toState == this;
+				return false;
 			}
 		};
 		
