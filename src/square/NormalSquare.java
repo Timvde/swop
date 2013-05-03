@@ -194,10 +194,8 @@ public class NormalSquare extends AbstractSquare {
 	 *        the object to be placed on this square
 	 */
 	private void executeEffect(TronObject object) {
-		Effect effect = effectHook();
 		
-		if (powerFailure != null)
-			effect.addEffect(powerFailure.getEffect());
+		Effect effect = effectHook();
 		
 		for (IItem item : itemList)
 			effect.addEffect(((Item) item).getEffect());
