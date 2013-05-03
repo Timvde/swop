@@ -211,7 +211,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	private void setAllowedNumberOfActions(Player player, int numberOfActions) {
-		System.out.println("setting actions of player " + player.getID() + " to " + numberOfActions);
 		actionsLeft.put(player, numberOfActions);
 	}
 	

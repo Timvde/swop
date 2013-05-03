@@ -135,4 +135,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	protected void addPlayer(IPlayer player, Effect effect) {
 		square.addPlayer(player, effect);
 	}
+	
+	
 }

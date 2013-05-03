@@ -21,7 +21,7 @@ import powerfailure.PrimaryPowerFailure;
 public class SquareContainer extends AbstractSquare {
 	
 	private static final boolean					ENABLE_POWER_FAILURE	= false;
-	private static final float						POWER_FAILURE_CHANCE	= 0.5F;
+	private static final float						POWER_FAILURE_CHANCE	= 1F;
 	private AbstractSquare							square;
 	private HashMap<Direction, SquareContainer>		neighbours;
 	private Map<Property, AbstractSquareDecorator>	decorators;

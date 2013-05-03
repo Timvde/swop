@@ -127,6 +127,8 @@ public class Game implements Observer {
 		this.guiDataCont.setGrid(grid);
 		this.gui.draw(grid);
 		
+		
+		
 		this.playerDB.createNewDB(grid.getAllStartingPositions());
 	}
 	

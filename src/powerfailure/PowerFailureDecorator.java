@@ -31,7 +31,6 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	@Override
 	public void addItem(IItem item) {
 		Effect effect = this.powerfailure.getEffect();
-		
 		super.addItem(item, effect);
 	}
 	
