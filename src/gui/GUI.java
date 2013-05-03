@@ -21,6 +21,7 @@ import square.ISquare;
 import square.WallPart;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
+import ObjectronExceptions.builderExceptions.GridBuildException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -522,7 +523,13 @@ public class GUI implements Runnable {
 						int width = Integer.parseInt(gridWidthTextField.getText());
 						int height = Integer.parseInt(gridHeightTextField.getText());
 						
-						newGameController.newGame(width, height);
+						try {
+							newGameController.newGame(width, height);
+						}
+						catch (IllegalArgumentException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please specify valid dimensions for the grid");
+						}
 					}
 				});
 		randomGameButton.setText("Rndm Game");
@@ -533,7 +540,13 @@ public class GUI implements Runnable {
 					public void run() {
 						String fileName = gridFileTextField.getText();
 						
-						newGameController.newGame(fileName);
+						try {
+							newGameController.newGame(fileName);
+						}
+						catch (GridBuildException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"The specified file is invalid.");
+						}
 					}
 				});
 		fileGameButton.setText("File Game");

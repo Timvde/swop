@@ -26,7 +26,7 @@ import square.Square;
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/** The maximum number of actions a Player is allowed to do in one turn */
-	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 3;
+	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 4;
 	
 	/**
 	 * The number of actions that a player loses if he is standing on a power
@@ -130,6 +130,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		}
 		else {
 			// Switch players and assign a new turn
+			resetTurnRelatedPropertiesOf(player);
 			player.setPlayerState(PlayerState.WAITING);
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 			Player newPlayer = playerList.get(currentPlayerIndex);
@@ -156,8 +157,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	// only the DB should assign turns --> package access
 	void assignNewTurn(Player player) {
-		// rest the turn related properties
-		player.resetHasMoved();
+		resetTurnRelatedPropertiesOf(player);
 		player.setPlayerState(PlayerState.ACTIVE);
 		
 		int allowedNumberOfActionsLeft = getAllowedNumberOfActions(player);
@@ -177,6 +177,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		// allowed number of actions could be <= 0 because of penalties
 		checkEndTurn(player);
+	}
+	
+	private void resetTurnRelatedPropertiesOf(Player p) {
+		p.resetHasMoved();
+		this.actionsLeft.put(p, 0);
 	}
 	
 	/**
@@ -210,8 +215,19 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		actionsLeft.put(player, numberOfActions);
 	}
 	
-	int getAllowedNumberOfActions(Player player) {
-		return actionsLeft.get(player);
+	/**
+	 * Returns the allowed number of actions of the specified player or 0 if the
+	 * specified player is not in the game.
+	 * 
+	 * @param player
+	 *        the player to get the number of actions from
+	 * @return The allowed number of actions of the specified player or 0 if the
+	 *         specified player is not in the game.
+	 */
+	public int getAllowedNumberOfActions(IPlayer player) {
+		if (actionsLeft.containsKey(player))
+			return actionsLeft.get(player);
+		return 0;
 	}
 	
 	/**
@@ -266,5 +282,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	private ISquare getFinishOfCurrentPlayer() {
 		return getNextPlayer().getStartingPosition();
+	}
+	
+	@Override
+	public void endCurrentPlayerTurn() {
+		getCurrentPlayer().endTurn();
 	}
 }

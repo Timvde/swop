@@ -90,6 +90,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		this.startSquare = square;
 		this.currentSquare = square;
+		this.startSquare.addPlayer(this);
 	}
 	
 	@Override
@@ -199,7 +200,16 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/* #################### Move methods #################### */
 	
-	@Override
+	/**
+	 * This method ends the turn of this player. This player will lose the game
+	 * if this method is called before he did a move action, (i.e. if
+	 * <code>{@link #hasMovedYet()}</code> is false when calling this method,
+	 * this player loses the game).
+	 * 
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
+	 */
 	public void endTurn() throws IllegalActionException {
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");

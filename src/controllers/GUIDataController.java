@@ -1,10 +1,10 @@
 package controllers;
 
+import grid.Coordinate;
+import grid.Grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import grid.Coordinate;
-import grid.Grid;
 import player.IPlayer;
 import player.PlayerDataBase;
 import square.ISquare;
@@ -31,6 +31,8 @@ public class GUIDataController {
 	 *        The grid the controller will use.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
+		if (playerDB == null || grid == null)
+			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = playerDB;
 		this.grid = grid;
 	}
