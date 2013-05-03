@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
-import java.util.SortedSet;
 import square.ISquare;
 import square.PlayerStartingPosition;
 import square.Square;
@@ -85,10 +84,14 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	@Override
 	public Player getCurrentPlayer() throws IllegalStateException {
-		if (this.playerList.size() == 0)
+		if (getNumberOfPlayers() == 0)
 			throw new IllegalStateException("The PlayerDatabase is empty.");
 		
 		return this.playerList.get(this.currentPlayerIndex);
+	}
+	
+	private int getNumberOfPlayers() {
+		return this.playerList.size();
 	}
 	
 	/**
@@ -128,7 +131,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		else {
 			// Switch players and assign a new turn
 			player.setPlayerState(PlayerState.WAITING);
-			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.playerList.size();
+			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 			Player newPlayer = playerList.get(currentPlayerIndex);
 			
 			this.setChanged();
@@ -252,7 +255,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * @return The other player
 	 */
 	Player getNextPlayer() {
-		return playerList.get((currentPlayerIndex + 1) % this.playerList.size());
+		return playerList.get((currentPlayerIndex + 1) % getNumberOfPlayers());
 	}
 	
 	/**
