@@ -122,7 +122,6 @@ public class WallPart extends ASquare {
 
 	@Override
 	public boolean isWall() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 }
