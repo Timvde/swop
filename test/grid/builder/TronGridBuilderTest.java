@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import square.ASquare;
 import square.Direction;
+import square.SquareContainer;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
 @SuppressWarnings("javadoc")
@@ -68,12 +68,12 @@ public class TronGridBuilderTest {
 		
 		for (int i = 0; i < 100; i++) {
 			Coordinate squarePosition = director.getRandomCoordinateOnTestGrid();
-			ASquare square = builder.getResult().getSquareAt(squarePosition);
+			SquareContainer square = (SquareContainer) builder.getResult().getSquareAt(squarePosition);
 			
 			// calculate reachable neigbours of square
 			List<Coordinate> neigbours = new ArrayList<Coordinate>();
 			for (Direction dir : Direction.values()) {
-				if (square.getNeighbour(dir) != null && square.getNeighbour(dir).canAddPlayer())
+				if (square.getNeighbourIn(dir) != null && square.getNeighbourIn(dir).canAddPlayer())
 					neigbours.add(squarePosition.getCoordinateInDirection(dir));
 			}
 			
@@ -98,6 +98,8 @@ public class TronGridBuilderTest {
 	}
 	
 	/* ############## LG ############### */
+	
+	//TODO inactive
 	
 	@Test(expected = GridBuildException.class)
 	public void testNullInputLG() {

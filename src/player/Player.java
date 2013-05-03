@@ -105,7 +105,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public AbstractSquare getCurrentLocation() {
+	public Square getCurrentLocation() {
 		return this.currentSquare;
 	}
 	
@@ -190,7 +190,16 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/* #################### Move methods #################### */
 	
-	@Override
+	/**
+	 * This method ends the turn of this player. This player will lose the game
+	 * if this method is called before he did a move action, (i.e. if
+	 * <code>{@link #hasMovedYet()}</code> is false when calling this method,
+	 * this player loses the game).
+	 * 
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
+	 */
 	public void endTurn() throws IllegalActionException {
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
@@ -395,15 +404,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return this;
 	}
 	
-	@Override
-	public void teleportTo(AbstractSquare destination) {
-		if (!canTeleportTo(destination))
-			throw new IllegalArgumentException("Player could not teleport to destination: "
-					+ destination);
-		currentSquare.remove(this);
-		currentSquare = (SquareContainer) destination;
-		destination.addPlayer(this);
-	}
 	
 	/**
 	 * Returns whether the player can teleport to the specified square.

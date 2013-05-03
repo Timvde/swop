@@ -7,6 +7,7 @@ import grid.builder.TronGridBuilder;
 import gui.GUI;
 import java.util.Observable;
 import java.util.Observer;
+import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import player.IPlayer;
 import player.PlayerDataBase;
 import player.PlayerState;
@@ -40,13 +41,12 @@ public class Game implements Observer {
 	 */
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.start();
 	}
 	
 	/**
 	 * Start the initialization and run the GUI.
 	 */
-	public void start() {
+	public Game() {
 		// make a new PlayerDB and observe it
 		// (to be notified when a player has won/lost)
 		this.playerDB = new PlayerDataBase();
@@ -93,8 +93,10 @@ public class Game implements Observer {
 	 *        the height of the new board
 	 * @param height
 	 *        the width of the new board
+	 * @throws IllegalArgumentException
+	 *         The specified width and height must be greater then the minima.
 	 */
-	public void newGame(int width, int height) {
+	public void newGame(int width, int height) throws IllegalArgumentException {
 		System.out.println("Creating new game with grid width " + width + " and height " + height);
 		
 		TronGridBuilder builder = new TronGridBuilder();
@@ -111,8 +113,11 @@ public class Game implements Observer {
 	 * 
 	 * @param file
 	 *        The file the grid is located in.
+	 * @throws InvalidGridFileException
+	 *         The grid file must adhere the correct rules and it cannot contain
+	 *         invalid characters.
 	 */
-	public void newGameFromFile(String file) {
+	public void newGameFromFile(String file) throws InvalidGridFileException {
 		System.out.println("Creating new game from file: " + file);
 		
 		TronGridBuilder builder = new TronGridBuilder();

@@ -119,5 +119,5 @@ public class WallPart extends AbstractSquare {
 	@Override
 	public void update(Observable o, Object arg) {
 		// Wallparts don't have to do anything
-	}
+	} 
 }

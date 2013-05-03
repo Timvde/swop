@@ -8,24 +8,29 @@ import item.lightgrenade.LightGrenade.LightGrenadeState;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
 import square.AbstractSquare;
 import square.Direction;
+import square.PrimaryPowerFailure;
 import square.NormalSquare;
 import square.WallPart;
+import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {
 	
-	private LightGrenade	lightGrenade;
-	private DummyPlayer		affectedPlayer;
-	private NormalSquare			emptySquare;
+
+	private LightGrenade		lightGrenade;
+	private DummyPlayer			affectedPlayer;
+	private Square				emptySquare;
+	
+	private static final int	DEFAULT_DAMAGE		= 3;
+	private static final int	INCREASED_DAMAGE	= 4;
 	
 	@Before
 	public void setUp() {
 		lightGrenade = new LightGrenade();
-		emptySquare = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		emptySquare = new NormalSquare();
 		affectedPlayer = new DummyPlayer();
 	}
 	
@@ -49,17 +54,11 @@ public class LightGrenadeTest {
 		assertEquals(LightGrenadeState.EXPLODED, lightGrenade.getState());
 	}
 	
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testExecuteInactiveIllegalState_IllegalState() {
 		// one cannot execute an inexploded lightgrenade
 		lightGrenade.getEffect().execute(affectedPlayer);
-	}
-	
-	@Test(expected = IllegalStateException.class)
-	public void testExecuteActiveIllegalState() throws CannotPlaceLightGrenadeException {
-		activateLightGrenade();
-		// one cannot execute an active lightgrenade
-		lightGrenade.getEffect().execute(affectedPlayer);
+		assertEquals(0, affectedPlayer.getNumberOfActionsSkipped());
 	}
 	
 	@Test
@@ -97,48 +96,23 @@ public class LightGrenadeTest {
 		activateLightGrenade();
 		explodeLightGrenade();
 		// test if the strength was increased
-		assertEquals(LightGrenade.DEFAULT_STRENGTH, affectedPlayer.getNumberOfActionsSkipped());
+		assertEquals(DEFAULT_DAMAGE, affectedPlayer.getNumberOfActionsSkipped());
 	}
 	
 	@Test
 	public void testIncreasedStrenghtExplode() throws CannotPlaceLightGrenadeException {
-		// increase the strength of the light grenade
-		lightGrenade.increaseStrength();
 		activateLightGrenade();
-		explodeLightGrenade();
+		Effect effect = new PrimaryPowerFailure(emptySquare).getEffect();
+		effect.addEffect(lightGrenade.getEffect());
+		effect.execute(affectedPlayer);
 		// test if the strength was increased
-		assertEquals(LightGrenade.INCREASED_STRENGHT, affectedPlayer.getNumberOfActionsSkipped());
+		assertEquals(INCREASED_DAMAGE, affectedPlayer.getNumberOfActionsSkipped());
 	}
-	
-	@Test
-	public void testAddToEffect() throws CannotPlaceLightGrenadeException {
-		Effect effect = new Effect(affectedPlayer);
-		lightGrenade.addToEffect(effect);
-		effect.execute();
-		assertEquals(0, affectedPlayer.getNumberOfActionsSkipped());
-		
-		activateLightGrenade();
-		effect = new Effect(affectedPlayer);
-		lightGrenade.addToEffect(effect);
-		effect.execute();
-		assertEquals(LightGrenade.DEFAULT_STRENGTH, affectedPlayer.getNumberOfActionsSkipped());
-		
-		effect = new Effect(affectedPlayer);
-		lightGrenade.addToEffect(effect);
-		effect.execute();
-		assertEquals(LightGrenade.DEFAULT_STRENGTH, affectedPlayer.getNumberOfActionsSkipped());
-		
-		lightGrenade.increaseStrength();
-		effect = new Effect(affectedPlayer);
-		lightGrenade.addToEffect(effect);
-		effect.execute();
-		assertEquals(LightGrenade.INCREASED_STRENGHT, affectedPlayer.getNumberOfActionsSkipped());
-	}
-	
 	/**
 	 * Simulates adding the lightgrenade to the square and thus making it
 	 * active.
-	 * @throws CannotPlaceLightGrenadeException 
+	 * 
+	 * @throws CannotPlaceLightGrenadeException
 	 */
 	public void activateLightGrenade() throws CannotPlaceLightGrenadeException {
 		lightGrenade.use(emptySquare);

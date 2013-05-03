@@ -53,7 +53,7 @@ public class WallPartTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void removePlayer() {
-		wall.removePlayer();
+		wall.remove(new DummyPlayer());
 	}
 	
 	@Test

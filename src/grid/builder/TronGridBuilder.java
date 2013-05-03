@@ -208,6 +208,7 @@ public class TronGridBuilder implements GridBuilder {
 				throw new GridBuildException("Some teleporters have no destinations!");
 		}
 		
+				
 		return new Grid(grid);
 	}
 	

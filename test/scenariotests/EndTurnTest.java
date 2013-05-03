@@ -2,66 +2,58 @@ package scenariotests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import grid.Grid;
-import grid.builder.DeterministicGridBuilderDirector;
-import grid.builder.TronGridBuilder;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.junit.Test;
 import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
 import square.Direction;
-import square.PlayerStartingPosition;
-import ObjectronExceptions.IllegalMoveException;
-import controllers.EndTurnController;
-import controllers.MoveController;
+import ObjectronExceptions.IllegalActionException;
 
 /**
- * Test if the turns end correctly in the game.
- * 
- * Tests: - Player enters power failed square with no grenade: end turn
- * 
- * @author Tom
+ * Test the "End Turn" use case.
  */
 @SuppressWarnings("javadoc")
-public class EndTurnTest {
-	
-	private static EndTurnController	endTurnCont;
-	private static MoveController		moveCont;
-	private static Grid					grid;
-	private static PlayerDataBase		playerDB;
-	
-	private void newGame() {
-		TronGridBuilder builder = new TronGridBuilder();
-		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
-				false);
-		director.construct();
-		grid = builder.getResult();
-		
-		//make a set with the startingpostions in a deterministic order
-		Set<PlayerStartingPosition> playerstartingpositions = new LinkedHashSet<PlayerStartingPosition>();
-		playerstartingpositions.add((PlayerStartingPosition) grid
-				.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS));
-		playerstartingpositions.add((PlayerStartingPosition) grid
-				.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS));
-		
-		playerDB = new PlayerDataBase();
-		playerDB.createNewDB(playerstartingpositions);
-		assertEquals(1, playerDB.getCurrentPlayer().getID());
-		
-		moveCont = new MoveController(playerDB);
-		endTurnCont = new EndTurnController(playerDB);
-	}
+public class EndTurnTest extends SetupTestGrid {
 	
 	@Test
-	public void testEndTurn() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
-		newGame();
-		
+	public void testEndTurn_success() {
 		IPlayer player = playerDB.getCurrentPlayer();
-		
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
-		assertFalse(player == playerDB.getCurrentPlayer());
+		// The system lets the character of the player perform an empty action
+		// for each remaining action in this turn.
+		assertEquals(0, playerDB.getAllowedNumberOfActions(player));
+		assertFalse(player.equals(playerDB.getCurrentPlayer()));
+	}
+	
+	@Test(expected = IllegalActionException.class)
+	public void testEndTurn_NotHisTurn() {
+		IPlayer player = playerDB.getCurrentPlayer();
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		
+		assertEquals(0, playerDB.getAllowedNumberOfActions(player));
+		assertFalse(player.equals(playerDB.getCurrentPlayer()));
+		
+		// cast to a player to try to break the preconditions
+		Player playerNotHisTurn = (Player) player;
+		playerNotHisTurn.endTurn();
+	}
+	
+	@Test(expected = IllegalActionException.class)
+	public void testEndTurn_ToManyActions() {
+		IPlayer player = playerDB.getCurrentPlayer();
+		for (int i = 0; i < PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN; i++) {
+			moveCont.move(Direction.WEST);
+		}
+		
+		// now the db should have changed the players and reseted his actions
+		assertEquals(0, playerDB.getAllowedNumberOfActions(player));
+		assertFalse(player.equals(playerDB.getCurrentPlayer()));
+		
+		// cast to a player to try to break the preconditions
+		Player playerNotHisTurn = (Player) player;
+		playerNotHisTurn.endTurn();
 	}
 }

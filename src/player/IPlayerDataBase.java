@@ -22,5 +22,10 @@ public interface IPlayerDataBase {
 	 *         When the database is empty.
 	 */
 	public IPlayer getCurrentPlayer() throws IllegalStateException;
+
+	/**
+	 * TODO
+	 */
+	void endCurrentPlayerTurn();
 	
 }

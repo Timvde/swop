@@ -1,108 +1,82 @@
 package square;
 
 import static org.junit.Assert.*;
-import item.lightgrenade.DummyLightGrenade;
+import item.Effect;
+import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
-import powerfailure.PowerFailure;
-import powerfailure.PrimaryPowerFailure;
+import player.TurnEvent;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
 	
-	private PrimaryPowerFailure	powerFailure;
-
-	@Before
-	public void setUp() throws Exception {
-		powerFailure = new PrimaryPowerFailure(new Square(Collections.<Direction, ASquare> emptyMap()));
-	}
+	private static final int	INCREASED_DAMAGE	= 4;
 	
 	@Test
 	public final void testPowerFailure() {
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
-		NormalSquare sq = new NormalSquare(neighbours);
-		neighbours.put(Direction.SOUTH, sq);
-		NormalSquare sq1 = new NormalSquare(neighbours);
-		neighbours.put(Direction.NORTH, sq);
-		neighbours.remove(Direction.SOUTH);
-		NormalSquare sq2 = new NormalSquare(neighbours);
-		neighbours.put(Direction.WEST, sq);
-		neighbours.remove(Direction.NORTH);
-		NormalSquare sq3 = new NormalSquare(neighbours);
+		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
 		
-		PowerFailure pf = new PowerFailure(sq);
+		Square sq1 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq2 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq3 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq4 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq5 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq6 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq7 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq8 = new Square(Collections.<Direction, ASquare> emptyMap());
+		
+		neighbours.put(Direction.NORTH, sq1);
+		neighbours.put(Direction.NORTHEAST, sq2);
+		neighbours.put(Direction.EAST, sq3);
+		neighbours.put(Direction.SOUTHEAST, sq4);
+		neighbours.put(Direction.SOUTH, sq5);
+		neighbours.put(Direction.SOUTHWEST, sq6);
+		neighbours.put(Direction.WEST, sq7);
+		neighbours.put(Direction.NORTHWEST, sq8);
+		
+		Square sq = new Square(neighbours);
+		
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
 		assertEquals(pf, sq.getPowerFailure());
-		assertEquals(pf, sq1.getPowerFailure());
-		assertEquals(pf, sq2.getPowerFailure());
-		assertEquals(pf, sq3.getPowerFailure());
+		
+		pf.updateStatus(TurnEvent.END_ACTION);
+		pf.updateStatus(TurnEvent.END_ACTION);
 	}
 	
 	@Test
 	public final void testDecreaseTimeToLive() {
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
-		NormalSquare sq = new NormalSquare(neighbours);
-		neighbours.put(Direction.SOUTH, sq);
-		NormalSquare sq1 = new NormalSquare(neighbours);
-		neighbours.put(Direction.NORTH, sq);
-		neighbours.remove(Direction.SOUTH);
-		NormalSquare sq2 = new NormalSquare(neighbours);
-		neighbours.put(Direction.WEST, sq);
-		neighbours.remove(Direction.NORTH);
-		NormalSquare sq3 = new NormalSquare(neighbours);
+		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Square sq = new Square(neighbours);
 		
-		PowerFailure pf = new PowerFailure(sq);
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
 		
-		pf.decreaseTimeToLive();
-		pf.decreaseTimeToLive();
+		pf.updateStatus(TurnEvent.END_TURN);
 		
 		assertEquals(pf, sq.getPowerFailure());
-		assertEquals(pf, sq1.getPowerFailure());
-		assertEquals(pf, sq2.getPowerFailure());
-		assertEquals(pf, sq3.getPowerFailure());
+		pf.updateStatus(TurnEvent.END_TURN);
 		
-		pf.decreaseTimeToLive();
+		assertEquals(pf, sq.getPowerFailure());
+		
+		pf.updateStatus(TurnEvent.END_TURN);
+		
 		assertNull(sq.getPowerFailure());
-		assertNull(sq1.getPowerFailure());
-		assertNull(sq2.getPowerFailure());
-		assertNull(sq3.getPowerFailure());
-		
-		pf.decreaseTimeToLive();
-	}
-	
-	@Test
-	public final void testModify() {
-		DummyLightGrenade lightGrenade = new DummyLightGrenade();
-		// modify an item
-		powerFailure.modify(lightGrenade);
-		
-		// test whether the strength has increased
-		assertTrue(lightGrenade.isStrengthIncreased());
-	}
-	
-	@Test
-	public final void testExecute() {
-		DummyPlayer player = new DummyPlayer();
-		
-		// inflict damage
-		powerFailure.execute(player);
-		
-		assertTrue(player.isDamagedByPowerFailure());
 	}
 	
 	@Test
 	public final void testExecute_alreadyModifiedAnItem() {
+		Square emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(emptySquare);
 		DummyPlayer player = new DummyPlayer();
-		DummyLightGrenade lightGrenade = new DummyLightGrenade();
+		LightGrenade lightGrenade = new LightGrenade();
+		lightGrenade.use(emptySquare);
+		Effect effect = powerFailure.getEffect();
+		effect.addEffect(lightGrenade.getEffect());
+		effect.execute(player);
 		
-		powerFailure.modify(lightGrenade);
-		powerFailure.execute(player);
-		
-		assertTrue(lightGrenade.isStrengthIncreased());
 		assertFalse(player.isDamagedByPowerFailure());
+		assertEquals(INCREASED_DAMAGE, player.getNumberOfActionsSkipped());
 	}
-	
 }
