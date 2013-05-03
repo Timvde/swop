@@ -43,7 +43,7 @@ public enum Direction {
 	private Direction		nextClockwiseDirection;
 	private Direction		nextCounterClockwiseDirection;
 	
-	private Direction[]		adjacentDirections;
+	private Direction[]		adjacentDirections = new Direction[2];
 	
 	/**
 	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.

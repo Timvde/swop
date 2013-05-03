@@ -21,11 +21,11 @@ import player.TurnEvent;
 public class Square extends ASquare {
 	
 	/** the list of items in this square */
-	private List<IItem>			itemList;
+	private List<IItem>		itemList;
 	/** the player on this square */
-	private IPlayer				player;
+	private IPlayer			player;
 	/** a boolean representing whether there is a light trail on this square */
-	private boolean				lightTrail;
+	private boolean			lightTrail;
 	// Having one PowerFailure object at this moment is enough. Since they all
 	// have the same time to live, the last one added will be the one which will
 	// live the longest. If this changes, we'd want to change this into a List.
@@ -192,7 +192,7 @@ public class Square extends ASquare {
 	 * 
 	 * @return power failure
 	 */
-	public PowerFailure getPowerFailure() { 
+	public PowerFailure getPowerFailure() {
 		return this.powerFailure;
 	}
 	
@@ -265,10 +265,14 @@ public class Square extends ASquare {
 		if (arg instanceof TurnEvent) {
 			switch ((TurnEvent) arg) {
 				case END_ACTION:
-					getPowerFailure().update(TurnEvent.END_ACTION);
+					if (hasPowerFailure()) {
+						getPowerFailure().update(TurnEvent.END_ACTION);
+					}
 					break;
 				case END_TURN:
-					getPowerFailure().update(TurnEvent.END_TURN);
+					if (hasPowerFailure()) {
+						getPowerFailure().update(TurnEvent.END_TURN);
+					}
 					break;
 				default:
 					break;
