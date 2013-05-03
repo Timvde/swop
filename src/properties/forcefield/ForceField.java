@@ -2,6 +2,8 @@ package properties.forcefield;
 
 import java.util.List;
 import square.AbstractSquare;
+import square.AbstractSquareDecorator;
+import square.Property;
 import item.forcefieldgenerator.ForceFieldGenerator;
 
 /**
@@ -12,7 +14,7 @@ import item.forcefieldgenerator.ForceFieldGenerator;
  * <li>Each two actions, it flips state</li>
  * </ul>
  */
-public class ForceField {
+public class ForceField implements Property {
 	
 	ForceFieldGenerator		generator1;
 	ForceFieldGenerator		generator2;
@@ -46,5 +48,10 @@ public class ForceField {
 	 */
 	public ForceFieldState getState() {
 		return state;
+	}
+
+	@Override
+	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
+		return null;
 	}
 }
