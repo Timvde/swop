@@ -33,10 +33,8 @@ public abstract class PowerFailure implements Property {
 	 *        The square this powerfailure will affect.
 	 */
 	public PowerFailure(SquareContainer square) {
-		if (square instanceof Square) {
 			square.addProperty(this);
 			this.square = square;
-		}
 	}
 	
 	/**

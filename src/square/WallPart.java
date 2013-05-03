@@ -102,6 +102,11 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	@Override
+	public boolean isWall() {
+		return true;
+	}
+
+	@Override
 	protected void addPlayer(IPlayer player, Effect effect) {
 		this.addPlayer(player);
 	}

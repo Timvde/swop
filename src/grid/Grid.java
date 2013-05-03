@@ -37,6 +37,7 @@ public class Grid implements IGrid {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;
+		System.out.println(grid.toString());
 	}
 	
 	/**
