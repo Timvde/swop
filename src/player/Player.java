@@ -404,16 +404,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return this;
 	}
 	
-	@Override
-	public void teleportTo(ASquare destination) {
-		if (!canTeleportTo(destination))
-			throw new IllegalArgumentException("Player could not teleport to destination: "
-					+ destination);
-		currentSquare.remove(this);
-		currentSquare = (Square) destination;
-		destination.addPlayer(this);
-	}
-	
 	/**
 	 * Returns whether the player can teleport to the specified square.
 	 * 

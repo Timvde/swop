@@ -85,17 +85,6 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	}
 	
 	@Override
-	public void teleportTo(ASquare destination) {
-		if (destination == null)
-			throw new IllegalArgumentException("Cannot teleport to null!");
-		
-		if (currentSquare != null)
-			currentSquare.remove(this);
-		currentSquare = (Square) destination;
-		currentSquare.addItem(this);
-	}
-	
-	@Override
 	public String toString() {
 		return "ChargedIdentityDisk." + getId();
 	}

@@ -150,7 +150,7 @@ public class Square extends ASquare {
 	@Override
 	public void addPlayer(IPlayer player) throws IllegalArgumentException {
 		if (!canAddPlayer())
-			throw new IllegalArgumentException("The player cannot be added to this square!");
+			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		this.player = player;
 		this.executeEffect(player);
 	}

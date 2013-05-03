@@ -1,6 +1,10 @@
 package item.teleporter;
 
+import player.IPlayer;
 import item.AbstractEffect;
+import item.IItem;
+import square.ASquare;
+import square.Square;
 import square.TronObject;
 
 /**
@@ -21,7 +25,7 @@ public class TeleportationEffect extends AbstractEffect {
 		if (object.asTeleportable() != null) {
 			if (teleporter.getSkipNextTeleport() == false) {
 				teleporter.getDestination().setSkipNextTeleport(true);
-				object.asTeleportable().teleportTo(teleporter.getDestination().getSquare());
+				this.teleport(object, teleporter.getDestination().getSquare());
 			}
 			// Otherwise we should tell that we have skipped a teleportation
 			else if (teleporter.getSkipNextTeleport() == true)
@@ -30,5 +34,21 @@ public class TeleportationEffect extends AbstractEffect {
 		
 		if (super.next != null)
 			super.next.execute(object);
+	}
+
+	private void teleport(TronObject object, ASquare destinationSquare) {
+		if (destinationSquare == null)
+			throw new IllegalArgumentException("Cannot teleport to null!");
+		if (teleporter.getSquare() == null)
+			throw new IllegalStateException("Teleporter is not placed on a squaer");
+		
+		ASquare currentSquare  = teleporter.getSquare();
+		
+		currentSquare.remove(this);
+		
+		if (object instanceof IItem)
+			destinationSquare.addItem((IItem) this);
+		else if (object instanceof IPlayer)
+			destinationSquare.addPlayer((IPlayer) object);
 	}
 }
