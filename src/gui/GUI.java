@@ -19,8 +19,8 @@ import player.IPlayer;
 import square.Direction;
 import square.ISquare;
 import square.WallPart;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalUseException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -41,16 +41,6 @@ import controllers.UseItemController;
 public class GUI implements Runnable {
 	
 	private AGUI					gui;
-	private Grid					grid				= null;
-	
-	/**
-	 * These variables are used for drawing and remembering the finish
-	 * locations. These depend on the starting positions of the players.
-	 */
-	private static boolean			drewFinish1			= false;
-	private static boolean			drewFinish2			= false;
-	private static Coordinate		finish1;
-	private static Coordinate		finish2;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -87,8 +77,7 @@ public class GUI implements Runnable {
 	private Image					identityDiskImage;
 	private Image					chargedIdentityDiskImage;
 	private Image					lightTrailImage;
-	private Image					finishBlue;
-	private Image					finishRed;
+	private Image					finish;
 	private Image					powerfailure;
 	private Image					greenBackground;
 	private Image					squareBackground;
@@ -157,7 +146,7 @@ public class GUI implements Runnable {
 			@Override
 			public void paint(Graphics2D graphics) {
 				// Only paint if a new game started, meaning there is a grid.
-				if (grid != null) {
+				if (guiDataController.hasGrid()) {
 					// This block is executed with each repaint():
 					
 					// Draw some labels:
@@ -203,17 +192,6 @@ public class GUI implements Runnable {
 						
 						graphics.drawImage(squareBackground, guiCoord.getX() + 1,
 								guiCoord.getY() + 1, SQUARE_SIZE - 1, SQUARE_SIZE - 1, null);
-					}
-					
-					// Draw the finish lines if they are known already
-					if (drewFinish1 && drewFinish2) {
-						Coordinate finishBlueCoord = finish1;
-						Coordinate finishRedCoord = finish2;
-						
-						graphics.drawImage(finishBlue, toGUIGridCoord(finishBlueCoord).getX(),
-								toGUIGridCoord(finishBlueCoord).getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						graphics.drawImage(finishRed, toGUIGridCoord(finishRedCoord).getX(),
-								toGUIGridCoord(finishRedCoord).getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 					}
 					
 					for (Coordinate c : gridCoords) {
@@ -266,6 +244,12 @@ public class GUI implements Runnable {
 							}
 						}
 						
+						// Draw finish lines
+						if (guiDataController.isPlayerStartingPosition(square)) {
+							graphics.drawImage(finish, guiCoord.getX(),
+									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
 						// Draw players if necessary, this should happen last.
 						if (player != null) {
 							switch (player.getID()) {
@@ -276,16 +260,6 @@ public class GUI implements Runnable {
 									}
 									graphics.drawImage(playerBlueImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-									
-									// Draw and remember the finish of the other
-									// player
-									if (!drewFinish2) {
-										graphics.drawImage(finishRed, guiCoord.getX(),
-												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-										
-										drewFinish2 = true;
-										finish2 = c;
-									}
 									break;
 								case 2:
 									if (guiDataController.getCurrentPlayer().getID() == 2) {
@@ -295,15 +269,6 @@ public class GUI implements Runnable {
 									graphics.drawImage(playerRedImage, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									
-									// Draw and remember the finish of the other
-									// player
-									if (!drewFinish1) {
-										graphics.drawImage(finishBlue, guiCoord.getX(),
-												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-										
-										drewFinish1 = true;
-										finish1 = c;
-									}
 									break;
 								default:
 									break;
@@ -352,8 +317,7 @@ public class GUI implements Runnable {
 		this.chargedIdentityDiskImage = gui.loadImage("charged_identity_disk.png", SQUARE_SIZE,
 				SQUARE_SIZE);
 		this.lightTrailImage = gui.loadImage("lighttrail_custom.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.finishBlue = gui.loadImage("cell_finish_blue.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.finishRed = gui.loadImage("cell_finish_red.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.finish = gui.loadImage("cell_finish.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.powerfailure = gui.loadImage("powerfailure.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
 				SQUARE_SIZE);
@@ -536,9 +500,9 @@ public class GUI implements Runnable {
 							try {
 								useItemController.useItem((IItem) inventoryListSelected);
 							}
-							catch (CannotPlaceLightGrenadeException e) {
+							catch (IllegalUseException e) {
 								JOptionPane.showMessageDialog(gui.getFrame(),
-										"Cannot place a lightgrenade here.");
+										e.getMessage());
 							}
 							inventoryListSelected = null;
 							gui.repaint();
@@ -559,9 +523,6 @@ public class GUI implements Runnable {
 						int height = Integer.parseInt(gridHeightTextField.getText());
 						
 						newGameController.newGame(width, height);
-						
-						drewFinish1 = false;
-						drewFinish2 = false;
 					}
 				});
 		randomGameButton.setText("Rndm Game");
@@ -573,9 +534,6 @@ public class GUI implements Runnable {
 						String fileName = gridFileTextField.getText();
 						
 						newGameController.newGame(fileName);
-						
-						drewFinish1 = false;
-						drewFinish2 = false;
 					}
 				});
 		fileGameButton.setText("File Game");
@@ -638,11 +596,11 @@ public class GUI implements Runnable {
 	/**
 	 * Draw a whole Grid object on the GUI.
 	 * 
-	 * @param g
+	 * @param grid
 	 *        The Grid to draw.
 	 */
-	public void draw(Grid g) {
-		this.grid = g;
+	public void draw(Grid grid) {
+		this.guiDataController.setGrid(grid);
 		
 		if (this.gui != null)
 			gui.repaint();
