@@ -25,8 +25,6 @@ public class EndTurnController {
 	
 	/**
 	 * End the turn of the given player.
-	 * 
-	 * @throws IllegalStateException
 	 */
 	public void endTurn() {
 		IPlayer currentPlayer = playerDB.getCurrentPlayer();

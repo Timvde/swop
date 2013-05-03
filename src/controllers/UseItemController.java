@@ -45,6 +45,7 @@ public class UseItemController {
 	 * @param item
 	 *        The item that will be used.
 	 * @throws IllegalUseException 
+	 * 		The item cannot be used.
 	 */
 	public void useItem(IItem item) throws IllegalUseException {
 		// If the item used is an identity disk, a direction must be set before

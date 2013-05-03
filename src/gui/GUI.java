@@ -41,7 +41,6 @@ import controllers.UseItemController;
 public class GUI implements Runnable {
 	
 	private AGUI					gui;
-	private Grid					grid				= null;
 	
 	/**
 	 * The following values are not final and will be updated with each redraw,
@@ -147,7 +146,7 @@ public class GUI implements Runnable {
 			@Override
 			public void paint(Graphics2D graphics) {
 				// Only paint if a new game started, meaning there is a grid.
-				if (grid != null) {
+				if (guiDataController.hasGrid()) {
 					// This block is executed with each repaint():
 					
 					// Draw some labels:
@@ -597,11 +596,11 @@ public class GUI implements Runnable {
 	/**
 	 * Draw a whole Grid object on the GUI.
 	 * 
-	 * @param g
+	 * @param grid
 	 *        The Grid to draw.
 	 */
-	public void draw(Grid g) {
-		this.grid = g;
+	public void draw(Grid grid) {
+		this.guiDataController.setGrid(grid);
 		
 		if (this.gui != null)
 			gui.repaint();

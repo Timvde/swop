@@ -36,6 +36,18 @@ public class GUIDataController {
 	}
 	
 	/**
+	 * Check if the gui data controller is configured with a grid.
+	 * 
+	 * @return True if this data controller is linked to a grid.
+	 */
+	public boolean hasGrid() {
+		if (this.grid != null)
+			return true;
+		
+		return false;
+	}
+	
+	/**
 	 * Set the grid of the controller to a new grid.
 	 * 
 	 * @param g
@@ -48,7 +60,6 @@ public class GUIDataController {
 	/**
 	 * Return the current player in the game.
 	 */
-	@SuppressWarnings("javadoc")
 	public IPlayer getCurrentPlayer() {
 		return this.playerDB.getCurrentPlayer();
 	}
@@ -56,7 +67,6 @@ public class GUIDataController {
 	/**
 	 * Return a list of items in the inventory of the current player.
 	 */
-	@SuppressWarnings("javadoc")
 	public List<IItem> getCurrentPlayerInventoryItems() {
 		return getCurrentPlayer().getInventoryContent();
 	}
@@ -65,7 +75,6 @@ public class GUIDataController {
 	 * Return a list of items that are located on the square that the current
 	 * player resides on.
 	 */
-	@SuppressWarnings("javadoc")
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
 		ISquare currSq = getCurrentPlayer().getCurrentLocation();
 		return currSq.getCarryableItems();
@@ -77,7 +86,6 @@ public class GUIDataController {
 	 * @param c
 	 *        The coordinate of the square we want the items of.
 	 */
-	@SuppressWarnings("javadoc")
 	public List<IItem> getItemList(Coordinate c) {
 		return grid.getItemList(c);
 	}
@@ -88,7 +96,7 @@ public class GUIDataController {
 	 * @param c
 	 *        The coordinate of the square.
 	 * @return An abstract square object that lies on the given coordinate on
-	 *         the grid. TODO wat als coordinate niet in grid??
+	 *         the grid.
 	 */
 	public ISquare getSquareAt(Coordinate c) {
 		return grid.getSquareAt(c);
