@@ -15,5 +15,5 @@ public interface Property {
 	 *        the square that will be wrapped
 	 * @return A new square decorator
 	 */
-	AbstractSquare getDecorator(AbstractSquare square);
+	AbstractSquareDecorator getDecorator(AbstractSquare square);
 }

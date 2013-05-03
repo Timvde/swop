@@ -4,6 +4,7 @@ import item.Effect;
 import java.util.ArrayList;
 import java.util.List;
 import square.AbstractSquare;
+import square.AbstractSquareDecorator;
 import square.Direction;
 import square.Property;
 import square.SquareContainer;
@@ -69,7 +70,7 @@ public class PowerFailure implements Property {
 	}
 	
 	@Override
-	public AbstractSquare getDecorator(AbstractSquare square) {
+	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
 		return new PowerFailureDecorator(square, this);
 	}
 }

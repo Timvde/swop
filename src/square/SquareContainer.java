@@ -17,9 +17,9 @@ import player.IPlayer;
  */
 public class SquareContainer extends AbstractSquare {
 	
-	private AbstractSquare						square;
-	private HashMap<Direction, SquareContainer>	neighbours;
-	private LinkedList<AbstractSquare>			decorators;
+	private AbstractSquare							square;
+	private HashMap<Direction, SquareContainer>		neighbours;
+	private Map<Property, AbstractSquareDecorator>	decorators;
 	
 	/**
 	 * Create a new square container with specified neighbours, after this
@@ -43,18 +43,16 @@ public class SquareContainer extends AbstractSquare {
 	public SquareContainer(Map<Direction, SquareContainer> neighbours, AbstractSquare square) {
 		
 		this.square = square;
-		this.decorators = new LinkedList<AbstractSquare>();
+		this.decorators = new HashMap<Property, AbstractSquareDecorator>();
 		
 		// check if the parameter is valid
 		if (!canHaveAsNeighbours(neighbours))
 			throw new IllegalArgumentException(
 					"the specified neighbours could not be set as the neighbours for this square!");
 		
-		// set the neighbours as the neighbours for this square
 		this.neighbours = new HashMap<Direction, SquareContainer>(neighbours);
 		
-		// for each neighbour of this square, set this square as the neighbour
-		// in the opposite direction
+		// set this square as the neighbour
 		for (Direction direction : neighbours.keySet())
 			neighbours.get(direction).neighbours.put(direction.getOppositeDirection(), this);
 	}
@@ -86,12 +84,52 @@ public class SquareContainer extends AbstractSquare {
 		return neighbours.get(direction);
 	}
 	
+	/**
+	 * Add a new specified property to this square.
+	 * 
+	 * @param property
+	 *        the property to add
+	 */
 	public void addProperty(Property property) {
-		square = property.getDecorator(square);
+		AbstractSquareDecorator decorator = property.getDecorator(square);
+		decorators.put(property, decorator);
+		this.square = decorator;
 	}
 	
+	/**
+	 * Remove a specified property from this square. After this method the
+	 * decorator returned by the {@link Property#getDecorator(AbstractSquare)}
+	 * when adding this property to the square, will be removed.
+	 * 
+	 * @param property
+	 *        the property to remove
+	 */
 	public void removeProperty(Property property) {
-		//TODO
+		if (!decorators.containsKey(property))
+			return; // container does not include the property,
+					// the post condition is satisfied
+			
+		AbstractSquareDecorator squareToRemove = decorators.get(property);
+		
+		// Special case if the decorator is the outer layer
+		if (squareToRemove.equals(square)) {
+			square = squareToRemove.getSquare();
+			decorators.remove(property);
+			return;
+		}
+		
+		AbstractSquareDecorator decorator = (AbstractSquareDecorator) ((AbstractSquareDecorator) square)
+				.getSquare();
+		AbstractSquareDecorator previousDecorator = (AbstractSquareDecorator) square;
+		
+		// find the wrapper and it's previous wrapper
+		while (!squareToRemove.equals(decorator)) {
+			previousDecorator = decorator;
+			decorator = (AbstractSquareDecorator) ((AbstractSquareDecorator) decorator).getSquare();
+		}
+		
+		previousDecorator.setSquare(decorator.getSquare());
+		decorators.remove(property);
 	}
 	
 	/* ----------- Forwarding Methods ----------------- */
