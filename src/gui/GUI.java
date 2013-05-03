@@ -17,7 +17,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import player.IPlayer;
 import square.Direction;
-import square.ISquare;
+import square.Square;
 import square.WallPart;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
@@ -189,7 +189,7 @@ public class GUI implements Runnable {
 					Set<Coordinate> gridCoords = guiDataController.getAllGridCoordinates();
 					
 					for (Coordinate c : gridCoords) {
-						ISquare square = guiDataController.getSquareAt(c);
+						Square square = guiDataController.getSquareAt(c);
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						

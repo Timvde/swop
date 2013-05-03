@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
+import powerfailure.PowerFailure;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
@@ -16,21 +17,21 @@ public class PowerFailureTest {
 
 	@Before
 	public void setUp() throws Exception {
-		powerFailure = new PowerFailure(new Square(Collections.<Direction, ASquare> emptyMap()));
+		powerFailure = new PowerFailure(new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap()));
 	}
 	
 	@Test
 	public final void testPowerFailure() {
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
-		Square sq = new Square(neighbours);
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		NormalSquare sq = new NormalSquare(neighbours);
 		neighbours.put(Direction.SOUTH, sq);
-		Square sq1 = new Square(neighbours);
+		NormalSquare sq1 = new NormalSquare(neighbours);
 		neighbours.put(Direction.NORTH, sq);
 		neighbours.remove(Direction.SOUTH);
-		Square sq2 = new Square(neighbours);
+		NormalSquare sq2 = new NormalSquare(neighbours);
 		neighbours.put(Direction.WEST, sq);
 		neighbours.remove(Direction.NORTH);
-		Square sq3 = new Square(neighbours);
+		NormalSquare sq3 = new NormalSquare(neighbours);
 		
 		PowerFailure pf = new PowerFailure(sq);
 		assertEquals(pf, sq.getPowerFailure());
@@ -41,16 +42,16 @@ public class PowerFailureTest {
 	
 	@Test
 	public final void testDecreaseTimeToLive() {
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
-		Square sq = new Square(neighbours);
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		NormalSquare sq = new NormalSquare(neighbours);
 		neighbours.put(Direction.SOUTH, sq);
-		Square sq1 = new Square(neighbours);
+		NormalSquare sq1 = new NormalSquare(neighbours);
 		neighbours.put(Direction.NORTH, sq);
 		neighbours.remove(Direction.SOUTH);
-		Square sq2 = new Square(neighbours);
+		NormalSquare sq2 = new NormalSquare(neighbours);
 		neighbours.put(Direction.WEST, sq);
 		neighbours.remove(Direction.NORTH);
-		Square sq3 = new Square(neighbours);
+		NormalSquare sq3 = new NormalSquare(neighbours);
 		
 		PowerFailure pf = new PowerFailure(sq);
 		

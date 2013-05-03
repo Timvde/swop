@@ -1,9 +1,12 @@
-package square;
+package powerfailure;
 
 import item.Effect;
-import item.lightgrenade.ExplodeEffect;
 import java.util.ArrayList;
 import java.util.List;
+import square.AbstractSquare;
+import square.Direction;
+import square.Property;
+import square.SquareContainer;
 
 /**
  * This class represents a power failure. This is a state a square can be in
@@ -11,12 +14,12 @@ import java.util.List;
  * neighbours are, too -
  * 
  */
-public class PowerFailure {
+public class PowerFailure implements Property {
 	
-	private List<ASquare>	squares	= new ArrayList<ASquare>();
+	private List<SquareContainer>	squares;
 	
 	// The time to live is 3 on creation
-	private int				timeToLive;
+	private int						timeToLive;
 	
 	/**
 	 * Create a power failure for a given square. This will also impact the
@@ -25,20 +28,17 @@ public class PowerFailure {
 	 * @param square
 	 *        The square that is impacted by this power failure.
 	 */
-	public PowerFailure(ASquare square) {
-		squares = new ArrayList<ASquare>();
-		
-		if (square instanceof Square) {
-			square.addPowerFailure(this);
-			squares.add(square);
-		}
+	public PowerFailure(SquareContainer square) {
+		squares = new ArrayList<SquareContainer>();
+		square.addProperty(this);
+		squares.add(square);
 		
 		// add a power failure for the neighbours of the square
 		for (Direction direction : Direction.values())
-			if (square.getNeighbour(direction) != null) {
-				if (square.getNeighbour(direction) instanceof Square) {
-					square.getNeighbour(direction).addPowerFailure(this);
-					squares.add(square.getNeighbour(direction));
+			if (square.getNeighbourIn(direction) != null) {
+				if (square.getNeighbourIn(direction) instanceof SquareContainer) {
+					square.getNeighbourIn(direction).addProperty(this);
+					squares.add(square.getNeighbourIn(direction));
 				}
 			}
 		
@@ -55,8 +55,8 @@ public class PowerFailure {
 			timeToLive--;
 		// No else if, timeToLive could be 1 before and 0 now.
 		if (timeToLive == 0)
-			for (ASquare square : squares)
-				square.removePowerFailure(this);
+			for (SquareContainer square : squares)
+				square.removeProperty(this);
 	}
 	
 	/**
@@ -66,5 +66,10 @@ public class PowerFailure {
 	 */
 	public Effect getEffect() {
 		return new PowerFailureEffect();
+	}
+	
+	@Override
+	public AbstractSquare getDecorator(AbstractSquare square) {
+		return new PowerFailureDecorator(square, this);
 	}
 }

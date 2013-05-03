@@ -1,6 +1,6 @@
 package item.lightgrenade;
 
-import square.PowerFailure;
+import powerfailure.PowerFailure;
 import item.lightgrenade.LightGrenade;
 
 /**

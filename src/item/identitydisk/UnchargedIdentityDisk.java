@@ -2,7 +2,7 @@ package item.identitydisk;
 
 import item.Effect;
 import item.EmptyEffect;
-import square.ASquare;
+import square.AbstractSquare;
 import square.AffectedByPowerFailure;
 import square.Direction;
 
@@ -30,7 +30,7 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 	}
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(AbstractSquare square) {
 		super.use(square);
 		range = 4;
 	}

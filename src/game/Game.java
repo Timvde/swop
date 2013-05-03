@@ -13,7 +13,7 @@ import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
-import square.ASquare;
+import square.AbstractSquare;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;

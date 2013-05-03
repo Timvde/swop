@@ -3,22 +3,18 @@ package square;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import player.IPlayer;
 import player.Player;
 
 /**
  * A class that represents a part of a wall.
  */
-public class WallPart extends ASquare {
+public class WallPart extends AbstractSquare {
 	
 	/**
 	 * Create a new wall part 
-	 * @param neighbours
-	 * 	the neighbours of this square
 	 */
-	public WallPart(Map<Direction, ASquare> neighbours) {
-		super(neighbours);
+	public WallPart() {
 	}
 	
 	@Override
@@ -52,16 +48,6 @@ public class WallPart extends ASquare {
 	@Override
 	public boolean hasPowerFailure() {
 		return false;
-	}
-	
-	@Override
-	void addPowerFailure(PowerFailure powerFailure) {
-		throw new UnsupportedOperationException("A WallPart cannot have a power failure.");
-	}
-	
-	@Override
-	void removePowerFailure(PowerFailure powerFailure) {
-		throw new UnsupportedOperationException("A WallPart does not have any power failures.");
 	}
 
 	@Override

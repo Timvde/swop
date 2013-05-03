@@ -3,10 +3,10 @@ package grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import square.ISquare;
+import square.Square;
 
 /**
- * A grid containing {@link ISquare squares}.
+ * A grid containing {@link Square squares}.
  * 
  */
 public interface IGrid {
@@ -32,7 +32,7 @@ public interface IGrid {
 	 * @return The square at that coordinate or null if the location doesn't
 	 *         exists.
 	 */
-	public ISquare getSquareAt(Coordinate coordinate);
+	public Square getSquareAt(Coordinate coordinate);
 	
 	// FIXME check null
 	

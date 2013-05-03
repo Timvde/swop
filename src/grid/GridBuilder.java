@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
 import player.Player;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.ISquare;
 import square.Square;
+import square.NormalSquare;
 import square.Wall;
 import square.WallPart;
 
@@ -118,7 +118,7 @@ public class GridBuilder {
 		return this;
 	}
 	
-	private HashMap<Coordinate, ASquare>	grid;
+	private HashMap<Coordinate, AbstractSquare>	grid;
 	private ArrayList<Wall>					walls;
 	private Map<Teleporter, Coordinate>		teleporterCoords;
 	
@@ -131,7 +131,7 @@ public class GridBuilder {
 	 */
 	public Grid build() {
 		walls = new ArrayList<Wall>();
-		grid = new HashMap<Coordinate, ASquare>();
+		grid = new HashMap<Coordinate, AbstractSquare>();
 		teleporterCoords = new HashMap<Teleporter, Coordinate>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
@@ -163,12 +163,12 @@ public class GridBuilder {
 	 * Will return the ASquare at the specified coordinate if there is any,
 	 * otherwise it will create a new Square.
 	 */
-	private ASquare getSquare(Coordinate coordinate) {
+	private AbstractSquare getSquare(Coordinate coordinate) {
 		if (grid.containsKey(coordinate))
 			return grid.get(coordinate);
 		
 		// initialize the neighbours
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
 		// find the neighbours of the new square
 		for (Direction direction : Direction.values())
@@ -176,12 +176,12 @@ public class GridBuilder {
 				neighbours.put(direction, grid.get(coordinate.getCoordinateInDirection(direction)));
 		
 		// return the new square with its neighbours
-		return new Square(neighbours);
+		return new NormalSquare(neighbours);
 	}
 	
 	private WallPart getWallPart(Coordinate coordinate) {
 		// initialize the neighbours
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
 		// find the neighbours of the new square
 		for (Direction direction : Direction.values())
@@ -201,7 +201,7 @@ public class GridBuilder {
 	 */
 	private int getNumberOfWallParts() {
 		int i = 0;
-		for (ISquare square : grid.values())
+		for (Square square : grid.values())
 			if (square.getClass() == WallPart.class)
 				i++;
 		return i;
@@ -405,7 +405,7 @@ public class GridBuilder {
 		while (((double) numberOfItems) / grid.size() < NUMBER_OF_IDENTITY_DISKS) {
 			Coordinate position = Coordinate.random(width, height);
 			if (canPlaceItem(position)) {
-				((Square) getSquare(position)).addItem(new UnchargedIdentityDisk());
+				((NormalSquare) getSquare(position)).addItem(new UnchargedIdentityDisk());
 				numberOfItems++;
 			}
 		}
@@ -604,7 +604,7 @@ public class GridBuilder {
 	 */
 	private Grid build(int width, int height, List<Wall> walls, boolean usePowerfailure) {
 		this.walls = new ArrayList<Wall>();
-		grid = new HashMap<Coordinate, ASquare>();
+		grid = new HashMap<Coordinate, AbstractSquare>();
 		for (int i = 0; i < width; i++)
 			for (int j = 0; j < height; j++) {
 				grid.put(new Coordinate(i, j), getSquare(new Coordinate(i, j)));
@@ -620,17 +620,17 @@ public class GridBuilder {
 		
 		placeWallOnGrid(walls.get(0).getStart(), walls.get(0).getEnd());
 		
-		((Square) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
-		((Square) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(2, 7))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(5, 8))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(6, 8))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(7, 8))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(7, 6))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(8, 8))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(8, 7))).addItem(new LightGrenade());
+		((NormalSquare) getSquare(new Coordinate(7, 2))).addItem(new LightGrenade());
 		
-		((Square) getSquare(new Coordinate(7, 0))).addItem(new UnchargedIdentityDisk());
-		((Square) getSquare(new Coordinate(2, 9))).addItem(new UnchargedIdentityDisk());
+		((NormalSquare) getSquare(new Coordinate(7, 0))).addItem(new UnchargedIdentityDisk());
+		((NormalSquare) getSquare(new Coordinate(2, 9))).addItem(new UnchargedIdentityDisk());
 		
 		Grid final_grid = new Grid(grid);
 		

@@ -4,10 +4,10 @@ package player;
 import item.Effect;
 import item.IItem;
 import java.util.List;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.ISquare;
 import square.Square;
+import square.NormalSquare;
 import square.TronObject;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -38,14 +38,14 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the square this player has to reach to win the game.
 	 */
-	public ISquare getStartingPosition();
+	public Square getStartingPosition();
 	
 	/**
 	 * Returns the square this player currently stands on.
 	 * 
 	 * @return the square this player currently stands on.
 	 */
-	public ASquare getCurrentLocation();
+	public AbstractSquare getCurrentLocation();
 	
 	/**
 	 * Returns the {@link Inventory}-content associated with this player.
@@ -109,18 +109,18 @@ public interface IPlayer extends TronObject {
 	public void endTurn() throws IllegalActionException;
 	
 	/**
-	 * This method moves the player one {@link Square} in a specified
+	 * This method moves the player one {@link NormalSquare} in a specified
 	 * {@link Direction}. More formally the postconditions are:
 	 * 
 	 * <li>The new location of this player is <code>{@link #getCurrentLocation() 
-	 * currentLocationBefore}{@link ASquare#getNeighbour(Direction) 
+	 * currentLocationBefore}{@link AbstractSquare#getNeighbour(Direction) 
 	 * .getNeighbour(direction)}</code>.</li>
 	 * 
 	 * <li>The {@link Effect effects} of any items on the new Square will be
-	 * executed (as described in {@link ASquare#addPlayer(IPlayer)}).</li>
+	 * executed (as described in {@link AbstractSquare#addPlayer(IPlayer)}).</li>
 	 * 
 	 * <li>The {@link LightTrail} of the player will be
-	 * {@link LightTrail#updateLightTrail(ASquare) updated}.</li>
+	 * {@link LightTrail#updateLightTrail(AbstractSquare) updated}.</li>
 	 * 
 	 * <li>The player will have done a move during this turn:
 	 * <code>{@link #hasMovedYet()} = true</code>
@@ -180,7 +180,7 @@ public interface IPlayer extends TronObject {
 	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException;
 	
 	/**
-	 * {@link IItem#use(ASquare) use} the given item. The item must be in the
+	 * {@link IItem#use(AbstractSquare) use} the given item. The item must be in the
 	 * inventory of the player.
 	 * 
 	 * @param i

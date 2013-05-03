@@ -11,10 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
-import square.ASquare;
+import powerfailure.PowerFailure;
+import square.AbstractSquare;
 import square.Direction;
-import square.PowerFailure;
-import square.Square;
+import square.NormalSquare;
 
 @SuppressWarnings("javadoc")
 public class EffectTest {
@@ -43,7 +43,7 @@ public class EffectTest {
 	
 	@Test
 	public void testAddPowerFailure() {
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		PowerFailure powerFailure = new PowerFailure(square);
 		
 		effect.addPowerFailure(powerFailure);
@@ -96,7 +96,7 @@ public class EffectTest {
 		effect.addItem(lightGrenade);
 		
 		// add a power failure to the effect
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		PowerFailure powerFailure = new PowerFailure(square);
 		effect.addPowerFailure(powerFailure);
 		
@@ -112,7 +112,7 @@ public class EffectTest {
 	 * @throws CannotPlaceLightGrenadeException 
 	 */
 	public void explodeLightGrenade(LightGrenade lightGrenade) throws CannotPlaceLightGrenadeException {
-		Square emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare emptySquare = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		
 		// Simulate adding the lightgrenade to the square and thus making it active.
 		lightGrenade.use(emptySquare);

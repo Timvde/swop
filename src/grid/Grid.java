@@ -10,20 +10,20 @@ import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
 import player.PlayerDataBase;
-import square.ASquare;
-import square.ISquare;
-import square.PowerFailure;
+import powerfailure.PowerFailure;
+import square.AbstractSquare;
 import square.Square;
+import square.NormalSquare;
 import square.WallPart;
 
 /**
- * A grid that consists of abstract {@link ASquare squares}.
+ * A grid that consists of abstract {@link AbstractSquare squares}.
  * 
  * @author Bavo Mees
  */
 public class Grid implements IGrid, Observer {
 	
-	private Map<Coordinate, ASquare>	grid;
+	private Map<Coordinate, AbstractSquare>	grid;
 	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
 	private boolean						ENABLE_POWER_FAILURE;
 	
@@ -38,7 +38,7 @@ public class Grid implements IGrid, Observer {
 	 * 
 	 * 
 	 */
-	Grid(Map<Coordinate, ASquare> grid) {
+	Grid(Map<Coordinate, AbstractSquare> grid) {
 		if (grid == null)
 			throw new IllegalArgumentException("Grid could not be created!");
 		this.grid = grid;
@@ -61,8 +61,8 @@ public class Grid implements IGrid, Observer {
 	 * 
 	 * @return returns the grid
 	 */
-	public Map<Coordinate, ASquare> getGrid() {
-		return new HashMap<Coordinate, ASquare>(grid);
+	public Map<Coordinate, AbstractSquare> getGrid() {
+		return new HashMap<Coordinate, AbstractSquare>(grid);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class Grid implements IGrid, Observer {
 	}
 	
 	@Override
-	public ASquare getSquareAt(Coordinate coordinate) {
+	public AbstractSquare getSquareAt(Coordinate coordinate) {
 		return grid.get(coordinate);
 	}
 	
@@ -166,9 +166,9 @@ public class Grid implements IGrid, Observer {
 	
 	private Set<PowerFailure> getAllPowerFailures() {
 		Set<PowerFailure> failures = new HashSet<PowerFailure>();
-		for (ISquare square : getGrid().values()) {
+		for (Square square : getGrid().values()) {
 			if (square.hasPowerFailure())
-				failures.add(((Square) square).getPowerFailure());
+				failures.add(((NormalSquare) square).getPowerFailure());
 		}
 		return failures;
 	}

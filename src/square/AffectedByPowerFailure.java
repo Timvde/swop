@@ -1,5 +1,7 @@
 package square;
 
+import powerfailure.PowerFailure;
+
 
 /**
  * Objects having the AffectedByPowerFailure property can be damaged as result of a 

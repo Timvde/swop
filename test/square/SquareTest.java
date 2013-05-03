@@ -16,16 +16,17 @@ import org.junit.Test;
 import player.DummyPlayer;
 import player.IPlayer;
 import player.PlayerDataBase;
+import powerfailure.PowerFailure;
 
 @SuppressWarnings("javadoc")
 public class SquareTest {
 	
-	private static Square	square;
+	private static NormalSquare	square;
 	private static IPlayer playerOnSquare;
 	
 	@Before
 	public void setUp() {
-		square = new Square(Collections.<Direction, ASquare> emptyMap());
+		square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		PlayerDataBase db = new PlayerDataBase();
 		db.createNewDB();
 		playerOnSquare = db.getCurrentPlayer();
@@ -125,9 +126,9 @@ public class SquareTest {
 		assertFalse(square.hasPowerFailure());
 		
 		// setup (add a neighbour and create a powerfailure)
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		neighbours.put(Direction.NORTH, square);
-		Square sq = new Square(neighbours);
+		NormalSquare sq = new NormalSquare(neighbours);
 		PowerFailure powerFailure = new PowerFailure(sq);
 		
 		// test if both squares suffer from power failures
@@ -155,8 +156,8 @@ public class SquareTest {
 		assertEquals(powerFailure, square.getPowerFailure());
 		
 		// other power failures should also not remove the current power failure
-		square.removePowerFailure(new PowerFailure(new Square(Collections
-				.<Direction, ASquare> emptyMap())));
+		square.removePowerFailure(new PowerFailure(new NormalSquare(Collections
+				.<Direction, AbstractSquare> emptyMap())));
 		assertEquals(powerFailure, square.getPowerFailure());
 		
 		// default case ... not much to say
@@ -263,7 +264,7 @@ public class SquareTest {
 	public void testAddPlayer_executeEffect() {
 		// make a player to test with
 		DummyPlayer player = new DummyPlayer();
-		Square newSquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare newSquare = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		
 		// create a square with power failure
 		new PowerFailure(newSquare);

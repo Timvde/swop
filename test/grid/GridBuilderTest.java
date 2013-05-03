@@ -14,8 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 import player.PlayerDataBase;
-import square.ISquare;
 import square.Square;
+import square.NormalSquare;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
@@ -42,11 +42,11 @@ public class GridBuilderTest {
 				int numberOfUnchargedIdentityDisks = 0;
 				int numberOfChargedIdentityDisks = 0;
 				int numberOfTeleporters = 0;
-				for (ISquare sq : grid.getGrid().values()) {
+				for (Square sq : grid.getGrid().values()) {
 					if (sq.getClass() == WallPart.class)
 						numberOfWalls++;
 					else {
-						Square square = (Square) sq;
+						NormalSquare square = (NormalSquare) sq;
 						List<IItem> items = square.getAllItems();
 						for (IItem item : items) {
 							if (item instanceof LightGrenade)

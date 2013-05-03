@@ -1,6 +1,6 @@
 package item.teleporter;
 
-import square.ASquare;
+import square.AbstractSquare;
 
 /**
  * Indicates an object or item that can be teleported by a {@link Teleporter}
@@ -16,5 +16,5 @@ public interface Teleportable {
 	 * @param destination
 	 *        the destination where the object should teleport to
 	 */
-	public void teleportTo(ASquare destination);
+	public void teleportTo(AbstractSquare destination);
 }

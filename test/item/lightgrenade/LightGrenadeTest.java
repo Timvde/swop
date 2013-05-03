@@ -10,9 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
@@ -20,12 +20,12 @@ public class LightGrenadeTest {
 	
 	private LightGrenade	lightGrenade;
 	private DummyPlayer		affectedPlayer;
-	private Square			emptySquare;
+	private NormalSquare			emptySquare;
 	
 	@Before
 	public void setUp() {
 		lightGrenade = new LightGrenade();
-		emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		emptySquare = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		affectedPlayer = new DummyPlayer();
 	}
 	
@@ -83,7 +83,7 @@ public class LightGrenadeTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void testUse_SquareIsAWall() throws CannotPlaceLightGrenadeException {
-		lightGrenade.use(new WallPart(Collections.<Direction, ASquare> emptyMap()));
+		lightGrenade.use(new WallPart(Collections.<Direction, AbstractSquare> emptyMap()));
 	}
 	
 	@Test(expected = IllegalStateException.class)

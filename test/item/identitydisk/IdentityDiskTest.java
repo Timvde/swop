@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
@@ -26,12 +26,12 @@ public class IdentityDiskTest {
 	public final void testUse() {
 		
 		// setup a long strait of squares
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square first = square;
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		NormalSquare first = square;
 		for (int i = 0; i < 10; i++) {
-			Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+			Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 			neighbours.put(Direction.WEST, square);
-			square = new Square(neighbours);
+			square = new NormalSquare(neighbours);
 		}
 		
 		identityDisk.setDirection(Direction.EAST);
@@ -42,7 +42,7 @@ public class IdentityDiskTest {
 	
 	@Test
 	public final void testUse_ItemCannotMove() {
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		identityDisk.setDirection(Direction.EAST);
 		identityDisk.use(square);
 		
@@ -51,12 +51,12 @@ public class IdentityDiskTest {
 	
 	@Test(expected = IllegalStateException.class)
 	public final void testUse_noDirectionSet() {
-		identityDisk.use(new Square(Collections.<Direction, ASquare> emptyMap()));
+		identityDisk.use(new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap()));
 	}
 	
 	@Test(expected = IllegalStateException.class)
 	public final void testUse_useItemTwice() {
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		identityDisk.setDirection(Direction.EAST);
 		identityDisk.use(square);
 		identityDisk.use(square);
@@ -65,11 +65,11 @@ public class IdentityDiskTest {
 	@Test
 	public final void testUse_hitWall() {
 		// setup a long strait of squares
-		ASquare square = new Square(Collections.<Direction, ASquare> emptyMap());
-		ASquare first = square;
-		ASquare goal = null;
+		AbstractSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		AbstractSquare first = square;
+		AbstractSquare goal = null;
 		for (int i = 0; i < 10; i++) {
-			Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+			Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 			neighbours.put(Direction.WEST, square);
 			
 			if (i == 7) {
@@ -77,7 +77,7 @@ public class IdentityDiskTest {
 				square = new WallPart(neighbours);
 				break;
 			}
-			square = new Square(neighbours);
+			square = new NormalSquare(neighbours);
 		}
 		
 		identityDisk.setDirection(Direction.EAST);
@@ -94,7 +94,7 @@ public class IdentityDiskTest {
 	
 	@Test
 	public final void testTeleportTo() {
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
+		NormalSquare square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		identityDisk.teleportTo(square);
 		assertEquals(identityDisk, square.getAllItems().get(0));
 	}
