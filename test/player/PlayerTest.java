@@ -2,20 +2,19 @@ package player;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import grid.Grid;
-import grid.AGridBuilder;
-import grid.RandomGridBuilder;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import item.lightgrenade.LightGrenade;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import square.Direction;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import square.PlayerStartingPosition;
+import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 
 @SuppressWarnings("javadoc")
@@ -23,19 +22,21 @@ public class PlayerTest implements Observer {
 	
 	private Player			player;
 	private PlayerDataBase	db;
-	private PlayerState		notifiedWithPlayerState;
+	private TurnEvent		notifiedWithTurnEvent;
 	private Grid			grid;
 	
 	@Before
 	public void setUp() {
+		TronGridBuilder builder = new TronGridBuilder();
+		new DeterministicGridBuilderDirector(builder, false).construct();
+		grid = builder.getResult();
+		
 		db = new PlayerDataBase();
-		List<Player> players = db.createNewDB();
+		db.createNewDB(grid.getAllStartingPositions());
 		// make this class an observer for testing purposes
 		db.addObserver(this);
-		grid = new RandomGridBuilder(db.createNewDB()).getPredefinedTestGrid(false);
 		
 		player = (Player) db.getCurrentPlayer();
-		player.assignNewTurn();
 	}
 	
 	/* ######################### CONSTRUCTOR TESTS ######################### */
@@ -44,21 +45,25 @@ public class PlayerTest implements Observer {
 	public void testConstructor() {
 		// check init turn stuff and basic fields
 		assertEquals(false, player.hasMovedYet());
-		assertEquals(1, player.getID());
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+				player.getAllowedNumberOfActions());
+		assertNotNull(player.getStartingPosition());
 		assertEquals(player.getStartingPosition(), player.getCurrentLocation());
-		
-		// check empty inventory
 		assertEquals(0, player.getInventoryContent().size());
-		Assert.assertNotNull(player.getStartingPosition());
 		
 		// test whether the player is appointed by the db as the current player
 		assertIsCurrentPlayerTurn();
+		assertTrue(player.canPerformAction());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructor_nullDB() {
+		new Player(null, new PlayerStartingPosition(null));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullArgumentSquare() {
-		new Player(null);
+		new Player(db, null);
 	}
 	
 	/* ######################### TURN TESTS ######################### */
@@ -75,9 +80,8 @@ public class PlayerTest implements Observer {
 	 * This method will move the player one square in the first direction
 	 * possible.
 	 * 
-	 * Warning: this method is just a quick hack to make sure the player has
-	 * done a move (as the iterator order of a {@link HashSet} is not
-	 * deterministic and this is used to appoint the first player in the db)
+	 * This method is used to make sure the player has done a move so he doesn't
+	 * loose the game.
 	 */
 	private void doMove() {
 		boolean moved = false;
@@ -100,9 +104,9 @@ public class PlayerTest implements Observer {
 		
 		// test whether player sets itself lost and reported it
 		assertEquals(PlayerState.LOST, player.getPlayerState());
-		assertEquals(PlayerState.LOST, this.notifiedWithPlayerState);
+		assertEquals(TurnEvent.END_GAME, this.getTurnEventOfNotify());
 	}
-	
+
 	@Test
 	public void testCanPerformAction() {
 		assertIsCurrentPlayerTurn();
@@ -114,7 +118,7 @@ public class PlayerTest implements Observer {
 		try {
 			player.endTurn();
 		}
-		catch (IllegalStateException e) {
+		catch (IllegalActionException e) {
 			exceptionThrown = true;
 		}
 		assertTrue(exceptionThrown);
@@ -122,32 +126,23 @@ public class PlayerTest implements Observer {
 		try {
 			player.moveInDirection(Direction.NORTH);
 		}
-		catch (IllegalStateException e) {
+		catch (IllegalActionException e) {
 			exceptionThrown = true;
-		}
-		catch (IllegalMoveException e) {
-			;
 		}
 		assertTrue(exceptionThrown);
 		
 		try {
 			player.useItem(new LightGrenade());
 		}
-		catch (IllegalStateException e) {
+		catch (IllegalActionException e) {
 			exceptionThrown = true;
-		}
-		catch (IllegalArgumentException e) {
-			;
-		}
-		catch (CannotPlaceLightGrenadeException e) {
-			;
 		}
 		assertTrue(exceptionThrown);
 		
 		try {
 			player.pickUpItem(new LightGrenade());
 		}
-		catch (IllegalStateException e) {
+		catch (IllegalActionException e) {
 			exceptionThrown = true;
 		}
 		assertTrue(exceptionThrown);
@@ -159,7 +154,8 @@ public class PlayerTest implements Observer {
 		
 		// test the initial number of actions,
 		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
 		// decrease by one
@@ -167,21 +163,24 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test again
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1, player.getAllowedNumberOfActions());
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
+				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
 		// subtract another two: nb of actions will become zero
 		// --> player must have asked the db to switch players
 		player.skipNumberOfActions(2);
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3, player.getAllowedNumberOfActions());
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
+				player.getAllowedNumberOfActions());
 		assertIsNotCurrentPlayerTurn();
-		assertObserversNotifiedOfPlayerSwitch();
+		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 		
 		// simulate player switch
 		switchPlayers();
 		assertIsCurrentPlayerTurn();
 		
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+				player.getAllowedNumberOfActions());
 		
 		// subtract four at once
 		player.skipNumberOfActions(4);
@@ -194,17 +193,18 @@ public class PlayerTest implements Observer {
 	@Test
 	public void testAssignNewTurn() {
 		assertIsCurrentPlayerTurn();
-		player.assignNewTurn();
-		assertEquals(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN, player.getAllowedNumberOfActions());
+		db.assignNewTurn(player);
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+				player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		assertIsCurrentPlayerTurn();
 		
-		player.skipNumberOfActions(Player.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
+		player.skipNumberOfActions(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
 		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		// player should have switched turns (allowed nb actions < 0)
 		assertIsNotCurrentPlayerTurn();
-		assertObserversNotifiedOfPlayerSwitch();
+		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 		
 		switchPlayers();
 		assertIsNotCurrentPlayerTurn();
@@ -221,8 +221,8 @@ public class PlayerTest implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase && arg instanceof PlayerState) {
-			this.notifiedWithPlayerState = (PlayerState) arg;
+		if (o instanceof PlayerDataBase && arg instanceof TurnEvent) {
+			this.notifiedWithTurnEvent = (TurnEvent) arg;
 		}
 	}
 	
@@ -230,14 +230,14 @@ public class PlayerTest implements Observer {
 	
 	private void switchPlayers() {
 		db.endPlayerTurn((Player) db.getCurrentPlayer());
-		assertObserversNotifiedOfPlayerSwitch();
+		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 	}
 	
 	private void assertIsCurrentPlayerTurn() {
 		assertEquals(player, db.getCurrentPlayer());
 		assertEquals(PlayerState.ACTIVE, player.getPlayerState());
 		
-		assertEquals(PlayerState.WAITING, db.getOtherPlayer().getPlayerState());
+		assertEquals(PlayerState.WAITING, db.getNextPlayer().getPlayerState());
 	}
 	
 	private void assertIsNotCurrentPlayerTurn() {
@@ -247,12 +247,12 @@ public class PlayerTest implements Observer {
 		assertEquals(PlayerState.ACTIVE, ((Player) db.getCurrentPlayer()).getPlayerState());
 	}
 	
-	private void assertObserversNotifiedOfPlayerSwitch() {
-		// PlayerDB passes the PlayerState of the player whos turn is ended
-		// as an argument
-		assertEquals(PlayerState.WAITING, this.notifiedWithPlayerState);
-		// ignore any other PlayerStates; only intrested in Player-turn ends
-		
-		this.notifiedWithPlayerState = null;
+	/**
+	 * Returns the turnevent of the last observer call and clears it.
+	 */
+	private TurnEvent getTurnEventOfNotify() {
+		TurnEvent result = this.notifiedWithTurnEvent;
+		this.notifiedWithTurnEvent = null;
+		return result;
 	}
 }

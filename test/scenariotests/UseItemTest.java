@@ -1,20 +1,22 @@
 package scenariotests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import game.Game;
 import grid.Grid;
-import grid.AGridBuilder;
-import grid.RandomGridBuilder;
-import gui.DummyGUI;
+import grid.builder.DeterministicGridBuilderDirector;
+import grid.builder.TronGridBuilder;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import player.PlayerDataBase;
 import square.Direction;
+import square.PlayerStartingPosition;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 import controllers.EndTurnController;
@@ -42,12 +44,22 @@ public class UseItemTest {
 	
 	@Before
 	public void setUp() {
-		Game game = new Game();
-		playerDB = new PlayerDataBase();
-		grid = new RandomGridBuilder(playerDB.createNewDB()).getPredefinedTestGrid(false);
+		TronGridBuilder builder = new TronGridBuilder();
+		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
+				false);
+		director.construct();
+		grid = builder.getResult();
 		
-		game.start();
-		game.setGrid(grid);
+		//make a set with the startingpostions in a deterministic order
+		Set<PlayerStartingPosition> playerstartingpositions = new LinkedHashSet<PlayerStartingPosition>();
+		playerstartingpositions.add((PlayerStartingPosition) grid
+				.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS));
+		playerstartingpositions.add((PlayerStartingPosition) grid
+				.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS));
+		
+		playerDB = new PlayerDataBase();
+		playerDB.createNewDB(playerstartingpositions);
+		assertEquals(1, playerDB.getCurrentPlayer().getID());
 		
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
@@ -113,7 +125,7 @@ public class UseItemTest {
 			IllegalMoveException, CannotPlaceLightGrenadeException {
 		// set a DummyGUI, so we have control over the returned direction by
 		// DummyGUI#getBasicDirection()
-		useItemCont.setGUI(new DummyGUI());
+		//useItemCont.setGUI(new DummyGUI());
 		
 		
 		// player 1

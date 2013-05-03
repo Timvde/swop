@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import square.ASquare;
+import square.PlayerStartingPosition;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -115,6 +116,21 @@ public class Grid implements IGrid {
 	@Override
 	public Set<Coordinate> getAllGridCoordinates() {
 		return new HashSet<Coordinate>(this.grid.keySet());
+	}
+	
+	/**
+	 * Returns a set of all the {@link PlayerStartingPosition startingpositions}
+	 * on the grid.
+	 * 
+	 * @return a set of all the startingpositions on the grid.
+	 */
+	public Set<PlayerStartingPosition> getAllStartingPositions() {
+		Set<PlayerStartingPosition> result = new HashSet<PlayerStartingPosition>();
+		for (ASquare square : grid.values()) {
+			if (square instanceof PlayerStartingPosition)
+				result.add((PlayerStartingPosition) square);
+		}
+		return result;
 	}
 	
 }

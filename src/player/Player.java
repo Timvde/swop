@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import square.ASquare;
 import square.AffectedByPowerFailure;
 import square.Direction;
-import square.ISquare;
+import square.PlayerStartingPosition;
 import square.Square;
-import square.WallPart;
+import item.lightgrenade.LightGrenade;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -22,8 +22,9 @@ import ObjectronExceptions.ItemNotOnSquareException;
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
- * game a player can perform {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN} actions
- * during a turn. These actions are {@link #moveInDirection(Direction) move},
+ * game a player can perform
+ * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions during a turn.
+ * These actions are {@link #moveInDirection(Direction) move},
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
@@ -41,7 +42,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
 	/** The starting square of this player */
-	private ASquare					startSquare;
+	private PlayerStartingPosition	startSquare;
 	/** The square where the player is currently standing */
 	private ASquare					currentSquare;
 	/** The inventory of the player */
@@ -56,15 +57,15 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
 	 * moved and has an allowed number of actions of
-	 * {@value #MAX_NUMBER_OF_ACTIONS_PER_TURN}.The default state of a player is
-	 * {@link PlayerState#WAITING}. One has to call
-	 * {@link #setStartingPosition(ASquare)} to set the starting position. Until
-	 * then and until the state is set to {@link PlayerState#ACTIVE} it will not
-	 * be able to perform any action.
+	 * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN}. The default state
+	 * of a player is {@link PlayerState#WAITING}. Until the state is set to
+	 * {@link PlayerState#ACTIVE} the player will not be able to perform any
+	 * action.
 	 */
 	// User cannot create players himself. This is the responsibility of
 	// the PlayerDB --> constructor package access
-	Player(PlayerDataBase playerDB) throws IllegalArgumentException {
+	Player(PlayerDataBase playerDB, PlayerStartingPosition startingPosition)
+			throws IllegalArgumentException {
 		if (playerDB == null)
 			throw new IllegalArgumentException("The database cannot be null");
 		
@@ -74,6 +75,21 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.hasMoved = false;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
+		this.setStartingPosition(startingPosition);
+	}
+	
+	/**
+	 * This method is used to initiate the starting position of the player.
+	 * 
+	 * @param square
+	 *        The square that should be the starting position of this player
+	 */
+	private void setStartingPosition(PlayerStartingPosition square) {
+		if (square == null) {
+			throw new IllegalArgumentException("the given square cannot be null");
+		}
+		this.startSquare = square;
+		this.currentSquare = square;
 	}
 	
 	@Override
@@ -81,28 +97,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return id;
 	}
 	
-	/**
-	 * This method is used to initiate the starting position of the player. It
-	 * can be called only once.
-	 * 
-	 * @param square
-	 *        The square that should be the starting position of this player
-	 * @throws IllegalStateException
-	 *         When the player already has a starting position set
-	 */
-	public void setStartingPosition(ASquare square) throws IllegalStateException {
-		if (getStartingPosition() != null)
-			throw new IllegalStateException("This player already has a starting position set");
-		this.startSquare = square;
-		this.currentSquare = square;
-		
-		// tell the DB you received a startposition (to tell this player is
-		// ready to start playing)
-		this.playerDB.reportReadyToStart(this);
-	}
-	
 	@Override
-	public ISquare getStartingPosition() {
+	public PlayerStartingPosition getStartingPosition() {
 		return this.startSquare;
 	}
 	

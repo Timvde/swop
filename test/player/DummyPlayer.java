@@ -1,11 +1,10 @@
 package player;
 
 import java.util.Collections;
-import player.Player;
 import square.ASquare;
 import square.Direction;
+import square.PlayerStartingPosition;
 import square.PowerFailure;
-import square.Square;
 
 /**
  * A dummy implementation of {@link Player}. This implementation of player
@@ -23,7 +22,8 @@ public class DummyPlayer extends Player {
 	 * square without any neighbours.
 	 */
 	public DummyPlayer() {
-		super(new PlayerDataBase());
+		super(new PlayerDataBase(), new PlayerStartingPosition(
+				Collections.<Direction, ASquare> emptyMap()));
 		this.damageByPowerFailure = false;
 		this.numberOfActionsSkipped = 0;
 	}

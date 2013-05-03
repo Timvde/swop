@@ -86,8 +86,8 @@ public class LightGrenadeTest {
 		lightGrenade.use(new WallPart(Collections.<Direction, ASquare> emptyMap()));
 	}
 	
-	@Test(expected = IllegalStateException.class)
-	public void testUse_alreadyLightGrenadeOnSquare() throws CannotPlaceLightGrenadeException {
+	@Test(expected = CannotPlaceLightGrenadeException.class)
+	public void testUse_alreadyLightGrenadeOnSquare() {
 		emptySquare.addItem(new LightGrenade());
 		lightGrenade.use(emptySquare);
 	}
