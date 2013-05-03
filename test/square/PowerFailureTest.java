@@ -1,7 +1,8 @@
 package square;
 
 import static org.junit.Assert.*;
-import item.lightgrenade.DummyLightGrenade;
+import item.Effect;
+import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ import player.DummyPlayer;
 public class PowerFailureTest {
 	
 	private PrimaryPowerFailure	powerFailure;
+	private static final int INCREASED_DAMAGE = 4;
 
 	@Before
 	public void setUp() throws Exception {
@@ -72,21 +74,11 @@ public class PowerFailureTest {
 	}
 	
 	@Test
-	public final void testModify() {
-		DummyLightGrenade lightGrenade = new DummyLightGrenade();
-		// modify an item
-		powerFailure.modify(lightGrenade);
-		
-		// test whether the strength has increased
-		assertTrue(lightGrenade.isStrengthIncreased());
-	}
-	
-	@Test
 	public final void testExecute() {
 		DummyPlayer player = new DummyPlayer();
 		
 		// inflict damage
-		powerFailure.execute(player);
+		powerFailure.getEffect().execute(player);
 		
 		assertTrue(player.isDamagedByPowerFailure());
 	}
@@ -94,13 +86,13 @@ public class PowerFailureTest {
 	@Test
 	public final void testExecute_alreadyModifiedAnItem() {
 		DummyPlayer player = new DummyPlayer();
-		DummyLightGrenade lightGrenade = new DummyLightGrenade();
+		LightGrenade lightGrenade = new LightGrenade();
+		Effect effect = powerFailure.getEffect();
+		effect.addEffect(lightGrenade.getEffect());
+		effect.execute(player);
 		
-		powerFailure.modify(lightGrenade);
-		powerFailure.execute(player);
-		
-		assertTrue(lightGrenade.isStrengthIncreased());
 		assertFalse(player.isDamagedByPowerFailure());
+		assertEquals(INCREASED_DAMAGE, player.getNumberOfActionsSkipped());
 	}
 	
 }

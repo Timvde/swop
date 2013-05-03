@@ -24,17 +24,6 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
 public class LightGrenade extends Item {
 	
 	private LightGrenadeState	state;
-	private int					damage;
-	
-	/**
-	 * The default strength of a light grenade: the number of actions to skip
-	 * for {@link Explodable} objects when it explodes.
-	 */
-	static final int			DEFAULT_STRENGTH	= 3;
-	/**
-	 * The enforced damage, when {@link #increaseStrength()} is called.
-	 */
-	static final int			INCREASED_STRENGHT	= 4;
 	
 	/**
 	 * create a new light grenade, the state of this light grenade will be
@@ -42,7 +31,6 @@ public class LightGrenade extends Item {
 	 */
 	public LightGrenade() {
 		state = LightGrenadeState.INACTIVE;
-		damage = DEFAULT_STRENGTH;
 	}
 	
 	/**
@@ -116,19 +104,6 @@ public class LightGrenade extends Item {
 		System.out.println("Lightgrenade enabled.");
 	}
 	
-	/**
-	 * Increase the strength of a light grenade (the damage it does when it
-	 * explodes). By default, when a light grenade explode it will decrease the
-	 * number of actions left for {@link Explodable} objects by
-	 * {@value #DEFAULT_STRENGTH}. This method will increase the strength of a
-	 * light grenade to {@value #INCREASED_STRENGHT}.
-	 */
-	public void increaseStrength() {
-		damage = INCREASED_STRENGHT;
-		
-		System.out.println("Lightgrenade set to increased strength.");
-	}
-	
 	@Override
 	public char toChar() {
 		return 'l';
@@ -184,9 +159,9 @@ public class LightGrenade extends Item {
 		 */
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
 	}
-
+	
 	@Override
-	public Effect getEffect() {
+	public ExplodeEffect getEffect() {
 		return new ExplodeEffect(this);
 	}
 }
