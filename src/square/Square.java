@@ -69,7 +69,7 @@ public class Square extends ASquare {
 	@Override
 	public Direction getDirectionOfNeighbour(ASquare neighbour) {
 		for (Direction dir : Direction.values()) {
-			if (getNeighbour(dir) == neighbour) {
+			if (getNeighbour(dir).equals(neighbour)) {
 				return dir;
 			}
 		}

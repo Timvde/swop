@@ -43,6 +43,8 @@ public enum Direction {
 	private Direction		nextClockwiseDirection;
 	private Direction		nextCounterClockwiseDirection;
 	
+	private Direction[]		adjacentDirections;
+	
 	/**
 	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.
 	 * 
@@ -63,15 +65,28 @@ public enum Direction {
 	/**
 	 * Return the direction that is the next direction seen clockwise.
 	 */
-	@SuppressWarnings("javadoc")
 	public Direction getNextClockwiseDirection() {
 		return this.nextClockwiseDirection;
 	}
 	
 	/**
+	 * Return the directions that are adjacent to this direction.
+	 */
+	public Direction[] getAdjacentDirections() {
+		return this.adjacentDirections;
+	}
+	
+	private void setFirstAdjacentDirection(Direction d) {
+		this.adjacentDirections[0] = d;
+	}
+	
+	private void setSecondAdjacentDirection(Direction d) {
+		this.adjacentDirections[1] = d;
+	}
+	
+	/**
 	 * Return the direction that is the next direction seen counterclockwise.
 	 */
-	@SuppressWarnings("javadoc")
 	public Direction getNextCounterClockwiseDirection() {
 		return this.nextCounterClockwiseDirection;
 	}
@@ -103,58 +118,11 @@ public enum Direction {
 		return Direction.values()[rnd.nextInt(8)];
 	}
 	
-	/**
-	 * Return adjacent directions of the given direction.
-	 * 
-	 * @param d
-	 *        The direction we want the adjacent direction of.
-	 * @return An array of length 2 that has the adjacent directions of the
-	 *         given direction.
-	 */
-	public static Direction[] getAdjacentDirections(Direction d) {
-		Direction[] result = new Direction[2];
-		
-		if (d == Direction.NORTH) {
-			result[0] = Direction.NORTHWEST;
-			result[1] = Direction.NORTHEAST;
-		}
-		if (d == Direction.EAST) {
-			result[0] = Direction.NORTHEAST;
-			result[1] = Direction.SOUTHEAST;
-		}
-		if (d == Direction.SOUTH) {
-			result[0] = Direction.SOUTHEAST;
-			result[1] = Direction.SOUTHWEST;
-		}
-		if (d == Direction.WEST) {
-			result[0] = Direction.SOUTHWEST;
-			result[1] = Direction.NORTHWEST;
-		}
-		if (d == Direction.NORTHEAST) {
-			result[0] = Direction.NORTH;
-			result[1] = Direction.EAST;
-		}
-		if (d == Direction.SOUTHEAST) {
-			result[0] = Direction.EAST;
-			result[1] = Direction.SOUTH;
-		}
-		if (d == Direction.SOUTHWEST) {
-			result[0] = Direction.SOUTH;
-			result[1] = Direction.WEST;
-		}
-		if (d == Direction.NORTHWEST) {
-			result[0] = Direction.WEST;
-			result[1] = Direction.NORTH;
-		}
-		
-		return result;
-	}
-	
 	private void setOppositeDirection(Direction direction) {
 		this.oppositeDirection = direction;
 	}
 	
-	// initialize the fields of the enum
+	// Initialize the fields of the enum
 	static {
 		List<Direction> directions = new ArrayList<Direction>();
 		directions.add(NORTH);
@@ -200,5 +168,29 @@ public enum Direction {
 		WEST.setNextCounterClockwiseDirection(SOUTHWEST);
 		NORTHWEST.setNextClockwiseDirection(NORTH);
 		NORTHWEST.setNextCounterClockwiseDirection(WEST);
+		
+		NORTH.setFirstAdjacentDirection(Direction.NORTHWEST);
+		NORTH.setSecondAdjacentDirection(Direction.NORTHEAST);
+		
+		EAST.setFirstAdjacentDirection(Direction.NORTHEAST);
+		EAST.setSecondAdjacentDirection(Direction.SOUTHEAST);
+		
+		SOUTH.setFirstAdjacentDirection(Direction.SOUTHEAST);
+		SOUTH.setSecondAdjacentDirection(Direction.SOUTHWEST);
+		
+		WEST.setFirstAdjacentDirection(Direction.SOUTHWEST);
+		WEST.setSecondAdjacentDirection(Direction.NORTHWEST);
+		
+		NORTHEAST.setFirstAdjacentDirection(Direction.NORTH);
+		NORTHEAST.setSecondAdjacentDirection(Direction.EAST);
+		
+		SOUTHEAST.setFirstAdjacentDirection(Direction.EAST);
+		SOUTHEAST.setSecondAdjacentDirection(Direction.SOUTH);
+		
+		SOUTHWEST.setFirstAdjacentDirection(Direction.SOUTH);
+		SOUTHWEST.setSecondAdjacentDirection(Direction.WEST);
+		
+		NORTHWEST.setFirstAdjacentDirection(Direction.WEST);
+		NORTHWEST.setSecondAdjacentDirection(Direction.NORTH);
 	}
 }

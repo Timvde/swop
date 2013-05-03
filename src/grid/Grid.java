@@ -12,9 +12,9 @@ import java.util.Set;
 import player.PlayerDataBase;
 import square.ASquare;
 import square.ISquare;
+import square.PowerFailure;
 import square.PrimaryPowerFailure;
 import square.Square;
-import square.WallPart;
 
 /**
  * A grid that consists of abstract {@link ASquare squares}.
@@ -24,7 +24,7 @@ import square.WallPart;
 public class Grid implements IGrid, Observer {
 	
 	private Map<Coordinate, ASquare>	grid;
-	private static final float			POWER_FAILURE_CHANCE	= 0.05F;
+	private static final float			POWER_FAILURE_CHANCE	= 0.01F;
 	private boolean						ENABLE_POWER_FAILURE;
 	
 	/**
@@ -139,7 +139,7 @@ public class Grid implements IGrid, Observer {
 	 * </pre>
 	 */
 	public void updatePowerFailures() {
-		for (PrimaryPowerFailure failure : getAllPowerFailures())
+		for (PowerFailure failure : getAllPowerFailures())
 			failure.decreaseTimeToLive();
 		
 		if (ENABLE_POWER_FAILURE) {
@@ -153,8 +153,7 @@ public class Grid implements IGrid, Observer {
 	}
 	
 	/**
-	 * Add a power failure at a given coordinate. This method will also make
-	 * sure the surrounding squares are power failured.
+	 * Add a power failure at a given coordinate. 
 	 * 
 	 * @param coordinate
 	 *        The coordinate to receive the power failure.
@@ -164,8 +163,8 @@ public class Grid implements IGrid, Observer {
 			new PrimaryPowerFailure(grid.get(coordinate));
 	}
 	
-	private Set<PrimaryPowerFailure> getAllPowerFailures() {
-		Set<PrimaryPowerFailure> failures = new HashSet<PrimaryPowerFailure>();
+	private Set<PowerFailure> getAllPowerFailures() {
+		Set<PowerFailure> failures = new HashSet<PowerFailure>();
 		for (ISquare square : getGrid().values()) {
 			if (square.hasPowerFailure())
 				failures.add(((Square) square).getPowerFailure());

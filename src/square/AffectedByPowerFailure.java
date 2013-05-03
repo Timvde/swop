@@ -3,7 +3,7 @@ package square;
 
 /**
  * Objects having the AffectedByPowerFailure property can be damaged as result of a 
- * {@link PrimaryPowerFailure}.
+ * {@link PowerFailure}.
  * 
  * @author Bavo Mees
  */

@@ -5,6 +5,8 @@ package square;
  */
 public class TertiaryPowerFailure extends PowerFailure {
 	
+	private static final int TIME_TO_LIVE = 1;
+	
 	/**
 	 * Create a power failure for a given square.
 	 * 
@@ -14,7 +16,7 @@ public class TertiaryPowerFailure extends PowerFailure {
 	public TertiaryPowerFailure(ASquare square) {
 		super(square);
 		
-		timeToLive = 2;
+		timeToLive = TIME_TO_LIVE;
 	}
 	
 }

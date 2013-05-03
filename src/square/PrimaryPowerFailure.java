@@ -12,6 +12,9 @@ public class PrimaryPowerFailure extends PowerFailure {
 	private SecondaryPowerFailure	secondaryPF;
 	private TertiaryPowerFailure	tertiaryPF;
 	
+	private static final int		ROTATION_COUNTER_MAX	= 2;
+	private static final int		TIME_TO_LIVE			= 3;
+	
 	/** A counter that keeps track of when to rotate the secondary PF. */
 	private int						rotationCounter;
 	
@@ -29,14 +32,10 @@ public class PrimaryPowerFailure extends PowerFailure {
 		super(square);
 		
 		// Determine the secondary powerfailure rotation.
-		Random rnd = new Random();
-		if (rnd.nextInt(2) == 1)
-			this.clockwiseRotation = true;
-		else
-			this.clockwiseRotation = false;
+		this.clockwiseRotation = new Random().nextBoolean();
 		
-		this.rotationCounter = 2;
-		this.timeToLive = 3;
+		this.rotationCounter = ROTATION_COUNTER_MAX;
+		this.timeToLive = TIME_TO_LIVE;
 		
 		createSecondaryPowerFailure();
 	}
@@ -46,9 +45,9 @@ public class PrimaryPowerFailure extends PowerFailure {
 		ASquare secPFSquare = getSquare().getNeighbour(randomDirection);
 		
 		// Check if we selected a square that is part of the grid. If so,
-		// create the secondary powerfailure, which results in the creation
-		// of a tertiary powerfailure.
-		if (secPFSquare != null) {
+		// check if there is not yet a powerfailure. If so, create the secondary
+		// powerfailure, which results in the creation of a tertiary powerfailure.
+		if (secPFSquare != null && !secPFSquare.hasPowerFailure()) {
 			this.secondaryPF = new SecondaryPowerFailure(secPFSquare);
 			secPFSquare.addPowerFailure(this.secondaryPF);
 			
@@ -69,7 +68,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 		Direction tertPFDirection1 = this.getSquare().getDirectionOfNeighbour(
 				this.secondaryPF.getSquare());
 		
-		Direction[] tertPFDirections2and3 = Direction.getAdjacentDirections(tertPFDirection1);
+		Direction[] tertPFDirections2and3 = tertPFDirection1.getAdjacentDirections();
 		
 		possibleTertiaryPFDirs[0] = tertPFDirection1;
 		possibleTertiaryPFDirs[1] = tertPFDirections2and3[0];
@@ -79,10 +78,11 @@ public class PrimaryPowerFailure extends PowerFailure {
 		Random rnd = new Random();
 		Direction tertiaryPFDirection = possibleTertiaryPFDirs[rnd.nextInt(3)];
 		
-		// Create the tertiary powerfailure, if it is located on the grid
+		// Create the tertiary powerfailure, if it is located on the grid and the
+		// chosen square does not yet have a powerfailure.
 		ASquare tertPFSquare = this.secondaryPF.getSquare().getNeighbour(tertiaryPFDirection);
 		
-		if (tertPFSquare != null) {
+		if (tertPFSquare != null && !tertPFSquare.hasPowerFailure()) {
 			this.tertiaryPF = new TertiaryPowerFailure(tertPFSquare);
 			tertPFSquare.addPowerFailure(this.tertiaryPF);
 		}
@@ -92,8 +92,9 @@ public class PrimaryPowerFailure extends PowerFailure {
 	// geworden)
 	private void rotateSecondaryPowerFailure() {
 		// only do the rotation if there is a secondary powerfailure, and if it
-		// is still alive.
-		if (this.secondaryPF != null && this.secondaryPF.getTimeToLive() > 0) {
+		// is still located on a square.
+		if (this.secondaryPF != null && this.secondaryPF.getTimeToLive() > 0
+				&& this.secondaryPF.getSquare() != null) {
 			// calculate the next direction in which the second powerfailure
 			// lies:
 			Direction currSecPFDir = this.getSquare().getDirectionOfNeighbour(
@@ -107,14 +108,13 @@ public class PrimaryPowerFailure extends PowerFailure {
 			
 			ASquare nextSecPFSquare = this.getSquare().getNeighbour(nextSecPFDir);
 			
-			// Move the secondary powerfailure, if the new sec PF square is part
-			// of the grid.
+			// Remove the powerfailure from the old square
 			this.secondaryPF.getSquare().removePowerFailure(this.secondaryPF);
 			this.secondaryPF.setSquare(null);
 			
-			if (nextSecPFSquare != null) {
-				// TODO wat als sec niet op grid? die kan volgende plek dan niet berek.
-				// TODO wat als 2 powerfailures op dezelfde plek?
+			// Move the secondary powerfailure, if the new sec PF square is part
+			// of the grid and it does not already contain a powerfailure.
+			if (nextSecPFSquare != null && !nextSecPFSquare.hasPowerFailure()) {
 				nextSecPFSquare.addPowerFailure(this.secondaryPF);
 				this.secondaryPF.setSquare(nextSecPFSquare);
 				
@@ -122,7 +122,8 @@ public class PrimaryPowerFailure extends PowerFailure {
 				createTertiaryPowerFailure();
 			}
 			
-			rotationCounter = 2;
+			// Reset the rotation counter
+			rotationCounter = ROTATION_COUNTER_MAX;
 		}
 	}
 }
