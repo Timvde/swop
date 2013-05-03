@@ -31,7 +31,7 @@ public class GUIDataController {
 	 *        The grid the controller will use.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
-		if (playerDB == null || grid == null)
+		if (playerDB == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = playerDB;
 		this.grid = grid;

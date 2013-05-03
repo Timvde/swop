@@ -36,7 +36,7 @@ public class PickUpTest extends SetupTestGrid {
 	 * player 1 will pickup the Uncharged Identity disc west of him
 	 */
 	@Test
-	public void testPickup_Success() {
+	public void testPickup_UncharchedID_Success() {
 		IPlayer player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
@@ -63,7 +63,7 @@ public class PickUpTest extends SetupTestGrid {
 	 * player 2 will pickup the LG NothEast of him
 	 */
 	@Test
-	public void testPickup_Success2() {		
+	public void testPickup_LG_Success() {		
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();

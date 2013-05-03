@@ -12,6 +12,7 @@ import square.PlayerStartingPosition;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
+import controllers.UseItemController;
 
 @SuppressWarnings("javadoc")
 public class SetupTestGrid {
@@ -19,6 +20,7 @@ public class SetupTestGrid {
 	protected EndTurnController		endTurnCont;
 	protected MoveController		moveCont;
 	protected PickUpItemController	pickUpCont;
+	protected UseItemController		useItemCont;
 	protected Grid					grid;
 	protected PlayerDataBase		playerDB;
 	
@@ -44,6 +46,7 @@ public class SetupTestGrid {
 		moveCont = new MoveController(playerDB);
 		endTurnCont = new EndTurnController(playerDB);
 		pickUpCont = new PickUpItemController(playerDB);
+		useItemCont = new UseItemController(playerDB);
 	}
 	
 }

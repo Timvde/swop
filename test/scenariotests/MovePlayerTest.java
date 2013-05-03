@@ -11,6 +11,7 @@ import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
 import square.Direction;
+import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 
 /**
@@ -138,7 +139,7 @@ public class MovePlayerTest extends SetupTestGrid {
 	
 	@Test
 	public void testPlayerWin() {
-		//Player 1
+		// Player 1
 		IPlayer player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH);
@@ -146,11 +147,11 @@ public class MovePlayerTest extends SetupTestGrid {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
-		//player 2
+		// player 2
 		moveCont.move(Direction.EAST);
 		endTurnCont.endTurn();
 		
-		//player 1
+		// player 1
 		moveCont.move(Direction.SOUTH);
 		
 		assertEquals(PlayerState.FINISHED, ((Player) player1).getPlayerState());
@@ -159,5 +160,23 @@ public class MovePlayerTest extends SetupTestGrid {
 	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentNull() {
 		moveCont.move(null);
+	}
+	
+	@Test
+	public void testPreconditions() {
+		IPlayer player = playerDB.getCurrentPlayer();
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		
+		// cast to a player to try to break the preconditions
+		Player playerNotHisTurn = (Player) player;
+		boolean exceptionThrown = false;
+		try {
+			playerNotHisTurn.moveInDirection(Direction.SOUTH);
+		}
+		catch (IllegalActionException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
 	}
 }
