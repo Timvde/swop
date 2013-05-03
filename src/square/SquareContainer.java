@@ -1,8 +1,8 @@
 package square;
 
+import item.Effect;
 import item.IItem;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import player.IPlayer;
@@ -204,6 +204,16 @@ public class SquareContainer extends AbstractSquare {
 	
 	public String toString() {
 		return square.toString();
+	}
+
+	@Override
+	protected void addPlayer(IPlayer player, Effect effect) {
+		square.addPlayer(player, effect);
+	}
+
+	@Override
+	protected void addItem(IItem item, Effect effect) {
+		square.addItem(item, effect);
 	}
 	
 }

@@ -19,9 +19,8 @@ public class PowerFailureEffect implements Effect {
 	
 	@Override
 	public void execute(TronObject object) {
-		if (execute && object.asAffectedByPowerFailure() != null) {
+		if (execute && object.asAffectedByPowerFailure() != null)
 			object.asAffectedByPowerFailure().damageByPowerFailure();
-		}
 		
 		if (next != null)
 			next.execute(object);

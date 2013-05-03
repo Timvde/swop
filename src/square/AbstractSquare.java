@@ -110,15 +110,25 @@ public abstract class AbstractSquare implements Square {
 	public abstract boolean canAddPlayer();
 	
 	/**
-	 * A hook for adding {@link Effect effects} to any object that is placed on
-	 * a square. This method will be called before the effects are added. All
-	 * the other effects will be added after this effect. This gives great
-	 * flexibility for modifying or adding extra effects.
+	 * Add a player to the square and execute a specified effect on it.
 	 * 
-	 * @return a new effect that will execute an object that is placed on this
-	 *         square
+	 * @param player
+	 *        the player to add
+	 * @param effect
+	 *        the effect to execute on the player after the player has been
+	 *        added
 	 */
-	protected Effect effectHook() {
-		return new EmptyEffect();
-	}
+	protected abstract void addPlayer(IPlayer player, Effect effect);
+	
+	/**
+	 * Add a item to the square and execute a specified effect on it.
+	 * 
+	 * @param item
+	 *        the item to add
+	 * @param effect
+	 *        the effect to execute on the player after the player has been
+	 *        added
+	 */
+	protected abstract void addItem(IItem item, Effect effect);
+	
 }

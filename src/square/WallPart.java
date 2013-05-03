@@ -1,5 +1,6 @@
 package square;
 
+import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class WallPart extends AbstractSquare {
 
 	@Override
 	public void addItem(IItem item) {
-		throw new UnsupportedOperationException("items cannot be added to light trails");
+		throw new UnsupportedOperationException("items cannot be added to wall parts");
 	}
 
 	@Override
@@ -98,5 +99,15 @@ public class WallPart extends AbstractSquare {
 	@Override
 	public String toString() {
 		return "w ";
+	}
+
+	@Override
+	protected void addPlayer(IPlayer player, Effect effect) {
+		this.addPlayer(player);
+	}
+
+	@Override
+	protected void addItem(IItem item, Effect effect) {
+		this.addItem(item);
 	}
 }

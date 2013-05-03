@@ -23,6 +23,8 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	 *        the square to decorate
 	 */
 	public AbstractSquareDecorator(AbstractSquare square) {
+		if (square == null)
+			throw new IllegalArgumentException();
 		this.square = square;
 	}
 	
@@ -110,8 +112,11 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.toString();
 	}
 	
-	@Override
-	protected Effect effectHook() {
-		return square.effectHook();
+	protected void addItem(IItem item, Effect effect) {
+		square.addItem(item, effect);
+	}
+	
+	protected void addPlayer(IPlayer player, Effect effect) {
+		square.addPlayer(player, effect);
 	}
 }
