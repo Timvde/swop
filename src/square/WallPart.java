@@ -99,4 +99,9 @@ public class WallPart extends AbstractSquare {
 	public String toString() {
 		return "w ";
 	}
+
+	@Override
+	public boolean isWall() {
+		return true;
+	}
 }

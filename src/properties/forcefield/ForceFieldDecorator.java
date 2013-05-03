@@ -1,4 +1,4 @@
-package item.forcefieldgenerator;
+package properties.forcefield;
 
 import item.IItem;
 import item.identitydisk.IdentityDisk;

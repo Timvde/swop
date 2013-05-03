@@ -1,28 +1,46 @@
 package item.forcefieldgenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+import properties.forcefield.ForceField;
 import square.AbstractSquare;
 import square.Direction;
 import square.SquareContainer;
-import square.WallPart;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import item.Effect;
 import item.EmptyEffect;
 import item.IItem;
 import item.Item;
 
-
+/**
+ * This class represents a Force Field Generator. When placed, this item looks
+ * for other active Force Field Generators in its neighbourhood to create a
+ * {@link ForceField}.
+ */
 public class ForceFieldGenerator extends Item {
 	
+	private List<ForceField> forceFields;
+	
+	/**
+	 * Creates a Force Field Generator.
+	 */
+	public ForceFieldGenerator() {
+		forceFields = new ArrayList<ForceField>();
+	}
+	
 	@Override
-	public void use(AbstractSquare square) throws CannotPlaceLightGrenadeException {
+	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
 		// Look for another force field generator in other squares nearby
 		for (Direction direction : Direction.values()) {
-			AbstractSquare neighbour = square;
+			SquareContainer neighbour = square;
+			List<SquareContainer> listOfSquares = new ArrayList<SquareContainer>();
 			for (int i = 0; i < 3; i++) {
 				neighbour = neighbour.getNeighbourIn(direction);
-				if (neighbour instanceof WallPart)
+				listOfSquares.add(neighbour);
+				if (neighbour.isWall())
 					break;
-				if (getForceFieldGeneratorOnSquare(neighbour) != null) {
+				ForceFieldGenerator neighbouringGenerator = getForceFieldGeneratorOnSquare(neighbour);
+				if (neighbouringGenerator != null) {
 					
 				}
 			}
@@ -36,10 +54,10 @@ public class ForceFieldGenerator extends Item {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public boolean isCarriable() {
-		return true; 
+		return true;
 	}
 	
 	@Override
@@ -50,6 +68,10 @@ public class ForceFieldGenerator extends Item {
 	@Override
 	public Effect getEffect() {
 		return new EmptyEffect();
+	}
+	
+	private void addForceField(ForceField forceField) {
+		forceFields.add(forceField);
 	}
 	
 }

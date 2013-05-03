@@ -23,7 +23,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	private Direction		direction;
 	
 	@Override
-	public void use(AbstractSquare square) {
+	public void use(SquareContainer square) {
 		if (direction == null)
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");

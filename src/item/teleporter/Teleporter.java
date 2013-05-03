@@ -3,6 +3,7 @@ package item.teleporter;
 import item.Effect;
 import item.Item;
 import square.AbstractSquare;
+import square.SquareContainer;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -41,7 +42,7 @@ public class Teleporter extends Item {
 	}
 	
 	@Override
-	public void use(AbstractSquare square) {
+	public void use(SquareContainer square) {
 		throw new UnsupportedOperationException(
 				"A teleporter cannot be pickup and thus be placed on an item by a player !!");
 	}

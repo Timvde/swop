@@ -217,4 +217,9 @@ public class NormalSquare extends AbstractSquare {
 		
 		return out;
 	}
+
+	@Override
+	public boolean isWall() {
+		return false;
+	}
 }

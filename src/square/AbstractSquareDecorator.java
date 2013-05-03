@@ -99,5 +99,9 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 
 	public String toString() {
 		return square.toString();
-	}	
+	}
+	
+	public boolean isWall() {
+		return square.isWall();
+	}
 }
