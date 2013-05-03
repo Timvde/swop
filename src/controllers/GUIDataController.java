@@ -1,10 +1,10 @@
 package controllers;
 
+import grid.Coordinate;
+import grid.Grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import grid.Coordinate;
-import grid.Grid;
 import player.IPlayer;
 import player.PlayerDataBase;
 import square.Square;
