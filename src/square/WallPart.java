@@ -119,4 +119,10 @@ public class WallPart extends ASquare {
 	public void update(Observable o, Object arg) {
 		// Wallparts don't have to do anything
 	}
+
+	@Override
+	public boolean isWall() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
