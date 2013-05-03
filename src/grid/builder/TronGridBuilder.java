@@ -207,9 +207,7 @@ public class TronGridBuilder implements GridBuilder {
 			if (teleporter.getDestination() == null)
 				throw new GridBuildException("Some teleporters have no destinations!");
 		}
-		
-		System.out.println("WALLS = " + (grid.size() - numberOfSquares));
-		
+				
 		return new Grid(grid);
 	}
 	
