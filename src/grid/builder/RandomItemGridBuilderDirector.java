@@ -163,7 +163,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	private void placeIdentityDisks(List<Coordinate> startingCoordinates,
 			Map<Coordinate, Coordinate> teleporters, int maxX, int maxY) {
 		// place normal identity disks
-		int numberOfToPlaceIdentityDisks = (int) Math.ceil(builder.getNumberOfSquares()
+		int numberOfIdentityDisksToPlace = (int) Math.ceil(builder.getNumberOfSquares()
 				* PERCENTAGE_OF_IDENTITY_DISKS);
 		Set<Coordinate> placedIdentityDisksCoordinates = new HashSet<Coordinate>();
 		
@@ -187,7 +187,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 		}
 		
 		// place other ID disks
-		while (placedIdentityDisksCoordinates.size() < numberOfToPlaceIdentityDisks) {
+		while (placedIdentityDisksCoordinates.size() < numberOfIdentityDisksToPlace) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
 			if (builder.canPlaceItem(position)
 					&& !placedIdentityDisksCoordinates.contains(position)) {
