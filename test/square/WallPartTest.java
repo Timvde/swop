@@ -50,12 +50,7 @@ public class WallPartTest {
 	public void addPlayer() {
 		wall.addPlayer(new DummyPlayer());
 	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void removePlayer() {
-		wall.removePlayer();
-	}
-	
+		
 	@Test
 	public void testHasLightTrail() {
 		assertFalse(wall.hasLightTrail());

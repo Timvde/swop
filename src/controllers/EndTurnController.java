@@ -7,7 +7,7 @@ import player.IPlayerDataBase;
  * This controller will manage the end turn action.
  * 
  * @author tom
- *
+ * 
  */
 public class EndTurnController {
 	
@@ -17,19 +17,21 @@ public class EndTurnController {
 	 * Create a new end turn controller.
 	 * 
 	 * @param db
-	 * 			The player database this end turn controller uses.
+	 *        The player database this end turn controller uses.
+	 * @throws IllegalArgumentException
+	 *         The specified argument cannot be null.
 	 */
-	public EndTurnController(IPlayerDataBase db) {
+	public EndTurnController(IPlayerDataBase db) throws IllegalArgumentException {
+		if (db == null)
+			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = db;
 	}
 	
 	/**
-	 * End the turn of the given player.
+	 * End the turn of the current player.
 	 */
 	public void endTurn() {
-		IPlayer currentPlayer = playerDB.getCurrentPlayer();
-		
-		currentPlayer.endTurn();
+		playerDB.endCurrentPlayerTurn();
 	}
 	
 }

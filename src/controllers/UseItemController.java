@@ -21,9 +21,11 @@ public class UseItemController {
 	 * unspecified.
 	 * 
 	 * @param db
-	 *        The player database.
+	 *        The playerdatabase the controller uses.
 	 */
 	public UseItemController(IPlayerDataBase db) {
+		if (db == null)
+			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = db;
 	}
 	
