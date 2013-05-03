@@ -97,7 +97,7 @@ public class SquareTest {
 		assertFalse(square.contains(lightGrenade));
 		
 		// add a player to the square
-		square.removePlayer();
+		square.remove(player);
 		square.addPlayer(player);
 		assertTrue(square.contains(player));
 		assertFalse(square.contains(lightGrenade));
