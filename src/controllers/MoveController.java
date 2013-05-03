@@ -14,6 +14,7 @@ public class MoveController {
 	
 
 	private IPlayerDataBase playerDB;
+	
 	/**
 	 * Create a new move controller with a reference to a given player database.
 	 * 
@@ -28,13 +29,10 @@ public class MoveController {
 	 * 
 	 * @param direction
 	 *        The direction to move the player in.
-	 * @throws IllegalStateException
-	 * @throws IllegalArgumentException
 	 * @throws IllegalMoveException
 	 *         If the given direction is not a legal move.
 	 */
-	public void move(Direction direction) throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
+	public void move(Direction direction) throws IllegalMoveException {
 		playerDB.getCurrentPlayer().moveInDirection(direction);
 	}
 	

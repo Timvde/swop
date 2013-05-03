@@ -28,7 +28,7 @@ public class EndTurnController {
 	 * 
 	 * @throws IllegalStateException
 	 */
-	public void endTurn() throws IllegalStateException {
+	public void endTurn() {
 		IPlayer currentPlayer = playerDB.getCurrentPlayer();
 		
 		currentPlayer.endTurn();

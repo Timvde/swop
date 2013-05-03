@@ -8,11 +8,14 @@ import grid.Grid;
 import player.IPlayer;
 import player.PlayerDataBase;
 import square.ISquare;
+import square.Square;
 
 /**
- * The gui data controller that will fetch data from the game, for creating the GUI visuals.
+ * The gui data controller that will fetch data from the game, for creating the
+ * GUI visuals.
+ * 
  * @author tom
- *
+ * 
  */
 public class GUIDataController {
 	
@@ -23,9 +26,9 @@ public class GUIDataController {
 	 * Create a new gui data controller.
 	 * 
 	 * @param playerDB
-	 * 			The player database the controller will use.
+	 *        The player database the controller will use.
 	 * @param grid
-	 * 			The grid the controller will use.
+	 *        The grid the controller will use.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
 		this.playerDB = playerDB;
@@ -36,7 +39,7 @@ public class GUIDataController {
 	 * Set the grid of the controller to a new grid.
 	 * 
 	 * @param g
-	 * 			The new grid for this controller
+	 *        The new grid for this controller
 	 */
 	public void setGrid(Grid g) {
 		this.grid = g;
@@ -59,7 +62,8 @@ public class GUIDataController {
 	}
 	
 	/**
-	 * Return a list of items that are located on the square that the current player resides on.
+	 * Return a list of items that are located on the square that the current
+	 * player resides on.
 	 */
 	@SuppressWarnings("javadoc")
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
@@ -97,6 +101,21 @@ public class GUIDataController {
 	 */
 	public Set<Coordinate> getAllGridCoordinates() {
 		return grid.getAllGridCoordinates();
+	}
+	
+	/**
+	 * Check if the given square is a starting position of a player.
+	 * 
+	 * @param s
+	 *        The square to test.
+	 * @return True if the given square is a player starting position.
+	 */
+	public boolean isPlayerStartingPosition(ISquare s) {
+		for (Square sq : grid.getAllStartingPositions()) {
+			if (sq.equals(s))
+				return true;
+		}
+		return false;
 	}
 	
 	/**
