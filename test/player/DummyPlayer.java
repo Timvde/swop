@@ -2,7 +2,7 @@ package player;
 
 import java.util.Collections;
 import player.Player;
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;

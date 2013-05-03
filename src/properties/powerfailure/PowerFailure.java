@@ -1,4 +1,4 @@
-package powerfailure;
+package properties.powerfailure;
 
 import item.Effect;
 import java.util.ArrayList;
@@ -37,8 +37,9 @@ public class PowerFailure implements Property {
 		for (Direction direction : Direction.values())
 			if (square.getNeighbourIn(direction) != null) {
 				if (square.getNeighbourIn(direction) instanceof SquareContainer) {
-					square.getNeighbourIn(direction).addProperty(this);
-					squares.add(square.getNeighbourIn(direction));
+					SquareContainer neighbour = (SquareContainer) square.getNeighbourIn(direction);
+					neighbour.addProperty(this);
+					squares.add(neighbour);
 				}
 			}
 		

@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import player.DummyPlayer;
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;

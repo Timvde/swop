@@ -16,7 +16,7 @@ import org.junit.Test;
 import player.DummyPlayer;
 import player.IPlayer;
 import player.PlayerDataBase;
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 
 @SuppressWarnings("javadoc")
 public class SquareTest {

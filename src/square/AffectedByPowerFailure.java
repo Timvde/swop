@@ -1,6 +1,6 @@
 package square;
 
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 
 
 /**

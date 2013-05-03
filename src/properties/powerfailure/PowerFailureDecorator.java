@@ -1,4 +1,4 @@
-package powerfailure;
+package properties.powerfailure;
 
 import item.Effect;
 import square.AbstractSquare;

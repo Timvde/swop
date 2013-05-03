@@ -10,7 +10,7 @@ import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
 import player.PlayerDataBase;
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 import square.AbstractSquare;
 import square.Square;
 import square.NormalSquare;

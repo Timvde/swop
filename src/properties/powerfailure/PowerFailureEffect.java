@@ -1,4 +1,4 @@
-package powerfailure;
+package properties.powerfailure;
 
 import square.TronObject;
 import item.Effect;

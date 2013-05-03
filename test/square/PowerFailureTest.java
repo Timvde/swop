@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {

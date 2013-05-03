@@ -3,13 +3,28 @@ package square;
 import item.Effect;
 import item.EmptyEffect;
 import item.IItem;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import player.IPlayer;
 
 /**
  * This class defines objects that represent a location on a Grid.
  */
 public abstract class AbstractSquare implements Square {
+	
+	private HashMap<Direction, AbstractSquare>	neighbours;
+	
+	public AbstractSquare(Map<Direction, AbstractSquare> neighbours) {
+		if (!canHaveAsNeighbours(neighbours))
+			throw new IllegalArgumentException(
+					"the specified neighbours could not be set as the neighbours for this square!");
+		
+		this.neighbours = new HashMap<Direction, AbstractSquare>(neighbours);
+		
+		for (Direction direction : neighbours.keySet())
+			neighbours.get(direction).neighbours.put(direction.getOppositeDirection(), this);
+	}
 	
 	/**
 	 * This method can be used to pick up an item with a given IDfrom a square.
@@ -120,5 +135,32 @@ public abstract class AbstractSquare implements Square {
 	 */
 	protected Effect effectHook() {
 		return new EmptyEffect();
+	}
+	
+	/**
+	 * Returns whether the specified map can be set as the map of neighbours for
+	 * this square. More formally this method returns false if and only if
+	 * <code>neighbours == null</code>
+	 * 
+	 * @param neighbours
+	 *        the neighbours to be tested
+	 * @return true if the neighours can be set for this square, else false
+	 */
+	private boolean canHaveAsNeighbours(Map<Direction, AbstractSquare> neighbours) {
+		if (neighbours == null)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Returns the neighbour in a specified direction or null if the square has
+	 * no mapping for the neighbour in the specified direction.
+	 * 
+	 * @param direction
+	 *        the direction of the neighbour
+	 * @return the neighbour in the specified direction
+	 */
+	public AbstractSquare getNeighbourIn(Direction direction) {
+		return neighbours.get(direction);
 	}
 }

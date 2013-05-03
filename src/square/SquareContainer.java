@@ -18,7 +18,6 @@ import player.IPlayer;
 public class SquareContainer extends AbstractSquare {
 	
 	private AbstractSquare						square;
-	private HashMap<Direction, SquareContainer>	neighbours;
 	private LinkedList<AbstractSquare>			decorators;
 	
 	/**
@@ -40,50 +39,10 @@ public class SquareContainer extends AbstractSquare {
 	 * @param square
 	 *        the square this container will hold
 	 */
-	public SquareContainer(Map<Direction, SquareContainer> neighbours, AbstractSquare square) {
-		
+	public SquareContainer(Map<Direction, AbstractSquare> neighbours, AbstractSquare square) {
+		super(neighbours);
 		this.square = square;
 		this.decorators = new LinkedList<AbstractSquare>();
-		
-		// check if the parameter is valid
-		if (!canHaveAsNeighbours(neighbours))
-			throw new IllegalArgumentException(
-					"the specified neighbours could not be set as the neighbours for this square!");
-		
-		// set the neighbours as the neighbours for this square
-		this.neighbours = new HashMap<Direction, SquareContainer>(neighbours);
-		
-		// for each neighbour of this square, set this square as the neighbour
-		// in the opposite direction
-		for (Direction direction : neighbours.keySet())
-			neighbours.get(direction).neighbours.put(direction.getOppositeDirection(), this);
-	}
-	
-	/**
-	 * Returns whether the specified map can be set as the map of neighbours for
-	 * this square. More formally this method returns false if and only if
-	 * <code>neighbours == null</code>
-	 * 
-	 * @param neighbours
-	 *        the neighbours to be tested
-	 * @return true if the neighours can be set for this square, else false
-	 */
-	private boolean canHaveAsNeighbours(Map<Direction, SquareContainer> neighbours) {
-		if (neighbours == null)
-			return false;
-		return true;
-	}
-	
-	/**
-	 * Returns the neighbour in a specified direction or null if the square has
-	 * no mapping for the neighbour in the specified direction.
-	 * 
-	 * @param direction
-	 *        the direction of the neighbour
-	 * @return the neighbour in the specified direction
-	 */
-	public SquareContainer getNeighbourIn(Direction direction) {
-		return neighbours.get(direction);
 	}
 	
 	public void addProperty(Property property) {

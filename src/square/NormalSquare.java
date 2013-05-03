@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import player.IPlayer;
 import player.Player;
-import powerfailure.PowerFailure;
+import properties.powerfailure.PowerFailure;
 
 /**
  * A Square represents a place on a grid, which a player can stand on, as long
