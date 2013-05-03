@@ -2,115 +2,62 @@ package scenariotests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import grid.Coordinate;
-import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
-import grid.builder.TronGridBuilder;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import junit.framework.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
+import player.PlayerState;
 import square.Direction;
-import square.PlayerStartingPosition;
+import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
-import controllers.EndTurnController;
-import controllers.MoveController;
 
 /**
- * This class will test scenarios concerning the movement of players.
+ * Tests the "Move" use case. This class will test scenarios concerning the
+ * movement of players.
  * 
  * Tests: - No two players on one square - Cannot move on wall - Cannot leave
  * grid - Cannot cross lightrail - Player must always do a move action in turn
- * 
- * @author Tom
  */
 @SuppressWarnings("javadoc")
-public class MovePlayerTest {
+public class MovePlayerTest extends SetupTestGrid {
 	
-	private static MoveController		moveCont;
-	private static EndTurnController	endTurnCont;
-	private static Grid					grid;
-	private static PlayerDataBase		playerDB;
-	
-	@Before
-	public void setUp() {
-		TronGridBuilder builder = new TronGridBuilder();
-		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
-				false);
-		director.construct();
-		grid = builder.getResult();
-		
-		//make a set with the startingpostions in a deterministic order
-		Set<PlayerStartingPosition> playerstartingpositions = new LinkedHashSet<PlayerStartingPosition>();
-		playerstartingpositions.add((PlayerStartingPosition) grid
-				.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS));
-		playerstartingpositions.add((PlayerStartingPosition) grid
-				.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS));
-		
-		playerDB = new PlayerDataBase();
-		playerDB.createNewDB(playerstartingpositions);
-		assertEquals(1, playerDB.getCurrentPlayer().getID());
-		
-		moveCont = new MoveController(playerDB);
-		endTurnCont = new EndTurnController(playerDB);
-	}
-	
+	/**
+	 * Move player 1 to the south
+	 */
 	@Test
-	public void testDefaultCase() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
-		assertEquals(playerDB.getCurrentPlayer(),
-				grid.getSquareAt(new Coordinate(grid.getWidth() - 1, 0)).getPlayer());
+	public void testMove_success() {
+		Coordinate start = DeterministicGridBuilderDirector.PLAYER1_START_POS;
+		assertEquals(playerDB.getCurrentPlayer(), grid.getSquareAt(start).getPlayer());
+		
 		moveCont.move(Direction.SOUTH);
-		assertEquals(playerDB.getCurrentPlayer(),
-				grid.getSquareAt(new Coordinate(grid.getWidth() - 1, 1)).getPlayer());
-		assertNull(grid.getSquareAt(new Coordinate(grid.getWidth() - 1, 0)).getPlayer());
+		
+		// system moves the character of the player 1 square in the selected
+		// direction
+		assertEquals(grid.getSquareAt(start.getCoordinateInDirection(Direction.SOUTH)), playerDB
+				.getCurrentPlayer().getCurrentLocation());
+		assertNull(grid.getSquareAt(start).getPlayer());
+		
+		// The system adds 1 to the number of actions that the player has
+		// performed during this turn.
+		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
+				playerDB.getAllowedNumberOfActions(playerDB.getCurrentPlayer()));
 	}
 	
 	@Test
-	public void testNoTwoPlayersOnOneSquare() throws IllegalStateException,
-			IllegalArgumentException, IllegalMoveException {
-		
-		// Player 1 actions
-		
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.SOUTHWEST);
-		// Player 2 actions
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTHEAST);
-		// Player 1 actions
-		moveCont.move(Direction.SOUTHWEST);
-		moveCont.move(Direction.SOUTHWEST);
-		moveCont.move(Direction.SOUTHWEST);
-		
-		// Player 2 actions
-		moveCont.move(Direction.NORTHEAST);
-		
-		boolean exceptionThrown = false;
-		try {
-			// This causes two players to be on the same square:
-			moveCont.move(Direction.NORTHEAST);
-		}
-		catch (IllegalMoveException e) {
-			exceptionThrown = true;
-		}
-		Assert.assertEquals(true, exceptionThrown);
-	}
-	
-	@Test
-	public void testCannotMoveOnWall() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
-		
+	public void testCannotMoveOnWall() {
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
+		
 		// Player 2 actions
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
+		endTurnCont.endTurn();
+		
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
@@ -124,43 +71,112 @@ public class MovePlayerTest {
 		catch (IllegalMoveException e) {
 			exceptionThrown = true;
 		}
-		Assert.assertEquals(true, exceptionThrown);
+		assertTrue(exceptionThrown);
 	}
 	
 	@Test(expected = IllegalMoveException.class)
-	public void testCannotLeaveGrid() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
-		
+	public void testCannotLeaveGrid() {
 		// Player 1 actions
 		moveCont.move(Direction.NORTH);
 	}
 	
-	// TODO specifieker specifiren, ook met try catch
-	@Test(expected = IllegalMoveException.class)
-	public void testCannotCrossLightrail() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
+	@Test
+	public void testNoTwoPlayersOnOneSquare() {
+		// Player 1 actions
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.SOUTHWEST);
+		endTurnCont.endTurn();
+		
+		// Player 2 actions
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
 		
 		// Player 1 actions
 		moveCont.move(Direction.SOUTHWEST);
+		moveCont.move(Direction.SOUTHWEST);
+		moveCont.move(Direction.SOUTHWEST);
+		endTurnCont.endTurn();
+		
+		// Player 2 actions
+		moveCont.move(Direction.NORTHEAST);
+		
+		boolean exceptionThrown = false;
+		try {
+			// This causes two players to be on the same square:
+			moveCont.move(Direction.NORTHEAST);
+		}
+		catch (IllegalMoveException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
+	}
+	
+	@Test
+	public void testCannotCrossLightrail() {
+		// Player 1 actions
+		moveCont.move(Direction.SOUTHWEST);
 		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.NORTHWEST);
+		
+		boolean exceptionthrown = false;
+		try {
+			// this will cross a lighttrail
+			moveCont.move(Direction.NORTHWEST);
+		}
+		catch (IllegalMoveException e) {
+			exceptionthrown = true;
+		}
+		assertTrue(exceptionthrown);
 	}
 	
-	@Test (expected = IllegalMoveException.class)
-	public void testArgumentNull() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
-		moveCont.move(null);
-	}
-	
-	@Test (expected = IllegalMoveException.class)
-	public void testMoveOnLightTrail() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
+	@Test(expected = IllegalMoveException.class)
+	public void testMoveOnLightTrail() {
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.NORTH);
 	}
 	
-	@Test (expected = IllegalMoveException.class)
-	public void testCrossLightTrail() throws IllegalStateException, IllegalArgumentException, IllegalMoveException {
-		moveCont.move(Direction.SOUTHWEST);
+	@Test
+	public void testPlayerWin() {
+		// Player 1
+		IPlayer player1 = playerDB.getCurrentPlayer();
+		moveCont.move(Direction.SOUTH);
+		moveCont.move(Direction.SOUTH);
+		// now player 1 is teleported
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		
+		// player 2
 		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.NORTHWEST);
+		endTurnCont.endTurn();
+		
+		// player 1
+		moveCont.move(Direction.SOUTH);
+		
+		assertEquals(PlayerState.FINISHED, ((Player) player1).getPlayerState());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testArgumentNull() {
+		moveCont.move(null);
+	}
+	
+	@Test
+	public void testPreconditions() {
+		IPlayer player = playerDB.getCurrentPlayer();
+		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		
+		// cast to a player to try to break the preconditions
+		Player playerNotHisTurn = (Player) player;
+		boolean exceptionThrown = false;
+		try {
+			playerNotHisTurn.moveInDirection(Direction.SOUTH);
+		}
+		catch (IllegalActionException e) {
+			exceptionThrown = true;
+		}
+		assertTrue(exceptionThrown);
 	}
 }
