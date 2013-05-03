@@ -99,6 +99,8 @@ public class TronGridBuilderTest {
 	
 	/* ############## LG ############### */
 	
+	//TODO inactive
+	
 	@Test(expected = GridBuildException.class)
 	public void testNullInputLG() {
 		builder.placeLightGrenade(null);

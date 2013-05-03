@@ -35,7 +35,6 @@ public class DeterministicDirectorTest {
 				+ "s s s s s l l l l s \n" + "s s u s s s s s s s \n");
 	}
 	
-	@Test
 	public void testDeterministicPowerFailures() {
 		fail("not yet implemented");
 	}

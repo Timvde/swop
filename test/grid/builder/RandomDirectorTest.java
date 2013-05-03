@@ -11,14 +11,15 @@ public class RandomDirectorTest {
 	
 	@Test
 	public void testRandomDirector() {
-		TestGridBuilder builder = new TestGridBuilder();
+		DummyGridBuilder builder = new DummyGridBuilder();
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 80; i++) {
 			director.setWidth(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH + i);
 			director.setHeight(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT + 5 + i);
 			director.construct();
-			assertGridHasValidWallsAndItems(builder);
+			
+			builder.assertIsValidGrid();
 		}
 	}
 	
@@ -29,8 +30,8 @@ public class RandomDirectorTest {
 		director.construct();
 		
 		Grid grid = builder.getResult();
-		assertEquals(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, grid.getHeight() - 1);
-		assertEquals(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH, grid.getWidth() - 1);
+		assertEquals(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, grid.getHeight());
+		assertEquals(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH, grid.getWidth());
 		
 		int width = RandomGridBuilderDirector.MINIMUM_GRID_WIDTH + 10;
 		int height = RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT + 15;
@@ -40,13 +41,13 @@ public class RandomDirectorTest {
 		
 		Grid grid2 = builder.getResult();
 		assertFalse(grid.equals(grid2));
-		assertEquals(width, grid2.getWidth() - 1);
-		assertEquals(height, grid2.getHeight() - 1);
+		assertEquals(width, grid2.getWidth());
+		assertEquals(height, grid2.getHeight());
 	}
 	
 	@Test
 	public void testRandomDirectorInvalidInput() {
-		TestGridBuilder builder = new TestGridBuilder();
+		DummyGridBuilder builder = new DummyGridBuilder();
 		boolean exceptionThrown = false;
 		try {
 			new RandomGridBuilderDirector(null);
@@ -74,14 +75,5 @@ public class RandomDirectorTest {
 			exceptionThrown = true;
 		}
 		assertTrue(exceptionThrown);
-	}
-	
-	private void assertGridHasValidWallsAndItems(TestGridBuilder builder) {
-		assertTrue(builder.hasValidLightGrenades());
-		assertTrue(builder.hasValidIDdisks());
-		assertTrue(builder.hasValidTeleporters());
-		assertTrue(builder.hasValidWalls());
-		
-		assertTrue(builder.gridHasValidWallsAndItems());
 	}
 }
