@@ -12,15 +12,17 @@ import ObjectronExceptions.IllegalMoveException;
  */
 public class MoveController {
 	
-
-	private IPlayerDataBase playerDB;
+	private IPlayerDataBase	playerDB;
 	
 	/**
 	 * Create a new move controller with a reference to a given player database.
 	 * 
 	 * @param db
+	 *        The playerdatabase the controller uses.
 	 */
 	public MoveController(IPlayerDataBase db) {
+		if (db == null)
+			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = db;
 	}
 	

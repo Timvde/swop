@@ -25,6 +25,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	static final double	PERCENTAGE_OF_TELEPORTERS			= 0.03;
 	static final double	PERCENTAGE_OF_IDENTITY_DISKS		= 0.02;
 	static final int	NUMBER_OF_CHARGED_IDENTITY_DISKS	= 1;
+	static final int	MAX_CID_SHORTEST_PATH_DISTANCE	= 2;
 	
 	/**
 	 * Create a new RandomItemGridBuilderDirector which will use the specified
@@ -162,20 +163,44 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	private void placeIdentityDisks(List<Coordinate> startingCoordinates,
 			Map<Coordinate, Coordinate> teleporters, int maxX, int maxY) {
 		// place normal identity disks
-		int numberOfToPlaceIdentityDisks = (int) Math.ceil(builder.getNumberOfSquares()
+		int numberOfIdentityDisksToPlace = (int) Math.ceil(builder.getNumberOfSquares()
 				* PERCENTAGE_OF_IDENTITY_DISKS);
 		Set<Coordinate> placedIdentityDisksCoordinates = new HashSet<Coordinate>();
-		while (numberOfToPlaceIdentityDisks > 0) {
+		
+		/*
+		 * A IDdisk should be within a 5x5 square of each starting position. In
+		 * general, this is a 9x9 square with the starting positions in the
+		 * middle.
+		 */
+		Random rand = new Random();
+		for (Coordinate startCoord : startingCoordinates) {
+			Coordinate position = null;
+			do {
+				int x = startCoord.getX() - 4 + rand.nextInt(9);
+				int y = startCoord.getY() - 4 + rand.nextInt(9);
+				position = new Coordinate(x, y);
+			} while (!builder.canPlaceItem(position)
+					|| placedIdentityDisksCoordinates.contains(position)
+					|| startingCoordinates.contains(position));
+			builder.placeUnchargedIdentityDisc(position);
+			placedIdentityDisksCoordinates.add(position);
+		}
+		
+		// place other ID disks
+		while (placedIdentityDisksCoordinates.size() < numberOfIdentityDisksToPlace) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
 			if (builder.canPlaceItem(position)
 					&& !placedIdentityDisksCoordinates.contains(position)) {
 				builder.placeUnchargedIdentityDisc(position);
-				numberOfToPlaceIdentityDisks--;
 				placedIdentityDisksCoordinates.add(position);
 			}
 		}
 		
-		// place charged identity disk
+		placedCharchedIDdisks(startingCoordinates, teleporters);
+	}
+
+	private void placedCharchedIDdisks(List<Coordinate> startingCoordinates,
+			Map<Coordinate, Coordinate> teleporters) {
 		for (int i = 0; i < NUMBER_OF_CHARGED_IDENTITY_DISKS; i++) {
 			Random rand = new Random();
 			List<Coordinate> CIDCoords = getPossibleCIDLocations(startingCoordinates, teleporters);
@@ -229,7 +254,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 					max = distances.get(i).get(coord);
 			}
 			
-			if ((max - min) <= 2)
+			if ((max - min) <= MAX_CID_SHORTEST_PATH_DISTANCE)
 				CIDLocations.add(coord);
 		}
 		

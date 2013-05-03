@@ -85,19 +85,7 @@ public interface IPlayer extends TronObject {
 	public boolean canPerformAction();
 	
 	/* #################### User methods #################### */
-	
-	/**
-	 * This method ends the turn of this player. This player will lose the game
-	 * if this method is called before he did a move action, (i.e. if
-	 * <code>{@link #hasMovedYet()}</code> is false when calling this method,
-	 * this player loses the game).
-	 * 
-	 * @throws IllegalActionException
-	 *         This player must be allowed to perform an action, i.e.
-	 *         <code>{@link #canPerformAction()}</code>.
-	 */
-	public void endTurn() throws IllegalActionException;
-	
+		
 	/**
 	 * This method moves the player one {@link Square} in a specified
 	 * {@link Direction}. More formally the postconditions are:
