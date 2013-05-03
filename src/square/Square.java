@@ -261,22 +261,28 @@ public class Square extends ASquare {
 	}
 	
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(Observable o, Object arg) { 
 		if (arg instanceof TurnEvent) {
 			switch ((TurnEvent) arg) {
 				case END_ACTION:
 					if (hasPowerFailure()) {
-						getPowerFailure().update(TurnEvent.END_ACTION);
+						getPowerFailure().updateStatus(TurnEvent.END_ACTION);
 					}
 					break;
 				case END_TURN:
+					updatePowerFailure();
 					if (hasPowerFailure()) {
-						getPowerFailure().update(TurnEvent.END_TURN);
+						getPowerFailure().updateStatus(TurnEvent.END_TURN);
 					}
 					break;
 				default:
 					break;
 			}
 		}
+	}
+
+	@Override
+	public boolean isWall() {
+		return false;
 	}
 }

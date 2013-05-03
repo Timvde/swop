@@ -3,7 +3,7 @@ package item;
 import square.TronObject;
 
 /**
- * An effect which can be applied to a {@link TronObject}. If multiple affects
+ * An effect which can be applied to a {@link TronObject}. If multiple effects
  * are to be executed on a single TronObject, they can be chained with the
  * {@link #addEffect(Effect)} method.
  * 
@@ -30,8 +30,7 @@ public interface Effect {
 	/**
 	 * Add an effect to this effect. An effect can only hold one reference to an
 	 * other effect. If this effect already holds a reference to an effect, it
-	 * should pass the specified argument to the effect contained within this
-	 * effect.
+	 * should pass on the specified effect.
 	 * 
 	 * @param effect
 	 *        the effect to add

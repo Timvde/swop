@@ -75,6 +75,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
 			this.actionsLeft.put(newPlayer, 0);
+			playerStartingPosition.addPlayer(newPlayer);
 		}
 		
 		// Set the first player as starting player.
@@ -125,8 +126,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
 			player.setPlayerState(PlayerState.FINISHED);
 			
-			this.setChanged();
-			this.notifyObservers(TurnEvent.END_GAME);
+			notifyTurnEvent(TurnEvent.END_GAME);
 		}
 		else {
 			// Switch players and assign a new turn
@@ -135,14 +135,18 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 			Player newPlayer = playerList.get(currentPlayerIndex);
 			
-			this.setChanged();
-			this.notifyObservers(TurnEvent.END_TURN);
+			notifyTurnEvent(TurnEvent.END_TURN);
 			
 			// Assign new actions to the specified player and set him active.
 			// This may introduce a new player switch (the resulting penalty
 			// after adding new actions may still be < 0)
 			assignNewTurn(newPlayer);
 		}
+	}
+
+	private void notifyTurnEvent(TurnEvent event) {
+		this.setChanged();
+		this.notifyObservers(event);
 	}
 	
 	/**
@@ -231,6 +235,18 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
+	 * Called when a player performed an action, his allowed number of
+	 * actions must drop by one.
+	 * 
+	 * If after decreasing the allowed number of actions by one, this player has
+	 * no more actions left, his turn will end.
+	 */
+	void decreaseAllowedNumberOfActions(Player player) {
+		notifyTurnEvent(TurnEvent.END_ACTION);
+		skipNumberOfActions(player, 1);
+	}
+	
+	/**
 	 * This method is used when a player wants to tell he has lost the game
 	 * (e.g. by ending his turn before doing a move).
 	 * 
@@ -246,8 +262,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			throw new IllegalStateException(
 					"Looks like the player asking to lose the game hasn't lost after all");
 		}
-		this.setChanged();
-		this.notifyObservers(TurnEvent.END_GAME);
+		notifyTurnEvent(TurnEvent.END_GAME);
 	}
 	
 	/**

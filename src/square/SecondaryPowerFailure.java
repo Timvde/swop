@@ -22,10 +22,9 @@ public class SecondaryPowerFailure extends PowerFailure {
 	}
 
 	@Override
-	void update(TurnEvent event) {
-		if (event == TurnEvent.END_ACTION) {
-			decreaseTimeToLive();
-		}
+	void updateStatus(TurnEvent event) {
+		// Does nothing for the secondary powerfailure. The secondary powerfailure stays
+		// alive as long as the primary powerfailure.
 	}
 	
 }

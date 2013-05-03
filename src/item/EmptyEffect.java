@@ -11,8 +11,7 @@ public class EmptyEffect extends AbstractEffect {
 	@Override
 	public void execute(TronObject object) {
 		
-		if (next != null)
-			super.next.execute(object);
+		super.execute(object);
 		
 	}
 	

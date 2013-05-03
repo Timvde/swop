@@ -1,5 +1,7 @@
 package item;
 
+import square.TronObject;
+
 /**
  * This class provides a skeletal implementation of the {@link Effect} interface
  * to minimize the effort required to implement this interface.
@@ -25,5 +27,11 @@ public abstract class AbstractEffect implements Effect {
 			this.next = effect;
 		else
 			next.addEffect(effect);
+	}
+	
+	@Override
+	public void execute(TronObject object) {
+		if (next != null)
+			next.execute(object);
 	}
 }

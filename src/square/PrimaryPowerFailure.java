@@ -49,7 +49,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 		// check if there is not yet a powerfailure. If so, create the secondary
 		// powerfailure, which results in the creation of a tertiary
 		// powerfailure.
-		if (secPFSquare != null && !secPFSquare.hasPowerFailure()) {
+		if (secPFSquare != null && !secPFSquare.isWall() && !secPFSquare.hasPowerFailure()) {
 			this.secondaryPF = new SecondaryPowerFailure(secPFSquare);
 			secPFSquare.addPowerFailure(this.secondaryPF);
 			
@@ -58,9 +58,9 @@ public class PrimaryPowerFailure extends PowerFailure {
 	}
 	
 	private void createTertiaryPowerFailure() {
-		if (this.secondaryPF == null) {
+		if (this.secondaryPF == null || this.secondaryPF.getSquare() == null) {
 			throw new IllegalStateException(
-					"The secondary powerfailure cannot be null when creating a tertiary powerfailure");
+					"The secondary powerfailure must exist when creating a tertiary powerfailure");
 		}
 		
 		// Find the possible tertiary powerfailure directions as seen from the
@@ -85,13 +85,12 @@ public class PrimaryPowerFailure extends PowerFailure {
 		// chosen square does not yet have a powerfailure.
 		ASquare tertPFSquare = this.secondaryPF.getSquare().getNeighbour(tertiaryPFDirection);
 		
-		if (tertPFSquare != null && !tertPFSquare.hasPowerFailure()) {
+		if (tertPFSquare != null && !tertPFSquare.isWall() && !tertPFSquare.hasPowerFailure()) {
 			this.tertiaryPF = new TertiaryPowerFailure(tertPFSquare);
 			tertPFSquare.addPowerFailure(this.tertiaryPF);
 		}
 	}
 	
-	// TODO PF op muur mag niet etc?
 	private void rotateSecondaryPowerFailure() {
 		// only do the rotation if there is a secondary powerfailure, and if it
 		// is still located on a square.
@@ -116,7 +115,8 @@ public class PrimaryPowerFailure extends PowerFailure {
 			
 			// Move the secondary powerfailure, if the new sec PF square is part
 			// of the grid and it does not already contain a powerfailure.
-			if (nextSecPFSquare != null && !nextSecPFSquare.hasPowerFailure()) {
+			if (nextSecPFSquare != null && !nextSecPFSquare.isWall()
+					&& !nextSecPFSquare.hasPowerFailure()) {
 				nextSecPFSquare.addPowerFailure(this.secondaryPF);
 				this.secondaryPF.setSquare(nextSecPFSquare);
 				
@@ -127,11 +127,21 @@ public class PrimaryPowerFailure extends PowerFailure {
 	}
 	
 	@Override
-	void update(TurnEvent event) {
+	void updateStatus(TurnEvent event) {
 		// A turn was ended, so decrease the time to live for this
 		// powerfailure
 		if (event == TurnEvent.END_TURN) {
 			decreaseTimeToLive();
+			
+			// Check if this primary powerfailure ended. If so, remove the
+			// secondary powerfailure, if there is one.
+			if (this.getSquare() == null) {
+				if (this.secondaryPF != null && this.secondaryPF.getSquare() != null) {
+					this.secondaryPF.getSquare().removePowerFailure(this.secondaryPF);
+					this.secondaryPF.setSquare(null);
+					this.secondaryPF = null;
+				}
+			}
 		}
 		
 		// An action was ended. Update the rotation counter and rotate

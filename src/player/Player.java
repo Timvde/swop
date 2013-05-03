@@ -115,17 +115,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/* ############## ActionHistory related methods ############## */
 	
-	/**
-	 * Called when this player performed an action, his allowed number of
-	 * actions must drop by one.
-	 * 
-	 * If after decreasing the allowed number of actions by one, this player has
-	 * no more actions left, he will notify the {@link PlayerDataBase} to
-	 * indicate he wants to end his turn.
-	 */
-	private void decreaseAllowedNumberOfActions() {
-		skipNumberOfActions(1);
-	}
 	
 	@Override
 	public int getAllowedNumberOfActions() {
@@ -264,7 +253,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		// Moving succeeded. Update other stuff.
 		this.lightTrail.updateLightTrail(oldSquare);
 		this.setHasMoved();
-		decreaseAllowedNumberOfActions();
+		playerDB.decreaseAllowedNumberOfActions(this);
 	}
 	
 	@Override
@@ -351,7 +340,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// end the players action ...
-		decreaseAllowedNumberOfActions();
+		playerDB.decreaseAllowedNumberOfActions(this);
 		this.lightTrail.updateLightTrail();
 	}
 	
@@ -389,7 +378,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// end the players action ...
-		this.decreaseAllowedNumberOfActions();
+		playerDB.decreaseAllowedNumberOfActions(this);
 		lightTrail.updateLightTrail();
 	}
 	

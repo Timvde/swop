@@ -28,8 +28,7 @@ public class ExplodeEffect extends AbstractEffect {
 			object.asExplodable().skipNumberOfActions(damage);
 		}
 		
-		if (next != null)
-			super.next.execute(object);
+		super.execute(object);
 	}
 	
 	/**
@@ -41,7 +40,7 @@ public class ExplodeEffect extends AbstractEffect {
 	 *        The object on which the effect would be executed
 	 * @return True if the effect can be executed on the specified object
 	 */
-	public boolean canExecuteEffect(TronObject object) {
+	private boolean canExecuteEffect(TronObject object) {
 		if (lightGrenade.getState() != LightGrenadeState.ACTIVE)
 			return false;
 		else if (object.asExplodable() == null)

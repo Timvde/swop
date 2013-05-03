@@ -90,9 +90,8 @@ public abstract class ASquare implements ISquare, Observer {
 	public abstract boolean contains(Object object);
 	
 	/**
-	 * Add a specified player to this square. This method will automatically
-	 * add the {@link Effect effects} of the items on this square to the
-	 * player.
+	 * Add a specified player to this square. This method will automatically add
+	 * the {@link Effect effects} of the items on this square to the player.
 	 * 
 	 * @param p
 	 *        the player who wants to be placed on this square
@@ -130,8 +129,10 @@ public abstract class ASquare implements ISquare, Observer {
 	 */
 	public Direction getDirectionOfNeighbour(ASquare neighbour) {
 		for (Direction dir : Direction.values()) {
-			if (getNeighbour(dir).equals(neighbour)) {
-				return dir;
+			if (getNeighbour(dir) != null) {
+				if (getNeighbour(dir).equals(neighbour)) {
+					return dir;
+				}
 			}
 		}
 		
@@ -187,7 +188,7 @@ public abstract class ASquare implements ISquare, Observer {
 	 */
 	public abstract void remove(Object object);
 	
-	/**  
+	/**
 	 * returns all the items on this square
 	 * 
 	 * @return the items on this square
@@ -209,4 +210,6 @@ public abstract class ASquare implements ISquare, Observer {
 	 * @return true if a player can be added, else false
 	 */
 	public abstract boolean canAddPlayer();
+	
+	public abstract boolean isWall();
 }
