@@ -22,7 +22,7 @@ public class TertiaryPowerFailure extends PowerFailure {
 	}
 	
 	@Override
-	void update(TurnEvent event) {
+	void updateStatus(TurnEvent event) {
 		if (event == TurnEvent.END_ACTION) {
 			decreaseTimeToLive();
 		}
