@@ -21,18 +21,12 @@ import powerfailure.PrimaryPowerFailure;
  */
 public class NormalSquare extends AbstractSquare {
 	
-	private static final boolean	ENABLE_POWER_FAILURE	= false;
-	private static final float	POWER_FAILURE_CHANCE	= 0;
 	/** the list of items in this square */
 	private List<IItem>		itemList;
 	/** the player on this square */
 	private IPlayer			player;
 	/** a boolean representing whether there is a light trail on this square */
 	private boolean			lightTrail;
-	// Having one PowerFailure object at this moment is enough. Since they all
-	// have the same time to live, the last one added will be the one which will
-	// live the longest. If this changes, we'd want to change this into a List.
-	private PowerFailure	powerFailure;
 	
 	/**
 	 * Default constructor.
@@ -66,11 +60,6 @@ public class NormalSquare extends AbstractSquare {
 		// else remove player from the item list
 		else
 			itemList.remove(object);
-	}
-	
-	@Override
-	public boolean hasPowerFailure() {
-		return powerFailure != null;
 	}
 	
 	/**
@@ -109,7 +98,7 @@ public class NormalSquare extends AbstractSquare {
 	@Override
 	public IItem pickupItem(int ID) {
 		// try and retrieve the item
-		// only items that are carryable can be picked up!
+		// only items that are carriable can be picked up!
 		for (IItem itemOnSquare : this.getCarryableItems())
 			if (ID == itemOnSquare.getId()) {
 				this.remove(itemOnSquare);
@@ -168,15 +157,6 @@ public class NormalSquare extends AbstractSquare {
 			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		this.player = player;
 		this.executeEffect(player, effect);
-	}
-	
-	/**
-	 * returns the power failure of this object
-	 * 
-	 * @return power failure
-	 */
-	public PowerFailure getPowerFailure() {
-		return this.powerFailure;
 	}
 	
 	/**

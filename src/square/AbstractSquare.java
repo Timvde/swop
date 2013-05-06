@@ -150,5 +150,9 @@ public abstract class AbstractSquare implements Square, Observer {
 	public boolean hasForceField() {
 		return false;
 	}
-	
+
+	@Override
+	public boolean hasPowerFailure() {
+		return false;
+	}
 }
