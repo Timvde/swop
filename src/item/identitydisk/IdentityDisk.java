@@ -27,7 +27,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
 		
-		currentSquare = (SquareContainer) square; // TODO make a github issue for this ... 
+		setSquare(square);
 		
 		if (!canMoveDisk(direction))
 			// We can't move any further, so we'll have to drop here

@@ -4,14 +4,14 @@ import player.TurnEvent;
 import square.SquareContainer;
 
 /**
- * This class represents a secondary powerfailure.
+ * This class represents a secondary power failure.
  */
 public class SecondaryPowerFailure extends PowerFailure {
 	
-	private static final int TIME_TO_LIVE = 2;
+	private static final int	TIME_TO_LIVE	= 2;
 	
 	/**
-	 * Create a secondary powerfailure for a given square.
+	 * Create a secondary power failure for a given square.
 	 * 
 	 * @param square
 	 *        The square that is impacted by this power failure.
@@ -21,11 +21,13 @@ public class SecondaryPowerFailure extends PowerFailure {
 		
 		timeToLive = TIME_TO_LIVE;
 	}
-
+	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		// Does nothing for the secondary powerfailure. The secondary powerfailure stays
-		// alive as long as the primary powerfailure.
+		/*
+		 * Does nothing for the secondary power failure. The secondary power
+		 * failure stays alive as long as the primary power failure.
+		 */
 	}
 	
 }

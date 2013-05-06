@@ -8,32 +8,34 @@ import square.Property;
 import square.SquareContainer;
 
 /**
- * This class represents a powerfailure. A powerfailure can either be a primary
- * powerfailure, a secondary powerfailure and a tertiary powerfailure.
+ * This class represents a power failure. This is a property that affects squares:
  * 
- * @author tom
- * 
+ * <ul>
+ * <li> If a player starts on a power failured square, he will have one action less to perform </li>
+ * <li> If a player moves onto a power failured square, his turn will end </li>
+ * <li> A light grenade exploding on a power failured square will have its strength increased </li>
+ * </ul>
  */
 public abstract class PowerFailure implements Property {
 	
-	/** The square this powerfailure affects */
+	/** The square this power failure affects */
 	private SquareContainer	square;
 	
 	/**
-	 * The time this powerfailure still has to live. This is counted as actions
-	 * or turns, depending on what kind of powerfailure.
+	 * The time this power failure still has to live. This is counted as actions
+	 * or turns, depending on what kind of power failure.
 	 */
-	protected int	timeToLive;
+	protected int			timeToLive;
 	
 	/**
-	 * Create a new powerfailure that is active on the given square.
+	 * Create a new power failure that is active on the given square.
 	 * 
 	 * @param square
-	 *        The square this powerfailure will affect.
+	 *        The square this power failure will affect.
 	 */
 	public PowerFailure(SquareContainer square) {
-			square.addProperty(this);
-			this.square = square;
+		square.addProperty(this);
+		this.square = square;
 	}
 	
 	/**
@@ -52,8 +54,9 @@ public abstract class PowerFailure implements Property {
 	}
 	
 	/**
-	 * Return the time to live for this powerfailure. This can be counted as
-	 * actions or turns, depending on the kind of powerfailure.
+	 * Return the time to live for this power failure. This can be counted as
+	 * actions or turns, depending on the kind of power failure.
+	 * 
 	 * @return the time to live
 	 */
 	public int getTimeToLive() {
@@ -61,14 +64,16 @@ public abstract class PowerFailure implements Property {
 	}
 	
 	/**
-	 * Return the square this powerfailure is located on.
+	 * Return the square this power failure is located on.
+	 * 
+	 * @return The square this power failure influences.
 	 */
 	protected SquareContainer getSquare() {
 		return this.square;
 	}
 	
 	/**
-	 * Set the square this powerfailure is located on.
+	 * Set the square this power failure is located on.
 	 */
 	protected void setSquare(SquareContainer square) {
 		this.square = square;
@@ -87,7 +92,7 @@ public abstract class PowerFailure implements Property {
 	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
 		return new PowerFailureDecorator(square, this);
 	}
-
+	
 	/**
 	 * Let the powerfailure know about a new turn event.
 	 * 

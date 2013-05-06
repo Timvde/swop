@@ -6,9 +6,8 @@ import square.Direction;
 import square.SquareContainer;
 
 /**
- * This class represents a primary powerfailure. It keeps track of a secondary
- * and tertiary powerfailure, and is responsible for the rotation of the
- * secondary powerfailure.
+ * This class represents a primary power failure. It is the root of <s>all
+ * evil</s> a secondary and tertiary power failure.
  */
 public class PrimaryPowerFailure extends PowerFailure {
 	
@@ -85,7 +84,8 @@ public class PrimaryPowerFailure extends PowerFailure {
 		// Create the tertiary powerfailure, if it is located on the grid and
 		// the
 		// chosen square does not yet have a powerfailure.
-		SquareContainer tertPFSquare = this.secondaryPF.getSquare().getNeighbourIn(tertiaryPFDirection);
+		SquareContainer tertPFSquare = this.secondaryPF.getSquare().getNeighbourIn(
+				tertiaryPFDirection);
 		
 		if (tertPFSquare != null && !tertPFSquare.isWall() && !tertPFSquare.hasPowerFailure()) {
 			this.tertiaryPF = new TertiaryPowerFailure(tertPFSquare);
