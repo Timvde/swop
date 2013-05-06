@@ -132,11 +132,7 @@ public abstract class AbstractSquare implements Square, Observer {
 	 */
 	protected abstract void addItem(IItem item, Effect effect);
 	
-	/**
-	 * Returns whether this square represents a wall
-	 * 
-	 * @return true if this square represents a wall
-	 */
+	@Override
 	public boolean isWall() {
 		return false;
 	}

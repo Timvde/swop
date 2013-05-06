@@ -31,7 +31,17 @@ public class ForceFieldGenerator extends Item {
 	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
 		square.addItem(this);
 		
-		// Look for another force field generator in other squares nearby
+		findAndCreateForceFields(square);
+	}
+	
+	/**
+	 * This method will look in all directions for other Force Field Generators
+	 * and create a {@link ForceField} between them.
+	 * 
+	 * @param square
+	 *        The square this forcefield is on
+	 */
+	public void findAndCreateForceFields(SquareContainer square) {
 		for (Direction direction : Direction.values()) {
 			List<SquareContainer> listOfSquares = new ArrayList<SquareContainer>();
 			SquareContainer neighbour = square;
@@ -47,7 +57,6 @@ public class ForceFieldGenerator extends Item {
 				}
 			}
 		}
-		
 	}
 	
 	private ForceFieldGenerator getForceFieldGeneratorOnSquare(AbstractSquare neighbour) {

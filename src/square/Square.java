@@ -49,6 +49,20 @@ public interface Square {
 	/** 
 	 * @return Whether or not this ASquare has a force field.
 	 */
-	public boolean hasForceField(); 
+	public boolean hasForceField();
+
+	/**
+	 * Returns whether this square represents a wall
+	 * 
+	 * @return true if this square represents a wall
+	 */
+	public abstract boolean isWall(); 
+	
+	/**
+	 * Returns whether this square is a starting position
+	 * 
+	 * @return true if this square is a starting position
+	 */
+	public boolean isStartingPosition();
 	 
 }

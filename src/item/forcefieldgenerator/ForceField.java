@@ -42,7 +42,7 @@ public class ForceField implements Property {
 		this.state = ForceFieldState.ACTIVE;
 		this.counter = 0;
 		
-		for (SquareContainer square : squares) 
+		for (SquareContainer square : squares)
 			square.addProperty(this);
 	}
 	
@@ -61,7 +61,7 @@ public class ForceField implements Property {
 	}
 	
 	/**
-	 * Update this forcefield that an action has happend.
+	 * Update this forcefield that an action has happened.
 	 */
 	public void update() {
 		counter++;
@@ -71,18 +71,16 @@ public class ForceField implements Property {
 			counter = 0;
 		}
 		
-		// check if both generators are still there 
+		// check if both generators are still there
 		int numberOfGenerators = 0;
 		for (AbstractSquare square : squares) {
 			if (square.contains(generator1) || square.contains(generator2))
 				numberOfGenerators++;
-			System.out.println(square + " " + square.contains(generator1) + square.contains(generator2));
 		}
 		
 		if (numberOfGenerators < 2)
 			for (SquareContainer square : squares)
 				square.removeProperty(this);
-			System.err.println("removed the power failures");
 	}
 	
 	private void switchForceField() {
@@ -91,4 +89,5 @@ public class ForceField implements Property {
 		else
 			this.state = ForceFieldState.ACTIVE;
 	}
+	
 }

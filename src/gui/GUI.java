@@ -204,7 +204,7 @@ public class GUI implements Runnable {
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// Draw finish lines
-						if (((AbstractSquare) square).isStartingPosition()) {
+						if (square.isStartingPosition()) {
 							graphics.drawImage(finish, guiCoord.getX(),
 									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						}
@@ -222,7 +222,7 @@ public class GUI implements Runnable {
 						}
 						
 						// Draw wall if necessary
-						if (((AbstractSquare) square).isWall()) {
+						if (square.isWall()) {
 							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
