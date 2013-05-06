@@ -84,10 +84,7 @@ public class ForceField implements Property {
 	}
 	
 	private void switchForceField() {
-		if (this.state == ForceFieldState.ACTIVE)
-			this.state = ForceFieldState.INACTIVE;
-		else
-			this.state = ForceFieldState.ACTIVE;
+		this.state = state.switchState();
 	}
 	
 }

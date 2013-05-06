@@ -25,7 +25,7 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	 */
 	public AbstractSquareDecorator(AbstractSquare square) {
 		if (square == null)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Null square found while creating a decorator");
 		this.square = square;
 	}
 	

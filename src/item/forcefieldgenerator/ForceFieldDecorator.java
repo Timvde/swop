@@ -25,6 +25,10 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	 */
 	public ForceFieldDecorator(AbstractSquare square, ForceField forceField) {
 		super(square);
+		if (forceField == null)
+			throw new IllegalArgumentException(
+					"A ForceFieldDecorator without a ForceField is like a car with square wheels."
+							+ "Sure, we could create it, but no-one wants it, so let's not do that.");
 		this.forceField = forceField;
 	}
 	
@@ -40,15 +44,17 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	public void addPlayer(IPlayer p) throws IllegalArgumentException {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
 			throw new IllegalArgumentException(" a player cannot move onto a force field");
-		else 
+		else
 			super.addPlayer(p);
 	}
 	
 	@Override
 	public void addItem(IItem item) throws IllegalArgumentException {
-		if (forceField.getState() == ForceFieldState.ACTIVE && item instanceof IdentityDisk)
-			; // Destroy the disc 
-		else 
+		/*
+		 * Identity Disks have to be destroyed by a Force Field, so we don't
+		 * want to add them anymore
+		 */
+		if (forceField.getState() == ForceFieldState.INACTIVE || !(item instanceof IdentityDisk))
 			super.addItem(item);
 	}
 	
@@ -56,7 +62,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	public boolean hasForceField() {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
 			return true;
-		else 
+		else
 			return super.hasForceField();
 	}
 	
@@ -67,25 +73,19 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 		result = prime * result + ((forceField == null) ? 0 : forceField.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (!(obj instanceof ForceFieldDecorator))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		
 		ForceFieldDecorator other = (ForceFieldDecorator) obj;
-		if (forceField == null) {
-			if (other.forceField != null)
-				return false;
-		}
-		else if (!forceField.equals(other.forceField))
-			return false;
-		return true;
+		
+		return forceField.equals(other.forceField);
 	}
-
+	
 	@Override
 	public void update(Observable o, Object arg) {
 		square.update(o, arg);

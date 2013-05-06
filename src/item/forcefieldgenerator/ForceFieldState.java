@@ -8,9 +8,26 @@ public enum ForceFieldState {
 	/**
 	 * The force field is active and exhibits its effects
 	 */
-	ACTIVE,
+	ACTIVE {
+		public ForceFieldState switchState() {
+			return INACTIVE;
+		}
+	},
 	/**
 	 * The force field is inactive and acts transparent.
 	 */
-	INACTIVE;
+	INACTIVE {
+		public ForceFieldState switchState() {
+			return ACTIVE;
+		}
+	};
+	
+	/**
+	 * Returns the state after switching
+	 * 
+	 * @return The state after switching
+	 */
+	public ForceFieldState switchState() {
+		return this.switchState();
+	}
 }
