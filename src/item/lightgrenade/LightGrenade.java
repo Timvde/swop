@@ -2,6 +2,7 @@ package item.lightgrenade;
 
 import item.IItem;
 import item.Item;
+import item.UseArguments;
 import square.SquareContainer;
 import square.TronObject;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
@@ -88,7 +89,7 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
+	public void use(SquareContainer square, UseArguments arguments) throws CannotPlaceLightGrenadeException {
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)

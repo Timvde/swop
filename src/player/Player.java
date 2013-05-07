@@ -1,6 +1,7 @@
 package player;
 
 import item.IItem;
+import item.UseArguments;
 import item.lightgrenade.Explodable;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleportable;
@@ -41,9 +42,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
 	/** The starting square of this player */
-	private SquareContainer	startSquare;
+	private SquareContainer			startSquare;
 	/** The square where the player is currently standing */
-	private SquareContainer					currentSquare;
+	private SquareContainer			currentSquare;
 	/** The inventory of the player */
 	private Inventory				inventory;
 	/** The light trail of the player */
@@ -93,14 +94,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		
 	}
 	
-	
-	@Override 
+	@Override
 	public void setSquare(SquareContainer square) {
 		this.currentSquare = square;
 	}
 	
 	@Override
-	
 	public int getID() {
 		return id;
 	}
@@ -121,7 +120,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/* ############## ActionHistory related methods ############## */
-	
 	
 	@Override
 	public int getAllowedNumberOfActions() {
@@ -317,8 +315,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/**
 	 * @throws ItemNotOnSquareException
-	 *         The item must be {@link NormalSquare#contains(Object) on} the square
-	 *         the player is currently on.
+	 *         The item must be {@link NormalSquare#contains(Object) on} the
+	 *         square the player is currently on.
 	 * @throws InventoryFullException
 	 *         This players {@link Inventory} cannot be
 	 *         {@link Inventory#getMaxNumberOfItems() full}.
@@ -361,8 +359,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 *         added to the square the player is currently standing on.
 	 */
 	@Override
-	public void useItem(IItem i) throws IllegalStateException, IllegalArgumentException,
-			CannotPlaceLightGrenadeException {
+	public void useItem(IItem i, UseArguments<?> arguments) throws IllegalStateException,
+			IllegalArgumentException, CannotPlaceLightGrenadeException {
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (i == null) {
@@ -376,7 +374,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		
 		// try and use the item
 		try {
-			i.use(currentSquare);
+			i.use(currentSquare, arguments);
 		}
 		catch (CannotPlaceLightGrenadeException e) {
 			// re-add the item to the inventory and re-throw the exception
@@ -409,7 +407,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	public Teleportable asTeleportable() {
 		return this;
 	}
-	
 	
 	/**
 	 * Returns whether the player can teleport to the specified square.

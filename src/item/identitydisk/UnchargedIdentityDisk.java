@@ -3,6 +3,7 @@ package item.identitydisk;
 import powerfailure.AffectedByPowerFailure;
 import item.Effect;
 import item.EmptyEffect;
+import item.UseArguments;
 import square.Direction;
 import square.SquareContainer;
 
@@ -30,8 +31,8 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 	}
 	
 	@Override
-	public void use(SquareContainer square) {
-		super.use(square);
+	public void use(SquareContainer square, UseArguments arguments) {
+		super.use(square, arguments);
 		range = 4;
 	}
 	

@@ -69,6 +69,7 @@ public abstract class Item implements IItem {
 	
 	/**
 	 * Returns the effect this item has on an {@link TronObject object}.
+	 * 
 	 * @return the effect of the item
 	 */
 	public abstract Effect getEffect();
@@ -76,5 +77,13 @@ public abstract class Item implements IItem {
 	@Override
 	public char toChar() {
 		return 'i';
+	}
+	
+	/**
+	 * By default an item does not require addition parameters from the user
+	 */
+	@Override
+	public UseArguments<?> getUseArguments() {
+		return null;
 	}
 }

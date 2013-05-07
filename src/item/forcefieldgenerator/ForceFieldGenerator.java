@@ -10,6 +10,7 @@ import item.Effect;
 import item.EmptyEffect;
 import item.IItem;
 import item.Item;
+import item.UseArguments;
 
 /**
  * This class represents a Force Field Generator. When placed, this item looks
@@ -28,7 +29,7 @@ public class ForceFieldGenerator extends Item {
 	}
 	
 	@Override
-	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
+	public void use(SquareContainer square, UseArguments arguments) throws CannotPlaceLightGrenadeException {
 		square.addItem(this);
 		
 		findAndCreateForceFields(square);

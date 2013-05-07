@@ -1,8 +1,10 @@
 package item.identitydisk;
 
 import item.Item;
+import item.UseArguments;
 import item.teleporter.Teleportable;
-import square.AbstractSquare;
+import java.util.HashSet;
+import java.util.Set;
 import square.Direction;
 import square.SquareContainer;
 
@@ -22,11 +24,16 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	private Direction		direction;
 	
 	@Override
-	public void use(SquareContainer square) {
-		if (direction == null)
+	/*
+	 * this should get a UseArguments<Direction> but the compiler does not allow
+	 * this
+	 */
+	public void use(SquareContainer square, UseArguments<?> arguments) {
+		if (isValidUseArguments(square, arguments))
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
 		
+		direction = (Direction) arguments.getUserChoise();
 		setSquare(square);
 		
 		if (!canMoveDisk(direction))
@@ -45,6 +52,17 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		// reset the direction field
 		direction = null;
 		currentSquare = null;
+	}
+	
+	private boolean isValidUseArguments(SquareContainer square, UseArguments<?> arguments) {
+		if (square == null)
+			return false;
+		if (arguments == null)
+			return false;
+		else if (arguments.getUserChoise() == null)
+			return false;
+		else 
+			return true;
 	}
 	
 	/**
@@ -111,4 +129,16 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		this.currentSquare = square;
 	}
 	
+	@Override
+	public UseArguments<Direction> getUseArguments() {
+		Set<Direction> choices = new HashSet<Direction>();
+		choices.add(Direction.NORTH);
+		choices.add(Direction.SOUTH);
+		choices.add(Direction.EAST);
+		choices.add(Direction.WEST);
+		
+		String question = "Please specify the direction in which the disc will be fired.";
+		
+		return new UseArguments<Direction>(choices, question);
+	}
 }

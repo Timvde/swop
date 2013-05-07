@@ -1,12 +1,11 @@
 package player;
 
-
 import item.Effect;
 import item.IItem;
+import item.UseArguments;
 import java.util.List;
 import square.AbstractSquare;
 import square.Direction;
-
 import square.PlayerStartingPosition;
 import square.Square;
 import square.NormalSquare;
@@ -88,7 +87,7 @@ public interface IPlayer extends TronObject {
 	public boolean canPerformAction();
 	
 	/* #################### User methods #################### */
-		
+	
 	/**
 	 * This method moves the player one {@link NormalSquare} in a specified
 	 * {@link Direction}. More formally the postconditions are:
@@ -161,11 +160,13 @@ public interface IPlayer extends TronObject {
 	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException;
 	
 	/**
-	 * {@link IItem#use(AbstractSquare) use} the given item. The item must be in the
-	 * inventory of the player.
+	 * {@link IItem#use(AbstractSquare, UseArguments) use} the given item. The
+	 * item must be in the inventory of the player.
 	 * 
 	 * @param i
 	 *        The item that will be used.
+	 * @param arguments
+	 *        the additional arguments for the item
 	 * @throws IllegalActionException
 	 *         This player must be allowed to perform an action, i.e.
 	 *         <code>{@link #canPerformAction()}</code>.
@@ -174,5 +175,6 @@ public interface IPlayer extends TronObject {
 	 * @throws IllegalUseException
 	 *         The player must be allowed to use the item.
 	 */
-	public void useItem(IItem i) throws IllegalActionException, IllegalArgumentException;
+	public void useItem(IItem i, UseArguments<?> arguments) throws IllegalActionException,
+			IllegalArgumentException;
 }

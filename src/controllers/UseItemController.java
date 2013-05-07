@@ -2,6 +2,7 @@ package controllers;
 
 import gui.GUI;
 import item.IItem;
+import item.UseArguments;
 import item.identitydisk.IdentityDisk;
 import player.IPlayerDataBase;
 import ObjectronExceptions.IllegalUseException;
@@ -50,12 +51,8 @@ public class UseItemController {
 	 * 		The item cannot be used.
 	 */
 	public void useItem(IItem item) throws IllegalUseException {
-		// If the item used is an identity disk, a direction must be set before
-		// the item
-		// can be used. As described in the documentation of identity disk.
-		if (item instanceof IdentityDisk)
-			((IdentityDisk) item).setDirection(gui.getBasicDirection());
-		
-		playerDB.getCurrentPlayer().useItem(item);
+		UseArguments<?> arguments = item.getUseArguments();
+		gui.handle(arguments);
+		playerDB.getCurrentPlayer().useItem(item, arguments);
 	}
 }
