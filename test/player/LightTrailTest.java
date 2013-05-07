@@ -27,10 +27,10 @@ public class LightTrailTest {
 		
 		lightTrail = new LightTrail();
 		
-		sq1 = new NormalSquare(neighbours);
-		sq2 = new NormalSquare(neighbours);
-		sq3 = new NormalSquare(neighbours);
-		sq4 = new NormalSquare(neighbours);
+		sq1 = new NormalSquare();
+		sq2 = new NormalSquare();
+		sq3 = new NormalSquare();
+		sq4 = new NormalSquare();
 	}
 	
 	@Test
@@ -99,9 +99,9 @@ public class LightTrailTest {
 		// create a new empty neighbour map for the squares
 		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
-		lightTrail.updateLightTrail(new NormalSquare(neighbours));
-		lightTrail.updateLightTrail(new NormalSquare(neighbours));
-		lightTrail.updateLightTrail(new NormalSquare(neighbours));
+		lightTrail.updateLightTrail(new NormalSquare());
+		lightTrail.updateLightTrail(new NormalSquare());
+		lightTrail.updateLightTrail(new NormalSquare());
 		
 		assertEquals(3, lightTrail.size());
 		lightTrail.updateLightTrail();

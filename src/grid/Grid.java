@@ -54,8 +54,8 @@ public class Grid implements IGrid {
 	 * 
 	 * @return returns the grid
 	 */
-	public Map<Coordinate, AbstractSquare> getGrid() {
-		return new HashMap<Coordinate, AbstractSquare>(grid);
+	public Map<Coordinate, SquareContainer> getGrid() {
+		return new HashMap<Coordinate, SquareContainer>(grid);
 	}
 	
 	@Override

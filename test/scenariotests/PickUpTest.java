@@ -49,7 +49,7 @@ public class PickUpTest extends SetupTestGrid {
 		pickUpCont.pickUpItem(ID);
 		
 		// The system removes the item from the gameboard
-		assertFalse(player1.getCurrentLocation().contains(ID));
+		assertFalse(player1.getCurrentLocation().getCarryableItems().contains(ID));
 		// and puts it in the inventory of the player
 		player1.getInventoryContent().contains(ID);
 		
@@ -92,7 +92,7 @@ public class PickUpTest extends SetupTestGrid {
 		pickUpCont.pickUpItem(LG);
 		
 		// The system removes the item from the gameboard
-		assertFalse(player2.getCurrentLocation().contains(LG));
+		assertFalse(player2.getCurrentLocation().getCarryableItems().contains(LG));
 		// and puts it in the inventory of the player
 		player2.getInventoryContent().contains(LG);
 		

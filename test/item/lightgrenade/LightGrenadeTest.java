@@ -9,20 +9,20 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
+import powerfailure.PrimaryPowerFailure;
 import square.AbstractSquare;
 import square.Direction;
-import square.PrimaryPowerFailure;
 import square.NormalSquare;
+import square.SquareContainer;
 import square.WallPart;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {
 	
-
 	private LightGrenade		lightGrenade;
 	private DummyPlayer			affectedPlayer;
-	private Square				emptySquare;
+	private SquareContainer		emptySquare;
 	
 	private static final int	DEFAULT_DAMAGE		= 3;
 	private static final int	INCREASED_DAMAGE	= 4;
@@ -30,7 +30,8 @@ public class LightGrenadeTest {
 	@Before
 	public void setUp() {
 		lightGrenade = new LightGrenade();
-		emptySquare = new NormalSquare();
+		emptySquare = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
 		affectedPlayer = new DummyPlayer();
 	}
 	
@@ -82,7 +83,7 @@ public class LightGrenadeTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void testUse_SquareIsAWall() throws CannotPlaceLightGrenadeException {
-		lightGrenade.use(new WallPart(Collections.<Direction, AbstractSquare> emptyMap()));
+		lightGrenade.use(new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new WallPart()));
 	}
 	
 	@Test(expected = CannotPlaceLightGrenadeException.class)
@@ -108,6 +109,7 @@ public class LightGrenadeTest {
 		// test if the strength was increased
 		assertEquals(INCREASED_DAMAGE, affectedPlayer.getNumberOfActionsSkipped());
 	}
+	
 	/**
 	 * Simulates adding the lightgrenade to the square and thus making it
 	 * active.

@@ -52,6 +52,11 @@ public class UseItemTest extends SetupTestGrid {
 		pickUpCont.pickUpItem(LG);
 		useItemCont.useItem(LG);
 		
+		/*
+		 * TODO: We can't get an entire list of items anymore. The exploded
+		 * light grenade is not carriable, and therefore I can't replace this
+		 * with getCarriableItems(), like the rest
+		 */
 		assertTrue(playerDB.getCurrentPlayer().getCurrentLocation().contains(LG));
 		assertEquals(LightGrenadeState.ACTIVE, LG.getState());
 		
@@ -120,9 +125,10 @@ public class UseItemTest extends SetupTestGrid {
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
 		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentLocation()
-				.getAllItems().get(0);
+				.getCarryableItems().get(0);
 		pickUpCont.pickUpItem(id);
-		assertFalse(playerDB.getCurrentPlayer().getCurrentLocation().contains(id));
+		assertFalse(playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems()
+				.contains(id));
 		endTurnCont.endTurn();
 		
 		// player 2

@@ -18,25 +18,20 @@ public class ASquareTest {
 	@Test
 	public void testConstructor() {
 		// make a new empty map, since there is no square
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
 		// create a new square
-		NormalSquare square = new NormalSquare(neighbours);
+		SquareContainer square = new SquareContainer(neighbours, new NormalSquare());
 		// check if there are any neighbours set
 		for (Direction direction : Direction.values())
-			assertNull(square.getNeighbour(direction));
+			assertNull(square.getNeighbourIn(direction));
 		
 		// create a new neighbour
 		neighbours.put(Direction.NORTH, square);
-		NormalSquare neighbour = new NormalSquare(neighbours);
+		SquareContainer neighbour = new SquareContainer(neighbours, new NormalSquare());
 		
 		// check if the neighbour is set correctly with both squares
-		assertEquals(square, neighbour.getNeighbour(Direction.NORTH));
-		assertEquals(neighbour, square.getNeighbour(Direction.SOUTH));
-	}
-	
-	@Test (expected = IllegalArgumentException.class)
-	public void testConstructor_nullArgument() {
-		new NormalSquare(null);
+		assertEquals(square, neighbour.getNeighbourIn(Direction.NORTH));
+		assertEquals(neighbour, square.getNeighbourIn(Direction.SOUTH));
 	}
 	
 }
