@@ -31,12 +31,12 @@ public class SquareContainer extends AbstractSquare {
 	 * method the squares specified in the map will be set as the neighbours for
 	 * this square. Also this square will be set as the neighbour for all the
 	 * squares in the map. More formally, after the creation of this object the
-	 * following will be true for each neighbour in a corresponding direction:
+	 * following will be true for each direction where a neighbour can be found:
 	 * 
 	 * <pre>
 	 * <code> 
 	 *  this == getNeighbourInDirection(direction)
-	 *  			.getNeighbourInDirection(direction.getOppositeDirection)
+	 *  			.getNeighbourInDirection(direction.getOppositeDirection())
 	 *  </code>
 	 * </pre>
 	 * 
@@ -50,16 +50,16 @@ public class SquareContainer extends AbstractSquare {
 		this.square = square;
 		this.decorators = new HashMap<Property, AbstractSquareDecorator>();
 		
-		// check if the parameter is valid
 		if (!canHaveAsNeighbours(neighbours))
 			throw new IllegalArgumentException(
 					"the specified neighbours could not be set as the neighbours for this square!");
 		
 		this.neighbours = new HashMap<Direction, SquareContainer>(neighbours);
 		
-		// set this square as the neighbour
+		// Make sure the link is bidirectional
 		for (Direction direction : neighbours.keySet())
-			neighbours.get(direction).neighbours.put(direction.getOppositeDirection(), this);
+			neighbours.get(direction).setNeighbourInDirection(direction.getOppositeDirection(),
+					this);
 	}
 	
 	/**
@@ -90,6 +90,18 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
+	 * Set a neighbour in a specified direction
+	 * 
+	 * @param direction
+	 *        The direction of the neighbour
+	 * @param square
+	 *        The new neighbour
+	 */
+	private void setNeighbourInDirection(Direction direction, SquareContainer square) {
+		this.neighbours.put(direction, square);
+	}
+	
+	/**
 	 * Add a new specified property to this square.
 	 * 
 	 * @param property
@@ -110,31 +122,38 @@ public class SquareContainer extends AbstractSquare {
 	 *        the property to remove
 	 */
 	public void removeProperty(Property property) {
+		/*
+		 * The container does not have a decorator of the specified property, so
+		 * the post condition is already satisfied.
+		 */
 		if (!decorators.containsKey(property))
-			return; // container does not include the property,
-					// the post condition is satisfied
-			
-		AbstractSquareDecorator squareToRemove = decorators.get(property);
-		
-		// Special case if the decorator is the outer layer
-		if (squareToRemove.equals(square)) {
-			square = squareToRemove.getSquare();
-			decorators.remove(property);
 			return;
+		
+		AbstractSquareDecorator decoratorToRemove = decorators.get(property);
+		
+		/*
+		 * If it is the outer layer, we should adapt the reference of the
+		 * container itself, and not iterate the list of decorators.
+		 */
+		if (decoratorToRemove.equals(square)) {
+			square = decoratorToRemove.getSquare();
+			decorators.remove(property);
 		}
-		
-		AbstractSquareDecorator decorator = (AbstractSquareDecorator) ((AbstractSquareDecorator) square)
-				.getSquare();
-		AbstractSquareDecorator previousDecorator = (AbstractSquareDecorator) square;
-		
-		// find the wrapper and it's previous wrapper
-		while (!squareToRemove.equals(decorator)) {
-			previousDecorator = decorator;
-			decorator = (AbstractSquareDecorator) ((AbstractSquareDecorator) decorator).getSquare();
+		else {
+			AbstractSquareDecorator decorator = (AbstractSquareDecorator) ((AbstractSquareDecorator) square)
+					.getSquare();
+			AbstractSquareDecorator previousDecorator = (AbstractSquareDecorator) square;
+			
+			// find the wrapper and its previous wrapper
+			while (!decoratorToRemove.equals(decorator)) {
+				previousDecorator = decorator;
+				decorator = (AbstractSquareDecorator) ((AbstractSquareDecorator) decorator)
+						.getSquare();
+			}
+			
+			previousDecorator.setSquare(decorator.getSquare());
+			decorators.remove(property);
 		}
-		
-		previousDecorator.setSquare(decorator.getSquare());
-		decorators.remove(property);
 	}
 	
 	/* ----------- Forwarding Methods ----------------- */
@@ -233,11 +252,8 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
-	 * This method updates all power failure related things.
-	 * 
-	 * <pre>
-	 * - This Square has a certain chance of creating a new power failure
-	 * </pre>
+	 * This method has a chance of {@value #POWER_FAILURE_CHANCE} to initiate a
+	 * new power failure on this square.
 	 */
 	public void updatePowerFailure() {
 		if (ENABLE_POWER_FAILURE) {
@@ -256,24 +272,21 @@ public class SquareContainer extends AbstractSquare {
 	 *         null if the given square is not a neighbour.
 	 */
 	public Direction getDirectionOfNeighbour(SquareContainer neighbour) {
-		for (Direction dir : Direction.values()) {
-			if (getNeighbourIn(dir) == neighbour) {
+		for (Direction dir : Direction.values())
+			if (getNeighbourIn(dir) == neighbour)
 				return dir;
-			}
-		}
 		
 		return null;
 	}
-
+	
 	@Override
 	public boolean isWall() {
 		return square.isWall();
 	}
-
+	
 	@Override
 	public boolean isStartingPosition() {
 		return square.isStartingPosition();
 	}
-	
 	
 }

@@ -6,8 +6,9 @@ import player.IPlayer;
 import player.Player;
 
 /**
- * an interface for {@link NormalSquare}. pretty straight forward ... 
- * FIXME i think that this is not such good way to document a class, but hey what is ... 
+ * An interface for squares that is safe to be used outside of our own system.
+ * It defines getters that can be used by whoever implements a user interface
+ * for our game.
  */
 public interface Square {
 	
@@ -15,9 +16,9 @@ public interface Square {
 	 * Returns the items on this square that can be picked up by a
 	 * {@link Player}
 	 * 
-	 * @return a list of all the carryable items on the square
+	 * @return a list of all the carriable items on the square
 	 */
-	public abstract List<IItem> getCarryableItems();
+	public List<IItem> getCarryableItems();
 	
 	/**
 	 * Get the player that is located on this square.
@@ -25,38 +26,39 @@ public interface Square {
 	 * @return The player that is on this square. Returns null if there is no
 	 *         player.
 	 */
-	public abstract IPlayer getPlayer();
+	public IPlayer getPlayer();
 	
 	/**
 	 * Checks whether or not a light trail is currently active on this square.
 	 * 
 	 * @return whether or not a light trail is currently active on this square.
 	 */
-	public abstract boolean hasLightTrail();
+	public boolean hasLightTrail();
 	
 	/**
-	 * Returns whether or not this ASquare holds currently a {@link Player player}
+	 * Returns whether or not this ASquare holds currently a {@link Player
+	 * player}
 	 * 
 	 * @return Whether this square has a Player.
 	 */
-	public abstract boolean hasPlayer();
+	public boolean hasPlayer();
 	
-	/** 
+	/**
 	 * @return Whether or not this ASquare has a power failure.
 	 */
-	public abstract boolean hasPowerFailure();
+	public boolean hasPowerFailure();
 	
-	/** 
+	/**
 	 * @return Whether or not this ASquare has a force field.
 	 */
 	public boolean hasForceField();
-
+	
 	/**
 	 * Returns whether this square represents a wall
 	 * 
 	 * @return true if this square represents a wall
 	 */
-	public abstract boolean isWall(); 
+	public boolean isWall();
 	
 	/**
 	 * Returns whether this square is a starting position
@@ -64,5 +66,5 @@ public interface Square {
 	 * @return true if this square is a starting position
 	 */
 	public boolean isStartingPosition();
-	 
+	
 }
