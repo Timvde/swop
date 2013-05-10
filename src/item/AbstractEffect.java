@@ -19,7 +19,7 @@ public abstract class AbstractEffect implements Effect {
 	 * The next effect that should be called after the
 	 * {@link #execute(square.TronObject)} method.
 	 */
-	protected Effect	next;
+	private Effect	next;
 	
 	@Override
 	public void addEffect(Effect effect) {

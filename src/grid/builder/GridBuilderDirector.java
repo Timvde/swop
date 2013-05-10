@@ -13,7 +13,7 @@ public abstract class GridBuilderDirector {
 	/**
 	 * The number of players involved in the game.
 	 */
-	public static final int	NUMBER_OF_PLAYERS	= 2;
+	public static final int	NUMBER_OF_PLAYERS	= 3;
 	
 	protected GridBuilder	builder;
 	

@@ -31,7 +31,7 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 	}
 	
 	@Override
-	public void use(SquareContainer square, UseArguments arguments) {
+	public void use(SquareContainer square, UseArguments<?> arguments) {
 		super.use(square, arguments);
 		range = 4;
 	}
