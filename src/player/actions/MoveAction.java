@@ -1,10 +1,7 @@
 package player.actions;
 
-import player.LightTrail;
 import player.TronPlayer;
-import square.AbstractSquare;
 import square.Direction;
-import square.Square;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -32,16 +29,13 @@ public class MoveAction implements Action {
 	}
 	
 	/**
-	 * This method moves the specified player one {@link Square} in a specified
-	 * {@link Direction}. More formally the postconditions are:
+	 * This method moves the specified player one {@link SquareContainer square}
+	 * in a specified {@link Direction}. More formally the postconditions are:
 	 * 
 	 * <li>The new location of this player is
 	 * <code>{@link TronPlayer#getCurrentLocation() 
 	 * currentLocationBefore}{@link SquareContainer#getNeighbourIn(Direction) 
 	 * .getNeighbour(direction)}</code>.</li>
-	 * 
-	 * <li>The {@link LightTrail} of the player will be
-	 * {@link LightTrail#updateLightTrail(AbstractSquare) updated}.</li>
 	 * 
 	 * <li>The player will have done a move during this turn:
 	 * <code>{@link TronPlayer#hasMovedYet()} = true</code>
