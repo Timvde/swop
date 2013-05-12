@@ -2,7 +2,6 @@ package item.identitydisk;
 
 import item.Item;
 import item.teleporter.Teleportable;
-import square.AbstractSquare;
 import square.Direction;
 import square.SquareContainer;
 

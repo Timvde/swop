@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import powerfailure.PrimaryPowerFailure;
 import square.AbstractSquare;
-import square.PlayerStartingPosition;
-import square.Square;
 import square.SquareContainer;
 
 /**

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
-import player.IPlayer;
+import player.Player;
 import powerfailure.PrimaryPowerFailure;
 
 /**
@@ -166,7 +166,7 @@ public class SquareContainer extends AbstractSquare {
 		return square.getCarryableItems();
 	}
 	
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return square.getPlayer();
 	}
 	
@@ -187,7 +187,7 @@ public class SquareContainer extends AbstractSquare {
 		return square.hasPlayer();
 	}
 	
-	public void addPlayer(IPlayer p) throws IllegalArgumentException {
+	public void addPlayer(Player p) throws IllegalArgumentException {
 		square.addPlayer(p);
 	}
 	
@@ -236,7 +236,7 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	@Override
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		square.addPlayer(player, effect);
 	}
 	

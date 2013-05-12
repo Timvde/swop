@@ -3,7 +3,6 @@ package item.lightgrenade;
 import item.IItem;
 import item.Item;
 import square.SquareContainer;
-import square.TronObject;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
@@ -13,9 +12,8 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
  * {@link LightGrenadeState#EXPLODED EXPLODED}. A light grenade always starts in
  * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
  * then gets used by a player the internal state of this item will be changed to
- * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode
- * whenever the {@link #execute(TronObject)} method is called. After exploding
- * the light grenade converts to it's last state
+ * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode.
+ * After exploding the light grenade converts to it's last state
  * {@link LightGrenadeState#EXPLODED EXPLODED}, this will convert the item to a
  * immutable object.
  * 

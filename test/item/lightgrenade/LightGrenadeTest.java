@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
 import powerfailure.PrimaryPowerFailure;
-import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;

@@ -7,13 +7,12 @@ import grid.builder.TronGridBuilder;
 import gui.GUI;
 import java.util.Observable;
 import java.util.Observer;
-import ObjectronExceptions.builderExceptions.InvalidGridFileException;
-import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
 import player.TurnEvent;
 import square.AbstractSquare;
-import square.Square;
+import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -40,7 +39,7 @@ public class Game implements Observer {
 	 *        arguments are ignored
 	 */
 	public static void main(String[] args) {
-		Game game = new Game();
+		new Game();
 	}
 	
 	/**
@@ -171,12 +170,12 @@ public class Game implements Observer {
 		}
 	}
 	
-	private void endGameWithLoser(IPlayer player) {
+	private void endGameWithLoser(Player player) {
 		// TODO Auto-generated method stub
 		System.out.println("game is finished with loser " + player);
 	}
 	
-	private void endGameWithWinner(IPlayer player) {
+	private void endGameWithWinner(Player player) {
 		// TODO Auto-generated method stub
 		System.out.println("game is finished with winner " + player);
 		

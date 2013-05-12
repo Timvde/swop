@@ -43,7 +43,7 @@ public enum Direction {
 	private Direction		nextClockwiseDirection;
 	private Direction		nextCounterClockwiseDirection;
 	
-	private Direction[]		adjacentDirections = new Direction[2];
+	private Direction[]		adjacentDirections	= new Direction[2];
 	
 	/**
 	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.
@@ -64,6 +64,8 @@ public enum Direction {
 	
 	/**
 	 * Return the direction that is the next direction seen clockwise.
+	 * 
+	 * @return the direction 90 degrees clockwise from this direction
 	 */
 	public Direction getNextClockwiseDirection() {
 		return this.nextClockwiseDirection;
@@ -71,21 +73,34 @@ public enum Direction {
 	
 	/**
 	 * Return the directions that are adjacent to this direction.
+	 * @return an array of the adjacent directions 
+	 */
+	/* 
+	 * Really, an array? Please use a list! 
+	 * And if the returned size is always two, you could always create 
+	 * a parameter object ...
+	 * 
+	 *  Eclipse > Refactor > introduce parameter object... 
 	 */
 	public Direction[] getAdjacentDirections() {
 		return this.adjacentDirections;
 	}
 	
+	/* please be more clear about this method, 
+	 * I see no reason what this or why we need this 
+	 */
 	private void setFirstAdjacentDirection(Direction d) {
 		this.adjacentDirections[0] = d;
 	}
 	
+	/* same here */
 	private void setSecondAdjacentDirection(Direction d) {
 		this.adjacentDirections[1] = d;
 	}
 	
 	/**
 	 * Return the direction that is the next direction seen counterclockwise.
+	 * @return the direction 90 degrees counterclockwise from this one. 
 	 */
 	public Direction getNextCounterClockwiseDirection() {
 		return this.nextCounterClockwiseDirection;

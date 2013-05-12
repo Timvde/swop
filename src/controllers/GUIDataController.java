@@ -5,7 +5,7 @@ import grid.Grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
 import square.Square;
 
@@ -60,13 +60,15 @@ public class GUIDataController {
 	
 	/**
 	 * Return the current player in the game.
+	 * @return returns the current player of the game
 	 */
-	public IPlayer getCurrentPlayer() {
+	public Player getCurrentPlayer() {
 		return this.playerDB.getCurrentPlayer();
 	}
 	
 	/**
 	 * Return a list of items in the inventory of the current player.
+	 * @return iventory of the player 
 	 */
 	public List<IItem> getCurrentPlayerInventoryItems() {
 		return getCurrentPlayer().getInventoryContent();
@@ -75,6 +77,7 @@ public class GUIDataController {
 	/**
 	 * Return a list of items that are located on the square that the current
 	 * player resides on.
+	 * @return list of items 
 	 */
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
 		Square currSq = getCurrentPlayer().getCurrentLocation();
@@ -82,10 +85,11 @@ public class GUIDataController {
 	}
 	
 	/**
-	 * Return the items on a square at the given coordinate of the grid.
+	 * Return the items on a square at the specified coordinate of the grid.
 	 * 
 	 * @param c
 	 *        The coordinate of the square we want the items of.
+	 * @return items of a specified coordinate
 	 */
 	public List<IItem> getItemList(Coordinate c) {
 		return grid.getItemList(c);

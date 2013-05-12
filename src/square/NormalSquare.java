@@ -7,12 +7,8 @@ import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import java.util.Random;
-import player.IPlayer;
 import player.Player;
-import player.TurnEvent;
-import powerfailure.PowerFailure;
-import powerfailure.PrimaryPowerFailure;
+import player.TronPlayer;
 
 /**
  * A Square represents a place on a grid, which a player can stand on, as long
@@ -24,12 +20,12 @@ public class NormalSquare extends AbstractSquare {
 	/** the list of items in this square */
 	private List<IItem>		itemList;
 	/** the player on this square */
-	private IPlayer			player;
+	private Player			player;
 	/** a boolean representing whether there is a light trail on this square */
 	private boolean			lightTrail;
 	
 	/**
-	 * Default constructor.
+	 * Create a new normal square
 	 * 
 	 */
 	public NormalSquare() {
@@ -123,12 +119,12 @@ public class NormalSquare extends AbstractSquare {
 	 * 
 	 * @return An IPlayer, if there is one, otherwise null.
 	 */
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 	
 	/**
-	 * Returns whether or not this Square has currently a {@link Player}, i.e.
+	 * Returns whether or not this Square has currently a {@link TronPlayer}, i.e.
 	 * <code>{@link #getPlayer()}!= null</code>.
 	 * 
 	 * @return Whether this square has a Player.
@@ -139,7 +135,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer player) {
+	public void addPlayer(Player player) {
 		addPlayer(player, new EmptyEffect());
 	}
 	
@@ -152,7 +148,7 @@ public class NormalSquare extends AbstractSquare {
 	 *        the effect to execute on the player after the player has been
 	 *        added
 	 */
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		if (!canAddPlayer())
 			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		this.player = player;
@@ -160,7 +156,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Test whether a {@link IPlayer player} can be added to this square. A
+	 * Test whether a {@link Player player} can be added to this square. A
 	 * player can be added, if there is no other player placed on this square.
 	 * More formally this method will return <code>true</code> if and only if<br>
 	 * <code>this.hasPlayer() == false && this.hasLightTrail() == false</code>.

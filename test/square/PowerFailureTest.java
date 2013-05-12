@@ -17,16 +17,16 @@ public class PowerFailureTest {
 	
 	@Test
 	public final void testPowerFailure() {
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
-		Square sq1 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq2 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq3 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq4 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq5 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq6 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq7 = new Square(Collections.<Direction, ASquare> emptyMap());
-		Square sq8 = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square sq1 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq2 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq3 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq4 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq5 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq6 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq7 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq8 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
 		
 		neighbours.put(Direction.NORTH, sq1);
 		neighbours.put(Direction.NORTHEAST, sq2);
@@ -48,7 +48,7 @@ public class PowerFailureTest {
 	
 	@Test
 	public final void testDecreaseTimeToLive() {
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		Square sq = new Square(neighbours);
 		
 		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
@@ -67,11 +67,11 @@ public class PowerFailureTest {
 	
 	@Test
 	public final void testExecute_alreadyModifiedAnItem() {
-		Square emptySquare = new Square(Collections.<Direction, ASquare> emptyMap());
+		Square emptySquare = new Square(Collections.<Direction, AbstractSquare> emptyMap());
 		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(emptySquare);
 		DummyPlayer player = new DummyPlayer();
 		LightGrenade lightGrenade = new LightGrenade();
-		lightGrenade.use(emptySquare);
+		lightGrenade.use(emptySquare, null);
 		Effect effect = powerFailure.getEffect();
 		effect.addEffect(lightGrenade.getEffect());
 		effect.execute(player);

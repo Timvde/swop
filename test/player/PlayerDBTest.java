@@ -36,19 +36,19 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testCreateNewDB() {
-		Set<IPlayer> set1 = getAllPlayerFromDB();
+		Set<Player> set1 = getAllPlayerFromDB();
 		
 		playerDB.createNewDB(builder.getResult().getAllStartingPositions());
-		Set<IPlayer> set2 = getAllPlayerFromDB();
+		Set<Player> set2 = getAllPlayerFromDB();
 		
 		// the two lists should contain different players
 		containDifferentPlayers(set1, set2);
 	}
 	
-	private void containDifferentPlayers(Set<IPlayer> set1, Set<IPlayer> set2) {
+	private void containDifferentPlayers(Set<Player> set1, Set<Player> set2) {
 		assertEquals(set1.size(), set2.size());
-		for (IPlayer p1 : set1) {
-			for (IPlayer p2 : set2) {
+		for (Player p1 : set1) {
+			for (Player p2 : set2) {
 				assertNotSame(p1, p2);
 			}
 		}
@@ -58,11 +58,11 @@ public class PlayerDBTest {
 	 * Returns a set with all the Players in the {@link PlayerDataBase} (by
 	 * simulating player switchs).
 	 */
-	private Set<IPlayer> getAllPlayerFromDB() {
-		Set<IPlayer> result = new HashSet<IPlayer>();
+	private Set<Player> getAllPlayerFromDB() {
+		Set<Player> result = new HashSet<Player>();
 		
 		for (int i = 0; i < GridBuilderDirector.NUMBER_OF_PLAYERS; i++) {
-			Player curPlayer = (Player) playerDB.getCurrentPlayer();
+			TronPlayer curPlayer = (TronPlayer) playerDB.getCurrentPlayer();
 			result.add(curPlayer);
 			
 			// let the cur player end his turn

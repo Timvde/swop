@@ -2,6 +2,7 @@ package player;
 
 import square.Square;
 
+
 /**
  * PlayerState controls the actions of a player. A player can only perform
  * actions when he is in the {@link #ACTIVE} state. It is highly encouraged to check each transition
@@ -43,7 +44,7 @@ public enum PlayerState {
 	
 	/**
 	 * A {@link Player player} is in the finished state when he has reached his
-	 * target {@link ISquare square}. When a player has reached this position,
+	 * target {@link Square square}. When a player has reached this position,
 	 * he cannot perform actions.
 	 */
 	FINISHED {

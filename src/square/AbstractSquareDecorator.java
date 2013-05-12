@@ -3,7 +3,7 @@ package square;
 import item.IItem;
 import java.util.List;
 import java.util.Observable;
-import player.IPlayer;
+import player.Player;
 import item.Effect;
 
 /**
@@ -62,7 +62,7 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.getCarryableItems();
 	}
 	
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return square.getPlayer();
 	}
 	
@@ -78,7 +78,7 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.hasPlayer();
 	}
 	
-	public void addPlayer(IPlayer p) throws IllegalArgumentException {
+	public void addPlayer(Player p) throws IllegalArgumentException {
 		square.addPlayer(p);
 	}
 	
@@ -132,7 +132,7 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		square.addItem(item, effect);
 	}
 	
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		square.addPlayer(player, effect);
 	}
 	

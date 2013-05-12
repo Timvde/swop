@@ -18,15 +18,6 @@ import item.Item;
  */
 public class ForceFieldGenerator extends Item {
 	
-	private List<ForceField>	forceFields;
-	
-	/**
-	 * Creates a Force Field Generator.
-	 */
-	public ForceFieldGenerator() {
-		forceFields = new ArrayList<ForceField>();
-	}
-	
 	@Override
 	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
 		square.addItem(this);

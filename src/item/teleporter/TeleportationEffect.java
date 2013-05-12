@@ -2,7 +2,7 @@ package item.teleporter;
 
 import item.AbstractEffect;
 import item.IItem;
-import player.IPlayer;
+import player.Player;
 import square.SquareContainer;
 import square.TronObject;
 import square.AbstractSquare;
@@ -47,8 +47,8 @@ public class TeleportationEffect extends AbstractEffect {
 		
 		if (object instanceof IItem)
 			destinationSquare.addItem((IItem) object);
-		else if (object instanceof IPlayer)
-			destinationSquare.addPlayer((IPlayer) object);
+		else if (object instanceof Player)
+			destinationSquare.addPlayer((Player) object);
 		
 		object.asTeleportable().setSquare(destinationSquare);
 	}

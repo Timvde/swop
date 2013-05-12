@@ -16,6 +16,8 @@ import java.util.Set;
  * A RandomItemGridBuilderDirector offers a method to its subclasses to
  * <i>randomly</i> (i.e. as specified by the Tron game constraints) place the
  * items on the grid being constructed.
+ * 
+ * TODO Constraints for the randomness of items
  */
 public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector {
 	

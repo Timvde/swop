@@ -1,10 +1,10 @@
 package ObjectronExceptions;
 
-import player.IPlayer;
+import player.Player;
 import square.Direction;
 
 /**
- * Trhown when an {@link IPlayer} tried to move one step in a specified
+ * Trhown when an {@link Player} tried to move one step in a specified
  * {@link Direction} when he's not allowed to do so.
  */
 public class IllegalStepException extends IllegalMoveException {

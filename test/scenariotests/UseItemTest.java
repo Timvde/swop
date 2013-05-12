@@ -3,7 +3,6 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import game.Game;
 import gui.GUI;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
@@ -11,17 +10,11 @@ import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenade.LightGrenadeState;
 import java.util.List;
 import org.junit.Test;
-import controllers.EndTurnController;
-import controllers.GUIDataController;
-import controllers.MoveController;
-import controllers.NewGameController;
-import controllers.PickUpItemController;
-import controllers.UseItemController;
+import square.AbstractSquare;
 import square.Direction;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
-import ObjectronExceptions.ItemNotOnSquareException;
 
 /**
  * Tests the "Use An Item From The Inventory" use case.
@@ -57,7 +50,7 @@ public class UseItemTest extends SetupTestGrid {
 		 * light grenade is not carriable, and therefore I can't replace this
 		 * with getCarriableItems(), like the rest
 		 */
-		assertTrue(playerDB.getCurrentPlayer().getCurrentLocation().contains(LG));
+		assertTrue(((AbstractSquare) playerDB.getCurrentPlayer().getCurrentLocation()).contains(LG));
 		assertEquals(LightGrenadeState.ACTIVE, LG.getState());
 		
 	}

@@ -1,11 +1,10 @@
 package square;
 
 import item.Effect;
-import item.EmptyEffect;
 import item.IItem;
 import java.util.List;
 import java.util.Observer;
-import player.IPlayer;
+import player.Player;
 
 /**
  * This class defines objects that represent a location on a Grid.
@@ -48,7 +47,7 @@ public abstract class AbstractSquare implements Square, Observer {
 	 *         It must be possible to add the player to this square. More
 	 *         formally <code>{@link #canAddPlayer()}</code> .
 	 */
-	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
+	public abstract void addPlayer(Player p) throws IllegalArgumentException;
 	
 	/**
 	 * This method sets the haslightTrail for this square. <br>
@@ -104,7 +103,7 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract boolean canBeAdded(IItem item);
 	
 	/**
-	 * Test whether a {@link IPlayer player} can be added to this square.
+	 * Test whether a {@link Player player} can be added to this square.
 	 * 
 	 * @return true if a player can be added, else false
 	 */
@@ -119,7 +118,7 @@ public abstract class AbstractSquare implements Square, Observer {
 	 *        the effect to execute on the player after the player has been
 	 *        added
 	 */
-	protected abstract void addPlayer(IPlayer player, Effect effect);
+	protected abstract void addPlayer(Player player, Effect effect);
 	
 	/**
 	 * Add a item to the square and execute a specified effect on it.

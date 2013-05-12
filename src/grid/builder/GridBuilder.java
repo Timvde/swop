@@ -14,9 +14,7 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
  * Builder for the grid objects of a board game. The board consists of
- * {@link ASquare abstract squares} , each square can be a {@link WallPart wall}
- * or a {@link Square square}. {@link IItem Items} can be placed on these
- * squares.
+ * {@link Square squares}. {@link IItem Items} can be placed on these squares.
  */
 public interface GridBuilder {
 	
@@ -114,7 +112,7 @@ public interface GridBuilder {
 	 *         When the item cannot be placed at the specified coordinate, i.e.
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
-	void placeForceFieldGenerator(Coordinate Coordinate) throws GridBuildException;
+	void placeForceFieldGenerator(Coordinate coordinate) throws GridBuildException;
 	
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This
