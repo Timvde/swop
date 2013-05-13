@@ -1,7 +1,6 @@
 *.class
 .classpath
 
-bin/
 .settings/
 .metadata/*
 
