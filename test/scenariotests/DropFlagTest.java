@@ -6,6 +6,7 @@ import item.identitydisk.IdentityDisk;
 import java.util.List;
 import game.Game;
 import grid.Coordinate;
+import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.GridBuilderDirector;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,7 @@ public class DropFlagTest extends SetupTestGrid {
 		Game game = new Game();
 		newGameCont = new NewGameController(game);
 		
-		newGameCont.newCTFGame(GridBuilderDirector.NUMBER_OF_PLAYERS);
+		newGameCont.newCTFGame(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID);
 	}
 	
 	@Test

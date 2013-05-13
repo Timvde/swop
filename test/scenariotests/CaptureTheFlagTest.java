@@ -57,6 +57,11 @@ public class CaptureTheFlagTest extends SetupTestGrid {
 		newGameCont.newCTFGame(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID);
 	}
 	
+	@Test
+	public void testInvalidNumberOfPlayers() {
+		newGameCont.newCTFGame(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID + 1);
+	}
+	
 	/**
 	 * Tests: At the start of the game, there is a flag on the starting position
 	 * of each player. Each player's goal is to capture the flag of the other
