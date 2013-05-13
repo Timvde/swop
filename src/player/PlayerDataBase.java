@@ -75,12 +75,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		for (SquareContainer playerStartingPosition : startingPositions) {
 			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
-			this.actionsLeft.put(newPlayer, 0);
+			resetTurnRelatedPropertiesOf(newPlayer);
 		}
 		
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
-		assignNewTurn(playerList.get(currentPlayerIndex));
+		assignNewTurn(getCurrentPlayer());
 	}
 	
 	@Override
