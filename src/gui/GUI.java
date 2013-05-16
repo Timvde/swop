@@ -8,7 +8,7 @@ import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
-import item.lightgrenade.LightGrenade.LightGrenadeState;
+import item.lightgrenade.LightGrenadeState;
 import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;

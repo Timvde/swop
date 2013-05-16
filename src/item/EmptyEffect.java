@@ -10,9 +10,7 @@ public class EmptyEffect extends AbstractEffect {
 	
 	@Override
 	public void execute(TronObject object) {
-		
 		super.execute(object);
-		
 	}
 	
 }

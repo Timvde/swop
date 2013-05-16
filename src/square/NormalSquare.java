@@ -54,7 +54,7 @@ public class NormalSquare extends AbstractSquare {
 	@Override
 	public void remove(Object object) {
 		// test if the player needs to be removed
-		if (player.equals(object))
+		if (player!= null && player.equals(object))
 			player = null;
 		// else remove object from the item list
 		else

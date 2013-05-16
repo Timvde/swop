@@ -2,7 +2,6 @@ package item.teleporter;
 
 import item.Effect;
 import item.Item;
-import square.AbstractSquare;
 import square.SquareContainer;
 
 /**

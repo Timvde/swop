@@ -1,8 +1,6 @@
 package item.identitydisk;
 
 import powerfailure.AffectedByPowerFailure;
-import item.Effect;
-import item.EmptyEffect;
 import square.Direction;
 import square.SquareContainer;
 
@@ -85,10 +83,5 @@ public class UnchargedIdentityDisk extends IdentityDisk implements AffectedByPow
 	@Override
 	public char toChar() {
 		return 'u';
-	}
-
-	@Override
-	public Effect getEffect() {
-		return new EmptyEffect();
 	}
 }

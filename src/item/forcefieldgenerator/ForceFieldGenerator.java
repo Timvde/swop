@@ -1,15 +1,13 @@
 package item.forcefieldgenerator;
 
+import item.IItem;
+import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import square.AbstractSquare;
 import square.Direction;
 import square.SquareContainer;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
-import item.Effect;
-import item.EmptyEffect;
-import item.IItem;
-import item.Item;
 
 /**
  * This class represents a Force Field Generator. When placed, this item looks
@@ -75,10 +73,5 @@ public class ForceFieldGenerator extends Item {
 	@Override
 	public String toString() {
 		return "ForceFieldGenerator." + getId();
-	}
-	
-	@Override
-	public Effect getEffect() {
-		return new EmptyEffect();
 	}
 }

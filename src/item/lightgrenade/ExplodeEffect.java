@@ -1,7 +1,6 @@
 package item.lightgrenade;
 
 import item.AbstractEffect;
-import item.lightgrenade.LightGrenade.LightGrenadeState;
 import square.TronObject;
 
 /**
