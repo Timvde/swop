@@ -3,7 +3,6 @@ package square;
 import item.IItem;
 import java.util.List;
 import player.IPlayer;
-import player.Player;
 
 /**
  * An interface for squares that is safe to be used outside of our own system.
@@ -14,7 +13,7 @@ public interface Square {
 	
 	/**
 	 * Returns the items on this square that can be picked up by a
-	 * {@link Player}
+	 * {@link IPlayer player}
 	 * 
 	 * @return a list of all the carriable items on the square
 	 */
@@ -36,20 +35,20 @@ public interface Square {
 	public boolean hasLightTrail();
 	
 	/**
-	 * Returns whether or not this ASquare holds currently a {@link Player
+	 * Returns whether or not this square holds currently a {@link IPlayer
 	 * player}
 	 * 
-	 * @return Whether this square has a Player.
+	 * @return Whether this square has a player.
 	 */
 	public boolean hasPlayer();
 	
 	/**
-	 * @return Whether or not this ASquare has a power failure.
+	 * @return Whether or not this square has a power failure.
 	 */
 	public boolean hasPowerFailure();
 	
 	/**
-	 * @return Whether or not this ASquare has a force field.
+	 * @return Whether or not this square has a force field.
 	 */
 	public boolean hasForceField();
 	

@@ -3,19 +3,19 @@ package item.lightgrenade;
 import item.IItem;
 import item.Item;
 import square.SquareContainer;
-import square.TronObject;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
  * Light grenades are items that can be picked up and used by a player. There
- * are three states for a light grenade: {@link LightGrenadeState#ACTIVE ACTIVE}
- * , {@link LightGrenadeState#INACTIVE INACTIVE},
- * {@link LightGrenadeState#EXPLODED EXPLODED}. A light grenade always starts in
- * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
- * then gets used by a player the internal state of this item will be changed to
- * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode
- * whenever the {@link #execute(TronObject)} method is called. After exploding
- * the light grenade converts to it's last state
+ * are three states for a light grenade: <li>{@link LightGrenadeState#ACTIVE
+ * ACTIVE}</li> <li>{@link LightGrenadeState#INACTIVE INACTIVE}</li> <li>
+ * {@link LightGrenadeState#EXPLODED EXPLODED}.</li>
+ * 
+ * A light grenade always starts in the {@link LightGrenadeState#INACTIVE
+ * INACTIVE} state. When the light grenade then gets used by a player the
+ * internal state of this item will be changed to
+ * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode.
+ * After exploding the light grenade converts to it's last state
  * {@link LightGrenadeState#EXPLODED EXPLODED}, this will convert the item to a
  * immutable object.
  * 
@@ -108,6 +108,11 @@ public class LightGrenade extends Item {
 		return 'l';
 	}
 	
+	@Override
+	public ExplodeEffect getEffect() {
+		return new ExplodeEffect(this);
+	}
+	
 	/************************* LigthGrenadeEnum *************************/
 	
 	/**
@@ -157,10 +162,5 @@ public class LightGrenade extends Item {
 		 *         is allowed.
 		 */
 		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
-	}
-	
-	@Override
-	public ExplodeEffect getEffect() {
-		return new ExplodeEffect(this);
 	}
 }

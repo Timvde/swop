@@ -25,6 +25,9 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	 */
 	public PowerFailureDecorator(AbstractSquare square, PowerFailure powerfailure) {
 		super(square);
+		if (powerfailure == null) 
+			throw new IllegalArgumentException("powerfailure cannot be null");
+		
 		this.powerfailure = powerfailure;
 	}
 	

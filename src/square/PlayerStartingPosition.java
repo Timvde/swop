@@ -1,7 +1,6 @@
 package square;
 
 import item.IItem;
-import java.util.Map;
 
 /**
  * A special kind of {@link Square}. Where a player can stand on when the game

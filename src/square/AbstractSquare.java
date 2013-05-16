@@ -1,19 +1,19 @@
 package square;
 
 import item.Effect;
-import item.EmptyEffect;
 import item.IItem;
 import java.util.List;
 import java.util.Observer;
 import player.IPlayer;
 
 /**
- * This class defines objects that represent a location on a Grid.
+ * This class defines objects that represent a location on a Grid. It also
+ * provides a default implementation of the {@link Square} interface.
  */
 public abstract class AbstractSquare implements Square, Observer {
 	
 	/**
-	 * This method can be used to pick up an item with a given IDfrom a square.
+	 * This method can be used to pick up an item with a given ID from a square.
 	 * 
 	 * Precondition: The square must hold the item with the given ID.
 	 * 
@@ -38,8 +38,8 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract boolean contains(Object object);
 	
 	/**
-	 * Add a specified player to this square. This method will automatically add
-	 * the {@link Effect effects} of the items on this square to the player.
+	 * Add a specified player to this square. This method is also responsible
+	 * for executing any additional {@link Effect effects}.
 	 * 
 	 * @param p
 	 *        the player who wants to be placed on this square
@@ -67,8 +67,8 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract void removeLightTrail();
 	
 	/**
-	 * Add a specified item to the square, the item will (if possible) be
-	 * affected by other items on the square.
+	 * Add a specified item to the square, the item may be affected by other
+	 * items on the square.
 	 * 
 	 * @param item
 	 *        the item to add
@@ -79,7 +79,7 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract void addItem(IItem item) throws IllegalArgumentException;
 	
 	/**
-	 * Removes an object from this square, if the item is not placed on this
+	 * Removes an object from this square, if the object is not placed on this
 	 * square nothing will happen.
 	 * 
 	 * @param object
@@ -132,27 +132,54 @@ public abstract class AbstractSquare implements Square, Observer {
 	 */
 	protected abstract void addItem(IItem item, Effect effect);
 	
+	/* Default implementation */
+	
+	/**
+	 * Default implementation will return <code>false</code>.
+	 */
 	@Override
 	public boolean isWall() {
 		return false;
 	}
 	
 	/**
-	 * returns whether this square is a starting position
-	 * 
-	 * @return true if this square is a starting position
+	 * Default implementation will return <code>false</code>.
 	 */
+	@Override
 	public boolean isStartingPosition() {
 		return false;
 	}
 	
-	@Override 
+	/**
+	 * Default implementation will return <code>false</code>.
+	 */
+	@Override
 	public boolean hasForceField() {
 		return false;
 	}
-
+	
+	/**
+	 * Default implementation will return <code>false</code>.
+	 */
 	@Override
 	public boolean hasPowerFailure() {
 		return false;
 	}
+	
+	/**
+	 * Default implementation will return <code>false</code>.
+	 */
+	@Override
+	public boolean hasPlayer() {
+		return false;
+	}
+	
+	/**
+	 * Default implementation will return <code>false</code>.
+	 */
+	@Override
+	public boolean hasLightTrail() {
+		return false;
+	}
+	
 }
