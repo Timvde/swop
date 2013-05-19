@@ -1,0 +1,19 @@
+*.class
+.classpath
+
+bin/
+.settings/
+.metadata/*
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Folders
+notnullcheckweaver-1.3/
+.vpprefdata/*
+tmp/
+
+teamworkUser.xml
+.lock
