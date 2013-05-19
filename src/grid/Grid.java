@@ -5,6 +5,7 @@ import grid.builder.GridBuilderDirector;
 import item.IItem;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,12 +48,23 @@ public class Grid implements IGrid {
 	}
 	
 	/**
-	 * Return the grid.
+	 * Return the grid. (for testing purposes)
 	 * 
 	 * @return returns the grid
 	 */
-	public Map<Coordinate, SquareContainer> getGrid() {
+	Map<Coordinate, SquareContainer> getGrid() {
 		return new HashMap<Coordinate, SquareContainer>(grid);
+	}
+	
+	/**
+	 * Returns an iterator over all the {@link SquareContainer squares} in the
+	 * grid. There are no guarantees concerning the order in which they are
+	 * returned.
+	 * 
+	 * @return an iterator over the squares of this grid.
+	 */
+	public Iterator<SquareContainer> getGridIterator() {
+		return new GridIterator(this.grid.values().iterator());
 	}
 	
 	@Override

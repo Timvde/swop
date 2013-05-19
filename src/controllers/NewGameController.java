@@ -1,6 +1,7 @@
 package controllers;
 
 import game.Game;
+import game.GameRunner;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
@@ -16,13 +17,13 @@ public class NewGameController {
 	/**
 	 * Create a new game controller with a given game.
 	 * 
-	 * @param g
+	 * @param gameRunner
 	 *        The game reference.
 	 */
-	public NewGameController(Game g) {
-		if (g == null)
+	public NewGameController(GameRunner gameRunner) {
+		if (gameRunner == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");
-		this.game = g;
+		this.game = gameRunner;
 	}
 	
 	/**
