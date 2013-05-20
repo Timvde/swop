@@ -14,7 +14,7 @@ public class WallPartTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		wall = new WallPart(Collections.<Direction, ASquare> emptyMap());
+		wall = new WallPart(Collections.<Direction, AbstractSquare> emptyMap());
 	}
 	
 	@Test

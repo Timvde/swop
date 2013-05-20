@@ -2,21 +2,22 @@ package grid.builder;
 
 import grid.Coordinate;
 import item.IItem;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.List;
-import ObjectronExceptions.builderExceptions.GridBuildException;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Square;
 import square.WallPart;
+import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
  * Builder for the grid objects of a board game. The board consists of
- * {@link ASquare abstract squares} , each square can be a {@link WallPart wall}
- * or a {@link Square square}. {@link IItem Items} can be placed on these
- * squares.
+ * {@link AbstractSquare abstract squares} , each square can be a
+ * {@link WallPart wall} or a {@link Square square}. {@link IItem Items} can be
+ * placed on these squares.
  */
 public interface GridBuilder {
 	
@@ -103,6 +104,18 @@ public interface GridBuilder {
 	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
 	 */
 	void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException;
+	
+	/**
+	 * Place a new {@link ForceFieldGenerator force field generator} on the
+	 * specified coordinate.
+	 * 
+	 * @param coordinate
+	 *        the coordinate where the new generator will be placed
+	 * @throws GridBuildException
+	 *         When the item cannot be placed at the specified coordinate, i.e.
+	 *         <code>!{@link #canPlaceItem(Coordinate)}</code>.
+	 */
+	void placeForceFieldGenerator(Coordinate coordinate) throws GridBuildException;
 	
 	/**
 	 * Returns whether an {@link IItem item} can be placed on the grid. This

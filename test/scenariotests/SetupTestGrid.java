@@ -9,6 +9,7 @@ import java.util.Set;
 import org.junit.Before;
 import player.PlayerDataBase;
 import square.PlayerStartingPosition;
+import square.SquareContainer;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -33,10 +34,10 @@ public class SetupTestGrid {
 		grid = builder.getResult();
 		
 		// make a set with the startingpostions in a deterministic order
-		Set<PlayerStartingPosition> playerstartingpositions = new LinkedHashSet<PlayerStartingPosition>();
-		playerstartingpositions.add((PlayerStartingPosition) grid
+		Set<SquareContainer> playerstartingpositions = new LinkedHashSet<SquareContainer>();
+		playerstartingpositions.add((SquareContainer) grid
 				.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS));
-		playerstartingpositions.add((PlayerStartingPosition) grid
+		playerstartingpositions.add( (SquareContainer) grid
 				.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS));
 		
 		playerDB = new PlayerDataBase();

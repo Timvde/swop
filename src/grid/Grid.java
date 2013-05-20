@@ -7,20 +7,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
-import square.ASquare;
-import square.PlayerStartingPosition;
-import square.PrimaryPowerFailure;
+import square.AbstractSquare;
+import square.SquareContainer;
 
 /**
- * A grid that consists of abstract {@link ASquare squares}.
+ * A grid that consists of {@link SquareContainer squares}.
+ * 
  */
 public class Grid implements IGrid {
 	
-	private Map<Coordinate, ASquare>	grid;
-	private static final float			POWER_FAILURE_CHANCE	= 0.01F;
-	private boolean						ENABLE_POWER_FAILURE;
+	private Map<Coordinate, SquareContainer>	grid;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -33,9 +30,9 @@ public class Grid implements IGrid {
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
 	 */
-	public Grid(Map<Coordinate, ASquare> grid) {
+	public Grid(Map<Coordinate, SquareContainer> grid) {
 		if (grid == null)
-			throw new IllegalArgumentException("Grid could not be created!");
+			throw new IllegalArgumentException("Null grid could not be created!");
 		this.grid = grid;
 	}
 	
@@ -54,17 +51,21 @@ public class Grid implements IGrid {
 	 * 
 	 * @return returns the grid
 	 */
-	public Map<Coordinate, ASquare> getGrid() {
-		return new HashMap<Coordinate, ASquare>(grid);
+	public Map<Coordinate, SquareContainer> getGrid() {
+		return new HashMap<Coordinate, SquareContainer>(grid);
 	}
 	
 	@Override
 	public List<IItem> getItemList(Coordinate coordinate) {
+		if (coordinate == null)
+			throw new IllegalArgumentException("the specified coordinate cannot be null");
 		return grid.get(coordinate).getAllItems();
 	}
 	
 	@Override
-	public ASquare getSquareAt(Coordinate coordinate) {
+	public AbstractSquare getSquareAt(Coordinate coordinate) {
+		if (coordinate == null)
+			throw new IllegalArgumentException("the specified coordinate cannot be null");
 		return grid.get(coordinate);
 	}
 	
@@ -127,24 +128,12 @@ public class Grid implements IGrid {
 	 * 
 	 * @return a set of all the startingpositions on the grid.
 	 */
-	public Set<PlayerStartingPosition> getAllStartingPositions() {
-		Set<PlayerStartingPosition> result = new HashSet<PlayerStartingPosition>();
-		for (ASquare square : grid.values()) {
-			if (square instanceof PlayerStartingPosition)
-				result.add((PlayerStartingPosition) square);
+	public Set<SquareContainer> getAllStartingPositions() {
+		Set<SquareContainer> result = new HashSet<SquareContainer>();
+		for (SquareContainer square : grid.values()) {
+			if (square.isStartingPosition())
+				result.add(square);
 		}
 		return result;
-	}
-	
-	/**
-	 * Add a primary powerfailure at the given coordinate. This possibly results
-	 * in the creation of a secondary and tertiary powerfailure.
-	 * 
-	 * @param coordinate
-	 *        The coordinate on which to add a powerfailure.
-	 */
-	public void addPowerFailureAtCoordinate(Coordinate coordinate) {
-		if (grid.containsKey(coordinate))
-			new PrimaryPowerFailure(grid.get(coordinate));
 	}
 }

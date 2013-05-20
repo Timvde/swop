@@ -1,9 +1,9 @@
 package square;
 
+import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import player.IPlayer;
 import player.Player;
@@ -11,16 +11,12 @@ import player.Player;
 /**
  * A class that represents a part of a wall.
  */
-public class WallPart extends ASquare {
+public class WallPart extends AbstractSquare {
 	
 	/**
-	 * Create a new wall part 
-	 * @param neighbours
-	 * 	the neighbours of this square
+	 * Create a new wall part
 	 */
-	public WallPart(Map<Direction, ASquare> neighbours) {
-		super(neighbours);
-	}
+	public WallPart() {}
 	
 	@Override
 	public List<IItem> getCarryableItems() {
@@ -56,45 +52,35 @@ public class WallPart extends ASquare {
 	}
 	
 	@Override
-	void addPowerFailure(PowerFailure powerFailure) {
-		throw new UnsupportedOperationException("A WallPart cannot have a power failure.");
-	}
-	
-	@Override
-	void removePowerFailure(PowerFailure powerFailure) {
-		throw new UnsupportedOperationException("A WallPart does not have any power failures.");
-	}
-
-	@Override
 	public boolean contains(Object object) {
 		return false;
 	}
-
+	
 	@Override
 	public void addPlayer(IPlayer p) {
 		throw new UnsupportedOperationException("Players cannot be added to a wall!");
 	}
-
+	
 	@Override
 	public void placeLightTrail() {
 		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
-
+	
 	@Override
 	public void removeLightTrail() {
 		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
-
+	
 	@Override
 	public void addItem(IItem item) {
-		throw new UnsupportedOperationException("items cannot be added to light trails");
+		throw new UnsupportedOperationException("items cannot be added to wall parts");
 	}
-
+	
 	@Override
 	public void remove(Object object) {
 		// there are no items on a wall part, so nothing is to be done
 	}
-
+	
 	@Override
 	public List<IItem> getAllItems() {
 		return new ArrayList<IItem>();
@@ -114,14 +100,24 @@ public class WallPart extends ASquare {
 	public String toString() {
 		return "w ";
 	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		// Wallparts don't have to do anything
-	}
-
+	
 	@Override
 	public boolean isWall() {
 		return true;
 	}
+
+	@Override
+	protected void addPlayer(IPlayer player, Effect effect) {
+		this.addPlayer(player);
+	}
+	
+	@Override
+	protected void addItem(IItem item, Effect effect) {
+		this.addItem(item);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		// Wallparts don't have to do anything
+	} 
 }

@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
-import square.ISquare;
 import square.PlayerStartingPosition;
 import square.Square;
+import square.NormalSquare;
+import square.SquareContainer;
 
 /**
  * A class to store {@link Player players}, to appoint the current player
@@ -63,7 +64,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *        The startingpositions for the players to create.
 	 * 
 	 */
-	public void createNewDB(Set<PlayerStartingPosition> startingPositions) {
+	public void createNewDB(Set<SquareContainer> startingPositions) {
 		if (startingPositions == null || startingPositions.size() == 0)
 			throw new IllegalArgumentException(
 					"the specified playerlist cannot be null and must contain at least one position");
@@ -71,7 +72,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		Player.resetUniqueIdcounter();
 		this.clearDataBase();
 		
-		for (PlayerStartingPosition playerStartingPosition : startingPositions) {
+		for (SquareContainer playerStartingPosition : startingPositions) {
 			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
 			this.actionsLeft.put(newPlayer, 0);
@@ -294,7 +295,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * 
 	 * @return The finish square of the current player.
 	 */
-	private ISquare getFinishOfCurrentPlayer() {
+	private Square getFinishOfCurrentPlayer() {
 		return getNextPlayer().getStartingPosition();
 	}
 	

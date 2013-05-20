@@ -4,10 +4,11 @@ import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
 import item.Item;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
-import item.lightgrenade.LightGrenade.LightGrenadeState;
+import item.lightgrenade.LightGrenadeState;
 import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -17,8 +18,8 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import player.IPlayer;
 import square.Direction;
-import square.ISquare;
-import square.WallPart;
+import square.Square;
+import square.AbstractSquare;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -82,6 +83,8 @@ public class GUI implements Runnable {
 	private Image					powerfailure;
 	private Image					greenBackground;
 	private Image					squareBackground;
+	private Image					generatorInactive;
+	private Image					forceField;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -196,12 +199,12 @@ public class GUI implements Runnable {
 					}
 					
 					for (Coordinate c : gridCoords) {
-						ISquare square = guiDataController.getSquareAt(c);
+						Square square = guiDataController.getSquareAt(c);
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// Draw finish lines
-						if (guiDataController.isPlayerStartingPosition(square)) {
+						if (square.isStartingPosition()) {
 							graphics.drawImage(finish, guiCoord.getX(),
 									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						}
@@ -212,8 +215,14 @@ public class GUI implements Runnable {
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
+						// Draw force fields 
+						if (square.hasForceField()) {
+							graphics.drawImage(forceField, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
+						}
+						
 						// Draw wall if necessary
-						if (square.getClass() == WallPart.class) {
+						if (square.isWall()) {
 							graphics.drawImage(wallImage, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
@@ -247,6 +256,10 @@ public class GUI implements Runnable {
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							else if (i instanceof IdentityDisk) {
 								graphics.drawImage(identityDiskImage, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+							if (i instanceof ForceFieldGenerator) {
+								graphics.drawImage(generatorInactive, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
 						}
@@ -323,6 +336,8 @@ public class GUI implements Runnable {
 		this.greenBackground = gui.loadImage("currentplayer_background.png", SQUARE_SIZE,
 				SQUARE_SIZE);
 		this.squareBackground = gui.loadImage("square_background.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.generatorInactive = gui.loadImage("generator_inactive.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.forceField = gui.loadImage("forcefield.png", SQUARE_SIZE, SQUARE_SIZE);
 		
 		// Create the width and height config text fields
 		gridWidthTextField = gui.createTextField(35, 20, 25, 20);

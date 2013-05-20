@@ -10,23 +10,23 @@ import org.junit.Before;
 import org.junit.Test;
 import player.Player;
 import player.PlayerDataBase;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 import square.WallPart;
 
 @SuppressWarnings("javadoc")
 public class PlayerTeleportTest {
 	
-	private Square	start;
-	private Square	destination;
+	private NormalSquare	start;
+	private NormalSquare	destination;
 	private Player	player;
 	
 	@Before
 	public void setUp() throws Exception {
-		start = new Square(Collections.<Direction, ASquare> emptyMap());
-		destination = new Square(Collections.<Direction, ASquare> emptyMap());
-		
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		start = new NormalSquare(neighbours);
+		destination = new NormalSquare(neighbours);
 		PlayerDataBase db = new PlayerDataBase();
 		TronGridBuilder builder = new TronGridBuilder();
 		new DeterministicGridBuilderDirector(builder, false).construct();
@@ -58,6 +58,6 @@ public class PlayerTeleportTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testTeleportation_wallArgument() {
-		player.teleportTo(new WallPart(new HashMap<Direction, ASquare>()));
+		player.teleportTo(new WallPart(new HashMap<Direction, AbstractSquare>()));
 	}
 }

@@ -153,7 +153,7 @@ public class MovePlayerTest extends SetupTestGrid {
 		
 		// player 1
 		moveCont.move(Direction.SOUTH);
-		endTurnCont.endTurn();
+	//	endTurnCont.endTurn();
 		
 		assertEquals(PlayerState.FINISHED, ((Player) player1).getPlayerState());
 	}

@@ -2,15 +2,16 @@ package player;
 
 import item.IItem;
 import item.lightgrenade.Explodable;
+import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import square.ASquare;
-import square.AffectedByPowerFailure;
+import powerfailure.AffectedByPowerFailure;
+import square.AbstractSquare;
 import square.Direction;
-import square.PlayerStartingPosition;
+import square.NormalSquare;
 import square.Square;
-import item.lightgrenade.LightGrenade;
+import square.SquareContainer;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -37,14 +38,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	private int						id;
 	private static AtomicInteger	nextID	= new AtomicInteger();
 	
-	/** The number of actions the player has left during this turn */
-	private int						allowedNumberOfActionsLeft;
 	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
 	/** The starting square of this player */
-	private PlayerStartingPosition	startSquare;
+	private SquareContainer	startSquare;
 	/** The square where the player is currently standing */
-	private ASquare					currentSquare;
+	private SquareContainer					currentSquare;
 	/** The inventory of the player */
 	private Inventory				inventory;
 	/** The light trail of the player */
@@ -64,7 +63,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	// User cannot create players himself. This is the responsibility of
 	// the PlayerDB --> constructor package access
-	Player(PlayerDataBase playerDB, PlayerStartingPosition startingPosition)
+	Player(PlayerDataBase playerDB, SquareContainer startingPosition)
 			throws IllegalArgumentException {
 		if (playerDB == null)
 			throw new IllegalArgumentException("The database cannot be null");
@@ -84,27 +83,35 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * @param square
 	 *        The square that should be the starting position of this player
 	 */
-	private void setStartingPosition(PlayerStartingPosition square) {
+	private void setStartingPosition(SquareContainer square) {
 		if (square == null) {
 			throw new IllegalArgumentException("the given square cannot be null");
 		}
 		this.startSquare = square;
-		this.currentSquare = square;
 		this.startSquare.addPlayer(this);
+		this.currentSquare = square;
+		
+	}
+	
+	
+	@Override 
+	public void setSquare(SquareContainer square) {
+		this.currentSquare = square;
 	}
 	
 	@Override
+	
 	public int getID() {
 		return id;
 	}
 	
 	@Override
-	public PlayerStartingPosition getStartingPosition() {
+	public Square getStartingPosition() {
 		return this.startSquare;
 	}
 	
 	@Override
-	public ASquare getCurrentLocation() {
+	public Square getCurrentLocation() {
 		return this.currentSquare;
 	}
 	
@@ -235,8 +242,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		
 		// Update the player's square
 		currentSquare.remove(this);
-		ASquare oldSquare = currentSquare;
-		currentSquare = currentSquare.getNeighbour(direction);
+		SquareContainer oldSquare = currentSquare;
+		currentSquare = currentSquare.getNeighbourIn(direction);
 		
 		try {
 			currentSquare.addPlayer(this);
@@ -263,9 +270,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public boolean canMoveInDirection(Direction direction) {
-		if (currentSquare.getNeighbour(direction) == null)
+		if (currentSquare.getNeighbourIn(direction) == null)
 			return false;
-		else if (!currentSquare.getNeighbour(direction).canAddPlayer())
+		else if (!currentSquare.getNeighbourIn(direction).canAddPlayer())
 			return false;
 		else if (crossesLightTrail(direction))
 			return false;
@@ -288,16 +295,16 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 			return false;
 		
 		// test if the square has a neighbour in both directions
-		else if (currentSquare.getNeighbour(direction.getPrimaryDirections().get(0)) == null)
+		else if (currentSquare.getNeighbourIn(direction.getPrimaryDirections().get(0)) == null)
 			return false;
-		else if (currentSquare.getNeighbour(direction.getPrimaryDirections().get(1)) == null)
+		else if (currentSquare.getNeighbourIn(direction.getPrimaryDirections().get(1)) == null)
 			return false;
 		
 		// test if both of the neighbours have a light trail
-		else if (!currentSquare.getNeighbour(direction.getPrimaryDirections().get(0))
+		else if (!currentSquare.getNeighbourIn(direction.getPrimaryDirections().get(0))
 				.hasLightTrail())
 			return false;
-		else if (!currentSquare.getNeighbour(direction.getPrimaryDirections().get(1))
+		else if (!currentSquare.getNeighbourIn(direction.getPrimaryDirections().get(1))
 				.hasLightTrail())
 			return false;
 		
@@ -310,7 +317,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/**
 	 * @throws ItemNotOnSquareException
-	 *         The item must be {@link Square#contains(Object) on} the square
+	 *         The item must be {@link NormalSquare#contains(Object) on} the square
 	 *         the player is currently on.
 	 * @throws InventoryFullException
 	 *         This players {@link Inventory} cannot be
@@ -384,7 +391,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	@Override
 	public String toString() {
-		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + allowedNumberOfActionsLeft
+		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + getAllowedNumberOfActions()
 				+ ", hasMoved=" + hasMoved + ", currentSquare=" + currentSquare + ", state="
 				+ state + "]";
 	}
@@ -403,6 +410,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		return this;
 	}
 	
+	
 	/**
 	 * Returns whether the player can teleport to the specified square.
 	 * 
@@ -411,7 +419,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 * @return true if the player can teleport to the specified square, else
 	 *         false
 	 */
-	public boolean canTeleportTo(ASquare destination) {
+	public boolean canTeleportTo(AbstractSquare destination) {
 		// test if the destination exists
 		if (destination == null)
 			return false;

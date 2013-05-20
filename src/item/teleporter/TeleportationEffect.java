@@ -1,11 +1,11 @@
 package item.teleporter;
 
-import player.IPlayer;
 import item.AbstractEffect;
 import item.IItem;
-import square.ASquare;
-import square.Square;
+import player.IPlayer;
+import square.SquareContainer;
 import square.TronObject;
+import square.AbstractSquare;
 
 /**
  * A Teleportation effect
@@ -35,19 +35,21 @@ public class TeleportationEffect extends AbstractEffect {
 		super.execute(object);
 	}
 
-	private void teleport(TronObject object, ASquare destinationSquare) {
+	private void teleport(TronObject object, SquareContainer destinationSquare) {
 		if (destinationSquare == null)
 			throw new IllegalArgumentException("Cannot teleport to null!");
 		if (teleporter.getSquare() == null)
 			throw new IllegalStateException("Teleporter is not placed on a squaer");
 		
-		ASquare currentSquare  = teleporter.getSquare();
+		AbstractSquare currentSquare  = teleporter.getSquare();
 		
-		currentSquare.remove(this);
+		currentSquare.remove(object);
 		
 		if (object instanceof IItem)
-			destinationSquare.addItem((IItem) this);
+			destinationSquare.addItem((IItem) object);
 		else if (object instanceof IPlayer)
 			destinationSquare.addPlayer((IPlayer) object);
+		
+		object.asTeleportable().setSquare(destinationSquare);
 	}
 }

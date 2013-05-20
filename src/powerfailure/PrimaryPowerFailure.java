@@ -1,12 +1,13 @@
-package square;
+package powerfailure;
 
 import java.util.Random;
 import player.TurnEvent;
+import square.Direction;
+import square.SquareContainer;
 
 /**
- * This class represents a primary powerfailure. It keeps track of a secondary
- * and tertiary powerfailure, and is responsible for the rotation of the
- * secondary powerfailure.
+ * This class represents a primary power failure. It is the root of <s>all
+ * evil</s> a secondary and tertiary power failure.
  */
 public class PrimaryPowerFailure extends PowerFailure {
 	
@@ -29,7 +30,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 	 * @param square
 	 *        The square that is impacted by this power failure.
 	 */
-	public PrimaryPowerFailure(ASquare square) {
+	public PrimaryPowerFailure(SquareContainer square) {
 		super(square);
 		
 		// Determine the secondary powerfailure rotation.
@@ -43,7 +44,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 	
 	private void createSecondaryPowerFailure() {
 		Direction randomDirection = Direction.getRandomDirection();
-		ASquare secPFSquare = getSquare().getNeighbour(randomDirection);
+		SquareContainer secPFSquare = getSquare().getNeighbourIn(randomDirection);
 		
 		// Check if we selected a square that is part of the grid. If so,
 		// check if there is not yet a powerfailure. If so, create the secondary
@@ -51,7 +52,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 		// powerfailure.
 		if (secPFSquare != null && !secPFSquare.isWall() && !secPFSquare.hasPowerFailure()) {
 			this.secondaryPF = new SecondaryPowerFailure(secPFSquare);
-			secPFSquare.addPowerFailure(this.secondaryPF);
+			secPFSquare.addProperty(this.secondaryPF);
 			
 			createTertiaryPowerFailure();
 		}
@@ -83,11 +84,12 @@ public class PrimaryPowerFailure extends PowerFailure {
 		// Create the tertiary powerfailure, if it is located on the grid and
 		// the
 		// chosen square does not yet have a powerfailure.
-		ASquare tertPFSquare = this.secondaryPF.getSquare().getNeighbour(tertiaryPFDirection);
+		SquareContainer tertPFSquare = this.secondaryPF.getSquare().getNeighbourIn(
+				tertiaryPFDirection);
 		
 		if (tertPFSquare != null && !tertPFSquare.isWall() && !tertPFSquare.hasPowerFailure()) {
 			this.tertiaryPF = new TertiaryPowerFailure(tertPFSquare);
-			tertPFSquare.addPowerFailure(this.tertiaryPF);
+			tertPFSquare.addProperty(this.tertiaryPF);
 		}
 	}
 	
@@ -107,17 +109,17 @@ public class PrimaryPowerFailure extends PowerFailure {
 			else
 				nextSecPFDir = currSecPFDir.getNextCounterClockwiseDirection();
 			
-			ASquare nextSecPFSquare = this.getSquare().getNeighbour(nextSecPFDir);
+			SquareContainer nextSecPFSquare = this.getSquare().getNeighbourIn(nextSecPFDir);
 			
 			// Remove the powerfailure from the old square
-			this.secondaryPF.getSquare().removePowerFailure(this.secondaryPF);
+			this.secondaryPF.getSquare().removeProperty(this.secondaryPF);
 			this.secondaryPF.setSquare(null);
 			
 			// Move the secondary powerfailure, if the new sec PF square is part
 			// of the grid and it does not already contain a powerfailure.
 			if (nextSecPFSquare != null && !nextSecPFSquare.isWall()
 					&& !nextSecPFSquare.hasPowerFailure()) {
-				nextSecPFSquare.addPowerFailure(this.secondaryPF);
+				nextSecPFSquare.addProperty(this.secondaryPF);
 				this.secondaryPF.setSquare(nextSecPFSquare);
 				
 				// Create the new tertiary powerfailure
@@ -127,7 +129,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 	}
 	
 	@Override
-	void updateStatus(TurnEvent event) {
+	public void updateStatus(TurnEvent event) {
 		// A turn was ended, so decrease the time to live for this
 		// powerfailure
 		if (event == TurnEvent.END_TURN) {
@@ -137,7 +139,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 			// secondary powerfailure, if there is one.
 			if (this.getSquare() == null) {
 				if (this.secondaryPF != null && this.secondaryPF.getSquare() != null) {
-					this.secondaryPF.getSquare().removePowerFailure(this.secondaryPF);
+					this.secondaryPF.getSquare().removeProperty(this.secondaryPF);
 					this.secondaryPF.setSquare(null);
 					this.secondaryPF = null;
 				}

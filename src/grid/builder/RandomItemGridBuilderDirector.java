@@ -24,8 +24,9 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	static final double	PERCENTAGE_OF_GRENADES				= 0.02;
 	static final double	PERCENTAGE_OF_TELEPORTERS			= 0.03;
 	static final double	PERCENTAGE_OF_IDENTITY_DISKS		= 0.02;
+	static final double	PERCENTAGE_OF_GENERATORS			= 0.02;
 	static final int	NUMBER_OF_CHARGED_IDENTITY_DISKS	= 1;
-	static final int	MAX_CID_SHORTEST_PATH_DISTANCE	= 2;
+	static final int	MAX_CID_SHORTEST_PATH_DISTANCE		= 2;
 	
 	/**
 	 * Create a new RandomItemGridBuilderDirector which will use the specified
@@ -68,8 +69,38 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			builder.addPlayerStartingPosition(coordinate);
 		}
 		placeLightGrenades(startingCoordinates, maxX, maxY);
-		Map<Coordinate, Coordinate> teleporters = placeTeleporters(maxX, maxY);
+		Map<Coordinate, Coordinate> teleporters = placeTeleporters(startingCoordinates, maxX, maxY);
 		placeIdentityDisks(startingCoordinates, teleporters, maxX, maxY);
+		placeForceFieldGenerators(startingCoordinates, maxX, maxY);
+	}
+	
+	/**
+	 * Returns a random distribution of coordinates where items can be placed on
+	 * the grid. The number of coordinates is a percentage relative to the total
+	 * number of squares on the grid.
+	 * 
+	 * @param startingCoordinates
+	 *        The starting coordinates of the player
+	 * @param maxX
+	 *        Upper x bound of the grid
+	 * @param maxY
+	 *        Upper y bound of the grid
+	 * @param percentage
+	 *        The percentage of the grid that has to be filled
+	 * @param itemLocations
+	 *        The coordinates that already contain an item of this kind, due to
+	 *        some precondition. This list will be filled with new coordinates.
+	 */
+	private void addItemCoordinates(List<Coordinate> startingCoordinates, int maxX, int maxY,
+			double percentage, Set<Coordinate> itemLocations) {
+		int numberOfItemsToPlace = (int) Math.ceil(builder.getNumberOfSquares() * percentage);
+		while (itemLocations.size() < numberOfItemsToPlace) {
+			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
+			if (builder.canPlaceItem(position) && !itemLocations.contains(position)
+					&& !startingCoordinates.contains(position)) {
+				itemLocations.add(position);
+			}
+		}
 	}
 	
 	/**
@@ -79,8 +110,6 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * each starting position.
 	 */
 	private void placeLightGrenades(List<Coordinate> startingCoordinates, int maxX, int maxY) {
-		int numberOfToPlaceLightGrenades = (int) Math.ceil(builder.getNumberOfSquares()
-				* PERCENTAGE_OF_GRENADES);
 		Set<Coordinate> placedLGCoordinates = new HashSet<Coordinate>();
 		
 		/*
@@ -97,19 +126,36 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 				position = new Coordinate(x, y);
 			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position)
 					|| startingCoordinates.contains(position));
-			builder.placeLightGrenade(position);
 			placedLGCoordinates.add(position);
 		}
 		
-		// place other light grenades
-		while (placedLGCoordinates.size() < numberOfToPlaceLightGrenades) {
-			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position) && !placedLGCoordinates.contains(position)
-					&& !startingCoordinates.contains(position)) {
-				builder.placeLightGrenade(position);
-				placedLGCoordinates.add(position);
-			}
-		}
+		// place all light grenades
+		addItemCoordinates(startingCoordinates, maxX, maxY, PERCENTAGE_OF_GRENADES,
+				placedLGCoordinates);
+		for (Coordinate coord : placedLGCoordinates)
+			builder.placeLightGrenade(coord);
+	}
+	
+	/**
+	 * Places all the force field generators on the grid. Their number is
+	 * limited by a rounded percentage ({@value #PERCENTAGE_OF_GENERATORS}) of
+	 * the number of squares on the grid.
+	 * 
+	 * @param startingCoordinates
+	 *        the starting coordinates of the players
+	 * @param maxX
+	 *        max x coordinate
+	 * @param maxY
+	 *        max y coordinate
+	 */
+	private void placeForceFieldGenerators(List<Coordinate> startingCoordinates, int maxX, int maxY) {
+		Set<Coordinate> placedGeneratorCoordinates = new HashSet<Coordinate>();
+		
+		// place other force field generators
+		addItemCoordinates(startingCoordinates, maxX, maxY, PERCENTAGE_OF_GENERATORS,
+				placedGeneratorCoordinates);
+		for (Coordinate coord : placedGeneratorCoordinates)
+			builder.placeForceFieldGenerator(coord);
 	}
 	
 	/**
@@ -120,16 +166,11 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * @return a map of teleporter locations and their destinations (because
 	 *         they are needed to calculate the shortest path).
 	 */
-	private Map<Coordinate, Coordinate> placeTeleporters(int maxX, int maxY) {
-		int numberOfToPlaceTeleporters = (int) Math.ceil(builder.getNumberOfSquares()
-				* PERCENTAGE_OF_TELEPORTERS);
+	private Map<Coordinate, Coordinate> placeTeleporters(List<Coordinate> startingCoordinates,
+			int maxX, int maxY) {
 		Set<Coordinate> teleporterLocations = new HashSet<Coordinate>();
-		while (teleporterLocations.size() < numberOfToPlaceTeleporters) {
-			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position)) {
-				teleporterLocations.add(position);
-			}
-		}
+		addItemCoordinates(startingCoordinates, maxX, maxY, PERCENTAGE_OF_TELEPORTERS,
+				teleporterLocations);
 		return addTeleportersToGrid(new ArrayList<Coordinate>(teleporterLocations));
 	}
 	
@@ -163,8 +204,6 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	private void placeIdentityDisks(List<Coordinate> startingCoordinates,
 			Map<Coordinate, Coordinate> teleporters, int maxX, int maxY) {
 		// place normal identity disks
-		int numberOfIdentityDisksToPlace = (int) Math.ceil(builder.getNumberOfSquares()
-				* PERCENTAGE_OF_IDENTITY_DISKS);
 		Set<Coordinate> placedIdentityDisksCoordinates = new HashSet<Coordinate>();
 		
 		/*
@@ -182,23 +221,18 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			} while (!builder.canPlaceItem(position)
 					|| placedIdentityDisksCoordinates.contains(position)
 					|| startingCoordinates.contains(position));
-			builder.placeUnchargedIdentityDisc(position);
 			placedIdentityDisksCoordinates.add(position);
 		}
 		
-		// place other ID disks
-		while (placedIdentityDisksCoordinates.size() < numberOfIdentityDisksToPlace) {
-			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
-			if (builder.canPlaceItem(position)
-					&& !placedIdentityDisksCoordinates.contains(position)) {
-				builder.placeUnchargedIdentityDisc(position);
-				placedIdentityDisksCoordinates.add(position);
-			}
-		}
+		// place other identity disks
+		addItemCoordinates(startingCoordinates, maxX, maxY, PERCENTAGE_OF_IDENTITY_DISKS,
+				placedIdentityDisksCoordinates);
+		for (Coordinate coord : placedIdentityDisksCoordinates)
+			builder.placeUnchargedIdentityDisc(coord);
 		
 		placedCharchedIDdisks(startingCoordinates, teleporters);
 	}
-
+	
 	private void placedCharchedIDdisks(List<Coordinate> startingCoordinates,
 			Map<Coordinate, Coordinate> teleporters) {
 		for (int i = 0; i < NUMBER_OF_CHARGED_IDENTITY_DISKS; i++) {
