@@ -71,11 +71,11 @@ public class PrimaryPowerFailure extends PowerFailure {
 		Direction tertPFDirection1 = this.getSquare().getDirectionOfNeighbour(
 				this.secondaryPF.getSquare());
 		
-		Direction[] tertPFDirections2and3 = tertPFDirection1.getAdjacentDirections();
+	ArrayList<Direction> tertPFDirections2and3 = tertPFDirection1.getAdjacentDirections();
 		
 		possibleTertiaryPFDirs[0] = tertPFDirection1;
-		possibleTertiaryPFDirs[1] = tertPFDirections2and3[0];
-		possibleTertiaryPFDirs[2] = tertPFDirections2and3[1];
+		possibleTertiaryPFDirs[1] = tertPFDirections2and3.get(0);
+		possibleTertiaryPFDirs[2] = tertPFDirections2and3.get(1);
 		
 		// Choose a random tertiary powerfailure position
 		Random rnd = new Random();
