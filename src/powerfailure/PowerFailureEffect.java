@@ -1,5 +1,6 @@
-package square;
+package powerfailure;
 
+import square.TronObject;
 import item.AbstractEffect;
 import item.Effect;
 import item.lightgrenade.ExplodeEffect;

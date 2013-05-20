@@ -7,12 +7,12 @@ import grid.builder.TronGridBuilder;
 import gui.GUI;
 import java.util.Observable;
 import java.util.Observer;
-import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import player.IPlayer;
 import player.PlayerDataBase;
 import player.PlayerState;
 import player.TurnEvent;
-import square.ASquare;
+import square.AbstractSquare;
+import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
 import controllers.MoveController;
@@ -81,7 +81,7 @@ public class Game implements Observer {
 			throw new IllegalArgumentException("grid cannot be null");
 		this.grid = grid;
 		
-		for (ASquare square : grid.getGrid().values())
+		for (AbstractSquare square : grid.getGrid().values())
 			this.playerDB.addObserver(square);
 	}
 	
@@ -130,6 +130,8 @@ public class Game implements Observer {
 		this.setGrid(grid);
 		this.guiDataCont.setGrid(grid);
 		this.gui.draw(grid);
+		
+		
 		
 		this.playerDB.createNewDB(grid.getAllStartingPositions());
 	}

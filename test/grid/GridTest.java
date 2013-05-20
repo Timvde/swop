@@ -12,9 +12,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.PlayerDataBase;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
+import square.SquareContainer;
 
 @SuppressWarnings("javadoc")
 public class GridTest {
@@ -34,8 +35,8 @@ public class GridTest {
 	@Test
 	public final void testGrid() {
 		// create a new map
-		Square square = new Square(Collections.<Direction, ASquare> emptyMap());
-		Map<Coordinate, ASquare> map = new HashMap<Coordinate, ASquare>();
+		SquareContainer square = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		Map<Coordinate, SquareContainer> map = new HashMap<Coordinate, SquareContainer>();
 		map.put(new Coordinate(0, 0), square);
 		grid = new Grid(map);
 		

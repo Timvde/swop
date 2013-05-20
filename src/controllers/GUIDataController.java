@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import player.IPlayer;
 import player.PlayerDataBase;
-import square.ISquare;
 import square.Square;
 
 /**
@@ -15,7 +14,7 @@ import square.Square;
  * GUI visuals.
  * 
  * @author tom
- * 
+ *
  */
 public class GUIDataController {
 	
@@ -26,9 +25,9 @@ public class GUIDataController {
 	 * Create a new gui data controller.
 	 * 
 	 * @param playerDB
-	 *        The player database the controller will use.
+	 * 			The player database the controller will use.
 	 * @param grid
-	 *        The grid the controller will use.
+	 * 			The grid the controller will use.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
 		if (playerDB == null)
@@ -53,7 +52,7 @@ public class GUIDataController {
 	 * Set the grid of the controller to a new grid.
 	 * 
 	 * @param g
-	 *        The new grid for this controller
+	 * 			The new grid for this controller
 	 */
 	public void setGrid(Grid g) {
 		this.grid = g;
@@ -78,7 +77,7 @@ public class GUIDataController {
 	 * player resides on.
 	 */
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
-		ISquare currSq = getCurrentPlayer().getCurrentLocation();
+		Square currSq = getCurrentPlayer().getCurrentLocation();
 		return currSq.getCarryableItems();
 	}
 	
@@ -100,7 +99,7 @@ public class GUIDataController {
 	 * @return An abstract square object that lies on the given coordinate on
 	 *         the grid.
 	 */
-	public ISquare getSquareAt(Coordinate c) {
+	public Square getSquareAt(Coordinate c) {
 		return grid.getSquareAt(c);
 	}
 	
@@ -120,7 +119,7 @@ public class GUIDataController {
 	 *        The square to test.
 	 * @return True if the given square is a player starting position.
 	 */
-	public boolean isPlayerStartingPosition(ISquare s) {
+	public boolean isPlayerStartingPosition(Square s) {
 		for (Square sq : grid.getAllStartingPositions()) {
 			if (sq.equals(s))
 				return true;

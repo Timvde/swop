@@ -2,9 +2,8 @@ package item.identitydisk;
 
 import item.Item;
 import item.teleporter.Teleportable;
-import square.ASquare;
 import square.Direction;
-import square.Square;
+import square.SquareContainer;
 
 /**
  * Charged Identity disk can be launched by players on the grid. The disk will
@@ -18,16 +17,16 @@ import square.Square;
  */
 public abstract class IdentityDisk extends Item implements Teleportable {
 	
-	private ASquare		currentSquare;
-	private Direction	direction;
+	private SquareContainer	currentSquare;
+	private Direction		direction;
 	
 	@Override
-	public void use(ASquare square) {
+	public void use(SquareContainer square) {
 		if (direction == null)
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
 		
-		currentSquare = square;
+		setSquare(square);
 		
 		if (!canMoveDisk(direction))
 			// We can't move any further, so we'll have to drop here
@@ -58,9 +57,9 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	 * @return true if the disk can move in the specified direction, else false
 	 */
 	public boolean canMoveDisk(Direction direction) {
-		if (currentSquare.getNeighbour(direction) == null)
+		if (currentSquare.getNeighbourIn(direction) == null)
 			return false;
-		else if (!currentSquare.getNeighbour(direction).canBeAdded(this))
+		else if (!currentSquare.getNeighbourIn(direction).canBeAdded(this))
 			return false;
 		return true;
 	}
@@ -75,7 +74,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		if (!canMoveDisk(direction))
 			throw new IllegalStateException("something happend, good look finding it ...");
 		currentSquare.remove(this);
-		currentSquare = currentSquare.getNeighbour(direction);
+		currentSquare = currentSquare.getNeighbourIn(direction);
 		currentSquare.addItem(this);
 	}
 	
@@ -105,6 +104,10 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+	
+	public void setSquare(SquareContainer square) {
+		this.currentSquare = square;
 	}
 	
 }

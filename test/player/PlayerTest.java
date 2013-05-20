@@ -8,12 +8,14 @@ import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import item.lightgrenade.LightGrenade;
+import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 import org.junit.Before;
 import org.junit.Test;
 import square.Direction;
 import square.PlayerStartingPosition;
+import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -58,7 +60,8 @@ public class PlayerTest implements Observer {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullDB() {
-		new Player(null, new PlayerStartingPosition(null));
+		new Player(null, new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new PlayerStartingPosition()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -106,7 +109,7 @@ public class PlayerTest implements Observer {
 		assertEquals(PlayerState.LOST, player.getPlayerState());
 		assertEquals(TurnEvent.END_GAME, this.getTurnEventOfNotify());
 	}
-
+	
 	@Test
 	public void testCanPerformAction() {
 		assertIsCurrentPlayerTurn();

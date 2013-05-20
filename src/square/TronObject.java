@@ -1,5 +1,6 @@
 package square;
 
+import powerfailure.AffectedByPowerFailure;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 

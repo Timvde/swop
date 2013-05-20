@@ -3,6 +3,7 @@ package grid.builder;
 import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -10,10 +11,10 @@ import item.teleporter.Teleporter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import square.ASquare;
 import square.Direction;
+import square.NormalSquare;
 import square.PlayerStartingPosition;
-import square.Square;
+import square.SquareContainer;
 import square.WallPart;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
@@ -24,7 +25,7 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
  */
 public class TronGridBuilder implements GridBuilder {
 	
-	private Map<Coordinate, ASquare>		grid;
+	private Map<Coordinate, SquareContainer>		grid;
 	private HashMap<Coordinate, Teleporter>	teleporters;
 	private int								numberOfSquares;
 	
@@ -37,7 +38,7 @@ public class TronGridBuilder implements GridBuilder {
 	
 	@Override
 	public void createNewEmptyGrid() {
-		this.grid = new HashMap<Coordinate, ASquare>();
+		this.grid = new HashMap<Coordinate, SquareContainer>();
 		this.teleporters = new HashMap<Coordinate, Teleporter>();
 		this.numberOfSquares = 0;
 	}
@@ -47,8 +48,8 @@ public class TronGridBuilder implements GridBuilder {
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
-		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
-		if (grid.put(coordinate, new Square(neighbours)) == null)
+		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
+		if (grid.put(coordinate, new SquareContainer(neighbours, new NormalSquare())) == null)
 			numberOfSquares++;
 	}
 	
@@ -57,8 +58,8 @@ public class TronGridBuilder implements GridBuilder {
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
-		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
-		if (grid.put(coordinate, new WallPart(neighbours)) != null)
+		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
+		if (grid.put(coordinate, new SquareContainer(neighbours, new WallPart())) != null)
 			numberOfSquares--;
 	}
 	
@@ -67,8 +68,8 @@ public class TronGridBuilder implements GridBuilder {
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
-		Map<Direction, ASquare> neighbours = getNeigboursFor(coordinate);
-		if (grid.put(coordinate, new PlayerStartingPosition(neighbours)) == null)
+		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
+		if (grid.put(coordinate, new SquareContainer(neighbours, new PlayerStartingPosition())) == null)
 			numberOfSquares++;
 	}
 	
@@ -94,6 +95,14 @@ public class TronGridBuilder implements GridBuilder {
 			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
 		grid.get(coordinate).addItem(new ChargedIdentityDisk());
+	}
+	
+	@Override
+	public void placeForceFieldGenerator(Coordinate coordinate) throws GridBuildException {
+		if (!canPlaceItem(coordinate))
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
+		
+		grid.get(coordinate).addItem(new ForceFieldGenerator());
 	}
 	
 	@Override
@@ -129,7 +138,7 @@ public class TronGridBuilder implements GridBuilder {
 		if (!canPlaceItem(coordinate))
 			throw new GridBuildException("Cannot place a teleporter on " + coordinate);
 		
-		ASquare square = grid.get(coordinate);
+		SquareContainer square = grid.get(coordinate);
 		Teleporter rv = new Teleporter(null, square);
 		teleporters.put(coordinate, rv);
 		square.addItem(rv);
@@ -149,9 +158,9 @@ public class TronGridBuilder implements GridBuilder {
 			return false;
 		if (!grid.containsKey(coordinate))
 			return false;
-		else if (grid.get(coordinate) instanceof WallPart)
+		else if (grid.get(coordinate).isWall())
 			return false;
-		else if (grid.get(coordinate) instanceof PlayerStartingPosition)
+		else if (grid.get(coordinate).isStartingPosition())
 			return false;
 		else
 			return true;
@@ -165,8 +174,8 @@ public class TronGridBuilder implements GridBuilder {
 	 *        the coordinate of which the neighbours are returned
 	 * @return the neighours of the specified coordinate
 	 */
-	private Map<Direction, ASquare> getNeigboursFor(Coordinate coordinate) {
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+	private Map<Direction, SquareContainer> getNeigboursFor(Coordinate coordinate) {
+		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
 		
 		for (Direction direction : Direction.values())
 			if (grid.containsKey(coordinate.getCoordinateInDirection(direction)))
@@ -207,6 +216,7 @@ public class TronGridBuilder implements GridBuilder {
 			if (teleporter.getDestination() == null)
 				throw new GridBuildException("Some teleporters have no destinations!");
 		}
+		
 				
 		return new Grid(grid);
 	}

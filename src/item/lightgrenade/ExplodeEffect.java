@@ -1,7 +1,6 @@
 package item.lightgrenade;
 
 import item.AbstractEffect;
-import item.lightgrenade.LightGrenade.LightGrenadeState;
 import square.TronObject;
 
 /**
@@ -41,7 +40,7 @@ public class ExplodeEffect extends AbstractEffect {
 	 * @return True if the effect can be executed on the specified object
 	 */
 	private boolean canExecuteEffect(TronObject object) {
-		if (lightGrenade.getState() != LightGrenadeState.ACTIVE)
+		if (!lightGrenade.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			return false;
 		else if (object.asExplodable() == null)
 			return false;

@@ -1,13 +1,14 @@
-package square;
+package powerfailure;
 
 import player.TurnEvent;
+import square.SquareContainer;
 
 /**
- * This class represents a power failure.
+ * This class represents a tertiary power failure.
  */
 public class TertiaryPowerFailure extends PowerFailure {
 	
-	private static final int TIME_TO_LIVE = 1;
+	private static final int	TIME_TO_LIVE	= 1;
 	
 	/**
 	 * Create a power failure for a given square.
@@ -15,14 +16,14 @@ public class TertiaryPowerFailure extends PowerFailure {
 	 * @param square
 	 *        The square that is impacted by this power failure.
 	 */
-	public TertiaryPowerFailure(ASquare square) {
+	public TertiaryPowerFailure(SquareContainer square) {
 		super(square);
 		
 		timeToLive = TIME_TO_LIVE;
 	}
 	
 	@Override
-	void updateStatus(TurnEvent event) {
+	public void updateStatus(TurnEvent event) {
 		if (event == TurnEvent.END_ACTION) {
 			decreaseTimeToLive();
 		}

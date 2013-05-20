@@ -10,8 +10,7 @@ import item.IItem;
 import item.teleporter.Teleporter;
 import org.junit.Before;
 import org.junit.Test;
-import square.PlayerStartingPosition;
-import square.Square;
+import square.AbstractSquare;
 
 @SuppressWarnings("javadoc")
 public class DeterministicDirectorTest {
@@ -43,8 +42,8 @@ public class DeterministicDirectorTest {
 	public void testDeterministicPlayerPositions() {
 		Grid grid = builder.getResult();
 		
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS) instanceof PlayerStartingPosition);
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS) instanceof PlayerStartingPosition);
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).isStartingPosition());
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).isStartingPosition());
 	}
 	
 	@Test
@@ -60,7 +59,7 @@ public class DeterministicDirectorTest {
 	}
 	
 	private Teleporter getTeleporterAtLocation(Coordinate coordinate) {
-		Square teleporterLocation1 = (Square) builder.getResult().getSquareAt(coordinate);
+		AbstractSquare teleporterLocation1 = builder.getResult().getSquareAt(coordinate);
 		
 		for (IItem item : teleporterLocation1.getAllItems()) {
 			if (item instanceof Teleporter) {

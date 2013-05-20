@@ -7,30 +7,30 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import square.ASquare;
+import square.AbstractSquare;
 import square.Direction;
-import square.Square;
+import square.NormalSquare;
 
 @SuppressWarnings("javadoc")
 public class LightTrailTest {
 	
 	private LightTrail	lightTrail;
-	private Square		sq1;
-	private Square		sq2;
-	private Square		sq3;
-	private Square		sq4;
+	private NormalSquare		sq1;
+	private NormalSquare		sq2;
+	private NormalSquare		sq3;
+	private NormalSquare		sq4;
 	
 	@Before
 	public void setUp() {
 		// create a new empty neighbour map for the squares
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
 		lightTrail = new LightTrail();
 		
-		sq1 = new Square(neighbours);
-		sq2 = new Square(neighbours);
-		sq3 = new Square(neighbours);
-		sq4 = new Square(neighbours);
+		sq1 = new NormalSquare();
+		sq2 = new NormalSquare();
+		sq3 = new NormalSquare();
+		sq4 = new NormalSquare();
 	}
 	
 	@Test
@@ -97,11 +97,11 @@ public class LightTrailTest {
 	@Test
 	public void testUpdateLightTrail() {
 		// create a new empty neighbour map for the squares
-		Map<Direction, ASquare> neighbours = new HashMap<Direction, ASquare>();
+		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
-		lightTrail.updateLightTrail(new Square(neighbours));
-		lightTrail.updateLightTrail(new Square(neighbours));
-		lightTrail.updateLightTrail(new Square(neighbours));
+		lightTrail.updateLightTrail(new NormalSquare());
+		lightTrail.updateLightTrail(new NormalSquare());
+		lightTrail.updateLightTrail(new NormalSquare());
 		
 		assertEquals(3, lightTrail.size());
 		lightTrail.updateLightTrail();

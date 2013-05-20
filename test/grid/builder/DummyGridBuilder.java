@@ -350,4 +350,9 @@ public class DummyGridBuilder implements GridBuilder {
 		
 		assertTrue(Collections.disjoint(playerStartingPositions, wallParts));
 	}
+
+	@Override
+	public void placeForceFieldGenerator(Coordinate Coordinate) throws GridBuildException {
+		// TODO 
+	}
 }

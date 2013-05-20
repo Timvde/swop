@@ -1,4 +1,5 @@
-package square;
+package powerfailure;
+
 
 
 /**

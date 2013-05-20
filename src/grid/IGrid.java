@@ -3,10 +3,10 @@ package grid;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
-import square.ISquare;
+import square.Square;
 
 /**
- * A grid containing {@link ISquare squares}.
+ * A grid containing {@link Square squares}.
  * 
  */
 public interface IGrid {
@@ -18,10 +18,10 @@ public interface IGrid {
 	 * @param coordinate
 	 *        the coordinate of the square where the items are located
 	 * @return a list of items on a square
+	 * @throws IllegalArgumentException
+	 *         The specified coordinate cannot be <code>null</code>.
 	 */
-	public List<IItem> getItemList(Coordinate coordinate);
-	
-	// FIXME check null
+	public List<IItem> getItemList(Coordinate coordinate) throws IllegalArgumentException;
 	
 	/**
 	 * Return the square of the grid that has a specific coordinate. This method
@@ -31,15 +31,17 @@ public interface IGrid {
 	 *        The coordinate of the square.
 	 * @return The square at that coordinate or null if the location doesn't
 	 *         exists.
+	 * @throws IllegalArgumentException
+	 *         The specified coordinate cannot be <code>null</code>.
 	 */
-	public ISquare getSquareAt(Coordinate coordinate);
-	
-	// FIXME check null
+	public Square getSquareAt(Coordinate coordinate) throws IllegalArgumentException;
 	
 	/**
 	 * Return all the possible coordinates in the grid.
 	 * 
 	 * @return all coordinates in the grid
+	 * @throws IllegalArgumentException
+	 *         The specified coordinate cannot be <code>null</code>.
 	 */
-	public Set<Coordinate> getAllGridCoordinates();
+	public Set<Coordinate> getAllGridCoordinates() throws IllegalArgumentException;
 }

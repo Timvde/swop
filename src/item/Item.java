@@ -3,7 +3,7 @@ package item;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
-import square.AffectedByPowerFailure;
+import powerfailure.AffectedByPowerFailure;
 import square.TronObject;
 
 /**
@@ -68,10 +68,15 @@ public abstract class Item implements IItem {
 	}
 	
 	/**
-	 * Returns the effect this item has on an {@link TronObject object}.
+	 * Returns the effect this item has on an {@link TronObject object}. By
+	 * default this will be an {@link EmptyEffect}. Items with custom effects
+	 * need to override this method.
+	 * 
 	 * @return the effect of the item
 	 */
-	public abstract Effect getEffect();
+	public Effect getEffect() {
+		return new EmptyEffect();
+	}
 	
 	@Override
 	public char toChar() {
