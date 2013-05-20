@@ -106,7 +106,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public SquareContainer getStartingPosition() {
+	public Square getStartingPosition() {
 		return this.startSquare;
 	}
 	

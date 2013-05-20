@@ -41,7 +41,7 @@ public interface IPlayer extends TronObject {
 	 * 
 	 * @return the square this player has to reach to win the game.
 	 */
-	public SquareContainer getStartingPosition();
+	public Square getStartingPosition();
 	
 	/**
 	 * Returns the square this player currently stands on.
