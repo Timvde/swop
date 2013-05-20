@@ -43,7 +43,7 @@ public enum Direction {
 	private Direction		nextClockwiseDirection;
 	private Direction		nextCounterClockwiseDirection;
 	
-	private Direction[]		adjacentDirections = new Direction[2];
+	private ArrayList<Direction>		adjacentDirections = new ArrayList<Direction>();
 	
 	/**
 	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.
@@ -71,17 +71,18 @@ public enum Direction {
 	
 	/**
 	 * Return the directions that are adjacent to this direction.
+	 * This vector only has 2 elements.
 	 */
-	public Direction[] getAdjacentDirections() {
+	public ArrayList<Direction> getAdjacentDirections() {
 		return this.adjacentDirections;
 	}
 	
 	private void setFirstAdjacentDirection(Direction d) {
-		this.adjacentDirections[0] = d;
+		this.adjacentDirections.add(0, d);
 	}
 	
 	private void setSecondAdjacentDirection(Direction d) {
-		this.adjacentDirections[1] = d;
+		this.adjacentDirections.add(1, d);
 	}
 	
 	/**
