@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
-import square.PlayerStartingPosition;
 import square.Square;
-import square.NormalSquare;
 import square.SquareContainer;
 
 /**

@@ -6,10 +6,8 @@ import item.IItem;
 import java.util.List;
 import square.AbstractSquare;
 import square.Direction;
-
-import square.PlayerStartingPosition;
-import square.Square;
 import square.NormalSquare;
+import square.Square;
 import square.SquareContainer;
 import square.TronObject;
 import ObjectronExceptions.IllegalActionException;
@@ -94,7 +92,7 @@ public interface IPlayer extends TronObject {
 	 * {@link Direction}. More formally the postconditions are:
 	 * 
 	 * <li>The new location of this player is <code>{@link #getCurrentLocation() 
-	 * currentLocationBefore}{@link AbstractSquare#getNeighbour(Direction) 
+	 * currentLocationBefore}{@link SquareContainer#getNeighbourIn(Direction) 
 	 * .getNeighbour(direction)}</code>.</li>
 	 * 
 	 * <li>The {@link Effect effects} of any items on the new Square will be
@@ -161,7 +159,7 @@ public interface IPlayer extends TronObject {
 	public void pickUpItem(IItem item) throws IllegalActionException, IllegalArgumentException;
 	
 	/**
-	 * {@link IItem#use(AbstractSquare) use} the given item. The item must be in the
+	 * {@link IItem#use(SquareContainer) use} the given item. The item must be in the
 	 * inventory of the player.
 	 * 
 	 * @param i

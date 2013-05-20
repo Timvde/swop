@@ -26,6 +26,7 @@ public class GameRunner {
 	private PlayerDataBase		playerDB;
 	private Game				game;
 	private GUIDataController	guiDataCont;
+	private GUI					gui;
 	
 	/**
 	 * main method, will create a new GameRunner instance to start the gui
@@ -48,11 +49,11 @@ public class GameRunner {
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
 		UseItemController useItemCont = new UseItemController(this.playerDB);
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
+		NewGameController newGameCont = new NewGameController(this);
 		// grid is still unknown
 		this.guiDataCont = new GUIDataController(this.playerDB, null);
-		NewGameController newGameCont = new NewGameController(this);
 		
-		GUI gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, guiDataCont);
+		gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, guiDataCont);
 		
 		// Set the initialized GUI as the gui for the controllers
 		useItemCont.setGUI(gui);
@@ -75,7 +76,7 @@ public class GameRunner {
 	 * @throws IllegalStateException
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
-	 *         starting locations defined in the created grid.
+	 *         starting locations defined in grid to be created.
 	 */
 	public void newGame(GameMode mode, int width, int height) throws IllegalArgumentException,
 			IllegalStateException {
@@ -101,7 +102,7 @@ public class GameRunner {
 	 * @throws IllegalStateException
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
-	 *         starting locations defined in the created grid.
+	 *         starting locations defined in the grid to be created.
 	 */
 	public void newGame(GameMode mode, String file) throws InvalidGridFileException {
 		TronGridBuilder builder = new TronGridBuilder();
@@ -117,7 +118,7 @@ public class GameRunner {
 	 * @throws IllegalStateException
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
-	 *         starting locations defined in the created grid.
+	 *         starting locations defined in the grid.
 	 */
 	private void createNewGame(GameMode mode, Grid grid) throws IllegalStateException {
 		if (grid.getAllStartingPositions().size() < mode.getNumberOfPlayers())
@@ -130,21 +131,37 @@ public class GameRunner {
 			// getAllStartingPositions moet de juiste volgorde teruggeven een
 			// lijst om te removen
 		}
+		playerDB.createNewDB(grid.getAllStartingPositions());
 		
+		setGrid(grid);
+		createNewGame(mode);
+	}
+
+	private void setGrid(Grid grid) {
+		playerDB.deleteObservers();
 		// make all the squares in the new grid observer of the db
 		Iterator<SquareContainer> iterator = grid.getGridIterator();
 		while (iterator.hasNext()) {
 			SquareContainer square = (SquareContainer) iterator.next();
-			this.playerDB.addObserver(square);
+			playerDB.addObserver(square);
 		}
 		
-		this.guiDataCont.setGrid(grid);
+		// set all grid references
+		guiDataCont.setGrid(grid);
+	}
+	
+	/**
+	 * This method will create a new Game object with a specified mode and set
+	 * all observers correct
+	 */
+	private void createNewGame(GameMode mode) {
+		// fix opbservers of old game
+		game.deleteObservers();
 		
-		playerDB.createNewDB(grid.getAllStartingPositions());
-		
-		playerDB.deleteObserver(this.game);
-		this.game = new Game(mode);
+		// create a new Game and fix observers
+		game = new Game(mode);
 		playerDB.addObserver(game);
+		game.addObserver(gui);
 	}
 	
 }

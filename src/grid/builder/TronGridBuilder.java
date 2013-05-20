@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.Map;
 import square.Direction;
 import square.NormalSquare;
-import square.PlayerStartingPosition;
+import square.Square;
 import square.SquareContainer;
+import square.StartingPositionProperty;
 import square.WallPart;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
@@ -68,9 +69,12 @@ public class TronGridBuilder implements GridBuilder {
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
-		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
-		if (grid.put(coordinate, new SquareContainer(neighbours, new PlayerStartingPosition())) == null)
+		if (!grid.containsKey(coordinate)) {
+			Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
+			grid.put(coordinate, new SquareContainer(neighbours, new NormalSquare()));
+			grid.get(coordinate).addProperty(new StartingPositionProperty());
 			numberOfSquares++;
+		}
 	}
 	
 	@Override
@@ -149,8 +153,8 @@ public class TronGridBuilder implements GridBuilder {
 	 * Returns whether an {@link IItem item} can be placed on the grid. The
 	 * constraints for a <i>TronGrid</i> are: <li>One cannot place an item when
 	 * there's no square on that coordinate. <li>One cannot place an item on a
-	 * {@link WallPart}. <li>One cannot place an item on a
-	 * {@link PlayerStartingPosition}.
+	 * {@link Square#isWall() wall}. <li>One cannot place an item on a
+	 * {@link Square#isStartingPosition() starting position}.
 	 */
 	@Override
 	public boolean canPlaceItem(Coordinate coordinate) {

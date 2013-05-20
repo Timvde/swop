@@ -14,7 +14,7 @@ import square.Square;
  * GUI visuals.
  * 
  * @author tom
- *
+ * 
  */
 public class GUIDataController {
 	
@@ -25,9 +25,10 @@ public class GUIDataController {
 	 * Create a new gui data controller.
 	 * 
 	 * @param playerDB
-	 * 			The player database the controller will use.
+	 *        The player database the controller will use.
 	 * @param grid
-	 * 			The grid the controller will use.
+	 *        The grid the controller will use. This may be <code>null</code>,
+	 *        but then one has to call the {@link #setGrid(Grid)} method later.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
 		if (playerDB == null)
@@ -52,7 +53,7 @@ public class GUIDataController {
 	 * Set the grid of the controller to a new grid.
 	 * 
 	 * @param g
-	 * 			The new grid for this controller
+	 *        The new grid for this controller
 	 */
 	public void setGrid(Grid g) {
 		this.grid = g;

@@ -13,6 +13,8 @@ import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -40,7 +42,7 @@ import controllers.UseItemController;
  * 
  * @author Tom
  */
-public class GUI implements Runnable {
+public class GUI implements Runnable, Observer {
 	
 	private AGUI					gui;
 	
@@ -674,6 +676,12 @@ public class GUI implements Runnable {
 			default:
 				throw new IllegalStateException("User chose illegal direction to fire ID");
 		}
+		
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
 		
 	}
 }
