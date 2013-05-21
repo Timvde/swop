@@ -39,7 +39,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 				square.removeProperty(this);
 		
 		if (secondaryPowerFailure != null)
-			secondaryPowerFailure.updateStatus(event);
+			secondaryPowerFailure.updateStatus(event); 
 	}
 	
 	private void createSecondaryPowerFailure() {
@@ -48,6 +48,6 @@ public class PrimaryPowerFailure extends PowerFailure {
 
 	@Override
 	protected SquareContainer getSquare() {
-		return square;
+		return square; 
 	}
 }
