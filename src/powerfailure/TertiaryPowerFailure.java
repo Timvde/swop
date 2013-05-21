@@ -14,7 +14,6 @@ public class TertiaryPowerFailure extends PowerFailure {
 	
 	private static final int		TIME_TO_LIVE	= 1;
 	private SecondaryPowerFailure	secondaryPowerFailure;
-	private SquareContainer			square;
 	
 	/**
 	 * Create a power failure for a given square.

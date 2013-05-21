@@ -11,7 +11,6 @@ import square.SquareContainer;
 public class SecondaryPowerFailure extends PowerFailure {
 	
 	private static final int		TIME_TO_LIVE	= 2;
-	private SquareContainer			square;
 	private Direction				direction;
 	
 	private PrimaryPowerFailure		primaryPowerFailure;

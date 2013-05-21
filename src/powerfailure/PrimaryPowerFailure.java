@@ -11,7 +11,6 @@ public class PrimaryPowerFailure extends PowerFailure {
 	
 	private static final int	TIME_TO_LIVE	= 2;
 	private SecondaryPowerFailure secondaryPowerFailure;
-	private SquareContainer	square;
 	
 	/**
 	 * Create a new primary power failure on a specified square

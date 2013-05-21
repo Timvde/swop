@@ -8,12 +8,15 @@ import square.Property;
 import square.SquareContainer;
 
 /**
- * This class represents a power failure. This is a property that affects squares:
+ * This class represents a power failure. This is a property that affects
+ * squares:
  * 
  * <ul>
- * <li> If a player starts on a power failured square, he will have one action less to perform </li>
- * <li> If a player moves onto a power failured square, his turn will end </li>
- * <li> A light grenade exploding on a power failured square will have its strength increased </li>
+ * <li>If a player starts on a power failured square, he will have one action
+ * less to perform</li>
+ * <li>If a player moves onto a power failured square, his turn will end</li>
+ * <li>A light grenade exploding on a power failured square will have its
+ * strength increased</li>
  * </ul>
  */
 public abstract class PowerFailure implements Property {
@@ -22,7 +25,12 @@ public abstract class PowerFailure implements Property {
 	 * The time this power failure still has to live. This is counted as actions
 	 * or turns, depending on what kind of power failure.
 	 */
-	protected int			timeToLive;
+	protected int				timeToLive;
+	
+	/**
+	 * The square where this PowerFailure resides
+	 */
+	protected SquareContainer	square;
 	
 	/**
 	 * When a turn ends, a PowerFailure has to decrease the number of turns or
