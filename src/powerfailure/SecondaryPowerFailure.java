@@ -14,7 +14,7 @@ public class SecondaryPowerFailure extends PowerFailure {
 	private Direction				direction;
 	
 	private PrimaryPowerFailure		primaryPowerFailure;
-	private TertiaryPowerFailure	tertiaryPowerFailure;
+	private PowerFailure	tertiaryPowerFailure;
 	private boolean					clockwise;
 	
 	/**
@@ -57,11 +57,6 @@ public class SecondaryPowerFailure extends PowerFailure {
 		
 		if (tertiaryPowerFailure != null)
 			tertiaryPowerFailure.updateStatus(event);
-	}
-	
-	@Override
-	protected SquareContainer getSquare() {
-		return square;
 	}
 	
 	/**

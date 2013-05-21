@@ -44,9 +44,4 @@ public class PrimaryPowerFailure extends PowerFailure {
 	private void createSecondaryPowerFailure() {
 		secondaryPowerFailure = new SecondaryPowerFailure(this);
 	}
-
-	@Override
-	protected SquareContainer getSquare() {
-		return square; 
-	}
 }

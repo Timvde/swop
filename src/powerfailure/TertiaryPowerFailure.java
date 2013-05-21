@@ -43,11 +43,6 @@ public class TertiaryPowerFailure extends PowerFailure {
 		}
 	}
 	
-	@Override
-	protected SquareContainer getSquare() {
-		return square;
-	}
-	
 	/**
 	 * Calculates a new square for the tertiary power failure, and returns this.
 	 * <code>null</code> is returned if the square falls of the grid.

@@ -52,13 +52,6 @@ public abstract class PowerFailure implements Property {
 	}
 	
 	/**
-	 * Return the square this power failure is located on.
-	 * 
-	 * @return The square this power failure influences.
-	 */
-	protected abstract SquareContainer getSquare();
-	
-	/**
 	 * Returns the effect this power failure has on an object.
 	 * 
 	 * @return the effect of this power failure
@@ -79,4 +72,13 @@ public abstract class PowerFailure implements Property {
 	 *        The turn event to let the powerfailure know about.
 	 */
 	public abstract void updateStatus(TurnEvent event);
+
+	/**
+	 * Return the square this power failure is located on.
+	 * 
+	 * @return The square this power failure influences.
+	 */
+	protected SquareContainer getSquare() {
+		return square;
+	}
 }
