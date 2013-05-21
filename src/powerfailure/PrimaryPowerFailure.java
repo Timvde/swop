@@ -1,8 +1,6 @@
 package powerfailure;
 
-import java.util.Random;
 import player.TurnEvent;
-import square.Direction;
 import square.SquareContainer;
 
 /**
@@ -11,152 +9,39 @@ import square.SquareContainer;
  */
 public class PrimaryPowerFailure extends PowerFailure {
 	
-	private SecondaryPowerFailure	secondaryPF;
-	private TertiaryPowerFailure	tertiaryPF;
-	
-	private static final int		ROTATION_COUNTER_MAX	= 2;
-	private static final int		TIME_TO_LIVE			= 3;
-	
-	/** A counter that keeps track of when to rotate the secondary PF. */
-	private int						rotationCounter;
-	
-	/** This boolean determines if the secondary PF rotates clockwise or not. */
-	private boolean					clockwiseRotation;
+	private static final int	TIME_TO_LIVE	= 2;
+	private SecondaryPowerFailure secondaryPowerFailure;
 	
 	/**
-	 * Create a primary powerfailure for a given square. This will also result
-	 * in secondary and tertiary powerfailures.
+	 * Create a new primary power failure on a specified square
 	 * 
 	 * @param square
-	 *        The square that is impacted by this power failure.
+	 *        the square this power failure will affect
 	 */
 	public PrimaryPowerFailure(SquareContainer square) {
-		super(square);
+		if (square == null)
+			throw new IllegalArgumentException();
+		this.square = square;
+		square.addProperty(this);
 		
-		// Determine the secondary powerfailure rotation.
-		this.clockwiseRotation = new Random().nextBoolean();
-		
-		this.rotationCounter = ROTATION_COUNTER_MAX;
-		this.timeToLive = TIME_TO_LIVE;
+		timeToLive = TIME_TO_LIVE;
 		
 		createSecondaryPowerFailure();
 	}
 	
-	private void createSecondaryPowerFailure() {
-		Direction randomDirection = Direction.getRandomDirection();
-		SquareContainer secPFSquare = getSquare().getNeighbourIn(randomDirection);
-		
-		// Check if we selected a square that is part of the grid. If so,
-		// check if there is not yet a powerfailure. If so, create the secondary
-		// powerfailure, which results in the creation of a tertiary
-		// powerfailure.
-		if (secPFSquare != null && !secPFSquare.isWall() && !secPFSquare.hasPowerFailure()) {
-			this.secondaryPF = new SecondaryPowerFailure(secPFSquare);
-			secPFSquare.addProperty(this.secondaryPF);
-			
-			createTertiaryPowerFailure();
-		}
-	}
-	
-	private void createTertiaryPowerFailure() {
-		if (this.secondaryPF == null || this.secondaryPF.getSquare() == null) {
-			throw new IllegalStateException(
-					"The secondary powerfailure must exist when creating a tertiary powerfailure");
-		}
-		
-		// Find the possible tertiary powerfailure directions as seen from the
-		// secondary powerfailure
-		Direction[] possibleTertiaryPFDirs = new Direction[3];
-		
-		Direction tertPFDirection1 = this.getSquare().getDirectionOfNeighbour(
-				this.secondaryPF.getSquare());
-		
-	ArrayList<Direction> tertPFDirections2and3 = tertPFDirection1.getAdjacentDirections();
-		
-		possibleTertiaryPFDirs[0] = tertPFDirection1;
-		possibleTertiaryPFDirs[1] = tertPFDirections2and3.get(0);
-		possibleTertiaryPFDirs[2] = tertPFDirections2and3.get(1);
-		
-		// Choose a random tertiary powerfailure position
-		Random rnd = new Random();
-		Direction tertiaryPFDirection = possibleTertiaryPFDirs[rnd.nextInt(3)];
-		
-		// Create the tertiary powerfailure, if it is located on the grid and
-		// the
-		// chosen square does not yet have a powerfailure.
-		SquareContainer tertPFSquare = this.secondaryPF.getSquare().getNeighbourIn(
-				tertiaryPFDirection);
-		
-		if (tertPFSquare != null && !tertPFSquare.isWall() && !tertPFSquare.hasPowerFailure()) {
-			this.tertiaryPF = new TertiaryPowerFailure(tertPFSquare);
-			tertPFSquare.addProperty(this.tertiaryPF);
-		}
-	}
-	
-	private void rotateSecondaryPowerFailure() {
-		// only do the rotation if there is a secondary powerfailure, and if it
-		// is still located on a square.
-		if (this.secondaryPF != null && this.secondaryPF.getTimeToLive() > 0
-				&& this.secondaryPF.getSquare() != null) {
-			// calculate the next direction in which the second powerfailure
-			// lies:
-			Direction currSecPFDir = this.getSquare().getDirectionOfNeighbour(
-					this.secondaryPF.getSquare());
-			Direction nextSecPFDir;
-			
-			if (this.clockwiseRotation)
-				nextSecPFDir = currSecPFDir.getNextClockwiseDirection();
-			else
-				nextSecPFDir = currSecPFDir.getNextCounterClockwiseDirection();
-			
-			SquareContainer nextSecPFSquare = this.getSquare().getNeighbourIn(nextSecPFDir);
-			
-			// Remove the powerfailure from the old square
-			this.secondaryPF.getSquare().removeProperty(this.secondaryPF);
-			this.secondaryPF.setSquare(null);
-			
-			// Move the secondary powerfailure, if the new sec PF square is part
-			// of the grid and it does not already contain a powerfailure.
-			if (nextSecPFSquare != null && !nextSecPFSquare.isWall()
-					&& !nextSecPFSquare.hasPowerFailure()) {
-				nextSecPFSquare.addProperty(this.secondaryPF);
-				this.secondaryPF.setSquare(nextSecPFSquare);
-				
-				// Create the new tertiary powerfailure
-				createTertiaryPowerFailure();
-			}
-		}
-	}
-	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		// A turn was ended, so decrease the time to live for this
-		// powerfailure
-		if (event == TurnEvent.END_TURN) {
+		if (event == TurnEvent.END_TURN)
 			decreaseTimeToLive();
-			
-			// Check if this primary powerfailure ended. If so, remove the
-			// secondary powerfailure, if there is one.
-			if (this.getSquare() == null) {
-				if (this.secondaryPF != null && this.secondaryPF.getSquare() != null) {
-					this.secondaryPF.getSquare().removeProperty(this.secondaryPF);
-					this.secondaryPF.setSquare(null);
-					this.secondaryPF = null;
-				}
-			}
-		}
 		
-		// An action was ended. Update the rotation counter and rotate
-		// the secondary powerfailure if necessary.
-		if (event == TurnEvent.END_ACTION) {
-			this.rotationCounter--;
-			if (this.rotationCounter == 0) {
-				rotateSecondaryPowerFailure();
-				
-				// Reset the rotation counter
-				rotationCounter = ROTATION_COUNTER_MAX;
-			}
-		}
+		if (timeToLive <=0 && square != null)
+				square.removeProperty(this);
 		
+		if (secondaryPowerFailure != null)
+			secondaryPowerFailure.updateStatus(event); 
+	}
+	
+	private void createSecondaryPowerFailure() {
+		secondaryPowerFailure = new SecondaryPowerFailure(this);
 	}
 }
