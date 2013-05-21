@@ -89,8 +89,8 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.placeUnchargedIdentityDisc(new Coordinate(7, 0));
 		builder.placeUnchargedIdentityDisc(new Coordinate(2, 9));
 		
-		builder.addPlayerStartingPosition(PLAYER1_START_POS);
-		builder.addPlayerStartingPosition(PLAYER2_START_POS);
+		builder.addPlayerStartingPosition(PLAYER1_START_POS, 1);
+		builder.addPlayerStartingPosition(PLAYER2_START_POS, 2);
 		
 		Coordinate t1 = new Coordinate(PREDIFINED_GRID_SIZE - 1, 2);
 		Coordinate t2 = new Coordinate(0, PREDIFINED_GRID_SIZE - 3);

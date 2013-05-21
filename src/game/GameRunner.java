@@ -5,9 +5,7 @@ import grid.builder.FileGridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import gui.GUI;
-import java.util.Iterator;
 import player.PlayerDataBase;
-import square.SquareContainer;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
@@ -18,7 +16,7 @@ import controllers.UseItemController;
 
 /**
  * The class that start the {@link GUI} and offers methods to start new
- * {@link Game games}. This class contains the main method.
+ * {@link Game games}. It contains the main method.
  * 
  */
 public class GameRunner {
@@ -78,15 +76,14 @@ public class GameRunner {
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
 	 */
-	public void newGame(GameMode mode, int width, int height) throws IllegalArgumentException,
-			IllegalStateException {
-		TronGridBuilder builder = new TronGridBuilder();
+	public void newGame(GameMode mode, int width, int height) throws IllegalStateException {
+		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.setHeight(height);
 		director.setWidth(width);
 		director.construct();
 		
-		createNewGame(mode, builder.getResult());
+		createGame(mode, builder.getResult());
 	}
 	
 	/**
@@ -104,63 +101,36 @@ public class GameRunner {
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in the grid to be created.
 	 */
-	public void newGame(GameMode mode, String file) throws InvalidGridFileException {
-		TronGridBuilder builder = new TronGridBuilder();
+	public void newGame(GameMode mode, String file) throws InvalidGridFileException,
+			IllegalStateException {
+		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
 		director.construct();
 		
-		createNewGame(mode, builder.getResult());
+		createGame(mode, builder.getResult());
 	}
 	
 	/**
-	 * Creates a new Game with a specified mode and grid.
+	 * Creates a game with a specified mode and grid. This method will also set
+	 * all references to the grid and fix the observers of the game.
 	 * 
-	 * @throws IllegalStateException
+	 * @param mode
+	 *        the mode for the game
+	 * @param grid
+	 *        the grid for the game
+	 * @throws IllegalStateExcption
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in the grid.
 	 */
-	private void createNewGame(GameMode mode, Grid grid) throws IllegalStateException {
-		if (grid.getAllStartingPositions().size() < mode.getNumberOfPlayers())
-			throw new IllegalArgumentException(
-					" The number of players must be less then or equal to the number of starting locations defined in the grid");
-		
-		// unwrap the superfluous playerstarts
-		for (int i = mode.getNumberOfPlayers() - 1; i < grid.getAllStartingPositions().size(); i++) {
-			// ... TODO
-			// getAllStartingPositions moet de juiste volgorde teruggeven een
-			// lijst om te removen
-		}
-		playerDB.createNewDB(grid.getAllStartingPositions());
-		
-		setGrid(grid);
-		createNewGame(mode);
-	}
-
-	private void setGrid(Grid grid) {
-		playerDB.deleteObservers();
-		// make all the squares in the new grid observer of the db
-		Iterator<SquareContainer> iterator = grid.getGridIterator();
-		while (iterator.hasNext()) {
-			SquareContainer square = (SquareContainer) iterator.next();
-			playerDB.addObserver(square);
-		}
-		
-		// set all grid references
+	private void createGame(GameMode mode, Grid grid) throws IllegalStateException {
 		guiDataCont.setGrid(grid);
-	}
-	
-	/**
-	 * This method will create a new Game object with a specified mode and set
-	 * all observers correct
-	 */
-	private void createNewGame(GameMode mode) {
-		// fix opbservers of old game
+		
+		// fix observers of old game
 		game.deleteObservers();
 		
 		// create a new Game and fix observers
-		game = new Game(mode);
-		playerDB.addObserver(game);
+		game = new Game(mode, grid, playerDB);
 		game.addObserver(gui);
 	}
 	

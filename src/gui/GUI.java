@@ -206,7 +206,7 @@ public class GUI implements Runnable, Observer {
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// Draw finish lines
-						if (square.isStartingPosition()) {
+						if (square.getStartingPosition()) {
 							graphics.drawImage(finish, guiCoord.getX(),
 									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 						}

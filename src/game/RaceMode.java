@@ -1,17 +1,33 @@
 package game;
 
+import item.EffectFactory;
+import item.RaceFactory;
+
+/**
+ * In RaceMode the goal for each player is to reach the starting location of the
+ * other player or to enclose the other player such that he cannot make a move.
+ * The number of players at the start is exactly
+ * {@value #NUMBER_OF_PLAYERS_IN_RACE_MODE}.
+ */
 public class RaceMode implements GameMode {
 	
-	private static final int	NUMBER_OF_PLAYERS_IN_RACE_MODE	= 2;
+	/**
+	 * The number of players at the start of RaceMode
+	 */
+	public static final int	NUMBER_OF_PLAYERS_IN_RACE_MODE	= 2;
 	
 	@Override
 	public void checkWinner() {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
 	public int getNumberOfPlayers() {
 		return NUMBER_OF_PLAYERS_IN_RACE_MODE;
+	}
+	
+	@Override
+	public EffectFactory getEffectFactory() {
+		return new RaceFactory();
 	}
 }

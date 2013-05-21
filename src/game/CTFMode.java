@@ -1,5 +1,7 @@
 package game;
 
+import item.EffectFactory;
+
 
 public class CTFMode implements GameMode {
 
@@ -18,6 +20,12 @@ public class CTFMode implements GameMode {
 	@Override
 	public int getNumberOfPlayers() {
 		return numberOfPlayers;
+	}
+
+	@Override
+	public EffectFactory getEffectFactory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

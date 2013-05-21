@@ -143,11 +143,11 @@ public abstract class AbstractSquare implements Square, Observer {
 	}
 	
 	/**
-	 * Default implementation will return <code>false</code>.
+	 * Default implementation will return -1 (i.e. this square has no startingposition).
 	 */
 	@Override
-	public boolean isStartingPosition() {
-		return false;
+	public int getStartingPosition() {
+		return -1;
 	}
 	
 	/**

@@ -289,8 +289,8 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean isStartingPosition() {
-		return square.isStartingPosition();
+	public int getStartingPosition() {
+		return square.getStartingPosition();
 	}
 	
 }

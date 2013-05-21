@@ -2,6 +2,7 @@ package grid.builder;
 
 import grid.Coordinate;
 import grid.Grid;
+import item.EffectFactory;
 import item.IItem;
 import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
@@ -9,8 +10,10 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import square.Direction;
 import square.NormalSquare;
 import square.Square;
@@ -26,14 +29,23 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
  */
 public class TronGridBuilder implements GridBuilder {
 	
-	private Map<Coordinate, SquareContainer>		grid;
-	private HashMap<Coordinate, Teleporter>	teleporters;
-	private int								numberOfSquares;
+	private Map<Coordinate, SquareContainer>	grid;
+	private HashMap<Coordinate, Teleporter>		teleporters;
+	private int									numberOfSquares;
+	private Set<Integer>						startingPositionNumbers;
+	private EffectFactory						effectFactory;
 	
 	/**
 	 * Create a new builder with an empty grid.
+	 * 
+	 * @param effectFactory
+	 *        The effect factory that the items will get.
 	 */
-	public TronGridBuilder() {
+	public TronGridBuilder(EffectFactory effectFactory) {
+		if (effectFactory == null)
+			throw new IllegalArgumentException("the factory cannot be null");
+		
+		this.effectFactory = effectFactory;
 		this.createNewEmptyGrid();
 	}
 	
@@ -42,6 +54,7 @@ public class TronGridBuilder implements GridBuilder {
 		this.grid = new HashMap<Coordinate, SquareContainer>();
 		this.teleporters = new HashMap<Coordinate, Teleporter>();
 		this.numberOfSquares = 0;
+		this.startingPositionNumbers = new HashSet<Integer>();
 	}
 	
 	@Override
@@ -65,16 +78,18 @@ public class TronGridBuilder implements GridBuilder {
 	}
 	
 	@Override
-	public void addPlayerStartingPosition(Coordinate coordinate) {
+	public void addPlayerStartingPosition(Coordinate coordinate, int number) {
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
+		if (startingPositionNumbers.contains(number))
+			throw new IllegalArgumentException("the startingposition number is already used");
 		
 		if (!grid.containsKey(coordinate)) {
 			Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
 			grid.put(coordinate, new SquareContainer(neighbours, new NormalSquare()));
-			grid.get(coordinate).addProperty(new StartingPositionProperty());
 			numberOfSquares++;
 		}
+		grid.get(coordinate).addProperty(new StartingPositionProperty(number));
 	}
 	
 	@Override
@@ -154,7 +169,7 @@ public class TronGridBuilder implements GridBuilder {
 	 * constraints for a <i>TronGrid</i> are: <li>One cannot place an item when
 	 * there's no square on that coordinate. <li>One cannot place an item on a
 	 * {@link Square#isWall() wall}. <li>One cannot place an item on a
-	 * {@link Square#isStartingPosition() starting position}.
+	 * {@link Square#getStartingPosition() starting position}.
 	 */
 	@Override
 	public boolean canPlaceItem(Coordinate coordinate) {
@@ -164,7 +179,7 @@ public class TronGridBuilder implements GridBuilder {
 			return false;
 		else if (grid.get(coordinate).isWall())
 			return false;
-		else if (grid.get(coordinate).isStartingPosition())
+		else if (grid.get(coordinate).getStartingPosition() < 1)
 			return false;
 		else
 			return true;
@@ -221,7 +236,6 @@ public class TronGridBuilder implements GridBuilder {
 				throw new GridBuildException("Some teleporters have no destinations!");
 		}
 		
-				
 		return new Grid(grid);
 	}
 	

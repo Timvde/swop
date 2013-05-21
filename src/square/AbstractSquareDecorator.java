@@ -40,8 +40,8 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean isStartingPosition() {
-		return square.isStartingPosition();
+	public int getStartingPosition() {
+		return square.getStartingPosition();
 	}
 	
 	final AbstractSquare getSquare() {

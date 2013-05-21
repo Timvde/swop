@@ -47,8 +47,13 @@ public interface GridBuilder {
 	 * 
 	 * @param coordinate
 	 *        the coordinate where the new player will be placed.
+	 * @param number
+	 *        the number corresponding to this starting position
+	 * @throws IllegalArgumentException
+	 *         The number cannot be already used earlier
 	 */
-	void addPlayerStartingPosition(Coordinate coordinate);
+	void addPlayerStartingPosition(Coordinate coordinate, int number)
+			throws IllegalArgumentException;
 	
 	/**
 	 * Place a {@link LightGrenade light grenade} at the specified coordinate.

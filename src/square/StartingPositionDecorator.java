@@ -7,25 +7,41 @@ import item.IItem;
  * starts. The starting position of a player cannot contain an item.
  */
 public class StartingPositionDecorator extends AbstractSquareDecorator {
-
+	
+	private int	number;
+	
 	/**
-	 *Create a new starting position decorator for a specified square
+	 * Create a new starting position decorator for a specified square
 	 * 
 	 * @param square
 	 *        the square who will be decorated
+	 * @param number
+	 *        the number of this startingposition
+	 * @throws IllegalArgumentException the number of a startingposition must be > 0
 	 */
-	public StartingPositionDecorator(AbstractSquare square) {
+	public StartingPositionDecorator(AbstractSquare square, int number) throws IllegalArgumentException{
 		super(square);
+		if (number < 1)
+			throw new IllegalArgumentException(
+					"the number of a startingposition must be in the valid range");
+		
+		this.number = number;
 	}
 	
+	/**
+	 * Returns the number of this starting position.
+	 */
 	@Override
-	public boolean isStartingPosition() {
-		return true;
+	public int getStartingPosition() {
+		return number;
 	}
 	
+	/**
+	 * Returns <code>false</code>. The starting position of a player cannot
+	 * contain an item
+	 */
 	@Override
 	public boolean canBeAdded(IItem item) {
-		// The starting position of a player cannot contain an item
 		return false;
 	}
 }

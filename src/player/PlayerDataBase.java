@@ -4,10 +4,10 @@ import game.Game;
 import grid.Grid;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import java.util.Set;
 import square.Square;
 import square.SquareContainer;
 
@@ -39,7 +39,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/**
 	 * Creates a new empty PlayerDataBase. To fill the database with players,
-	 * one has to call {@link PlayerDataBase#createNewDB(Set) createNewDB}.
+	 * one has to call {@link PlayerDataBase#createNewDB(List) createNewDB}.
 	 * Until then the {@link PlayerDataBase#getCurrentPlayer()} method will
 	 * throw an exception.
 	 */
@@ -54,18 +54,20 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * {@link PlayerState#WAITING} state.
 	 * 
 	 * The order of the players is determined by the specified starting
-	 * positions set's iterator and thus is not (necessary) deterministic. The
-	 * first player allowed to play, is the player that is returned first by the
-	 * specified set's iterator.
+	 * positions list. I.e. the first player allowed to play, is the first
+	 * player in the list and so on.
 	 * 
 	 * @param startingPositions
 	 *        The startingpositions for the players to create.
-	 * 
+	 * @throws IllegalArgumentException
+	 *         The list of starting positions must be valid, i.e.
+	 *         <code>{@link #isValidStartingPositionList(List)}</code>
 	 */
-	public void createNewDB(Set<SquareContainer> startingPositions) {
-		if (startingPositions == null || startingPositions.size() == 0)
-			throw new IllegalArgumentException(
-					"the specified playerlist cannot be null and must contain at least one position");
+	public void createNewDB(List<SquareContainer> startingPositions)
+			throws IllegalArgumentException {
+		if (!isValidStartingPositionList(startingPositions)) {
+			throw new IllegalArgumentException("the list of starting positions must be valid");
+		}
 		
 		Player.resetUniqueIdcounter();
 		this.clearDataBase();
@@ -79,6 +81,31 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
 		assignNewTurn(playerList.get(currentPlayerIndex));
+	}
+	
+	/**
+	 * Returns whether or not the specified startingpositions list is valid.
+	 * I.e. : <li>It cannot be <code>null</code></li> <li>It must contain at
+	 * least one position</li> <li>There can be no duplicates in the
+	 * startingpositions</li> <li>All the squares must be a
+	 * {@link Square#getStartingPosition() starting position}</li>
+	 * 
+	 * @param startingPositions
+	 *        the list to test.
+	 * @return Whether this is a valid startingpostions list.
+	 */
+	public boolean isValidStartingPositionList(List<SquareContainer> startingPositions) {
+		if (startingPositions == null)
+			return false;
+		if (startingPositions.size() == 0)
+			return false;
+		if (new HashSet<SquareContainer>(startingPositions).size() != startingPositions.size())
+			return false;
+		for (SquareContainer squareContainer : startingPositions)
+			if (!(squareContainer.getStartingPosition() > 0))
+				return false;
+		
+		return true;
 	}
 	
 	@Override
@@ -141,7 +168,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			assignNewTurn(newPlayer);
 		}
 	}
-
+	
 	private void notifyTurnEvent(TurnEvent event) {
 		this.setChanged();
 		this.notifyObservers(event);
@@ -233,8 +260,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-	 * Called when a player performed an action, his allowed number of
-	 * actions must drop by one.
+	 * Called when a player performed an action, his allowed number of actions
+	 * must drop by one.
 	 * 
 	 * If after decreasing the allowed number of actions by one, this player has
 	 * no more actions left, his turn will end.

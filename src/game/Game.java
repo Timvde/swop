@@ -1,11 +1,22 @@
 package game;
 
+import grid.Grid;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import player.PlayerDataBase;
+import square.SquareContainer;
+import square.StartingPositionProperty;
 
 /**
- * TODO
+ * A class representing a game. The lifetime of a Game-object equals that of the
+ * game it represents. Each game is associated with an immutable
+ * {@link GameMode mode}.
+ * 
+ * A Game observes the {@link PlayerDataBase database} to be informed of the
+ * ending of player actions, wins and loses. One can observe a Game to be
+ * notified when a player wins/loses and when a player's action ends.
  */
 public class Game extends Observable implements Observer {
 	
@@ -16,12 +27,40 @@ public class Game extends Observable implements Observer {
 	 * 
 	 * @param mode
 	 *        the mode for the new game
+	 * @param grid
+	 *        the grid to play this game on.
+	 * @param playerDB
+	 *        the playerdatabase the game will fill.
+	 * @throws IllegalStateException
+	 *         The number of players as {@link GameMode#getNumberOfPlayers()
+	 *         given by the mode} must be less then or equal to the number of
+	 *         starting locations defined in the grid.
 	 */
-	public Game(GameMode mode) {
-		if (mode == null)
-			throw new IllegalArgumentException("the mode cannot be null");
+	public Game(GameMode mode, Grid grid, PlayerDataBase playerDB) {
+		if (mode == null || grid == null || playerDB == null)
+			throw new IllegalArgumentException("the args cannot be null");
+		if (grid.getAllStartingPositions().size() < mode.getNumberOfPlayers())
+			throw new IllegalStateException(
+					"The number of players must be less then or equal to the number of starting locations defined in the grid");
 		
 		this.mode = mode;
+		
+		// unwrap the superfluous playerstarts
+		List<SquareContainer> list = grid.getAllStartingPositions();
+		for (int i = mode.getNumberOfPlayers() - 1; i < list.size(); i++)
+			list.get(i).removeProperty(new StartingPositionProperty(i));
+		
+		playerDB.createNewDB(list);
+		fixObserversPlayerDB(grid, playerDB);
+	}
+	
+	private void fixObserversPlayerDB(Grid grid, PlayerDataBase playerDB) {
+		playerDB.deleteObservers();
+		// make all the squares in the new grid observer of the db
+		Iterator<SquareContainer> gridIterator = grid.getGridIterator();
+		while (gridIterator.hasNext())
+			playerDB.addObserver(gridIterator.next());
+		playerDB.addObserver(this);
 	}
 	
 	@Override

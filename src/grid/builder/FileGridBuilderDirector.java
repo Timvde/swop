@@ -7,9 +7,10 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
@@ -17,13 +18,13 @@ import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 /**
  * Director that will create a grid specified in a file. For the placement of
  * items it will call the
- * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
+ * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(Map, int, int)
  * supertype method}.
  */
 public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	private String				fileName;
-	private List<Coordinate>	startingCoordinates;
+	private Map<Integer, Coordinate>	startingCoordinates;
 	
 	/**
 	 * Create a new GridBuilderDirector which will use the specified builder to
@@ -37,8 +38,8 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 */
 	public FileGridBuilderDirector(GridBuilder builder, String filepath) {
 		super(builder);
-		this.startingCoordinates = new ArrayList<Coordinate>();
 		this.setFile(filepath);
+		this.resetCreatedGrid();
 	}
 	
 	/**
@@ -59,7 +60,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 */
 	private void resetCreatedGrid() {
 		builder.createNewEmptyGrid();
-		this.startingCoordinates = new ArrayList<Coordinate>();
+		this.startingCoordinates = new HashMap<Integer, Coordinate>();
 	}
 	
 	/**
@@ -114,10 +115,10 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 						builder.addWall(coord);
 					}
 					else if (c == '1') {
-						startingCoordinates.add(coord);
+						startingCoordinates.put(1,coord);
 					}
 					else if (c == '2') {
-						startingCoordinates.add(coord);
+						startingCoordinates.put(2,coord);
 					}
 					else {
 						throw new InvalidGridFileException("Invalid grid-file character: " + c);

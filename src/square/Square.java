@@ -60,10 +60,15 @@ public interface Square {
 	public boolean isWall();
 	
 	/**
-	 * Returns whether this square is a starting position
+	 * Returns a number smaller then or equal to zero if this square isn't a
+	 * {@link StartingPositionProperty starting position}, else the number of
+	 * the startingposition (greater then zero).
 	 * 
-	 * @return true if this square is a starting position
+	 * More formally: this square has a startingposition if and only if: <code>getStartingPosition() > 0</code>.
+	 * 
+	 * @return The number of the startingposition (>0) or a number (<= 0) if
+	 *         this square isn't a starting position
 	 */
-	public boolean isStartingPosition();
+	public int getStartingPosition();
 	
 }

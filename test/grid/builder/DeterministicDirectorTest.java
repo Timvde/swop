@@ -42,8 +42,8 @@ public class DeterministicDirectorTest {
 	public void testDeterministicPlayerPositions() {
 		Grid grid = builder.getResult();
 		
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).isStartingPosition());
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).isStartingPosition());
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).getStartingPosition());
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).getStartingPosition());
 	}
 	
 	@Test

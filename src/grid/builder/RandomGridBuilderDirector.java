@@ -4,14 +4,15 @@ import grid.Coordinate;
 import grid.Grid;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import square.Wall;
 
 /**
  * This GridBuilder will construct a <i>random</i> grid as specified by the Tron
  * game constraints. For the placement of items it will call the
- * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
+ * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(Map, int, int)
  * supertype method}.
  */
 public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
@@ -46,8 +47,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		this.height = MINIMUM_GRID_HEIGHT;
 		this.width = MINIMUM_GRID_WIDTH;
-		this.walls = new ArrayList<Wall>();
-		this.numberOfWallPartsToPlace = 0;
+		this.resetCreatedGrid();
 	}
 	
 	/**
@@ -97,8 +97,8 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		// place walls on the grid
 		int maxNumberOfWallParts = (int) Math.ceil(width * height * MAXIMUM_WALL_NUMBER_PERCENTAGE);
-		this.numberOfWallPartsToPlace = new Random().nextInt(maxNumberOfWallParts - MINIMUM_WALL_LENGHT
-				+ 1)
+		this.numberOfWallPartsToPlace = new Random().nextInt(maxNumberOfWallParts
+				- MINIMUM_WALL_LENGHT + 1)
 				+ MINIMUM_WALL_LENGHT;
 		
 		while ((numberOfWallPartsToPlace - getNumberOfWallParts()) >= MINIMUM_WALL_LENGHT)
@@ -212,7 +212,7 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * @return true if the specified coordinate is a starting position
 	 */
 	private boolean isStartingPosition(Coordinate coordinate) {
-		return getStartingPositions().contains(coordinate);
+		return getStartingPositions().values().contains(coordinate);
 	}
 	
 	/**
@@ -220,14 +220,23 @@ public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 * 
 	 * @return the player starting positions for this grid.
 	 */
-	private List<Coordinate> getStartingPositions() {
-		// The starting positions are hardcoded at this moment, we can change
-		// this here if needed at some point
-		List<Coordinate> positions = new ArrayList<Coordinate>();
-		positions.add(new Coordinate(0, height - 1));
-		positions.add(new Coordinate(width - 1, 0));
+	private Map<Integer, Coordinate> getStartingPositions() {
+		/*
+		 * The starting positions are hardcoded at this moment, we can change
+		 * this here if needed at some point
+		 * 
+		 * Player 1 starts on the bottom left corner of the grid, player 2
+		 * starts on the top right corner, player 3 starts in the top left
+		 * corner, and player 4 starts in the bottom right corner.
+		 */
+		Map<Integer, Coordinate> result = new HashMap<Integer, Coordinate>();
 		
-		return positions;
+		result.put(1, new Coordinate(0, height - 1));
+		result.put(2, new Coordinate(width - 1, 0));
+		result.put(3, new Coordinate(0, 0));
+		result.put(4, new Coordinate(width - 1, height - 1));
+		
+		return result;
 	}
 	
 	/**

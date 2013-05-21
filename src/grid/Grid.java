@@ -3,6 +3,9 @@ package grid;
 import grid.builder.GridBuilder;
 import grid.builder.GridBuilderDirector;
 import item.IItem;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -136,16 +139,32 @@ public class Grid implements IGrid {
 	}
 	
 	/**
-	 * Get all the starting positions.
+	 * Get all the starting positions. The list will be sorted by their
+	 * startingposition number (from smaller to larger).
 	 * 
-	 * @return a set of all the startingpositions on the grid.
+	 * @return a sorted list of all the startingpositions on the grid.
 	 */
-	public Set<SquareContainer> getAllStartingPositions() {
-		Set<SquareContainer> result = new HashSet<SquareContainer>();
+	public List<SquareContainer> getAllStartingPositions() {
+		List<SquareContainer> result = new ArrayList<SquareContainer>();
 		for (SquareContainer square : grid.values()) {
-			if (square.isStartingPosition())
+			if (square.getStartingPosition() > 0)
 				result.add(square);
 		}
+		Collections.sort(result, new StartingPositionComparator());
 		return result;
+	}
+	
+	private class StartingPositionComparator implements Comparator<SquareContainer> {
+		
+		@Override
+		public int compare(SquareContainer o1, SquareContainer o2) {
+			if (o1.getStartingPosition() < o2.getStartingPosition())
+				return -1;
+			if (o1.getStartingPosition() > o2.getStartingPosition()) {
+				return 1;
+			}
+			return 0;
+			
+		}
 	}
 }
