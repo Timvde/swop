@@ -1,6 +1,7 @@
 package square;
 
 import item.IItem;
+import item.lightgrenade.LightGrenade;
 import java.util.List;
 import player.IPlayer;
 
@@ -65,5 +66,12 @@ public interface Square {
 	 * @return true if this square is a starting position
 	 */
 	public boolean isStartingPosition();
+
+	/**
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public boolean contains(Object object);
 	
 }
