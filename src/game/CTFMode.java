@@ -1,6 +1,7 @@
 package game;
 
-import item.EffectFactory;
+import effects.CTFFactory;
+import effects.EffectFactory;
 
 
 public class CTFMode implements GameMode {
@@ -24,8 +25,7 @@ public class CTFMode implements GameMode {
 
 	@Override
 	public EffectFactory getEffectFactory() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CTFFactory();
 	}
 	
 }

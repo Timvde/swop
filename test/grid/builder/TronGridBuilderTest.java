@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import effects.RaceFactory;
 import grid.Coordinate;
 import grid.Grid;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class TronGridBuilderTest {
 	
 	@Before
 	public void setUp() {
-		builder = new TronGridBuilder();
+		builder = new TronGridBuilder(new RaceFactory());
 	}
 	
 	@Test
@@ -89,7 +90,7 @@ public class TronGridBuilderTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullInputPlayerStartingPosition() {
-		builder.addPlayerStartingPosition(null);
+		builder.addPlayerStartingPosition(null, 1);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -121,7 +122,7 @@ public class TronGridBuilderTest {
 	@Test(expected = GridBuildException.class)
 	public void testLGPlayerPosition() {
 		Coordinate c = Coordinate.random(100, 100);
-		builder.addPlayerStartingPosition(c);
+		builder.addPlayerStartingPosition(c, 1);
 		builder.placeLightGrenade(c);
 	}
 	
@@ -147,7 +148,7 @@ public class TronGridBuilderTest {
 	@Test(expected = GridBuildException.class)
 	public void testIDPlayerPosition() {
 		Coordinate c = Coordinate.random(100, 100);
-		builder.addPlayerStartingPosition(c);
+		builder.addPlayerStartingPosition(c,1);
 		builder.placeUnchargedIdentityDisc(c);
 	}
 	
@@ -173,7 +174,7 @@ public class TronGridBuilderTest {
 	@Test(expected = GridBuildException.class)
 	public void testCIDPlayerPosition() {
 		Coordinate c = Coordinate.random(100, 100);
-		builder.addPlayerStartingPosition(c);
+		builder.addPlayerStartingPosition(c,1);
 		builder.placeChargedIdentityDisc(c);
 	}
 	
@@ -199,7 +200,7 @@ public class TronGridBuilderTest {
 	@Test(expected = GridBuildException.class)
 	public void testTeleporterPlayerPosition() {
 		Coordinate c = Coordinate.random(100, 100);
-		builder.addPlayerStartingPosition(c);
+		builder.addPlayerStartingPosition(c,1);
 		builder.placeTeleporter(c, Coordinate.random(100, 100));
 	}
 	

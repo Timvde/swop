@@ -1,11 +1,12 @@
 package powerfailure;
 
-import item.Effect;
 import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.Property;
 import square.SquareContainer;
+import effects.Effect;
+import effects.PowerFailureEffect;
 
 /**
  * This class represents a power failure. This is a property that affects squares:

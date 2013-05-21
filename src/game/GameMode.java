@@ -1,6 +1,6 @@
 package game;
 
-import item.EffectFactory;
+import effects.EffectFactory;
 
 /**
  * A game mode is a strategy a {@link Game} can follow. It encapsulates the

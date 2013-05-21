@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import effects.RaceFactory;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import java.util.Collections;
@@ -12,7 +13,6 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.PlayerDataBase;
-import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
@@ -26,7 +26,7 @@ public class GridTest {
 	@Before
 	public void setUp() throws Exception {
 		playerDb = new PlayerDataBase();
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new RaceFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		this.grid = builder.getResult();
 		playerDb.createNewDB(grid.getAllStartingPositions());

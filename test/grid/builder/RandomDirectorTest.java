@@ -3,6 +3,7 @@ package grid.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import effects.RaceFactory;
 import grid.Grid;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class RandomDirectorTest {
 	
 	@Test
 	public void testRandomDirectorCreatedGrid() {
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new RaceFactory());
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.construct();
 		

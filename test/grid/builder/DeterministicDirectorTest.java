@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import effects.RaceFactory;
 import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
@@ -19,7 +20,7 @@ public class DeterministicDirectorTest {
 	
 	@Before
 	public void setUp() {
-		builder = new TronGridBuilder();
+		builder = new TronGridBuilder(new RaceFactory());
 		GridBuilderDirector director = new DeterministicGridBuilderDirector(builder, false);
 		director.construct();
 	}
@@ -42,8 +43,8 @@ public class DeterministicDirectorTest {
 	public void testDeterministicPlayerPositions() {
 		Grid grid = builder.getResult();
 		
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).getStartingPosition());
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).getStartingPosition());
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).getStartingPosition() > 0);
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).getStartingPosition() > 0);
 	}
 	
 	@Test

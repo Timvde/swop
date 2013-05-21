@@ -1,13 +1,13 @@
 package square;
 
-import item.Effect;
-import item.EmptyEffect;
 import item.IItem;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import player.IPlayer;
+import effects.Effect;
+import effects.EmptyEffect;
 
 /**
  * A NormalSquare represents a postion that can hold {@link IItem items} and

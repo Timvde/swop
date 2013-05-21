@@ -1,10 +1,10 @@
 package square;
 
-import item.Effect;
 import item.IItem;
 import java.util.List;
 import java.util.Observer;
 import player.IPlayer;
+import effects.Effect;
 
 /**
  * This class defines objects that represent a location on a Grid. It also

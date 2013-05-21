@@ -1,8 +1,10 @@
 package item.teleporter;
 
-import item.Effect;
 import item.Item;
 import square.SquareContainer;
+import effects.Effect;
+import effects.EffectFactory;
+import effects.TeleportationEffect;
 
 /**
  * A teleporter can teleport objects from the square this teleporter is placed
@@ -13,15 +15,15 @@ import square.SquareContainer;
 public class Teleporter extends Item {
 	
 	/** The destination of the teleporter */
-	private Teleporter	destination;
+	private Teleporter		destination;
 	/** The square where this teleporter is placed on */
-	private SquareContainer		square;
+	private SquareContainer	square;
 	/**
 	 * A boolean that indicates whether this teleporter should skip his next
 	 * teleport. This prevents an infinite loop when we teleport to an other
 	 * teleporter.
 	 */
-	private boolean		skipNextTeleport;
+	private boolean			skipNextTeleport;
 	
 	/**
 	 * Create a new teleporter that can teleport objects to the specified
@@ -34,8 +36,11 @@ public class Teleporter extends Item {
 	 *        the destination of this teleporter
 	 * @param square
 	 *        the square where this teleporter is placed on
+	 * @param effectFactory
+	 *        The effect factory this item will use to get its needed effect.
 	 */
-	public Teleporter(Teleporter destination, SquareContainer square) {
+	public Teleporter(Teleporter destination, SquareContainer square, EffectFactory effectFactory) {
+		super(effectFactory);
 		this.destination = destination;
 		this.square = square;
 	}
@@ -91,11 +96,28 @@ public class Teleporter extends Item {
 		return square;
 	}
 	
-	boolean getSkipNextTeleport() {
+	/**
+	 * Returns whether or not the next teleport should be skipped.
+	 * 
+	 * (this is used in the {@link TeleportationEffect}.)
+	 * 
+	 * @return whether or not the next teleport should be skipped.
+	 */
+	public boolean getSkipNextTeleport() {
 		return skipNextTeleport;
 	}
 	
-	void setSkipNextTeleport(boolean skipNextTurn) {
+	/**
+	 * Sets whether or not the next teleport should be skipped.<br>
+	 * 
+	 * <br>
+	 * <b>Do NOT use this method. This is used by the
+	 * {@link TeleportationEffect}!</b>
+	 * 
+	 * @param skipNextTurn
+	 *        the value to set
+	 */
+	public void setSkipNextTeleport(boolean skipNextTurn) {
 		this.skipNextTeleport = skipNextTurn;
 	}
 	
@@ -103,9 +125,9 @@ public class Teleporter extends Item {
 	public char toChar() {
 		return 't';
 	}
-
+	
 	@Override
 	public Effect getEffect() {
-		return new TeleportationEffect(this);
+		return effectFactory.getTeleportationEffect(this);
 	}
 }

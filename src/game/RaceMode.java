@@ -1,7 +1,7 @@
 package game;
 
-import item.EffectFactory;
-import item.RaceFactory;
+import effects.EffectFactory;
+import effects.RaceFactory;
 
 /**
  * In RaceMode the goal for each player is to reach the starting location of the

@@ -1,12 +1,12 @@
 package square;
 
-import item.Effect;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import player.IPlayer;
 import player.Player;
+import effects.Effect;
 
 /**
  * A class that represents a part of a wall.

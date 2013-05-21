@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import grid.Coordinate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,11 +67,12 @@ public class DummyGridBuilder implements GridBuilder {
 	}
 	
 	@Override
-	public void addPlayerStartingPosition(Coordinate coordinate) {
+	public void addPlayerStartingPosition(Coordinate coordinate, int number) {
 		if (wallParts.contains(coordinate))
 			throw new IllegalArgumentException("This coordinate is already occupied by a wall");
 		if (!playerStartingPositions.add(coordinate))
 			throw new IllegalArgumentException("There's already a playerstart at this coordinate");
+		//TODO number check
 	}
 	
 	@Override

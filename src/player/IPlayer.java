@@ -1,7 +1,6 @@
 package player;
 
 
-import item.Effect;
 import item.IItem;
 import java.util.List;
 import square.AbstractSquare;
@@ -10,6 +9,7 @@ import square.NormalSquare;
 import square.Square;
 import square.SquareContainer;
 import square.TronObject;
+import effects.Effect;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalPickUpException;

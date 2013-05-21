@@ -1,8 +1,8 @@
 package grid.builder;
 
+import effects.EffectFactory;
 import grid.Coordinate;
 import grid.Grid;
-import item.EffectFactory;
 import item.IItem;
 import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
@@ -97,7 +97,7 @@ public class TronGridBuilder implements GridBuilder {
 		if (!canPlaceItem(coordinate))
 			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
-		grid.get(coordinate).addItem(new LightGrenade());
+		grid.get(coordinate).addItem(new LightGrenade(effectFactory));
 	}
 	
 	@Override
@@ -158,7 +158,7 @@ public class TronGridBuilder implements GridBuilder {
 			throw new GridBuildException("Cannot place a teleporter on " + coordinate);
 		
 		SquareContainer square = grid.get(coordinate);
-		Teleporter rv = new Teleporter(null, square);
+		Teleporter rv = new Teleporter(null, square, effectFactory);
 		teleporters.put(coordinate, rv);
 		square.addItem(rv);
 		return rv;

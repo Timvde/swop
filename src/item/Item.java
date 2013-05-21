@@ -5,6 +5,9 @@ import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
 import powerfailure.AffectedByPowerFailure;
 import square.TronObject;
+import effects.Effect;
+import effects.EffectFactory;
+import effects.EmptyEffect;
 
 /**
  * an abstract implementation of the item interface. This class offers some
@@ -15,17 +18,29 @@ import square.TronObject;
 public abstract class Item implements IItem {
 	
 	private int						id;
+	protected EffectFactory			effectFactory;
 	private static AtomicInteger	nextID	= new AtomicInteger();
-	
-	public int getId() {
-		return this.id;
-	}
 	
 	/**
 	 * Constructs a new Item and gives it a unique ID.
 	 */
 	public Item() {
 		this.id = nextID.incrementAndGet();
+	}
+	
+	/**
+	 * Constructs a new Item and gives it a unique ID and specified factory.
+	 * 
+	 * @param effectFactory
+	 *        The effect factory this item will use to get its needed effect.
+	 */
+	public Item(EffectFactory effectFactory) {
+		this.id = nextID.incrementAndGet();
+		this.effectFactory = effectFactory;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	/**
@@ -75,7 +90,7 @@ public abstract class Item implements IItem {
 	 * @return the effect of the item
 	 */
 	public Effect getEffect() {
-		return new EmptyEffect();
+		return effectFactory.getEmptyEffect();
 	}
 	
 	@Override

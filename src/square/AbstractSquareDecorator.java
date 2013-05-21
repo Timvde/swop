@@ -4,7 +4,7 @@ import item.IItem;
 import java.util.List;
 import java.util.Observable;
 import player.IPlayer;
-import item.Effect;
+import effects.Effect;
 
 /**
  * AbstractSquareDecorator is an abstract implementation of a square decorator.

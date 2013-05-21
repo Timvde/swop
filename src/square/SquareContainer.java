@@ -1,6 +1,5 @@
 package square;
 
-import item.Effect;
 import item.IItem;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Observable;
 import java.util.Random;
 import player.IPlayer;
 import powerfailure.PrimaryPowerFailure;
+import effects.Effect;
 
 /**
  * Square container manages the decorators for square. Because the lifetime of a
