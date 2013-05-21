@@ -1,6 +1,8 @@
 package powerfailure;
 
+import java.util.Random;
 import player.TurnEvent;
+import square.Direction;
 import square.SquareContainer;
 
 /**
@@ -8,26 +10,90 @@ import square.SquareContainer;
  */
 public class SecondaryPowerFailure extends PowerFailure {
 	
-	private static final int	TIME_TO_LIVE	= 2;
+	private static final int		TIME_TO_LIVE	= 2;
+	private SquareContainer			square;
+	private Direction				direction;
+	
+	private PrimaryPowerFailure		primaryPowerFailure;
+	private TertiaryPowerFailure	tertiaryPowerFailure;
+	private boolean					clockwise;
 	
 	/**
 	 * Create a secondary power failure for a given square.
 	 * 
-	 * @param square
-	 *        The square that is impacted by this power failure.
+	 * @param primaryPowerFailure
+	 *        the primary power failure who created this power failure
+	 * 
 	 */
-	public SecondaryPowerFailure(SquareContainer square) {
-		super(square);
-		
+	public SecondaryPowerFailure(PrimaryPowerFailure primaryPowerFailure) {
 		timeToLive = TIME_TO_LIVE;
+		this.primaryPowerFailure = primaryPowerFailure;
+		clockwise = new Random().nextBoolean();
+		
+		square = calculateSquare();
+		if (square != null)
+			square.addProperty(this);
+		
+		createTernaryPowerFailure();
+	}
+	
+	private void createTernaryPowerFailure() {
+		tertiaryPowerFailure = new TertiaryPowerFailure(this);
 	}
 	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		/*
-		 * Does nothing for the secondary power failure. The secondary power
-		 * failure stays alive as long as the primary power failure.
-		 */
+		
+		decreaseTimeToLive();
+		
+		// rotate the power failure
+		if (timeToLive <= 0) {
+			timeToLive = TIME_TO_LIVE;
+			if (square != null)
+				square.removeProperty(this);
+			square = calculateSquare();
+			if (square != null)
+				square.addProperty(this);
+		}
+		
+		if (tertiaryPowerFailure != null)
+			tertiaryPowerFailure.updateStatus(event);
+	}
+	
+	@Override
+	protected SquareContainer getSquare() {
+		return square;
+	}
+	
+	/**
+	 * Returns the direction this power failure is positioned in relative to the
+	 * primary power failure
+	 * 
+	 * @return the direction of this power failure
+	 */
+	public Direction getDirection() {
+		return direction;
+	}
+	
+	/**
+	 * Calculates a square for this power failure. This power failure will
+	 * rotate around the the primary power failure who induced this power
+	 * failure . IF the chosen square is not on the grid, null will be returned.
+	 * 
+	 * @return the square for this power failure to affect
+	 */
+	private SquareContainer calculateSquare() {
+		if (direction == null)
+			direction = Direction.getRandomDirection();
+		else if (clockwise)
+			direction = direction.getNextClockwiseDirection();
+		else
+			direction = direction.getNextCounterClockwiseDirection();
+		
+		if (primaryPowerFailure.getSquare() != null)
+			return primaryPowerFailure.getSquare().getNeighbourIn(direction);
+		else
+			return null;
 	}
 	
 }

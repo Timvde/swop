@@ -18,9 +18,6 @@ import square.SquareContainer;
  */
 public abstract class PowerFailure implements Property {
 	
-	/** The square this power failure affects */
-	private SquareContainer	square;
-	
 	/**
 	 * The time this power failure still has to live. This is counted as actions
 	 * or turns, depending on what kind of power failure.
@@ -28,29 +25,12 @@ public abstract class PowerFailure implements Property {
 	protected int			timeToLive;
 	
 	/**
-	 * Create a new power failure that is active on the given square.
-	 * 
-	 * @param square
-	 *        The square this power failure will affect.
-	 */
-	public PowerFailure(SquareContainer square) {
-		square.addProperty(this);
-		this.square = square;
-	}
-	
-	/**
 	 * When a turn ends, a PowerFailure has to decrease the number of turns or
 	 * actions left it is power failured. When it is set to zero, the power
 	 * failure will be released.
 	 */
 	protected void decreaseTimeToLive() {
-		if (timeToLive > 0)
-			timeToLive--;
-		// No else if, timeToLive could be 1 before and 0 now.
-		if (timeToLive <= 0 && square != null) {
-			this.square.removeProperty(this);
-			this.square = null;
-		}
+		timeToLive--;
 	}
 	
 	/**
@@ -68,16 +48,7 @@ public abstract class PowerFailure implements Property {
 	 * 
 	 * @return The square this power failure influences.
 	 */
-	protected SquareContainer getSquare() {
-		return this.square;
-	}
-	
-	/**
-	 * Set the square this power failure is located on.
-	 */
-	protected void setSquare(SquareContainer square) {
-		this.square = square;
-	}
+	protected abstract SquareContainer getSquare();
 	
 	/**
 	 * Returns the effect this power failure has on an object.
