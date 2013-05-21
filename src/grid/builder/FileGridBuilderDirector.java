@@ -108,12 +108,10 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 					if (c == ' ') {
 						builder.addSquare(coord);
 					}
-					else if (c == '*') {
-						// do nothing, this square doesn't exist
-					}
-					else if (c == '#') {
+					else if (c == '*')
+						;// do nothing, this square doesn't exist
+					else if (c == '#')
 						builder.addWall(coord);
-					}
 					else if (c == '1') {
 						startingCoordinates.put(1,coord);
 					}
@@ -121,6 +119,8 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 						startingCoordinates.put(2,coord);
 					}
 					else {
+						fis.close();
+						br.close();
 						throw new InvalidGridFileException("Invalid grid-file character: " + c);
 					}
 				}

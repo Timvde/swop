@@ -211,8 +211,12 @@ public class SquareContainer extends AbstractSquare {
 		square.addItem(item);
 	}
 	
+	@Override
 	public int hashCode() {
-		return square.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((square == null) ? 0 : square.hashCode());
+		return result;
 	}
 	
 	public void remove(Object object) {
@@ -231,10 +235,8 @@ public class SquareContainer extends AbstractSquare {
 		return square.canAddPlayer();
 	}
 	
-	public boolean equals(Object obj) {
-		return square.equals(obj);
-	}
 	
+	@Override
 	public String toString() {
 		return square.toString();
 	}
@@ -291,6 +293,24 @@ public class SquareContainer extends AbstractSquare {
 	@Override
 	public int getStartingPosition() {
 		return square.getStartingPosition();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SquareContainer))
+			return false;
+		SquareContainer other = (SquareContainer) obj;
+		if (square == null) {
+			if (other.square != null)
+				return false;
+		}
+		else if (!square.equals(other.square))
+			return false;
+		return true;
 	}
 	
 }
