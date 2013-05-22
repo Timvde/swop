@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * A Direction enumeration class. Source for comments: {@link "http://en.wikipedia.org"}
+ * A Direction enumeration class. Source for comments:
+ * {@link "http://en.wikipedia.org"}
  */
 public enum Direction {
 	
@@ -73,17 +74,20 @@ public enum Direction {
 	 */
 	NORTHWEST(false);
 	
-	/** A list of the primary directions */
-	private boolean isPrimaryDirection;
+	private boolean	isPrimaryDirection;
 	
 	private Direction(boolean isPrimaryDirection) {
 		this.isPrimaryDirection = isPrimaryDirection;
 	}
 	
 	/**
-	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.
+	 * Returns the primary directions neighbouring this direction, or the
+	 * direction itself if it is a primary direction.
 	 * 
-	 * @return the primary directions
+	 * Note: Primary directions are: are NORTH, EAST, SOUTH, WEST.
+	 * 
+	 * @return the primary directions neighbouring this direction or itself if
+	 *         it a primary direction
 	 */
 	public List<Direction> getPrimaryDirections() {
 		List<Direction> primaryDirections = new ArrayList<Direction>();
@@ -96,6 +100,7 @@ public enum Direction {
 	
 	/**
 	 * Return the direction that is the next direction seen clockwise.
+	 * 
 	 * @return The next clockwise direction
 	 */
 	public Direction getNextClockwiseDirection() {
@@ -104,6 +109,7 @@ public enum Direction {
 	
 	/**
 	 * Return the directions that are adjacent to this direction.
+	 * 
 	 * @return The adjacent directions
 	 */
 	public List<Direction> getAdjacentDirections() {
@@ -115,6 +121,7 @@ public enum Direction {
 	
 	/**
 	 * Return the direction that is the next direction seen counterclockwise.
+	 * 
 	 * @return The next counterclockwise direction
 	 */
 	public Direction getNextCounterClockwiseDirection() {
