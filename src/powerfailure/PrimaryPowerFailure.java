@@ -1,5 +1,6 @@
 package powerfailure;
 
+import java.util.ArrayList;
 import java.util.Random;
 import player.TurnEvent;
 import square.Direction;
@@ -71,7 +72,7 @@ public class PrimaryPowerFailure extends PowerFailure {
 		Direction tertPFDirection1 = this.getSquare().getDirectionOfNeighbour(
 				this.secondaryPF.getSquare());
 		
-	ArrayList<Direction> tertPFDirections2and3 = tertPFDirection1.getAdjacentDirections();
+		ArrayList<Direction> tertPFDirections2and3 = tertPFDirection1.getAdjacentDirections();
 		
 		possibleTertiaryPFDirs[0] = tertPFDirection1;
 		possibleTertiaryPFDirs[1] = tertPFDirections2and3.get(0);

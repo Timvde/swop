@@ -59,11 +59,6 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public boolean hasForceField() {
-		return forceField.getState() == ForceFieldState.ACTIVE;
-	}
-	
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();

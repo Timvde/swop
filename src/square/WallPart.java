@@ -29,11 +29,6 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean hasLightTrail() {
-		return false;
-	}
-	
-	@Override
 	public IItem pickupItem(int ID) {
 		throw new UnsupportedOperationException("Walls do not contain items");
 	}
@@ -47,11 +42,6 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean hasPowerFailure() {
-		return false;
-	}
-	
-	@Override
 	public boolean contains(Object object) {
 		return false;
 	}
@@ -59,16 +49,6 @@ public class WallPart extends AbstractSquare {
 	@Override
 	public void addPlayer(IPlayer p) {
 		throw new UnsupportedOperationException("Players cannot be added to a wall!");
-	}
-	
-	@Override
-	public void placeLightTrail() {
-		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
-	}
-	
-	@Override
-	public void removeLightTrail() {
-		throw new UnsupportedOperationException("light trail cannot be placed on wallparts");
 	}
 	
 	@Override
@@ -99,11 +79,6 @@ public class WallPart extends AbstractSquare {
 	@Override
 	public String toString() {
 		return "w ";
-	}
-	
-	@Override
-	public boolean isWall() {
-		return true;
 	}
 
 	@Override

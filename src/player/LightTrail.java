@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import square.AbstractSquare;
+import square.AbstractSquareDecorator;
+import square.Property;
+import square.SquareContainer;
 
 /**
  * LightTrail is an impenetrable wall (for other players) which trails the
@@ -15,20 +18,20 @@ import square.AbstractSquare;
  * 
  * @author Bavo Mees
  */
-public class LightTrail {
+public class LightTrail implements Property {
 	
 	/** the lightTrail of the player */
-	private LinkedList<AbstractSquare>	lightTrail;
+	private LinkedList<SquareContainer>	lightTrail;
 	
 	/** the maximum length of this light trail */
-	private static final int	MAXIMUM_LENGTH	= 3;
+	private static final int			MAXIMUM_LENGTH	= 3;
 	
 	/**
 	 * Create a new lightTrail behind a player. The length of the newly created
 	 * lightTrail will be zero.
 	 */
 	public LightTrail() {
-		lightTrail = new LinkedList<AbstractSquare>();
+		lightTrail = new LinkedList<SquareContainer>();
 	}
 	
 	/**
@@ -44,18 +47,18 @@ public class LightTrail {
 	 *        the new square which the light trail should cover
 	 * @throws IllegalArgumentException
 	 *         if the specified coordinate is not a
-	 *         {@link #isValidNewSquare(AbstractSquare) valid} new coordinate for this
-	 *         lightTrail
+	 *         {@link #isValidNewSquare(AbstractSquare) valid} new coordinate
+	 *         for this lightTrail
 	 */
-	public void updateLightTrail(AbstractSquare currentSquare) throws IllegalArgumentException {
+	public void updateLightTrail(SquareContainer currentSquare) throws IllegalArgumentException {
 		if (!isValidNewSquare(currentSquare))
 			throw new IllegalArgumentException(
 					"the specified square could not be added to the lightTrail!");
 		lightTrail.addFirst(currentSquare);
-		currentSquare.placeLightTrail();
+		currentSquare.addProperty(this);
 		
 		if (lightTrail.size() > MAXIMUM_LENGTH)
-			lightTrail.removeLast().removeLightTrail();
+			lightTrail.removeLast().removeProperty(this);
 	}
 	
 	/**
@@ -92,7 +95,7 @@ public class LightTrail {
 	 */
 	public void updateLightTrail() {
 		if (!lightTrail.isEmpty())
-			lightTrail.removeLast().removeLightTrail();
+			lightTrail.removeLast().removeProperty(this);
 	}
 	
 	/**
@@ -112,5 +115,10 @@ public class LightTrail {
 	 */
 	List<AbstractSquare> getLightTrailSquares() {
 		return new ArrayList<AbstractSquare>(lightTrail);
+	}
+
+	@Override
+	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
+		return null;
 	}
 }

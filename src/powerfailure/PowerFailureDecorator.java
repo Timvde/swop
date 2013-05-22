@@ -44,33 +44,6 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	}
 
 	@Override
-	public boolean hasPowerFailure() {
-		return true;
-	}
-	
-	@Override 
-	public void update(Observable o, Object arg) {
-		square.update(o, arg);
-		
-		if (arg instanceof TurnEvent) {
-			switch ((TurnEvent) arg) {
-				case END_ACTION:
-					if (hasPowerFailure()) {
-						powerfailure.updateStatus(TurnEvent.END_ACTION);
-					}
-					break;
-				case END_TURN:
-					if (hasPowerFailure()) {
-						powerfailure.updateStatus(TurnEvent.END_TURN);
-					}
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -88,9 +61,8 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 			return false;
 		
 		PowerFailureDecorator other = (PowerFailureDecorator) obj;
-		if (!this.hasPowerFailure() && other.hasPowerFailure())
-			return false;
-		else if (!powerfailure.equals(other.powerfailure))
+		
+		if (!powerfailure.equals(other.powerfailure))
 			return false;
 		return true;
 	}

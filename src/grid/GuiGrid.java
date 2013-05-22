@@ -3,11 +3,7 @@ package grid;
 import java.util.Set;
 import square.Square;
 
-/**
- * A grid containing {@link Square squares}.
- * 
- */
-public interface IGrid {
+public interface GuiGrid {
 	
 	/**
 	 * Return the square of the grid that has a specific coordinate. This method
@@ -20,7 +16,7 @@ public interface IGrid {
 	 * @throws IllegalArgumentException
 	 *         The specified coordinate cannot be <code>null</code>.
 	 */
-	public Square getSquareAt(Coordinate coordinate) throws IllegalArgumentException;
+	GuiSquare getSquareAt(Coordinate coordinate) throws IllegalArgumentException;
 	
 	/**
 	 * Return all the possible coordinates in the grid.
@@ -29,6 +25,19 @@ public interface IGrid {
 	 * @throws IllegalArgumentException
 	 *         The specified coordinate cannot be <code>null</code>.
 	 */
-	public Set<Coordinate> getAllGridCoordinates() throws IllegalArgumentException;
-
+	Set<Coordinate> getAllGridCoordinates() throws IllegalArgumentException;
+	
+	/**
+	 * returns the width of the grid
+	 * 
+	 * @return width of the grid
+	 */
+	int getWidth();
+	
+	/**
+	 * returns the height of the grid
+	 * 
+	 * @return height of the grid
+	 */
+	int getHeight();
 }

@@ -13,9 +13,4 @@ public class PlayerStartingPosition extends NormalSquare {
 		// The starting position of a player cannot contain an item
 		return false;
 	}
-	
-	@Override
-	public boolean isStartingPosition() {
-		return true;
-	}
 }

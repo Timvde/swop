@@ -1,7 +1,8 @@
 package controllers;
 
 import grid.Coordinate;
-import grid.Grid;
+import grid.GuiGrid;
+import grid.GuiSquare;
 import item.IItem;
 import java.util.List;
 import java.util.Set;
@@ -14,22 +15,22 @@ import square.Square;
  * GUI visuals.
  * 
  * @author tom
- *
+ * 
  */
 public class GUIDataController {
 	
 	private PlayerDataBase	playerDB;
-	private Grid			grid;
+	private GuiGrid	grid;
 	
 	/**
 	 * Create a new gui data controller.
 	 * 
 	 * @param playerDB
-	 * 			The player database the controller will use.
+	 *        The player database the controller will use.
 	 * @param grid
-	 * 			The grid the controller will use.
+	 *        The grid the controller will use.
 	 */
-	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
+	public GUIDataController(PlayerDataBase playerDB, GuiGrid grid) {
 		if (playerDB == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = playerDB;
@@ -52,9 +53,9 @@ public class GUIDataController {
 	 * Set the grid of the controller to a new grid.
 	 * 
 	 * @param g
-	 * 			The new grid for this controller
+	 *        The new grid for this controller
 	 */
-	public void setGrid(Grid g) {
+	public void setGrid(GuiGrid g) {
 		this.grid = g;
 	}
 	
@@ -88,7 +89,7 @@ public class GUIDataController {
 	 *        The coordinate of the square we want the items of.
 	 */
 	public List<IItem> getItemList(Coordinate c) {
-		return grid.getItemList(c);
+		return grid.getSquareAt(c).getItems();
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public class GUIDataController {
 	 * @return An abstract square object that lies on the given coordinate on
 	 *         the grid.
 	 */
-	public Square getSquareAt(Coordinate c) {
+	public GuiSquare getSquareAt(Coordinate c) {
 		return grid.getSquareAt(c);
 	}
 	
@@ -110,21 +111,6 @@ public class GUIDataController {
 	 */
 	public Set<Coordinate> getAllGridCoordinates() {
 		return grid.getAllGridCoordinates();
-	}
-	
-	/**
-	 * Check if the given square is a starting position of a player.
-	 * 
-	 * @param s
-	 *        The square to test.
-	 * @return True if the given square is a player starting position.
-	 */
-	public boolean isPlayerStartingPosition(Square s) {
-		for (Square sq : grid.getAllStartingPositions()) {
-			if (sq.equals(s))
-				return true;
-		}
-		return false;
 	}
 	
 	/**

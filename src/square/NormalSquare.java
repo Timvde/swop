@@ -21,8 +21,6 @@ public class NormalSquare extends AbstractSquare {
 	private List<IItem>	itemList;
 	/** the player on this square */
 	private IPlayer		player;
-	/** a boolean representing whether there is a light trail on this square */
-	private boolean		lightTrail;
 	
 	/**
 	 * Default constructor.
@@ -30,7 +28,6 @@ public class NormalSquare extends AbstractSquare {
 	 */
 	public NormalSquare() {
 		itemList = new ArrayList<IItem>();
-		lightTrail = false;
 	}
 	
 	@Override
@@ -73,21 +70,6 @@ public class NormalSquare extends AbstractSquare {
 			if (item.isCarriable())
 				result.add(item);
 		return result;
-	}
-	
-	@Override
-	public boolean hasLightTrail() {
-		return lightTrail;
-	}
-	
-	@Override
-	public void placeLightTrail() {
-		lightTrail = true;
-	}
-	
-	@Override
-	public void removeLightTrail() {
-		lightTrail = false;
 	}
 	
 	@Override
@@ -159,9 +141,7 @@ public class NormalSquare extends AbstractSquare {
 	 */
 	@Override
 	public boolean canAddPlayer() {
-		if (this.hasLightTrail())
-			return false;
-		else if (this.hasPlayer())
+		if (this.hasPlayer())
 			return false;
 		else
 			return true;
@@ -199,7 +179,7 @@ public class NormalSquare extends AbstractSquare {
 			out += ' ';
 		}
 		if (out.equals(""))
-			out = (hasPowerFailure() ? "p " : "s ");
+			out = "s ";
 		
 		return out;
 	}

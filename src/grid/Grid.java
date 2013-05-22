@@ -2,13 +2,12 @@ package grid;
 
 import grid.builder.GridBuilder;
 import grid.builder.GridBuilderDirector;
-import item.IItem;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import square.AbstractSquare;
+import square.PlayerStartingPosition;
+import square.Property;
 import square.SquareContainer;
 
 /**
@@ -56,14 +55,7 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public List<IItem> getItemList(Coordinate coordinate) {
-		if (coordinate == null)
-			throw new IllegalArgumentException("the specified coordinate cannot be null");
-		return grid.get(coordinate).getAllItems();
-	}
-	
-	@Override
-	public AbstractSquare getSquareAt(Coordinate coordinate) {
+	public SquareContainer getSquareAt(Coordinate coordinate) {
 		if (coordinate == null)
 			throw new IllegalArgumentException("the specified coordinate cannot be null");
 		return grid.get(coordinate);
@@ -131,8 +123,9 @@ public class Grid implements IGrid {
 	public Set<SquareContainer> getAllStartingPositions() {
 		Set<SquareContainer> result = new HashSet<SquareContainer>();
 		for (SquareContainer square : grid.values()) {
-			if (square.isStartingPosition())
-				result.add(square);
+			for (Property property : square.getProperties())
+				if (property instanceof PlayerStartingPosition)
+					result.add(square);
 		}
 		return result;
 	}

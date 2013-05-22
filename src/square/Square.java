@@ -29,48 +29,18 @@ public interface Square {
 	public IPlayer getPlayer();
 	
 	/**
-	 * Checks whether or not a light trail is currently active on this square.
-	 * 
-	 * @return whether or not a light trail is currently active on this square.
-	 */
-	public boolean hasLightTrail();
-	
-	/**
 	 * Returns whether or not this square holds currently a {@link IPlayer
 	 * player}
 	 * 
 	 * @return Whether this square has a player.
 	 */
 	public boolean hasPlayer();
-	
-	/**
-	 * @return Whether or not this square has a power failure.
-	 */
-	public boolean hasPowerFailure();
-	
-	/**
-	 * @return Whether or not this square has a force field.
-	 */
-	public boolean hasForceField();
-	
-	/**
-	 * Returns whether this square represents a wall
-	 * 
-	 * @return true if this square represents a wall
-	 */
-	public boolean isWall();
-	
-	/**
-	 * Returns whether this square is a starting position
-	 * 
-	 * @return true if this square is a starting position
-	 */
-	public boolean isStartingPosition();
 
 	/**
-	 * 
+	 * Returns whether this square contains the specified object
 	 * @param object
-	 * @return
+	 * 			the object to test
+	 * @return true if this square contains the item 
 	 */
 	public boolean contains(Object object);
 	
