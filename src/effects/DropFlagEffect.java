@@ -17,7 +17,7 @@ public class DropFlagEffect extends AbstractEffect {
 	
 	@Override
 	public void execute(TronObject object) {
-		FlagKeeper flagkeeper = (FlagKeeper) object;
+		FlagKeeper flagkeeper = object.asFlagKeeper();
 		if (flagkeeper != null) {
 			Flag flag = flagkeeper.giveFlag();
 			if (flag != null) {
