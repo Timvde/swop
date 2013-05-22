@@ -54,12 +54,7 @@ public class TertiaryPowerFailure extends PowerFailure {
 		Direction direction = secondaryPowerFailure.getDirection();
 		possibleDirections.add(direction);
 		
-		/*
-		 * FIXME this should just use the addAll function of an ArrayList, but
-		 * some idiot used an array to return the directions! Not cool dude ...
-		 */
-		possibleDirections.add(direction.getAdjacentDirections()[0]);
-		possibleDirections.add(direction.getAdjacentDirections()[1]);
+		possibleDirections.addAll(direction.getAdjacentDirections());
 		
 		Direction randomDirection = possibleDirections.get(new Random().nextInt(possibleDirections
 				.size()));
