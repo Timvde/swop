@@ -11,11 +11,9 @@ public enum TurnEvent {
 	 */
 	END_ACTION,
 	/**
-	 * This indicates the end of a player's turn, i.e. a player switch is taking place.
+	 * This indicates the current player has ended his turn. This is sent before
+	 * the database actually switches the players (i.e. the currentplayer is
+	 * still the player that has ended his turn).
 	 */
-	END_TURN,
-	/**
-	 * This indicates the end of the game, i.e. one of the players has won.
-	 */
-	END_GAME
+	END_TURN;
 }

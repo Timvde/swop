@@ -12,7 +12,7 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
  */
 public class NewGameController {
 	
-	private Game	game;
+	private GameRunner	game;
 	
 	/**
 	 * Create a new game controller with a given game.

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import player.PlayerDataBase;
+import player.TurnEvent;
 import square.SquareContainer;
 import square.StartingPositionProperty;
 
@@ -65,8 +66,18 @@ public class Game extends Observable implements Observer {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o instanceof PlayerDataBase) {
-			this.mode.checkWinner();
+		if (o instanceof PlayerDataBase && arg instanceof TurnEvent) {
+			PlayerDataBase playerDB = (PlayerDataBase) o;
+			TurnEvent turnEvent = (TurnEvent) arg;
+			
+			if (this.mode.checkCurrentPlayerHasWon(playerDB, turnEvent)) {
+				this.setChanged();
+				this.notifyObservers(GameEvent.PLAYER_WON);
+			}
+			else if (this.mode.checkCurrentPlayerHasLost(playerDB, turnEvent)) {
+				this.setChanged();
+				this.notifyObservers(GameEvent.PLAYER_LOSE);
+			}
 		}
 		// else do nothing; return
 	}

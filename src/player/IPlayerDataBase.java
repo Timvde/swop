@@ -24,7 +24,7 @@ public interface IPlayerDataBase {
 	public IPlayer getCurrentPlayer() throws IllegalStateException;
 
 	/**
-	 * TODO
+	 * TODO remove this method...
 	 */
 	void endCurrentPlayerTurn();
 	

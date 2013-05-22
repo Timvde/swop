@@ -21,6 +21,8 @@ import square.SquareContainer;
  * {@link Grid} will observe the database in order to update the powerfailured
  * {@link Square}s. {@link Game} as well will observe the database to be
  * notified when a Player has won/lost the game.
+ * 
+ * TODO update doc
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
@@ -65,9 +67,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public void createNewDB(List<SquareContainer> startingPositions)
 			throws IllegalArgumentException {
-		if (!isValidStartingPositionList(startingPositions)) {
+		if (!isValidStartingPositionList(startingPositions))
 			throw new IllegalArgumentException("the list of starting positions must be valid");
-		}
 		
 		Player.resetUniqueIdcounter();
 		this.clearDataBase();
@@ -116,7 +117,22 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		return this.playerList.get(this.currentPlayerIndex);
 	}
 	
-	private int getNumberOfPlayers() {
+	/**
+	 * Returns a list of all the players in the database.
+	 * 
+	 * @return a list of all the players in the database.
+	 */
+	public List<IPlayer> getAllPlayers() {
+		return new ArrayList<IPlayer>(this.playerList);
+	}
+	
+	/**
+	 * The total number of players in the database. Same ad
+	 * <code>{@link #getAllPlayers()}.size()</code>
+	 * 
+	 * @return The total number of players in the database.
+	 */
+	public int getNumberOfPlayers() {
 		return this.playerList.size();
 	}
 	
@@ -147,26 +163,18 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			// having to catch an exception on other places.
 			return;
 		}
+		// Switch players and assign a new turn
+		resetTurnRelatedPropertiesOf(player);
+		player.setPlayerState(PlayerState.WAITING);
+		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
+		Player newPlayer = playerList.get(currentPlayerIndex);
 		
-		if (player.getCurrentLocation().equals(getFinishOfCurrentPlayer())) {
-			player.setPlayerState(PlayerState.FINISHED);
-			
-			notifyTurnEvent(TurnEvent.END_GAME);
-		}
-		else {
-			// Switch players and assign a new turn
-			resetTurnRelatedPropertiesOf(player);
-			player.setPlayerState(PlayerState.WAITING);
-			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
-			Player newPlayer = playerList.get(currentPlayerIndex);
-			
-			notifyTurnEvent(TurnEvent.END_TURN);
-			
-			// Assign new actions to the specified player and set him active.
-			// This may introduce a new player switch (the resulting penalty
-			// after adding new actions may still be < 0)
-			assignNewTurn(newPlayer);
-		}
+		notifyTurnEvent(TurnEvent.END_TURN);
+		
+		// Assign new actions to the specified player and set him active.
+		// This may introduce a new player switch (the resulting penalty
+		// after adding new actions may still be < 0)
+		assignNewTurn(newPlayer);
 	}
 	
 	private void notifyTurnEvent(TurnEvent event) {
@@ -272,29 +280,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-	 * This method is used when a player wants to tell he has lost the game
-	 * (e.g. by ending his turn before doing a move).
-	 * 
-	 * @param player
-	 *        The player telling he has lost the game
-	 * 
-	 * @throws IllegalStateException
-	 *         The player who tells he has lost the game must have a
-	 *         {@link PlayerState#LOST} state.
-	 */
-	void reportGameLost(Player player) {
-		if (player.getPlayerState() != PlayerState.LOST) {
-			throw new IllegalStateException(
-					"Looks like the player asking to lose the game hasn't lost after all");
-		}
-		notifyTurnEvent(TurnEvent.END_GAME);
-	}
-	
-	/**
 	 * Clears the current DB. Destroys all the players within so that no-one can
 	 * use an old Player reference to break the game.
 	 */
-	private void clearDataBase() {
+	public void clearDataBase() {
 		for (Player p : this.playerList) {
 			// set all references of the player to null so that no-one can still
 			// play with an old player.
@@ -314,18 +303,19 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		return playerList.get((currentPlayerIndex + 1) % getNumberOfPlayers());
 	}
 	
-	/**
-	 * Returns the finish square of the current player, i.e. the starting square
-	 * of the other player.
-	 * 
-	 * @return The finish square of the current player.
-	 */
-	private Square getFinishOfCurrentPlayer() {
-		return getNextPlayer().getStartingPosition();
-	}
-	
 	@Override
 	public void endCurrentPlayerTurn() {
-		getCurrentPlayer().endTurn();
+		this.playerList.get(currentPlayerIndex).endTurn();
+	}
+	
+	/**
+	 * The player dies and is removed from the game and disappears. All items he
+	 * possessed disappear.
+	 */
+	public void removeCurrentPlayer() {
+		Player curPlayer = this.playerList.get(currentPlayerIndex);
+		curPlayer.destroy();
+		this.playerList.remove(curPlayer);
+		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 	}
 }

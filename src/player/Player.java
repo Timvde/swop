@@ -111,7 +111,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public Square getCurrentLocation() {
+	public AbstractSquare getCurrentLocation() {
 		return this.currentSquare;
 	}
 	
@@ -218,11 +218,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		else {
 			// setPlayerState will check if we can transition to the LOST state
 			this.setPlayerState(PlayerState.LOST);
-			this.playerDB.reportGameLost(this);
 		}
 	}
 	
-	@Override
 	/**
 	 * @throws IllegalStepException
 	 *         The player must be able to move in the given direction on the
@@ -231,6 +229,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 *         When the player can't be added to the square in the specified
 	 *         direction, i.e. {@link Square#canAddPlayer()}.
 	 */
+	@Override
 	public void moveInDirection(Direction direction) throws IllegalActionException,
 			IllegalMoveException {
 		if (!canPerformAction())
@@ -458,9 +457,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		this.playerDB = null;
 		this.currentSquare = null;
 		this.id = -1;
-		this.inventory = null;
-		this.lightTrail = null;
-		this.state = null;
+		this.inventory.removeAll();
+		this.lightTrail.destroy();
+		this.state = PlayerState.LOST;
 		
 		if (currentSquare != null)
 			this.currentSquare.remove(this);

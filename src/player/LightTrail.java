@@ -113,4 +113,9 @@ public class LightTrail {
 	List<AbstractSquare> getLightTrailSquares() {
 		return new ArrayList<AbstractSquare>(lightTrail);
 	}
+
+	void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
 }
