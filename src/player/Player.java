@@ -24,7 +24,7 @@ import ObjectronExceptions.ItemNotOnSquareException;
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform
- * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions during a turn.
+ * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions during a turn.
  * These actions are {@link #moveInDirection(Direction) move},
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
@@ -136,7 +136,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/**
-	 * To be called when the player performed a move-action succesfully.
+	 * To be called when the player performed a move-action successfully.
 	 * 
 	 * PostCondtion: {@link #hasMoved this.hasMoved()}= true
 	 */
