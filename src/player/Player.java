@@ -1,5 +1,6 @@
 package player;
 
+import item.Flag;
 import item.IItem;
 import item.lightgrenade.Explodable;
 import item.lightgrenade.LightGrenade;
@@ -9,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import powerfailure.AffectedByPowerFailure;
 import square.AbstractSquare;
 import square.Direction;
+import square.FlagKeeper;
 import square.NormalSquare;
 import square.Square;
 import square.SquareContainer;
@@ -29,7 +31,7 @@ import ObjectronExceptions.ItemNotOnSquareException;
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
-public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable {
+public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable, FlagKeeper {
 	
 	/**
 	 * The id of the player, not really used, but hey ... let's do something
@@ -463,5 +465,26 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		
 		if (currentSquare != null)
 			this.currentSquare.remove(this);
+	}
+
+	@Override
+	public FlagKeeper asFlagKeeper() {
+		return this;
+	}
+
+	@Override
+	public Flag giveFlag() {
+		for (IItem item : getInventoryContent()) {
+			if (item instanceof Flag) {
+				this.inventory.removeItem(item);
+				return (Flag) item;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public SquareContainer getCurrentPosition() {
+		return this.currentSquare;
 	}
 }

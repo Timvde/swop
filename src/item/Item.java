@@ -4,6 +4,7 @@ import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
 import powerfailure.AffectedByPowerFailure;
+import square.FlagKeeper;
 import square.TronObject;
 import effects.Effect;
 import effects.EffectFactory;
@@ -67,6 +68,17 @@ public abstract class Item implements IItem {
 	 */
 	@Override
 	public Explodable asExplodable() {
+		return null;
+	}
+	
+	/**
+	 * By default an item is not a flagkeeper, therefore this method returns
+	 * null. Subclasses implementing the flagkeeper interface should override
+	 * this method with the specifications described
+	 * {@link TronObject#asFlagKeeper() here}.
+	 */
+	@Override
+	public FlagKeeper asFlagKeeper() {
 		return null;
 	}
 	

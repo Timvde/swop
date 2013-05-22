@@ -1,16 +1,29 @@
 package item;
 
+import game.CTFMode;
 import square.AbstractSquare;
 import square.SquareContainer;
 
+/**
+ * A Flag-item for the {@link CTFMode Capture the flag game}.
+ */
 public class Flag extends Item {
 	
 	private AbstractSquare	home;
 	
-	public Flag(AbstractSquare homeCoordinate) {
-		this.home = homeCoordinate;
+	/**
+	 * Creates a new Flag with a specified home.
+	 * 
+	 * @param homeSquare
+	 *        The homeSquare of this flag.
+	 */
+	public Flag(AbstractSquare homeSquare) {
+		this.home = homeSquare;
 	}
 	
+	/**
+	 * Uses this flag, i.e. teleport it back to its home square.
+	 */
 	@Override
 	public void use(SquareContainer square) {
 		this.teleportBack();
@@ -23,8 +36,7 @@ public class Flag extends Item {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Flag " + home;
 	}
 	
 	private void teleportBack() {
