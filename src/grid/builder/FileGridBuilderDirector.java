@@ -94,6 +94,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 				if (expression instanceof StartingSquareExpression)
 					startingCoordinates.add(new Coordinate(j, i));
 				j++;
+
 			}
 			parser.readEndOfLine();
 			i++;
