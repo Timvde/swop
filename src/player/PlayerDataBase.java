@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
-import square.PlayerStartingPosition;
 import square.Square;
-import square.NormalSquare;
 import square.SquareContainer;
 
 /**
@@ -26,18 +24,9 @@ import square.SquareContainer;
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
-	/** The maximum number of actions a Player is allowed to do in one turn */
-	public static final int			MAX_NUMBER_OF_ACTIONS_PER_TURN		= 4;
-	
-	/**
-	 * The number of actions that a player loses if he is standing on a power
-	 * failured square at the start of his turn.
-	 */
-	private static final int		POWER_FAILURE_PENALTY_AT_START_TURN	= 1;
-	
-	private List<Player>			playerList;
-	private int						currentPlayerIndex;
-	private Map<Player, Integer>	actionsLeft;
+	private List<Player>						playerList;
+	private int									currentPlayerIndex;
+	private Map<IPlayer, PlayerActionManager>	actionManager;
 	
 	/**
 	 * Creates a new empty PlayerDataBase. To fill the database with players,
@@ -47,7 +36,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public PlayerDataBase() {
 		this.playerList = new ArrayList<Player>();
-		this.actionsLeft = new HashMap<Player, Integer>();
+		this.actionManager = new HashMap<IPlayer, PlayerActionManager>();
 	}
 	
 	/**
@@ -75,7 +64,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		for (SquareContainer playerStartingPosition : startingPositions) {
 			Player newPlayer = new Player(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
-			this.actionsLeft.put(newPlayer, 0);
+			this.actionManager.put(newPlayer, new PlayerActionManager(newPlayer));
 		}
 		
 		// Set the first player as starting player.
@@ -143,7 +132,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			assignNewTurn(newPlayer);
 		}
 	}
-
+	
+	private PlayerActionManager getActionManager(IPlayer player) {
+		return this.actionManager.get(player);
+	}
+	
 	private void notifyTurnEvent(TurnEvent event) {
 		this.setChanged();
 		this.notifyObservers(event);
@@ -159,33 +152,18 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * This method is called by the {@link PlayerDataBase} when it assigns the
 	 * next player.
 	 */
-	// only the DB should assign turns --> package access
 	void assignNewTurn(Player player) {
-		resetTurnRelatedPropertiesOf(player);
 		player.setPlayerState(PlayerState.ACTIVE);
 		
-		int allowedNumberOfActionsLeft = getAllowedNumberOfActions(player);
-		
-		if (player.getCurrentLocation().hasPowerFailure()) {
-			/*
-			 * decrease the allowed number of actions by the right amount (do
-			 * not use the method skipNumberOfActions() as this will call
-			 * checkEndTurn() and thus the checkEndTurn() below might throw an
-			 * exception
-			 */
-			allowedNumberOfActionsLeft -= POWER_FAILURE_PENALTY_AT_START_TURN;
-		}
-		
-		setAllowedNumberOfActions(player, Math.min(allowedNumberOfActionsLeft
-				+ MAX_NUMBER_OF_ACTIONS_PER_TURN, MAX_NUMBER_OF_ACTIONS_PER_TURN));
+		getActionManager(player).assignNewTurn(player);
 		
 		// allowed number of actions could be <= 0 because of penalties
 		checkEndTurn(player);
 	}
 	
-	private void resetTurnRelatedPropertiesOf(Player p) {
-		p.resetHasMoved();
-		this.actionsLeft.put(p, 0);
+	private void resetTurnRelatedPropertiesOf(Player player) {
+		player.resetHasMoved();
+		getActionManager(player).resetNumberOfActions();
 	}
 	
 	/**
@@ -209,14 +187,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *        The number of actions to skip
 	 */
 	public void skipNumberOfActions(Player player, int numberOfActionsToSkip) {
-		int numberOfActions = getAllowedNumberOfActions(player) - numberOfActionsToSkip;
-		setAllowedNumberOfActions(player, numberOfActions);
+		getActionManager(player).skipNumberOfActions(numberOfActionsToSkip);
 		
 		checkEndTurn(player);
-	}
-	
-	private void setAllowedNumberOfActions(Player player, int numberOfActions) {
-		actionsLeft.put(player, numberOfActions);
 	}
 	
 	/**
@@ -229,19 +202,29 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *         specified player is not in the game.
 	 */
 	public int getAllowedNumberOfActions(IPlayer player) {
-		if (actionsLeft.containsKey(player))
-			return actionsLeft.get(player);
+		if (actionManager.containsKey(player))
+			return getActionManager(player).getNumberOfActionsLeft();
 		return 0;
 	}
 	
 	/**
-	 * Called when a player performed an action, his allowed number of
-	 * actions must drop by one.
+	 * Skips the next turn of a player.
+	 * 
+	 * @param player
+	 *        The player which needs to skip a turn.
+	 */
+	public void skipNextTurn(Player player) {
+		getActionManager(player).skipNextNTurns(1);
+	}
+	
+	/**
+	 * Called when a player performed an action, his allowed number of actions
+	 * must drop by one.
 	 * 
 	 * If after decreasing the allowed number of actions by one, this player has
 	 * no more actions left, his turn will end.
 	 */
-	void decreaseAllowedNumberOfActions(Player player) {
+	void actionPerformed(Player player) {
 		notifyTurnEvent(TurnEvent.END_ACTION);
 		skipNumberOfActions(player, 1);
 	}

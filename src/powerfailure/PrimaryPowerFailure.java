@@ -36,9 +36,6 @@ public class PrimaryPowerFailure extends PowerFailure {
 		
 		if (timeToLive <=0 && square != null)
 				square.removeProperty(this);
-		
-		if (secondaryPowerFailure != null)
-			secondaryPowerFailure.updateStatus(event); 
 	}
 	
 	private void createSecondaryPowerFailure() {

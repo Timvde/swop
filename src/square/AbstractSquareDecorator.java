@@ -78,10 +78,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.hasPlayer();
 	}
 	
-	public void addPlayer(IPlayer p) throws IllegalArgumentException {
-		square.addPlayer(p);
-	}
-	
 	public boolean hasPowerFailure() {
 		return square.hasPowerFailure();
 	}
@@ -92,10 +88,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	
 	public void removeLightTrail() {
 		square.removeLightTrail();
-	}
-	
-	public void addItem(IItem item) throws IllegalArgumentException {
-		square.addItem(item);
 	}
 	
 	public void remove(Object object) {
@@ -141,4 +133,8 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.hasForceField();
 	}
 	
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		return square.getStartTurnEffect();
+	}
 }

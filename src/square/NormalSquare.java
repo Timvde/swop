@@ -34,11 +34,6 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public void addItem(IItem item) {
-		addItem(item, new EmptyEffect());
-	}
-	
-	@Override
 	protected void addItem(IItem item, Effect effect) {
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
@@ -134,11 +129,6 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer player) {
-		addPlayer(player, new EmptyEffect());
-	}
-	
-	@Override
 	protected void addPlayer(IPlayer player, Effect effect) {
 		if (!canAddPlayer() || player == null)
 			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
@@ -208,4 +198,12 @@ public class NormalSquare extends AbstractSquare {
 	public void update(Observable o, Object arg) {
 		// nothing to do; decorators may overrride this
 	}
+
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		// Nothing to chain
+		return effect;
+	}
+	
+	
 }

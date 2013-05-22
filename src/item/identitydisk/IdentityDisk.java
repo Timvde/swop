@@ -1,5 +1,6 @@
 package item.identitydisk;
 
+import item.Effect;
 import item.Item;
 import item.teleporter.Teleportable;
 import square.Direction;
@@ -36,7 +37,8 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 				moveDisk(direction);
 				// test if we have hit a player (and hit him if we have)
 				if (currentSquare.hasPlayer()) {
-					currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
+					Effect effect = new IdentityDiskEffect();
+					effect.execute(currentSquare.getPlayer());
 					break;
 				}
 			}

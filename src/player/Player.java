@@ -41,9 +41,9 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/** A boolean representing whether the player has moved */
 	private boolean					hasMoved;
 	/** The starting square of this player */
-	private SquareContainer	startSquare;
+	private SquareContainer			startSquare;
 	/** The square where the player is currently standing */
-	private SquareContainer					currentSquare;
+	private SquareContainer			currentSquare;
 	/** The inventory of the player */
 	private Inventory				inventory;
 	/** The light trail of the player */
@@ -93,14 +93,12 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		
 	}
 	
-	
-	@Override 
+	@Override
 	public void setSquare(SquareContainer square) {
 		this.currentSquare = square;
 	}
 	
 	@Override
-	
 	public int getID() {
 		return id;
 	}
@@ -111,7 +109,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	@Override
-	public Square getCurrentLocation() {
+	public SquareContainer getCurrentLocation() {
 		return this.currentSquare;
 	}
 	
@@ -121,7 +119,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	}
 	
 	/* ############## ActionHistory related methods ############## */
-	
 	
 	@Override
 	public int getAllowedNumberOfActions() {
@@ -222,6 +219,13 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 	}
 	
+	/**
+	 * Indicate that this player has to skip his next turn.
+	 */
+	public void skipNextTurn() {
+		this.playerDB.skipNextTurn(this);
+	}
+	
 	@Override
 	/**
 	 * @throws IllegalStepException
@@ -260,7 +264,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		// Moving succeeded. Update other stuff.
 		this.lightTrail.updateLightTrail(oldSquare);
 		this.setHasMoved();
-		playerDB.decreaseAllowedNumberOfActions(this);
+		playerDB.actionPerformed(this);
 	}
 	
 	@Override
@@ -317,8 +321,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/**
 	 * @throws ItemNotOnSquareException
-	 *         The item must be {@link NormalSquare#contains(Object) on} the square
-	 *         the player is currently on.
+	 *         The item must be {@link NormalSquare#contains(Object) on} the
+	 *         square the player is currently on.
 	 * @throws InventoryFullException
 	 *         This players {@link Inventory} cannot be
 	 *         {@link Inventory#getMaxNumberOfItems() full}.
@@ -347,7 +351,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// end the players action ...
-		playerDB.decreaseAllowedNumberOfActions(this);
+		playerDB.actionPerformed(this);
 		this.lightTrail.updateLightTrail();
 	}
 	
@@ -385,7 +389,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		
 		// end the players action ...
-		playerDB.decreaseAllowedNumberOfActions(this);
+		playerDB.actionPerformed(this);
 		lightTrail.updateLightTrail();
 	}
 	
@@ -409,7 +413,6 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	public Teleportable asTeleportable() {
 		return this;
 	}
-	
 	
 	/**
 	 * Returns whether the player can teleport to the specified square.
@@ -437,7 +440,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	 */
 	@Override
 	public void damageByPowerFailure() {
-		this.skipNumberOfActions(getAllowedNumberOfActions());
+		this.endTurn();
 	}
 	
 	@Override

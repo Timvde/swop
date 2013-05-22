@@ -104,7 +104,7 @@ public enum Direction {
 	 * @return The next clockwise direction
 	 */
 	public Direction getNextClockwiseDirection() {
-		return Direction.values()[(this.ordinal() + 1) % Direction.values().length];
+		return Direction.values()[(this.ordinal() + Direction.values().length + 1) % Direction.values().length];
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public enum Direction {
 	 * @return The next counterclockwise direction
 	 */
 	public Direction getNextCounterClockwiseDirection() {
-		return Direction.values()[(this.ordinal() - 1) % Direction.values().length];
+		return Direction.values()[(this.ordinal() + Direction.values().length - 1) % Direction.values().length];
 	}
 	
 	/**
