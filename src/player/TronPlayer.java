@@ -260,7 +260,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	public void performAction(Action action) {
-		action.execute(this, currentSquare);
+		action.execute(this);
 		
 		// end a players action
 		playerDB.decreaseAllowedNumberOfActions(this);

@@ -40,7 +40,8 @@ public class PickupItemAction implements Action {
 	 *         The player must be able to pick up the specified item from the
 	 *         current square.
 	 */
-	public void execute(TronPlayer player, SquareContainer square) {
+	public void execute(TronPlayer player) {
+		SquareContainer square = (SquareContainer) player.getCurrentLocation();
 		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!square.contains(item))

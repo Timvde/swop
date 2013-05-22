@@ -11,7 +11,7 @@ import square.SquareContainer;
 public class EndTurnAction implements Action {
 	
 	@Override
-	public void execute(TronPlayer player, SquareContainer square) {
+	public void execute(TronPlayer player) {
 		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		

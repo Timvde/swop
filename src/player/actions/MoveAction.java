@@ -47,7 +47,8 @@ public class MoveAction implements Action {
 	 *         The player must be allowed to perform a move in the specified
 	 *         direction.
 	 */
-	public void execute(TronPlayer player, SquareContainer square) {
+	public void execute(TronPlayer player) {
+		SquareContainer square = (SquareContainer) player.getCurrentLocation();
 		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!isValidDirection(direction))
