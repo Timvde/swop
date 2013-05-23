@@ -2,10 +2,8 @@ package player;
 
 import java.util.Collections;
 import powerfailure.PowerFailure;
-import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
-import square.PlayerStartingPosition;
 import square.SquareContainer;
 
 /**
@@ -25,7 +23,7 @@ public class DummyPlayer extends Player {
 	 */
 	public DummyPlayer() {
 		super(new PlayerDataBase(), new SquareContainer(
-				Collections.<Direction, SquareContainer> emptyMap(), new PlayerStartingPosition()));
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare()));
 		this.damageByPowerFailure = false;
 		this.numberOfActionsSkipped = 0;
 	}

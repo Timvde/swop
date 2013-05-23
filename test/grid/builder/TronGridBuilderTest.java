@@ -4,7 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import effects.RaceFactory;
+import effects.RaceEffectFactory;
 import grid.Coordinate;
 import grid.Grid;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class TronGridBuilderTest {
 	
 	@Before
 	public void setUp() {
-		builder = new TronGridBuilder(new RaceFactory());
+		builder = new TronGridBuilder(new RaceEffectFactory());
 	}
 	
 	@Test

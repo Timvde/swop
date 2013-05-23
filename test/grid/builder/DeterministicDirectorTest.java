@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import effects.RaceFactory;
+import effects.RaceEffectFactory;
 import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
@@ -20,7 +20,7 @@ public class DeterministicDirectorTest {
 	
 	@Before
 	public void setUp() {
-		builder = new TronGridBuilder(new RaceFactory());
+		builder = new TronGridBuilder(new RaceEffectFactory());
 		GridBuilderDirector director = new DeterministicGridBuilderDirector(builder, false);
 		director.construct();
 	}

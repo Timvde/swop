@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import effects.RaceFactory;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import item.DummyEffectFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class GridTest {
 	@Before
 	public void setUp() throws Exception {
 		playerDb = new PlayerDataBase();
-		TronGridBuilder builder = new TronGridBuilder(new RaceFactory());
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		this.grid = builder.getResult();
 		playerDb.createNewDB(grid.getAllStartingPositions());
@@ -35,7 +35,8 @@ public class GridTest {
 	@Test
 	public final void testGrid() {
 		// create a new map
-		SquareContainer square = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		SquareContainer square = new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
 		Map<Coordinate, SquareContainer> map = new HashMap<Coordinate, SquareContainer>();
 		map.put(new Coordinate(0, 0), square);
 		grid = new Grid(map);

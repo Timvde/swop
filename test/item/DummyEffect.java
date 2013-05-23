@@ -2,8 +2,11 @@ package item;
 
 import item.lightgrenade.LightGrenade;
 import square.TronObject;
+import effects.AbstractEffect;
+import effects.Effect;
 
 
+@SuppressWarnings("javadoc")
 public class DummyEffect extends AbstractEffect {
 	private boolean isExecuted = false;
 	private boolean	isModified = false;

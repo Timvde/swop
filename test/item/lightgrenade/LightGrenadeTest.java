@@ -3,17 +3,17 @@ package item.lightgrenade;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import item.Effect;
+import item.DummyEffectFactory;
 import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
 import powerfailure.PrimaryPowerFailure;
-import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
 import square.WallPart;
+import effects.Effect;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 @SuppressWarnings("javadoc")
@@ -28,7 +28,7 @@ public class LightGrenadeTest {
 	
 	@Before
 	public void setUp() {
-		lightGrenade = new LightGrenade();
+		lightGrenade = new LightGrenade(new DummyEffectFactory());
 		emptySquare = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
 				new NormalSquare());
 		affectedPlayer = new DummyPlayer();
@@ -36,7 +36,7 @@ public class LightGrenadeTest {
 	
 	@Test
 	public void testConstructor() {
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		assertEquals(LightGrenadeState.INACTIVE, lightGrenade.getState());
 		
 		// A little hack to get a nice test coverage. I sure hope nobody sees
@@ -87,7 +87,7 @@ public class LightGrenadeTest {
 	
 	@Test(expected = CannotPlaceLightGrenadeException.class)
 	public void testUse_alreadyLightGrenadeOnSquare() {
-		emptySquare.addItem(new LightGrenade());
+		emptySquare.addItem(new LightGrenade(new DummyEffectFactory()));
 		lightGrenade.use(emptySquare);
 	}
 	

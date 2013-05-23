@@ -243,8 +243,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-<<<<<<< HEAD
-=======
 	 * Skips the next turn of a player.
 	 * 
 	 * @param player
@@ -255,7 +253,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
->>>>>>> tim_wil_ook_een_happy_place
 	 * Called when a player performed an action, his allowed number of actions
 	 * must drop by one.
 	 * 

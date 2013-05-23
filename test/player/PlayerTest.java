@@ -14,8 +14,8 @@ import java.util.Observer;
 import org.junit.Before;
 import org.junit.Test;
 import square.Direction;
-import square.PlayerStartingPosition;
 import square.SquareContainer;
+import item.DummyEffectFactory;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -29,7 +29,7 @@ public class PlayerTest implements Observer {
 	
 	@Before
 	public void setUp() {
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		grid = builder.getResult();
 		

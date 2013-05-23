@@ -1,7 +1,6 @@
 package scenariotests;
 
 import static org.junit.Assert.assertEquals;
-import effects.RaceFactory;
 import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
@@ -10,6 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import player.PlayerDataBase;
 import square.SquareContainer;
+import item.DummyEffectFactory;
 import controllers.EndTurnController;
 import controllers.MoveController;
 import controllers.PickUpItemController;
@@ -27,7 +27,7 @@ public class SetupTestGrid {
 	
 	@Before
 	public void setUp() {
-		TronGridBuilder builder = new TronGridBuilder(new RaceFactory());
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
 				false);
 		director.construct();
@@ -49,5 +49,4 @@ public class SetupTestGrid {
 		pickUpCont = new PickUpItemController(playerDB);
 		useItemCont = new UseItemController(playerDB);
 	}
-	
 }
