@@ -10,9 +10,11 @@ import square.Wall;
 
 /**
  * This GridBuilder will construct a <i>random</i> grid as specified by the Tron
- * game constraints. For the placement of items it will call the
- * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
- * supertype method}.
+ * game constraints. The height and width of the board can be specified by the 
+ * {@link #setHeight(int)} and {@link #setWidth(int)} respectively. The walls will 
+ * be placed randomly across the grid. 
+ * 
+ * TODO add extra constraints from the assignment 
  */
 public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
