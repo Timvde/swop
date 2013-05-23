@@ -16,6 +16,7 @@ import square.SquareContainer;
  */
 public class ForceField implements Property {
 	
+	private static final int	NUMBER_OF_ACTIONS_TO_SWITCH	= 2;
 	private ForceFieldGenerator		generator1;
 	private ForceFieldGenerator		generator2;
 	private List<SquareContainer>	squares;
@@ -66,7 +67,7 @@ public class ForceField implements Property {
 	public void update() {
 		counter++;
 		
-		if (counter >= squares.size() * 2) {
+		if (counter >= squares.size() * NUMBER_OF_ACTIONS_TO_SWITCH) {
 			switchForceField();
 			counter = 0;
 		}

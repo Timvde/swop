@@ -7,11 +7,12 @@ import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import player.IPlayer;
+import player.Player;
+import player.TronPlayer;
 
 /**
  * A NormalSquare represents a postion that can hold {@link IItem items} and
- * where a {@link IPlayer player} can stand on, as long as it is not prevented
+ * where a {@link Player player} can stand on, as long as it is not prevented
  * by the square's internal state. Several side effects can occur when moving
  * players and adding items.
  */
@@ -20,7 +21,7 @@ public class NormalSquare extends AbstractSquare {
 	/** the list of items in this square */
 	private List<IItem>	itemList;
 	/** the player on this square */
-	private IPlayer		player;
+	private Player		player;
 	
 	/**
 	 * Default constructor.
@@ -100,12 +101,12 @@ public class NormalSquare extends AbstractSquare {
 	 * 
 	 * @return A player, if there is one, otherwise null.
 	 */
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 	
 	/**
-	 * Returns whether or not this Square has currently a {@link IPlayer player}, i.e.
+	 * Returns whether or not this Square has currently a {@link TronPlayer}, i.e.
 	 * <code>{@link #getPlayer()}!= null</code>.
 	 * 
 	 * @return Whether this square has a Player.
@@ -116,12 +117,12 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer player) {
+	public void addPlayer(Player player) {
 		addPlayer(player, new EmptyEffect());
 	}
 	
 	@Override
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		if (!canAddPlayer() || player == null)
 			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		if (effect == null)
@@ -132,7 +133,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Test whether a {@link IPlayer player} can be added to this square. A
+	 * Test whether a {@link Player player} can be added to this square. A
 	 * player can be added, if there is no other player placed on this square.
 	 * More formally this method will return <code>true</code> if and only if<br>
 	 * <code>this.hasPlayer() == false && this.hasLightTrail() == false</code>.

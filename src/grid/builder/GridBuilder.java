@@ -8,7 +8,6 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.List;
-import square.AbstractSquare;
 import square.Square;
 import square.WallPart;
 import ObjectronExceptions.builderExceptions.GridBuildException;

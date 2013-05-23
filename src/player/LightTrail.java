@@ -77,12 +77,6 @@ public class LightTrail implements Property {
 		// null cannot be added to the list
 		if (currentSquare == null)
 			return false;
-		// if the lightTrail is empty, any coordinate is valid
-		if (lightTrail.isEmpty())
-			return true;
-		// test whether the lightTrail already contains the coordinate
-		else if (lightTrail.contains(currentSquare))
-			return false;
 		else
 			return true;
 	}

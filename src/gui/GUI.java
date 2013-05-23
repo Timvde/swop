@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import player.IPlayer;
+import player.Player;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
@@ -199,7 +199,7 @@ public class GUI implements Runnable {
 					
 					for (Coordinate c : gridCoords) {
 						GuiSquare square = guiDataController.getSquareAt(c);
-						IPlayer player = square.getPlayer();
+						Player player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// Draw finish lines
@@ -627,7 +627,7 @@ public class GUI implements Runnable {
 		if (this.gui != null)
 			gui.repaint();
 	}
-	
+	 
 	/**
 	 * This method will convert the game Grid coordinate to x and y coordinates
 	 * on the GUI frame.

@@ -16,15 +16,6 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
  */
 public class ForceFieldGenerator extends Item {
 	
-	private List<ForceField>	forceFields;
-	
-	/**
-	 * Creates a Force Field Generator.
-	 */
-	public ForceFieldGenerator() {
-		forceFields = new ArrayList<ForceField>();
-	}
-	
 	@Override
 	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
 		square.addItem(this);
@@ -39,7 +30,7 @@ public class ForceFieldGenerator extends Item {
 	 * @param square
 	 *        The square this forcefield is on
 	 */
-	public void findAndCreateForceFields(SquareContainer square) {
+	private void findAndCreateForceFields(SquareContainer square) {
 		for (Direction direction : Direction.values()) {
 			List<SquareContainer> listOfSquares = new ArrayList<SquareContainer>();
 			SquareContainer neighbour = square;

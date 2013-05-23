@@ -2,7 +2,7 @@ package grid;
 
 import item.IItem;
 import java.util.List;
-import player.IPlayer;
+import player.Player;
 
 /**
  * 
@@ -23,7 +23,7 @@ public interface GuiSquare {
 	 * @return The player that is on this square. Returns null if there is no
 	 *         player.
 	 */
-	public IPlayer getPlayer();
+	public Player getPlayer();
 	
 	/**
 	 * Checks whether or not a light trail is currently active on this square.

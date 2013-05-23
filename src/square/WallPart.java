@@ -5,8 +5,8 @@ import item.IItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import player.IPlayer;
 import player.Player;
+import player.TronPlayer;
 
 /**
  * A class that represents a part of a wall.
@@ -24,7 +24,7 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	@Override
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return null;
 	}
 	
@@ -34,7 +34,7 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	/**
-	 * Always returns false; A wall cannot hold a {@link Player}.
+	 * Always returns false; A wall cannot hold a {@link TronPlayer}.
 	 */
 	@Override
 	public boolean hasPlayer() {
@@ -47,7 +47,7 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer p) {
+	public void addPlayer(Player p) {
 		throw new UnsupportedOperationException("Players cannot be added to a wall!");
 	}
 	
@@ -82,7 +82,7 @@ public class WallPart extends AbstractSquare {
 	}
 
 	@Override
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		this.addPlayer(player);
 	}
 	

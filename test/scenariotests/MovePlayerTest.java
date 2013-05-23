@@ -6,10 +6,11 @@ import static org.junit.Assert.assertTrue;
 import grid.Coordinate;
 import grid.builder.DeterministicGridBuilderDirector;
 import org.junit.Test;
-import player.IPlayer;
 import player.Player;
 import player.PlayerDataBase;
 import player.PlayerState;
+import player.TronPlayer;
+import player.actions.MoveAction;
 import square.Direction;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -140,7 +141,7 @@ public class MovePlayerTest extends SetupTestGrid {
 	@Test
 	public void testPlayerWin() {
 		// Player 1
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH);
 		// now player 1 is teleported
@@ -155,7 +156,7 @@ public class MovePlayerTest extends SetupTestGrid {
 		moveCont.move(Direction.SOUTH);
 	//	endTurnCont.endTurn();
 		
-		assertEquals(PlayerState.FINISHED, ((Player) player1).getPlayerState());
+		assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -165,15 +166,15 @@ public class MovePlayerTest extends SetupTestGrid {
 	
 	@Test
 	public void testPreconditions() {
-		IPlayer player = playerDB.getCurrentPlayer();
+		Player player = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
 		// cast to a player to try to break the preconditions
-		Player playerNotHisTurn = (Player) player;
+		TronPlayer playerNotHisTurn = (TronPlayer) player;
 		boolean exceptionThrown = false;
 		try {
-			playerNotHisTurn.moveInDirection(Direction.SOUTH);
+			playerNotHisTurn.performAction(new MoveAction(Direction.SOUTH));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;

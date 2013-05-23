@@ -25,5 +25,4 @@ public class LightTrailDecorator extends AbstractSquareDecorator {
 	public boolean canAddPlayer() {
 		return false;
 	}
-	
 }

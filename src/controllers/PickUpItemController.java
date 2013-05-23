@@ -3,6 +3,7 @@ package controllers;
 import ObjectronExceptions.IllegalPickUpException;
 import item.IItem;
 import player.IPlayerDataBase;
+import player.actions.PickupItemAction;
 
 /**
  * A controller that will handle the GUI pick up commands.
@@ -39,7 +40,7 @@ public class PickUpItemController {
 	 *         The specified item cannot be null
 	 */
 	public void pickUpItem(IItem item) throws IllegalPickUpException, IllegalArgumentException {
-		playerDB.getCurrentPlayer().pickUpItem(item);
+		playerDB.getCurrentPlayer().performAction(new PickupItemAction(item));
 	}
 	
 }

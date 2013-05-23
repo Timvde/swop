@@ -3,8 +3,8 @@ package grid;
 import item.IItem;
 import item.forcefieldgenerator.ForceField;
 import java.util.List;
-import player.IPlayer;
 import player.LightTrail;
+import player.Player;
 import powerfailure.PowerFailure;
 import square.Property;
 import square.SquareContainer;
@@ -44,7 +44,7 @@ public class GuiSquareAdapter implements GuiSquare {
 	}
 	
 	@Override
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return square.getPlayer();
 	}
 	

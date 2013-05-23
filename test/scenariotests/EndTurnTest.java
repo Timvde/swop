@@ -3,9 +3,10 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
-import player.IPlayer;
 import player.Player;
+import player.TronPlayer;
 import player.PlayerDataBase;
+import player.actions.EndTurnAction;
 import square.Direction;
 import ObjectronExceptions.IllegalActionException;
 
@@ -17,7 +18,7 @@ public class EndTurnTest extends SetupTestGrid {
 	
 	@Test
 	public void testEndTurn_success() {
-		IPlayer player = playerDB.getCurrentPlayer();
+		Player player = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
@@ -29,7 +30,7 @@ public class EndTurnTest extends SetupTestGrid {
 	
 	@Test(expected = IllegalActionException.class)
 	public void testEndTurn_NotHisTurn() {
-		IPlayer player = playerDB.getCurrentPlayer();
+		Player player = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
@@ -37,13 +38,13 @@ public class EndTurnTest extends SetupTestGrid {
 		assertFalse(player.equals(playerDB.getCurrentPlayer()));
 		
 		// cast to a player to try to break the preconditions
-		Player playerNotHisTurn = (Player) player;
-		playerNotHisTurn.endTurn();
+		TronPlayer playerNotHisTurn = (TronPlayer) player;
+		playerNotHisTurn.performAction(new EndTurnAction());;
 	}
 	
 	@Test(expected = IllegalActionException.class)
 	public void testEndTurn_ToManyActions() {
-		IPlayer player = playerDB.getCurrentPlayer();
+		Player player = playerDB.getCurrentPlayer();
 		for (int i = 0; i < PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN; i++) {
 			moveCont.move(Direction.WEST);
 		}
@@ -53,7 +54,7 @@ public class EndTurnTest extends SetupTestGrid {
 		assertFalse(player.equals(playerDB.getCurrentPlayer()));
 		
 		// cast to a player to try to break the preconditions
-		Player playerNotHisTurn = (Player) player;
-		playerNotHisTurn.endTurn();
+		TronPlayer playerNotHisTurn = (TronPlayer) player;
+		playerNotHisTurn.performAction(new EndTurnAction());;
 	}
 }

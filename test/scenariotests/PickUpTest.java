@@ -8,7 +8,7 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
 import org.junit.Test;
-import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
 import square.Direction;
 import ObjectronExceptions.InventoryFullException;
@@ -37,7 +37,7 @@ public class PickUpTest extends SetupTestGrid {
 	 */
 	@Test
 	public void testPickup_UncharchedID_Success() {
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
 		
@@ -69,7 +69,7 @@ public class PickUpTest extends SetupTestGrid {
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
@@ -105,12 +105,12 @@ public class PickUpTest extends SetupTestGrid {
 	@Test
 	public void testPlayerCanCarryMaximum6Items() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);

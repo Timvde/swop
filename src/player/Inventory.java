@@ -7,7 +7,7 @@ import item.IItem;
 
 /**
  * An inventory of {@link Item}s that is carried by a
- * {@link Player}.
+ * {@link TronPlayer}.
  */
 public class Inventory implements IInventory {
 	
