@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import player.IPlayer;
+import player.Player;
 import square.Direction;
 import square.Square;
 import square.AbstractSquare;
@@ -200,7 +200,7 @@ public class GUI implements Runnable {
 					
 					for (Coordinate c : gridCoords) {
 						Square square = guiDataController.getSquareAt(c);
-						IPlayer player = square.getPlayer();
+						Player player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// Draw finish lines

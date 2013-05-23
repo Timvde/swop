@@ -14,7 +14,7 @@ public class WallPartTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		wall = new WallPart(Collections.<Direction, AbstractSquare> emptyMap());
+		wall = new WallPart();
 	}
 	
 	@Test
@@ -69,16 +69,6 @@ public class WallPartTest {
 	@Test
 	public void testHasPowerFailure() {
 		assertFalse(wall.hasPowerFailure());
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void testAddPowerFailure() {
-		wall.addPowerFailure(null);
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void testRemovePowerFailure() {
-		wall.removePowerFailure(null);
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)

@@ -1,14 +1,14 @@
 package item;
 
-import player.Player;
+import player.TronPlayer;
 import square.NormalSquare;
 import square.SquareContainer;
 import square.TronObject;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalUseException;
 
 /**
- * An Item is an object that can be placed on a {@link NormalSquare}. Each item has a
- * unique ID. Some Items can be picked up by a {@link Player}.
+ * An Item is an object that can be placed on a {@link NormalSquare}. Each item
+ * has a unique ID. Some Items can be picked up by a {@link TronPlayer}.
  */
 public interface IItem extends TronObject {
 	
@@ -25,20 +25,21 @@ public interface IItem extends TronObject {
 	 * 
 	 * @param square
 	 *        the square on which the item was used.
-	 * @throws CannotPlaceLightGrenadeException
+	 * @throws IllegalUseException
+	 *         When the item cannot be used
 	 */
-	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException;
+	public void use(SquareContainer square) throws IllegalUseException;
 	
 	/**
-	 * Return whether or not this item can be picked up by a {@link Player}.
+	 * Return whether or not this item can be picked up by a {@link TronPlayer}.
 	 * 
-	 * @return whether or not this item can be picked up by a {@link Player}.
+	 * @return whether or not this item can be picked up by a {@link TronPlayer}
+	 *         .
 	 */
 	public boolean isCarriable();
 	
-	
 	/**
-	 * Returns this object as a char. 
+	 * Returns this object as a char.
 	 * 
 	 * @return A character representation of this object.
 	 */

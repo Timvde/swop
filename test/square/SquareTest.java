@@ -16,7 +16,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
-import player.IPlayer;
+import player.Player;
 import player.PlayerDataBase;
 import powerfailure.PowerFailure;
 import powerfailure.PrimaryPowerFailure;
@@ -25,11 +25,11 @@ import powerfailure.PrimaryPowerFailure;
 public class SquareTest {
 	
 	private static NormalSquare	square;
-	private static IPlayer playerOnSquare;
+	private static Player playerOnSquare;
 	
 	@Before
 	public void setUp() {
-		square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		square = new NormalSquare();
 		
 		
 		TronGridBuilder builder = new TronGridBuilder();
@@ -90,7 +90,7 @@ public class SquareTest {
 	@Test
 	public void testContains() {
 		// create some stuff but do not place it on the square
-		IPlayer player = new DummyPlayer();
+		Player player = new DummyPlayer();
 		LightGrenade lightGrenade = new LightGrenade();
 		
 		// test if the square contains anything (i hope not)

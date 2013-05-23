@@ -1,6 +1,5 @@
 package controllers;
 
-import player.IPlayer;
 import player.IPlayerDataBase;
 
 /**
