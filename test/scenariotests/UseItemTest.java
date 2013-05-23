@@ -7,7 +7,7 @@ import gui.GUI;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
-import item.lightgrenade.LightGrenade.LightGrenadeState;
+import item.lightgrenade.LightGrenadeState;
 import java.util.List;
 import org.junit.Test;
 import square.AbstractSquare;

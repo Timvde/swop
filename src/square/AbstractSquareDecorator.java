@@ -33,17 +33,17 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	public void update(Observable o, Object arg) {
 		square.update(o, arg);
 	}
-
+	
 	@Override
 	public boolean isWall() {
 		return square.isWall();
 	}
-
+	
 	@Override
 	public boolean isStartingPosition() {
 		return square.isStartingPosition();
 	}
-
+	
 	final AbstractSquare getSquare() {
 		return square;
 	}
@@ -140,6 +140,5 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	public boolean hasForceField() {
 		return square.hasForceField();
 	}
-	
 	
 }

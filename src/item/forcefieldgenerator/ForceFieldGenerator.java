@@ -1,7 +1,5 @@
 package item.forcefieldgenerator;
 
-import item.Effect;
-import item.EmptyEffect;
 import item.IItem;
 import item.Item;
 import java.util.ArrayList;
@@ -65,10 +63,5 @@ public class ForceFieldGenerator extends Item {
 	@Override
 	public String toString() {
 		return "ForceFieldGenerator." + getId();
-	}
-	
-	@Override
-	public Effect getEffect() {
-		return new EmptyEffect();
 	}
 }

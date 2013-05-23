@@ -11,11 +11,12 @@ import player.Player;
 import powerfailure.PrimaryPowerFailure;
 
 /**
- * Square container manages the decorators for square. Because the lifetime of
- * the a square object span almost the entire application time, a container is
- * used to manage the square reference. This allows the square to be decorated
- * by other objects. And thus modifying the properties of a square during the
- * game. Properties can be added by the {@link #addProperty(Property)} method.
+ * Square container manages the decorators for square. Because the lifetime of a
+ * square object spans almost the entire application time, a container is used
+ * to manage the square reference. This allows the square to be decorated by
+ * other objects. And thus modifying the properties of a square during the game.
+ * Properties can be added and removed by the {@link #addProperty(Property)} en
+ * {@link #removeProperty(Property)} methods.
  * 
  */
 public class SquareContainer extends AbstractSquare {
@@ -46,14 +47,14 @@ public class SquareContainer extends AbstractSquare {
 	 *        the square this container will hold
 	 */
 	public SquareContainer(Map<Direction, SquareContainer> neighbours, AbstractSquare square) {
-		
-		this.square = square;
-		this.decorators = new HashMap<Property, AbstractSquareDecorator>();
-		
+		if (square == null)
+			throw new IllegalArgumentException("the given square cannot be null");
 		if (!canHaveAsNeighbours(neighbours))
 			throw new IllegalArgumentException(
 					"the specified neighbours could not be set as the neighbours for this square!");
 		
+		this.square = square;
+		this.decorators = new HashMap<Property, AbstractSquareDecorator>();
 		this.neighbours = new HashMap<Direction, SquareContainer>(neighbours);
 		
 		// Make sure the link is bidirectional
@@ -98,6 +99,9 @@ public class SquareContainer extends AbstractSquare {
 	 *        The new neighbour
 	 */
 	private void setNeighbourInDirection(Direction direction, SquareContainer square) {
+		if (direction == null || square == null)
+			throw new IllegalArgumentException("cannot set a null square or a null direction");
+		
 		this.neighbours.put(direction, square);
 	}
 	
@@ -207,8 +211,12 @@ public class SquareContainer extends AbstractSquare {
 		square.addItem(item);
 	}
 	
+	@Override
 	public int hashCode() {
-		return square.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((square == null) ? 0 : square.hashCode());
+		return result;
 	}
 	
 	public void remove(Object object) {
@@ -227,10 +235,8 @@ public class SquareContainer extends AbstractSquare {
 		return square.canAddPlayer();
 	}
 	
-	public boolean equals(Object obj) {
-		return square.equals(obj);
-	}
 	
+	@Override
 	public String toString() {
 		return square.toString();
 	}
@@ -287,6 +293,24 @@ public class SquareContainer extends AbstractSquare {
 	@Override
 	public boolean isStartingPosition() {
 		return square.isStartingPosition();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SquareContainer))
+			return false;
+		SquareContainer other = (SquareContainer) obj;
+		if (square == null) {
+			if (other.square != null)
+				return false;
+		}
+		else if (!square.equals(other.square))
+			return false;
+		return true;
 	}
 	
 }

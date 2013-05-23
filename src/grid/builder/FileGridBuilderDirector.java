@@ -15,10 +15,10 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 /**
- * Director that will create a grid specified in a file. The types of squares will be 
- * specified on in the file. the items in the game will be placed randomly. 
- * 
- * TODO Specifications of the file 
+ * Director that will create a grid specified in a file. For the placement of
+ * items it will call the
+ * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
+ * supertype method}.
  */
 public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
@@ -107,20 +107,16 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 					if (c == ' ') {
 						builder.addSquare(coord);
 					}
-					else if (c == '*') {
-						// do nothing, this square doesn't exist
-					}
-					else if (c == '#') {
+					else if (c == '*')
+						;// do nothing, this square doesn't exist
+					else if (c == '#')
 						builder.addWall(coord);
-					}
-					else if (c == '1') {
+					else if (c == '1')
 						startingCoordinates.add(coord);
-					}
-					else if (c == '2') {
+					else if (c == '2')
 						startingCoordinates.add(coord);
-					}
 					else {
-						dis.close();
+						fis.close();
 						br.close();
 						throw new InvalidGridFileException("Invalid grid-file character: " + c);
 					}

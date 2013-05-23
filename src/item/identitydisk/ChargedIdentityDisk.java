@@ -1,7 +1,5 @@
 package item.identitydisk;
 
-import item.Effect;
-import item.EmptyEffect;
 
 /**
  * Charged Identity disk can be launched by players on the grid. The disk will
@@ -18,12 +16,6 @@ public class ChargedIdentityDisk extends IdentityDisk {
 	@Override
 	public char toChar() {
 		return 'c';
-	}
-
-	@Override
-	public Effect getEffect() {
-		return new EmptyEffect();
-	}
-	
+	}	
 	
 }

@@ -6,7 +6,7 @@ import player.actions.Action;
 import square.Square;
 import square.SquareContainer;
 import square.TronObject;
-
+ 
 /*
  * NOTE: Only PlayerDB holds a reference to the Player-objects. 
  * The controllers only get IPlayer references 
@@ -24,7 +24,7 @@ public interface Player extends TronObject {
 	 * 
 	 * @return the ID associated with this player.
 	 */
-	public int getID();
+	public int getID(); 
 	
 	/**
 	 * Returns the square this player has to reach to win the game.

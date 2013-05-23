@@ -20,7 +20,7 @@ public class NormalSquare extends AbstractSquare {
 	/** the list of items in this square */
 	private List<IItem>		itemList;
 	/** the player on this square */
-	private Player			player;
+	private Player			player; 
 	/** a boolean representing whether there is a light trail on this square */
 	private boolean			lightTrail;
 	

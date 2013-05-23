@@ -41,15 +41,15 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public void addPlayer(Player p) throws IllegalArgumentException {
+	public void addPlayer(Player p) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
-			throw new IllegalArgumentException(" a player cannot move onto a force field");
-		else
-			super.addPlayer(p);
+			throw new IllegalStateException(" a player cannot move onto a force field");
+		
+		super.addPlayer(p);
 	}
 	
 	@Override
-	public void addItem(IItem item) throws IllegalArgumentException {
+	public void addItem(IItem item) {
 		/*
 		 * Identity Disks have to be destroyed by a Force Field, so we don't
 		 * want to add them anymore
@@ -60,10 +60,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	
 	@Override
 	public boolean hasForceField() {
-		if (forceField.getState() == ForceFieldState.ACTIVE)
-			return true;
-		else
-			return super.hasForceField();
+		return forceField.getState() == ForceFieldState.ACTIVE;
 	}
 	
 	@Override
