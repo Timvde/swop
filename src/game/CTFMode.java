@@ -7,7 +7,7 @@ import java.util.Map;
 import player.Player;
 import player.PlayerDataBase;
 import player.TurnEvent;
-import effects.CTFFactory;
+import effects.CTFEffectFactory;
 import effects.EffectFactory;
 
 /**
@@ -111,7 +111,7 @@ public class CTFMode implements GameMode {
 	
 	@Override
 	public EffectFactory getEffectFactory() {
-		return new CTFFactory();
+		return new CTFEffectFactory();
 	}
 	
 }

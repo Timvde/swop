@@ -1,6 +1,7 @@
 package square;
 
 import item.IItem;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -235,7 +236,6 @@ public class SquareContainer extends AbstractSquare {
 		return square.canAddPlayer();
 	}
 	
-	
 	@Override
 	public String toString() {
 		return square.toString();
@@ -294,7 +294,7 @@ public class SquareContainer extends AbstractSquare {
 	public int getStartingPosition() {
 		return square.getStartingPosition();
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -311,6 +311,20 @@ public class SquareContainer extends AbstractSquare {
 		else if (!square.equals(other.square))
 			return false;
 		return true;
+	}
+	
+	/**
+	 * Returns a list with all the neigbours of this square.
+	 * 
+	 * @return a list with all the neigbours of this square.
+	 */
+	public List<SquareContainer> getAllNeighbours() {
+		List<SquareContainer> result = new ArrayList<SquareContainer>();
+		for (Direction dir : Direction.values()) {
+			if (this.getNeighbourIn(dir) != null)
+				result.add(this.getNeighbourIn(dir));
+		}
+		return result;
 	}
 	
 }
