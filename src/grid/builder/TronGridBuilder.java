@@ -14,6 +14,7 @@ import java.util.Map;
 import square.Direction;
 import square.NormalSquare;
 import square.PlayerStartingPosition;
+import square.Property;
 import square.SquareContainer;
 import square.WallPart;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -158,14 +159,28 @@ public class TronGridBuilder implements GridBuilder {
 			return false;
 		if (!grid.containsKey(coordinate))
 			return false;
-		else if (grid.get(coordinate).isWall())
+		else if (isWall(grid.get(coordinate)))
 			return false;
-		else if (grid.get(coordinate).isStartingPosition())
+		else if (isStartingPosition(grid.get(coordinate)))
 			return false;
 		else
 			return true;
 	}
 	
+	private boolean isWall(SquareContainer squareContainer) {
+		for (Property property : squareContainer.getProperties())
+			if (property instanceof WallPart)
+				return true;
+		return false;
+	}
+	
+	private boolean isStartingPosition(SquareContainer squareContainer) {
+		for (Property property : squareContainer.getProperties())
+			if (property instanceof PlayerStartingPosition)
+				return true;
+		return false;
+	}
+
 	/**
 	 * Returns a map of all the neighbours for a specified coordinate. If the
 	 * neighbour in a direction does not exist, the mapping will contain null.
