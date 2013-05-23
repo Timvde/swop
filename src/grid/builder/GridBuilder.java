@@ -14,7 +14,9 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
  * Builder for the grid objects of a board game. The board consists of
- * {@link Square squares}. {@link IItem Items} can be placed on these squares.
+ * {@link AbstractSquare abstract squares} , each square can be a
+ * {@link WallPart wall} or a {@link Square square}. {@link IItem Items} can be
+ * placed on these squares.
  */
 public interface GridBuilder {
 	

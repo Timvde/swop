@@ -128,11 +128,10 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 				position = new Coordinate(x, y);
 			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position)
 					|| startingCoordinates.contains(position));
-			builder.placeLightGrenade(position);
 			placedLGCoordinates.add(position);
 		}
 		
-		// place other light grenades
+		// place all light grenades
 		addItemCoordinates(startingCoordinates, maxX, maxY, PERCENTAGE_OF_GRENADES,
 				placedLGCoordinates);
 		for (Coordinate coord : placedLGCoordinates)
@@ -224,7 +223,6 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 			} while (!builder.canPlaceItem(position)
 					|| placedIdentityDisksCoordinates.contains(position)
 					|| startingCoordinates.contains(position));
-			builder.placeUnchargedIdentityDisc(position);
 			placedIdentityDisksCoordinates.add(position);
 		}
 		

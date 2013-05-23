@@ -25,6 +25,9 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	 */
 	public PowerFailureDecorator(AbstractSquare square, PowerFailure powerfailure) {
 		super(square);
+		if (powerfailure == null) 
+			throw new IllegalArgumentException("powerfailure cannot be null");
+		
 		this.powerfailure = powerfailure;
 	}
 	
@@ -81,13 +84,12 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof PowerFailureDecorator))
 			return false;
+		
 		PowerFailureDecorator other = (PowerFailureDecorator) obj;
-		if (powerfailure == null) {
-			if (other.powerfailure != null)
-				return false;
-		}
+		if (!this.hasPowerFailure() && other.hasPowerFailure())
+			return false;
 		else if (!powerfailure.equals(other.powerfailure))
 			return false;
 		return true;

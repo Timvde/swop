@@ -36,7 +36,7 @@ public interface Square {
 	public boolean hasLightTrail();
 	
 	/**
-	 * Returns whether or not this ASquare holds currently a {@link TronPlayer
+	 * Returns whether or not this Square holds currently a {@link TronPlayer
 	 * player}
 	 * 
 	 * @return Whether this square has a Player.

@@ -75,7 +75,7 @@ public class PowerFailureTest {
 		Effect effect = powerFailure.getEffect();
 		effect.addEffect(lightGrenade.getEffect());
 		effect.execute(player);
-		
+		 
 		assertFalse(player.isDamagedByPowerFailure());
 		assertEquals(INCREASED_DAMAGE, player.getNumberOfActionsSkipped());
 	}

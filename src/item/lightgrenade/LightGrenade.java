@@ -7,11 +7,13 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
  * Light grenades are items that can be picked up and used by a player. There
- * are three states for a light grenade: {@link LightGrenadeState#ACTIVE ACTIVE}
- * , {@link LightGrenadeState#INACTIVE INACTIVE},
- * {@link LightGrenadeState#EXPLODED EXPLODED}. A light grenade always starts in
- * the {@link LightGrenadeState#INACTIVE INACTIVE} state. When the light grenade
- * then gets used by a player the internal state of this item will be changed to
+ * are three states for a light grenade: <li>{@link LightGrenadeState#ACTIVE
+ * ACTIVE}</li> <li>{@link LightGrenadeState#INACTIVE INACTIVE}</li> <li>
+ * {@link LightGrenadeState#EXPLODED EXPLODED}.</li>
+ * 
+ * A light grenade always starts in the {@link LightGrenadeState#INACTIVE
+ * INACTIVE} state. When the light grenade then gets used by a player the
+ * internal state of this item will be changed to
  * {@link LightGrenadeState#ACTIVE ACTIVE}. The light grenade can now explode.
  * After exploding the light grenade converts to it's last state
  * {@link LightGrenadeState#EXPLODED EXPLODED}, this will convert the item to a
