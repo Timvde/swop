@@ -97,12 +97,40 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	}
 	
 	/**
+	 * Check if the given direction is a valid direction in which an ID can be
+	 * shot in.
+	 */
+	private boolean isValidDirection(Direction direction) {
+		if (direction == null)
+			return false;
+		
+		if (direction == Direction.NORTHEAST)
+			return false;
+		
+		if (direction == Direction.SOUTHEAST)
+			return false;
+		
+		if (direction == Direction.SOUTHWEST)
+			return false;
+		
+		if (direction == Direction.NORTHWEST)
+			return false;
+		
+		return true;
+	}
+	
+	/**
 	 * Set the direction in which the disk will be fired.
 	 * 
 	 * @param direction
 	 *        the direction in which the disk will be fired.
+	 * @throws IllegalArgumentException
+	 *         If the given direction is not a valid direction.
 	 */
 	public void setDirection(Direction direction) {
+		if (!isValidDirection(direction))
+			throw new IllegalArgumentException("The direction is not a valid direction.");
+		
 		this.direction = direction;
 	}
 	
