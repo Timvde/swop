@@ -81,10 +81,18 @@ public enum Direction {
 	}
 	
 	/**
-	 * Returns the primary directions neighbouring this direction, or the
-	 * direction itself if it is a primary direction.
+	 * Returns whether or not this direction is primary. Primary directions are:
+	 * are NORTH, EAST, SOUTH, WEST.
 	 * 
-	 * Note: Primary directions are: are NORTH, EAST, SOUTH, WEST.
+	 * @return whether or not this direction is primary.
+	 */
+	public boolean isPrimaryDirection() {
+		return isPrimaryDirection;
+	}
+	
+	/**
+	 * Returns the primary directions neighbouring this direction, or the
+	 * direction itself if it is a {@link #isPrimaryDirection primary direction}.
 	 * 
 	 * @return the primary directions neighbouring this direction or itself if
 	 *         it a primary direction
@@ -104,7 +112,8 @@ public enum Direction {
 	 * @return The next clockwise direction
 	 */
 	public Direction getNextClockwiseDirection() {
-		return Direction.values()[(this.ordinal() + Direction.values().length + 1) % Direction.values().length];
+		return Direction.values()[(this.ordinal() + Direction.values().length + 1)
+				% Direction.values().length];
 	}
 	
 	/**
@@ -125,7 +134,8 @@ public enum Direction {
 	 * @return The next counterclockwise direction
 	 */
 	public Direction getNextCounterClockwiseDirection() {
-		return Direction.values()[(this.ordinal() + Direction.values().length - 1) % Direction.values().length];
+		return Direction.values()[(this.ordinal() + Direction.values().length - 1)
+				% Direction.values().length];
 	}
 	
 	/**

@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
 import player.IPlayer;
 import square.Direction;
 import square.Square;
-import square.AbstractSquare;
+import game.Game;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -748,26 +748,26 @@ public class GUI implements Runnable, Observer {
 		
 	}
 	
-	/**
-	 * Let the GUI start observing a new created game.
-	 */
-	public void startObserving() {
-		this.guiDataController.addAsGameObserver(this);
-	}
-	
 	@Override
 	public void update(Observable o, Object arg) {
-		GameEvent state = (GameEvent) arg;
-		
-		switch (state) {
-			case PLAYER_WON:
-				JOptionPane.showMessageDialog(gui.getFrame(),
-						"Player " + guiDataController.getCurrentPlayer() + " has won the game!");
-				break;
-			case PLAYER_LOSE:
-				JOptionPane.showMessageDialog(gui.getFrame(),
-						"Player " + guiDataController.getCurrentPlayer() + " has lost the game!");
-				break;
+		if (o instanceof Game && arg instanceof GameEvent) {
+			GameEvent state = (GameEvent) arg;
+			
+			switch (state) {
+				case PLAYER_WON:
+					JOptionPane
+							.showMessageDialog(gui.getFrame(),
+									"Player " + guiDataController.getCurrentPlayer()
+											+ " has won the game!");
+					break;
+				case PLAYER_LOSE:
+					JOptionPane.showMessageDialog(gui.getFrame(),
+							"Player " + guiDataController.getCurrentPlayer()
+									+ " has lost the game!");
+					break;
+			}
 		}
+		//else do nothing; return
 	}
+	
 }

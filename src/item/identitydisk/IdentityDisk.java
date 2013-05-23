@@ -105,17 +105,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	private boolean isValidDirection(Direction direction) {
 		if (direction == null)
 			return false;
-		
-		if (direction == Direction.NORTHEAST)
-			return false;
-		
-		if (direction == Direction.SOUTHEAST)
-			return false;
-		
-		if (direction == Direction.SOUTHWEST)
-			return false;
-		
-		if (direction == Direction.NORTHWEST)
+		if (!direction.isPrimaryDirection())
 			return false;
 		
 		return true;

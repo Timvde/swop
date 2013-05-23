@@ -4,7 +4,6 @@ import game.CTFMode;
 import game.GameMode;
 import game.GameRunner;
 import game.RaceMode;
-import gui.GUI;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 
 /**
@@ -14,7 +13,6 @@ import ObjectronExceptions.builderExceptions.GridBuildException;
 public class NewGameController {
 	
 	private GameRunner	gameRunner;
-	private GUI gui;
 	
 	/**
 	 * Create a new game controller with a given game.
@@ -22,7 +20,7 @@ public class NewGameController {
 	 * @param gameRunner
 	 *        The game reference.
 	 */
-	public NewGameController(GameRunner gameRunner, GUI gui) {
+	public NewGameController(GameRunner gameRunner) {
 		if (gameRunner == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.gameRunner = gameRunner;
@@ -36,16 +34,12 @@ public class NewGameController {
 	 *        The width of the game grid.
 	 * @param height
 	 *        The height of the game grid.
-	 * @param gui
-	 *        The GUI reference so we can add GUI as an observer for the new
-	 *        game
 	 * @throws IllegalArgumentException
 	 *         The specified width and height must be greater then the minima.
 	 */
 	public void newRaceGame(int width, int height) throws IllegalArgumentException {
 		GameMode mode = new RaceMode();
 		this.gameRunner.newGame(mode, width, height);
-		gui.startObserving();
 	}
 	
 	/**
@@ -68,7 +62,6 @@ public class NewGameController {
 			throws IllegalArgumentException {
 		GameMode mode = new CTFMode(numberOfPlayers);
 		this.gameRunner.newGame(mode, width, height);
-		gui.startObserving();
 	}
 	
 	/**
@@ -83,7 +76,6 @@ public class NewGameController {
 	public void newRaceGame(String file) {
 		GameMode mode = new RaceMode();
 		this.gameRunner.newGame(mode, file);
-		gui.startObserving();
 	}
 	
 	/**
@@ -103,7 +95,6 @@ public class NewGameController {
 	public void newCTFGame(String file, int numberOfPlayers) {
 		GameMode mode = new CTFMode(numberOfPlayers);
 		this.gameRunner.newGame(mode, file);
-		gui.startObserving();
 	}
 	
 }
