@@ -32,7 +32,7 @@ public class ForceFieldGenerator extends Item {
 	 * @param square
 	 *        The square this forcefield is on
 	 */
-	public void findAndCreateForceFields(SquareContainer square) {
+	private void findAndCreateForceFields(SquareContainer square) {
 		for (Direction direction : Direction.values()) {
 			List<SquareContainer> listOfSquares = new ArrayList<SquareContainer>();
 			SquareContainer neighbour = square;

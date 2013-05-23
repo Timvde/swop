@@ -4,7 +4,7 @@ import player.Player;
 import square.Direction;
 
 /**
- * Trhown when an {@link Player} tried to move one step in a specified
+ * Thrown when an {@link Player} tried to move one step in a specified
  * {@link Direction} when he's not allowed to do so.
  */
 public class IllegalStepException extends IllegalMoveException {

@@ -14,7 +14,7 @@ import square.Square;
  * GUI visuals.
  * 
  * @author tom
- *
+ * 
  */
 public class GUIDataController {
 	
@@ -25,9 +25,9 @@ public class GUIDataController {
 	 * Create a new gui data controller.
 	 * 
 	 * @param playerDB
-	 * 			The player database the controller will use.
+	 *        The player database the controller will use.
 	 * @param grid
-	 * 			The grid the controller will use.
+	 *        The grid the controller will use.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
 		if (playerDB == null)
@@ -51,15 +51,16 @@ public class GUIDataController {
 	/**
 	 * Set the grid of the controller to a new grid.
 	 * 
-	 * @param g
-	 * 			The new grid for this controller
+	 * @param grid
+	 *        The new grid for this controller
 	 */
-	public void setGrid(Grid g) {
-		this.grid = g;
+	public void setGrid(Grid grid) {
+		this.grid = grid;
 	}
 	
 	/**
 	 * Return the current player in the game.
+	 * 
 	 * @return returns the current player of the game
 	 */
 	public Player getCurrentPlayer() {
@@ -68,7 +69,8 @@ public class GUIDataController {
 	
 	/**
 	 * Return a list of items in the inventory of the current player.
-	 * @return iventory of the player 
+	 * 
+	 * @return inventory of the player
 	 */
 	public List<IItem> getCurrentPlayerInventoryItems() {
 		return getCurrentPlayer().getInventoryContent();
@@ -77,7 +79,8 @@ public class GUIDataController {
 	/**
 	 * Return a list of items that are located on the square that the current
 	 * player resides on.
-	 * @return list of items 
+	 * 
+	 * @return list of items
 	 */
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
 		Square currSq = getCurrentPlayer().getCurrentLocation();
@@ -87,24 +90,24 @@ public class GUIDataController {
 	/**
 	 * Return the items on a square at the specified coordinate of the grid.
 	 * 
-	 * @param c
+	 * @param coordinate
 	 *        The coordinate of the square we want the items of.
 	 * @return items of a specified coordinate
 	 */
-	public List<IItem> getItemList(Coordinate c) {
-		return grid.getItemList(c);
+	public List<IItem> getItemList(Coordinate coordinate) {
+		return grid.getItemList(coordinate);
 	}
 	
 	/**
 	 * Get the square at a certain coordinate on the grid.
 	 * 
-	 * @param c
+	 * @param coordinate
 	 *        The coordinate of the square.
 	 * @return An abstract square object that lies on the given coordinate on
 	 *         the grid.
 	 */
-	public Square getSquareAt(Coordinate c) {
-		return grid.getSquareAt(c);
+	public Square getSquareAt(Coordinate coordinate) {
+		return grid.getSquareAt(coordinate);
 	}
 	
 	/**
@@ -119,13 +122,13 @@ public class GUIDataController {
 	/**
 	 * Check if the given square is a starting position of a player.
 	 * 
-	 * @param s
+	 * @param square
 	 *        The square to test.
 	 * @return True if the given square is a player starting position.
 	 */
-	public boolean isPlayerStartingPosition(Square s) {
+	public boolean isPlayerStartingPosition(Square square) {
 		for (Square sq : grid.getAllStartingPositions()) {
-			if (sq.equals(s))
+			if (sq.equals(square))
 				return true;
 		}
 		return false;

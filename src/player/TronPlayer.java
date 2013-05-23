@@ -164,7 +164,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 *         state to the specified state. I.e.
 	 *         <code>this.getState().isAllowedTransistionTo(state)</code>
 	 */
-	public void setPlayerState(PlayerState state) throws IllegalArgumentException {
+	void setPlayerState(PlayerState state) throws IllegalArgumentException {
 		if (!this.state.isAllowedTransistionTo(state)) {
 			throw new IllegalArgumentException(
 					"The player is not allowed to switch from the current state ("
@@ -271,6 +271,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 * Let the player loose the current game
 	 */
 	public void looseGame() {
+		setPlayerState(PlayerState.LOST);
 		playerDB.reportGameLost(this);
 	}
 }

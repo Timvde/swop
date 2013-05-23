@@ -21,7 +21,6 @@ public class EndTurnAction implements Action {
 		}
 		else {
 			// setPlayerState will check if we can transition to the LOST state
-			player.setPlayerState(PlayerState.LOST);
 			player.looseGame();
 		}
 	}
