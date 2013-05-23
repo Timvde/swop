@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import item.DummyEffectFactory;
 import item.Item;
 import item.identitydisk.IdentityDisk;
 import item.identitydisk.UnchargedIdentityDisk;
@@ -18,7 +19,6 @@ import org.junit.Test;
 import player.DummyPlayer;
 import player.IPlayer;
 import player.PlayerDataBase;
-import powerfailure.PowerFailure;
 import powerfailure.PrimaryPowerFailure;
 
 @SuppressWarnings("javadoc")
@@ -29,10 +29,10 @@ public class SquareTest {
 	
 	@Before
 	public void setUp() {
-		square = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		square = new NormalSquare();
 		
 		
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		PlayerDataBase db = new PlayerDataBase();
 		db.createNewDB(builder.getResult().getAllStartingPositions());
@@ -43,7 +43,7 @@ public class SquareTest {
 	
 	@Test
 	public void testAddItem() {
-		Item item = new LightGrenade();
+		Item item = new LightGrenade(new DummyEffectFactory());
 		square.addItem(item);
 		assertTrue(square.getCarryableItems().contains(item));
 		assertTrue(square.contains(item));
@@ -66,7 +66,7 @@ public class SquareTest {
 	@Test
 	public void testRemove() {		
 		// place some stuff on the square
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		square.addItem(lightGrenade);
 		
 		// test if null removes anything (it shouldn't)
@@ -91,7 +91,7 @@ public class SquareTest {
 	public void testContains() {
 		// create some stuff but do not place it on the square
 		IPlayer player = new DummyPlayer();
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		
 		// test if the square contains anything (i hope not)
 		assertFalse(square.contains(null));
@@ -135,7 +135,7 @@ public class SquareTest {
 		for (Direction direction : Direction.values()) {
 			neighbours.put(direction, new Square(Collections.<Direction, ASquare> emptyMap()));
 		}
-		NormalSquare sq = new NormalSquare(neighbours);
+		NormalSquare sq = new NormalSquare();
 		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(sq);
 		
 		// test if the primary power failure is set
@@ -188,7 +188,7 @@ public class SquareTest {
 	@Test
 	public void testGetCarryableItems() {
 		// add some items to the square
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		Teleporter teleporter = new Teleporter(null, square);
 		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
@@ -205,7 +205,7 @@ public class SquareTest {
 	@Test
 	public void testGetCarryableItems_encapsulation() {
 		// add some items to the square
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		Teleporter teleporter = new Teleporter(null, square);
 		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
@@ -222,7 +222,7 @@ public class SquareTest {
 	@Test
 	public void testPickUpItem() {
 		// add some items to the square
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		Teleporter teleporter = new Teleporter(null, square);
 		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		

@@ -3,7 +3,6 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import game.Game;
 import gui.GUI;
 import item.DummyEffectFactory;
 import item.IItem;
@@ -12,17 +11,10 @@ import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenadeState;
 import java.util.List;
 import org.junit.Test;
-import controllers.EndTurnController;
-import controllers.GUIDataController;
-import controllers.MoveController;
-import controllers.NewGameController;
-import controllers.PickUpItemController;
-import controllers.UseItemController;
 import square.Direction;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
-import ObjectronExceptions.ItemNotOnSquareException;
 
 /**
  * Tests the "Use An Item From The Inventory" use case.

@@ -1,8 +1,8 @@
 package item.identitydisk;
 
-import item.AbstractEffect;
 import player.Player;
 import square.TronObject;
+import effects.AbstractEffect;
 
 /**
  * This class represents the effect which an IdentityDisk has when it hits a

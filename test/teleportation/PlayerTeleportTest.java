@@ -5,8 +5,8 @@ import static org.junit.Assert.assertFalse;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import item.DummyEffectFactory;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.Player;
@@ -25,9 +25,8 @@ public class PlayerTeleportTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
-		start = new NormalSquare(neighbours);
-		destination = new NormalSquare(neighbours);
+		start = new NormalSquare();
+		destination = new NormalSquare();
 		PlayerDataBase db = new PlayerDataBase();
 		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();

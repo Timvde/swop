@@ -13,8 +13,8 @@ import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
 import square.WallPart;
-import effects.Effect;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import effects.Effect;
 
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {

@@ -1,12 +1,12 @@
 package item.lightgrenade;
 
-import org.hamcrest.Factory;
-import effects.EffectFactory;
-import effects.ExplodeEffect;
 import item.IItem;
 import item.Item;
 import square.SquareContainer;
+import effects.Effect;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import effects.EffectFactory;
+import effects.ExplodeEffect;
 
 /**
  * Light grenades are items that can be picked up and used by a player. There
@@ -123,7 +123,7 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public ExplodeEffect getEffect() {
+	public Effect getEffect() {
 		return effectFactory.getExplodeEffect(this);
 	}
 	

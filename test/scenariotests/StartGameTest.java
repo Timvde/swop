@@ -10,8 +10,8 @@ import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.NewGameController;
 
 /**
- * Tests the "Start New Game", "Choose Generated Grid" and
- * "Choose Grid From File" use cases.
+ * Tests the "Start New Game", "Choose Generated Grid", "Choose Grid From File"
+ * and "Choose Capture The Flag Mode" use cases.
  */
 @SuppressWarnings("javadoc")
 public class StartGameTest {
@@ -144,7 +144,6 @@ public class StartGameTest {
 	
 	@Test(expected = IllegalStateException.class)
 	public void testCTFIllegalNumberOfPlayers() {
-		newGameCont.newCTFGame("grid.txt",
-				RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS + 1);
+		newGameCont.newCTFGame("grid.txt", RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS + 1);
 	}
 }

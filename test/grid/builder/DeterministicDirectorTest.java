@@ -4,14 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import effects.RaceEffectFactory;
-import grid.Coordinate;
-import grid.Grid;
 import item.IItem;
 import item.teleporter.Teleporter;
 import org.junit.Before;
 import org.junit.Test;
 import square.AbstractSquare;
+import effects.RaceEffectFactory;
+import grid.Coordinate;
+import grid.Grid;
 
 @SuppressWarnings("javadoc")
 public class DeterministicDirectorTest {

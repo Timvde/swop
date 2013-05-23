@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import item.DummyEffectFactory;
 import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import java.util.Observable;
@@ -16,7 +17,6 @@ import org.junit.Test;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
-import item.DummyEffectFactory;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 

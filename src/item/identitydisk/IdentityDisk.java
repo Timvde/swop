@@ -1,10 +1,10 @@
 package item.identitydisk;
 
-import item.Effect;
 import item.Item;
 import item.teleporter.Teleportable;
 import square.Direction;
 import square.SquareContainer;
+import effects.Effect;
 
 /**
  * Charged Identity disk can be launched by players on the grid. The disk will

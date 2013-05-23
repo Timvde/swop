@@ -21,7 +21,7 @@ public interface EffectFactory {
 	 * 
 	 * @return A new Explode effect.
 	 */
-	ExplodeEffect getExplodeEffect(LightGrenade lightGrenade);
+	Effect getExplodeEffect(LightGrenade lightGrenade);
 	
 	/**
 	 * Returns a new {@link TeleportationEffect}.
@@ -31,20 +31,20 @@ public interface EffectFactory {
 	 * 
 	 * @return A new Teleportation effect.
 	 */
-	TeleportationEffect getTeleportationEffect(Teleporter teleporter);
+	Effect getTeleportationEffect(Teleporter teleporter);
 	
 	/**
 	 * Returns a new {@link PowerFailureEffect}.
 	 * 
 	 * @return A new Powerfailure effect.
 	 */
-	PowerFailureEffect getPowerFailureEffect();
+	Effect getPowerFailureEffect();
 	
 	/**
 	 * Returns a new {@link EmptyEffect}.
 	 * 
 	 * @return A new empty effect.
 	 */
-	EmptyEffect getEmptyEffect();
+	Effect getEmptyEffect();
 	
 }

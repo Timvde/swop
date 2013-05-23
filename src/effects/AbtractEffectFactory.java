@@ -13,22 +13,22 @@ import item.teleporter.Teleporter;
 public class AbtractEffectFactory implements EffectFactory {
 	
 	@Override
-	public ExplodeEffect getExplodeEffect(LightGrenade lightGrenade) {
+	public Effect getExplodeEffect(LightGrenade lightGrenade) {
 		return new ExplodeEffect(lightGrenade);
 	}
 	
 	@Override
-	public TeleportationEffect getTeleportationEffect(Teleporter teleporter) {
+	public Effect getTeleportationEffect(Teleporter teleporter) {
 		return new TeleportationEffect(teleporter);
 	}
 	
 	@Override
-	public PowerFailureEffect getPowerFailureEffect() {
+	public Effect getPowerFailureEffect() {
 		return new PowerFailureEffect();
 	}
 	
 	@Override
-	public EmptyEffect getEmptyEffect() {
+	public Effect getEmptyEffect() {
 		return new EmptyEffect();
 	}
 	

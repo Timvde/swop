@@ -1,8 +1,8 @@
 package effects;
 
+import game.CTFMode;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
-import game.CTFMode;
 
 /**
  * A factory returning {@link Effect effects} for the {@link CTFMode CTF game
@@ -15,8 +15,8 @@ public class CTFEffectFactory extends AbtractEffectFactory {
 	 * Returns an explode effect chained with a drop flag effect.
 	 */
 	@Override
-	public ExplodeEffect getExplodeEffect(LightGrenade lightGrenade) {
-		ExplodeEffect explodeEffect = super.getExplodeEffect(lightGrenade);
+	public Effect getExplodeEffect(LightGrenade lightGrenade) {
+		Effect explodeEffect = super.getExplodeEffect(lightGrenade);
 		explodeEffect.addEffect(new DropFlagEffect());
 		return explodeEffect;
 	}
@@ -25,10 +25,14 @@ public class CTFEffectFactory extends AbtractEffectFactory {
 	 * Returns a teleport effect chained with a drop flag effect.
 	 */
 	@Override
-	public TeleportationEffect getTeleportationEffect(Teleporter teleporter) {
-		TeleportationEffect teleportEffect = super.getTeleportationEffect(teleporter);
-		teleportEffect.addEffect(new DropFlagEffect());
-		return teleportEffect;
+	public Effect getTeleportationEffect(Teleporter teleporter) {
+		/*
+		 * flag should be dropped before going through the teleporter so we
+		 * chain the dropflag first
+		 */
+		Effect result = new DropFlagEffect();
+		result.addEffect(super.getTeleportationEffect(teleporter));
+		return result;
 	}
 	
 }

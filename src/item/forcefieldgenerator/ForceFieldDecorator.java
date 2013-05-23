@@ -1,12 +1,12 @@
 package item.forcefieldgenerator;
 
-import item.Effect;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import java.util.Observable;
 import player.IPlayer;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
+import effects.Effect;
 
 /**
  * A force field decorator modifies the square to simulate a square that is
