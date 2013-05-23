@@ -54,6 +54,9 @@ public class NewGameController {
 	 *        the number of players in the game
 	 * @throws IllegalArgumentException
 	 *         The specified width and height must be greater then the minima.
+	 * @throws IllegalArgumentException
+	 *         The number of players must be greater then or equal to
+	 *         {@value CTFMode#MINIMUM_NUMBER_OF_PLAYERS}.
 	 * @throws IllegalStateException
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
@@ -88,6 +91,9 @@ public class NewGameController {
 	 * @throws GridBuildException
 	 *         The grid file must exist, adhere the correct rules and it cannot
 	 *         contain invalid characters.
+	 * @throws IllegalArgumentException
+	 *         The number of players must be greater then or equal to
+	 *         {@value CTFMode#MINIMUM_NUMBER_OF_PLAYERS}.
 	 * @throws IllegalStateException
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.

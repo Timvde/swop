@@ -3,6 +3,7 @@ package grid.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.util.Random;
 import effects.RaceFactory;
 import grid.Grid;
 import org.junit.Test;
@@ -17,7 +18,8 @@ public class RandomDirectorTest {
 		
 		for (int i = 0; i < 80; i++) {
 			director.setWidth(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH + i);
-			director.setHeight(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT + 5 + i);
+			director.setHeight(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT
+					+ new Random().nextInt(10) + i);
 			director.construct();
 			
 			builder.assertIsValidGrid();
