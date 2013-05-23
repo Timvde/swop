@@ -72,9 +72,6 @@ public class NewGameController {
 	 * @throws GridBuildException
 	 *         The grid file must exist, adhere the correct rules and it cannot
 	 *         contain invalid characters.
-	 * @throws IllegalStateException
-	 *         The number of players must be less then or equal to the number of
-	 *         starting locations defined in grid to be created.
 	 */
 	public void newRaceGame(String file) {
 		GameMode mode = new RaceMode();

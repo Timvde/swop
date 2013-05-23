@@ -68,7 +68,7 @@ public class StartGameTest {
 	
 	@Test
 	public void testNewCTFGameFromFile() {
-		newGameCont.newRaceGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+		newGameCont.newCTFGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
@@ -93,12 +93,22 @@ public class StartGameTest {
 	
 	@Test(expected = InvalidGridFileException.class)
 	public void testInvaldidFile3Race() {
-		newGameCont.newGame("grid_unreachableIsland.txt");
+		newGameCont.newRaceGame("grid_unreachableIsland.txt");
+	}
+	
+	@Test(expected = InvalidGridFileException.class)
+	public void testInvaldidFile3CTF() {
+		newGameCont.newCTFGame("grid_unreachableIsland.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = GridBuildException.class)
 	public void testInvaldidFile4Race() {
-		newGameCont.newGame("file_that_doesn't exist.txt");
+		newGameCont.newRaceGame("file_that_doesn't exist.txt");
+	}
+	
+	@Test(expected = GridBuildException.class)
+	public void testInvaldidFile4CTF() {
+		newGameCont.newCTFGame("file_that_doesn't exist.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -108,6 +118,6 @@ public class StartGameTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testNullInputCTF() {
-		newGameCont.newCTFGame(null);
+		newGameCont.newCTFGame(null, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 }

@@ -25,7 +25,7 @@ public class CTFMode implements GameMode {
 	/**
 	 * The minimum number of players at the start of CTFMode
 	 */
-	public static final int MINIMUM_NUMBER_OF_PLAYERS = 2;
+	public static final int			MINIMUM_NUMBER_OF_PLAYERS	= 2;
 	
 	private int						numberOfPlayers;
 	private Map<Player, Integer>	capturedFlagCount;
@@ -35,10 +35,28 @@ public class CTFMode implements GameMode {
 	 * 
 	 * @param numberOfPlayers
 	 *        the number of players participating in this CTFMode.
+	 * @throws IllegalArgumentException
+	 *         The specified number of players must be
+	 *         {@link #isValidNumberOfPlayers(int) valid}.
 	 */
 	public CTFMode(int numberOfPlayers) {
+		if (!isValidNumberOfPlayers(numberOfPlayers))
+			throw new IllegalArgumentException("the number of players must be valid");
+		
 		this.numberOfPlayers = numberOfPlayers;
 		this.capturedFlagCount = new HashMap<Player, Integer>();
+	}
+	
+	/**
+	 * Returns whether or not a specified number of players is valid. The number
+	 * of players must be greater then {@value #MINIMUM_NUMBER_OF_PLAYERS}.
+	 * 
+	 * @param numberOfPlayers
+	 *        the number of players to check.
+	 * @return whether the specified number is valid.
+	 */
+	public boolean isValidNumberOfPlayers(int numberOfPlayers) {
+		return numberOfPlayers >= MINIMUM_NUMBER_OF_PLAYERS;
 	}
 	
 	@Override
