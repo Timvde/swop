@@ -52,9 +52,9 @@ public class GameRunner {
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
 		UseItemController useItemCont = new UseItemController(this.playerDB);
 		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
-		NewGameController newGameCont = new NewGameController(this);
+		NewGameController newGameCont = new NewGameController(this, gui);
 		// grid is still unknown
-		this.guiDataCont = new GUIDataController(this.playerDB, null);
+		this.guiDataCont = new GUIDataController(this.playerDB, null, game);
 		
 		gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, guiDataCont);
 		

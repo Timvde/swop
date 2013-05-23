@@ -1,5 +1,6 @@
 package item.forcefieldgenerator;
 
+import item.Effect;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import java.util.Observable;
@@ -41,21 +42,21 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public void addPlayer(IPlayer p) {
+	protected void addPlayer(IPlayer p, Effect effect) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
 			throw new IllegalStateException(" a player cannot move onto a force field");
 		
-		super.addPlayer(p);
+		super.addPlayer(p, effect);
 	}
 	
 	@Override
-	public void addItem(IItem item) {
+	protected void addItem(IItem item, Effect effect) {
 		/*
 		 * Identity Disks have to be destroyed by a Force Field, so we don't
 		 * want to add them anymore
 		 */
 		if (forceField.getState() == ForceFieldState.INACTIVE || !(item instanceof IdentityDisk))
-			super.addItem(item);
+			super.addItem(item, effect);
 	}
 	
 	@Override
