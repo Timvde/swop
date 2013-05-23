@@ -5,108 +5,148 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * A Direction enumeration class.
- * 
- * 
+ * A Direction enumeration class. Source for comments:
+ * {@link "http://en.wikipedia.org"}
  */
 public enum Direction {
 	
-	@SuppressWarnings("javadoc")
-	NORTH,
-	
-	@SuppressWarnings("javadoc")
-	SOUTH,
-	
-	@SuppressWarnings("javadoc")
-	EAST,
-	
-	@SuppressWarnings("javadoc")
-	WEST,
-	
-	@SuppressWarnings("javadoc")
-	NORTHEAST,
-	
-	@SuppressWarnings("javadoc")
-	NORTHWEST,
-	
-	@SuppressWarnings("javadoc")
-	SOUTHEAST,
-	
-	@SuppressWarnings("javadoc")
-	SOUTHWEST;
-	
-	/** A list of the primary directions */
-	private List<Direction>	primaryDirections;
-	/** the opposite direction */
-	private Direction		oppositeDirection;
-	
-	private Direction		nextClockwiseDirection;
-	private Direction		nextCounterClockwiseDirection;
-	
-	private ArrayList<Direction>		adjacentDirections = new ArrayList<Direction>();
+	/**
+	 * North is a noun, adjective, or adverb indicating direction or geography.
+	 * 
+	 * North is one of the four cardinal directions or compass points. It is the
+	 * opposite of south and is perpendicular to east and west.
+	 * 
+	 * By convention, the top side of a map is often north.
+	 */
+	NORTH(true),
 	
 	/**
-	 * Get a list of the primary directions. These are NORTH, EAST, SOUTH, WEST.
+	 * Northeast or north east is the ordinal direction halfway between north
+	 * and east. It is the opposite of southwest.
+	 */
+	NORTHEAST(false),
+	
+	/**
+	 * East is a noun, adjective, or adverb indicating direction or geography.
 	 * 
-	 * @return the primary directions
+	 * East is one of the four cardinal directions or compass points. It is the
+	 * opposite of west and is perpendicular to north and south.
+	 * 
+	 * By convention, the right hand side of a map is often east.
+	 */
+	EAST(true),
+	
+	/**
+	 * Southeast or south east is the ordinal direction halfway between south
+	 * and east. It is the opposite of northwest.
+	 */
+	SOUTHEAST(false),
+	
+	/**
+	 * South is a noun, adjective, or adverb indicating direction or geography.
+	 * 
+	 * South is one of the four cardinal directions or compass points. It is the
+	 * polar opposite of north and is perpendicular to east and west.
+	 * 
+	 * By convention, the bottom side of a map is often south.
+	 */
+	SOUTH(true),
+	
+	/**
+	 * Southwest or south west is the ordinal direction halfway between south
+	 * and west on a compass. It is the opposite of northeast.
+	 */
+	SOUTHWEST(false),
+	
+	/**
+	 * West is a noun, adjective, or adverb indicating direction or geography.
+	 * 
+	 * West is one of the four cardinal directions or compass points. It is the
+	 * opposite of east and is perpendicular to north and south.
+	 * 
+	 * By convention, the left hand side of a map is often west.
+	 */
+	WEST(true),
+	
+	/**
+	 * Northwest or north west is the ordinal direction halfway between north
+	 * and west on a compass. It is the opposite of southeast.
+	 */
+	NORTHWEST(false);
+	
+	private boolean	isPrimaryDirection;
+	
+	private Direction(boolean isPrimaryDirection) {
+		this.isPrimaryDirection = isPrimaryDirection;
+	}
+	
+	/**
+	 * Returns whether or not this direction is primary. Primary directions are:
+	 * are NORTH, EAST, SOUTH, WEST.
+	 * 
+	 * @return whether or not this direction is primary.
+	 */
+	public boolean isPrimaryDirection() {
+		return isPrimaryDirection;
+	}
+	
+	/**
+	 * Returns the primary directions neighbouring this direction, or the
+	 * direction itself if it is a {@link #isPrimaryDirection primary direction}.
+	 * 
+	 * @return the primary directions neighbouring this direction or itself if
+	 *         it a primary direction
 	 */
 	public List<Direction> getPrimaryDirections() {
+		List<Direction> primaryDirections = new ArrayList<Direction>();
+		if (isPrimaryDirection)
+			primaryDirections.add(this);
+		else
+			primaryDirections.addAll(getAdjacentDirections());
 		return primaryDirections;
-	}
-	
-	private void setNextClockwiseDirection(Direction d) {
-		this.nextClockwiseDirection = d;
-	}
-	
-	private void setNextCounterClockwiseDirection(Direction d) {
-		this.nextCounterClockwiseDirection = d;
 	}
 	
 	/**
 	 * Return the direction that is the next direction seen clockwise.
+	 * 
+	 * @return The next clockwise direction
 	 */
 	public Direction getNextClockwiseDirection() {
-		return this.nextClockwiseDirection;
+		return Direction.values()[(this.ordinal() + Direction.values().length + 1)
+				% Direction.values().length];
 	}
 	
 	/**
 	 * Return the directions that are adjacent to this direction.
-	 * This vector only has 2 elements.
+	 * 
+	 * @return The adjacent directions
 	 */
-	public ArrayList<Direction> getAdjacentDirections() {
-		return this.adjacentDirections;
-	}
-	
-	private void setFirstAdjacentDirection(Direction d) {
-		this.adjacentDirections.add(0, d);
-	}
-	
-	private void setSecondAdjacentDirection(Direction d) {
-		this.adjacentDirections.add(1, d);
+	public List<Direction> getAdjacentDirections() {
+		List<Direction> adjacentDirections = new ArrayList<Direction>();
+		adjacentDirections.add(getNextClockwiseDirection());
+		adjacentDirections.add(getNextCounterClockwiseDirection());
+		return adjacentDirections;
 	}
 	
 	/**
 	 * Return the direction that is the next direction seen counterclockwise.
+	 * 
+	 * @return The next counterclockwise direction
 	 */
 	public Direction getNextCounterClockwiseDirection() {
-		return this.nextCounterClockwiseDirection;
+		return Direction.values()[(this.ordinal() + Direction.values().length - 1)
+				% Direction.values().length];
 	}
 	
 	/**
-	 * Set the primary directions.
-	 */
-	private void setPrimarydirections(List<Direction> directions) {
-		this.primaryDirections = directions;
-	}
-	
-	/**
-	 * returns the opposite direction to this direction, e.g.
+	 * Returns the opposite direction to this direction, e.g.
 	 * <code> NORTH.getOppositeDirection() == SOUTH</code>
 	 * 
 	 * @return the opposite direction
 	 */
 	public Direction getOppositeDirection() {
-		return oppositeDirection;
+		int size = Direction.values().length;
+		return Direction.values()[(this.ordinal() + size / 2) % size];
 	}
 	
 	/**
@@ -116,82 +156,6 @@ public enum Direction {
 	 */
 	public static Direction getRandomDirection() {
 		Random rnd = new Random();
-		return Direction.values()[rnd.nextInt(8)];
-	}
-	
-	private void setOppositeDirection(Direction direction) {
-		this.oppositeDirection = direction;
-	}
-	
-	// Initialize the fields of the enum
-	static {
-		List<Direction> directions = new ArrayList<Direction>();
-		directions.add(NORTH);
-		NORTH.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.add(EAST);
-		NORTHEAST.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.remove(NORTH);
-		EAST.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.add(SOUTH);
-		SOUTHEAST.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.remove(EAST);
-		SOUTH.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.add(WEST);
-		SOUTHWEST.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.remove(SOUTH);
-		WEST.setPrimarydirections(new ArrayList<Direction>(directions));
-		directions.add(NORTH);
-		NORTHWEST.setPrimarydirections(new ArrayList<Direction>(directions));
-		
-		NORTH.setOppositeDirection(SOUTH);
-		EAST.setOppositeDirection(WEST);
-		SOUTH.setOppositeDirection(NORTH);
-		WEST.setOppositeDirection(EAST);
-		
-		NORTHEAST.setOppositeDirection(SOUTHWEST);
-		NORTHWEST.setOppositeDirection(SOUTHEAST);
-		SOUTHEAST.setOppositeDirection(NORTHWEST);
-		SOUTHWEST.setOppositeDirection(NORTHEAST);
-		
-		NORTH.setNextClockwiseDirection(NORTHEAST);
-		NORTH.setNextCounterClockwiseDirection(NORTHWEST);
-		NORTHEAST.setNextClockwiseDirection(EAST);
-		NORTHEAST.setNextCounterClockwiseDirection(NORTH);
-		EAST.setNextClockwiseDirection(SOUTHEAST);
-		EAST.setNextCounterClockwiseDirection(NORTHEAST);
-		SOUTHEAST.setNextClockwiseDirection(SOUTH);
-		SOUTHEAST.setNextCounterClockwiseDirection(EAST);
-		SOUTH.setNextClockwiseDirection(SOUTHWEST);
-		SOUTH.setNextCounterClockwiseDirection(SOUTHEAST);
-		SOUTHWEST.setNextClockwiseDirection(WEST);
-		SOUTHWEST.setNextCounterClockwiseDirection(SOUTH);
-		WEST.setNextClockwiseDirection(NORTHWEST);
-		WEST.setNextCounterClockwiseDirection(SOUTHWEST);
-		NORTHWEST.setNextClockwiseDirection(NORTH);
-		NORTHWEST.setNextCounterClockwiseDirection(WEST);
-		
-		NORTH.setFirstAdjacentDirection(Direction.NORTHWEST);
-		NORTH.setSecondAdjacentDirection(Direction.NORTHEAST);
-		
-		EAST.setFirstAdjacentDirection(Direction.NORTHEAST);
-		EAST.setSecondAdjacentDirection(Direction.SOUTHEAST);
-		
-		SOUTH.setFirstAdjacentDirection(Direction.SOUTHEAST);
-		SOUTH.setSecondAdjacentDirection(Direction.SOUTHWEST);
-		
-		WEST.setFirstAdjacentDirection(Direction.SOUTHWEST);
-		WEST.setSecondAdjacentDirection(Direction.NORTHWEST);
-		
-		NORTHEAST.setFirstAdjacentDirection(Direction.NORTH);
-		NORTHEAST.setSecondAdjacentDirection(Direction.EAST);
-		
-		SOUTHEAST.setFirstAdjacentDirection(Direction.EAST);
-		SOUTHEAST.setSecondAdjacentDirection(Direction.SOUTH);
-		
-		SOUTHWEST.setFirstAdjacentDirection(Direction.SOUTH);
-		SOUTHWEST.setSecondAdjacentDirection(Direction.WEST);
-		
-		NORTHWEST.setFirstAdjacentDirection(Direction.WEST);
-		NORTHWEST.setSecondAdjacentDirection(Direction.NORTH);
+		return Direction.values()[rnd.nextInt(Direction.values().length)];
 	}
 }

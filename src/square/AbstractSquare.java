@@ -4,6 +4,7 @@ import item.IItem;
 import java.util.List;
 import java.util.Observer;
 import player.IPlayer;
+import effects.EmptyEffect;
 import effects.Effect;
 
 /**
@@ -41,14 +42,16 @@ public abstract class AbstractSquare implements Square, Observer {
 	 * Add a specified player to this square. This method is also responsible
 	 * for executing any additional {@link Effect effects}.
 	 * 
-	 * @param p
+	 * @param player
 	 *        the player who wants to be placed on this square
 	 * 
 	 * @throws IllegalArgumentException
 	 *         It must be possible to add the player to this square. More
 	 *         formally <code>{@link #canAddPlayer()}</code> .
 	 */
-	public abstract void addPlayer(IPlayer p) throws IllegalArgumentException;
+	public void addPlayer(IPlayer player) throws IllegalArgumentException {
+		addPlayer(player, new EmptyEffect());
+	}
 	
 	/**
 	 * This method sets the haslightTrail for this square. <br>
@@ -76,7 +79,9 @@ public abstract class AbstractSquare implements Square, Observer {
 	 *         It must be possible to add the item to this square. More formally
 	 *         <code>{@link #canBeAdded(IItem)}</code>.
 	 */
-	public abstract void addItem(IItem item) throws IllegalArgumentException;
+	public void addItem(IItem item) throws IllegalArgumentException {
+		addItem(item, new EmptyEffect());
+	}
 	
 	/**
 	 * Removes an object from this square, if the object is not placed on this
@@ -181,5 +186,17 @@ public abstract class AbstractSquare implements Square, Observer {
 	public boolean hasLightTrail() {
 		return false;
 	}
+	
+	/**
+	 * Returns the effect a player has to undergo at the beginning of its turn.
+	 * 
+	 * @return The effect to execute on a player
+	 */
+	public Effect getStartTurnEffect() {
+		return getStartTurnEffect(new EmptyEffect());
+	}
+
+	protected abstract Effect getStartTurnEffect(Effect effect);
+	
 	
 }

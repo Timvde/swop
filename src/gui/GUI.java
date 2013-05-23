@@ -1,5 +1,6 @@
 package gui;
 
+import game.GameEvent;
 import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
@@ -21,7 +22,7 @@ import javax.swing.JOptionPane;
 import player.IPlayer;
 import square.Direction;
 import square.Square;
-import square.AbstractSquare;
+import game.Game;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -70,6 +71,11 @@ public class GUI implements Runnable, Observer {
 	private GUIDataController		guiDataController;
 	
 	/**
+	 * Combobox used for game selection.
+	 */
+	private ComboBox				modeComboBox;
+	
+	/**
 	 * Image objects for displaying on the GUI.
 	 */
 	private Image					playerRedImage;
@@ -102,6 +108,11 @@ public class GUI implements Runnable, Observer {
 	 */
 	private static TextField		gridWidthTextField;
 	private static TextField		gridHeightTextField;
+	
+	/**
+	 * Textfield for the number of players with CTF game.
+	 */
+	private static TextField		numPlayersCTFTextField;
 	
 	/**
 	 * The grid file textfield that needs to be a static instance field for
@@ -147,7 +158,7 @@ public class GUI implements Runnable, Observer {
 	 */
 	public void run() {
 		// These initial width and height only show the New Game button.
-		this.gui = new AGUI("Objectron  |  Groep 9", 140, 160) {
+		this.gui = new AGUI("Objectron  |  Groep 9", 140, 210) {
 			
 			@Override
 			public void paint(Graphics2D graphics) {
@@ -157,8 +168,8 @@ public class GUI implements Runnable, Observer {
 					
 					// Draw some labels:
 					graphics.drawString("x", 64, 35);
-					graphics.drawString("items on square:", 10, 316);
-					graphics.drawString("items in inventory:", 10, 444);
+					graphics.drawString("items on square:", 10, 376);
+					graphics.drawString("items in inventory:", 10, 504);
 					graphics.drawString("CURRENT PLAYER:", 550, 19);
 					graphics.drawString(guiDataController.getCurrentPlayer().getID() + "", 666, 19);
 					graphics.drawString("ACTIONS LEFT:", 550, 32);
@@ -205,11 +216,11 @@ public class GUI implements Runnable, Observer {
 						IPlayer player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
-						// Draw finish lines
-						if (square.getStartingPosition()) {
-							graphics.drawImage(finish, guiCoord.getX(),
-									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						}
+						// TODO // Draw finish lines
+						// if (square.getStartingPosition()) {
+						// graphics.drawImage(finish, guiCoord.getX(),
+						// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						// }
 						
 						// Draw powerfailures if necessary
 						if (square.hasPowerFailure()) {
@@ -217,7 +228,7 @@ public class GUI implements Runnable, Observer {
 									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
-						// Draw force fields 
+						// Draw force fields
 						if (square.hasForceField()) {
 							graphics.drawImage(forceField, guiCoord.getX(), guiCoord.getY(),
 									SQUARE_SIZE, SQUARE_SIZE, null);
@@ -351,11 +362,36 @@ public class GUI implements Runnable, Observer {
 		gridFileTextField = gui.createTextField(11, 90, 119, 20);
 		gridFileTextField.setText("grid.txt");
 		
+		/* ---- ---- ---- ---- MODE CHOICE ---- ---- ---- ---- */
+		int modeElementsOffsetX = 35;
+		int modeElementsOffsetY = 155;
+		
+		String[] options = { "Race", "CTF" };
+		modeComboBox = gui.createComboBox(modeElementsOffsetX, modeElementsOffsetY, 70, 20,
+				options, new Runnable() {
+					
+					public void run() {
+						if (modeComboBox.getSelectedIndex() == 1) {
+							numPlayersCTFTextField.enable();
+						}
+						if (modeComboBox.getSelectedIndex() == 0) {
+							numPlayersCTFTextField.disable();
+						}
+					}
+				});
+		
+		// create num players CTF text field
+		numPlayersCTFTextField = gui.createTextField(modeElementsOffsetX, modeElementsOffsetY + 25,
+				70, 20);
+		numPlayersCTFTextField.setText("# players");
+		numPlayersCTFTextField.disable();
+		/* ---- ---- ---- ---- ----------- ---- ---- ---- ---- */
+		
 		/* ---- ---- ---- ---- MOVE ARROWS ---- ---- ---- ---- */
 		
 		// Use the two offsets below to move all arrows at once
 		int moveArrowsOffsetX = 10;
-		int moveArrowsOffsetY = 166;
+		int moveArrowsOffsetY = 220;
 		
 		Button upButton = gui.createButton(moveArrowsOffsetX + 40, moveArrowsOffsetY + 0, 40, 40,
 				new Runnable() {
@@ -519,8 +555,7 @@ public class GUI implements Runnable, Observer {
 								useItemController.useItem((IItem) inventoryListSelected);
 							}
 							catch (IllegalUseException e) {
-								JOptionPane.showMessageDialog(gui.getFrame(),
-										e.getMessage());
+								JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
 							}
 							inventoryListSelected = null;
 							gui.repaint();
@@ -537,11 +572,32 @@ public class GUI implements Runnable, Observer {
 				120, 30, new Runnable() {
 					
 					public void run() {
-						int width = Integer.parseInt(gridWidthTextField.getText());
-						int height = Integer.parseInt(gridHeightTextField.getText());
 						
 						try {
-							newGameController.newGame(width, height);
+							if (modeComboBox.getSelectedIndex() == 0) {
+								try {
+									int width = Integer.parseInt(gridWidthTextField.getText());
+									int height = Integer.parseInt(gridHeightTextField.getText());
+									newGameController.newRaceGame(width, height);
+								}
+								catch (NumberFormatException e) {
+									JOptionPane.showMessageDialog(gui.getFrame(),
+											"Please use a valid number format for the grid dimensions.");
+								}
+							}
+							if (modeComboBox.getSelectedIndex() == 1) {
+								try {
+									int width = Integer.parseInt(gridWidthTextField.getText());
+									int height = Integer.parseInt(gridHeightTextField.getText());
+									int numberOfPlayers = Integer.parseInt(numPlayersCTFTextField
+											.getText());
+									newGameController.newCTFGame(width, height, numberOfPlayers);
+								}
+								catch (NumberFormatException e) {
+									JOptionPane.showMessageDialog(gui.getFrame(),
+											"Please use a valid number format for the number of players and grid dimensions.");
+								}
+							}
 						}
 						catch (IllegalArgumentException e) {
 							JOptionPane.showMessageDialog(gui.getFrame(),
@@ -558,7 +614,20 @@ public class GUI implements Runnable, Observer {
 						String fileName = gridFileTextField.getText();
 						
 						try {
-							newGameController.newGame(fileName);
+							if (modeComboBox.getSelectedIndex() == 0) {
+								newGameController.newRaceGame(fileName);
+							}
+							if (modeComboBox.getSelectedIndex() == 1) {
+								try {
+									int numberOfPlayers = Integer.parseInt(numPlayersCTFTextField
+											.getText());
+									newGameController.newCTFGame(fileName, numberOfPlayers);
+								}
+								catch (NumberFormatException e) {
+									JOptionPane.showMessageDialog(gui.getFrame(),
+											"Please use a valid number format for the number of players.");
+								}
+							}
 						}
 						catch (GridBuildException e) {
 							JOptionPane.showMessageDialog(gui.getFrame(),
@@ -591,7 +660,7 @@ public class GUI implements Runnable, Observer {
 		
 		/* ---- ---- ---- ---- LISTS ---- ---- ---- ---- */
 		int listsOffsetX = 10;
-		int listsOffsetY = 320;
+		int listsOffsetY = 380;
 		
 		itemList = gui.createList(listsOffsetX, listsOffsetY, 120, 100, new Runnable() {
 			
@@ -678,10 +747,27 @@ public class GUI implements Runnable, Observer {
 		}
 		
 	}
-
+	
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
+		if (o instanceof Game && arg instanceof GameEvent) {
+			GameEvent state = (GameEvent) arg;
+			
+			switch (state) {
+				case PLAYER_WON:
+					JOptionPane
+							.showMessageDialog(gui.getFrame(),
+									"Player " + guiDataController.getCurrentPlayer()
+											+ " has won the game!");
+					break;
+				case PLAYER_LOSE:
+					JOptionPane.showMessageDialog(gui.getFrame(),
+							"Player " + guiDataController.getCurrentPlayer()
+									+ " has lost the game!");
+					break;
+			}
+		}
+		//else do nothing; return
 	}
+	
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
 import player.IPlayer;
+import player.TurnEvent;
 import powerfailure.PrimaryPowerFailure;
 import effects.Effect;
 
@@ -192,10 +193,6 @@ public class SquareContainer extends AbstractSquare {
 		return square.hasPlayer();
 	}
 	
-	public void addPlayer(IPlayer p) throws IllegalArgumentException {
-		square.addPlayer(p);
-	}
-	
 	public boolean hasPowerFailure() {
 		return square.hasPowerFailure();
 	}
@@ -206,10 +203,6 @@ public class SquareContainer extends AbstractSquare {
 	
 	public void removeLightTrail() {
 		square.removeLightTrail();
-	}
-	
-	public void addItem(IItem item) throws IllegalArgumentException {
-		square.addItem(item);
 	}
 	
 	@Override
@@ -254,7 +247,8 @@ public class SquareContainer extends AbstractSquare {
 	@Override
 	public void update(Observable o, Object arg) {
 		square.update(o, arg);
-		this.updatePowerFailure();
+		if (arg == TurnEvent.END_TURN)
+			this.updatePowerFailure();
 	}
 	
 	/**
@@ -311,6 +305,10 @@ public class SquareContainer extends AbstractSquare {
 		else if (!square.equals(other.square))
 			return false;
 		return true;
+	}
+	
+	public Effect getStartTurnEffect(Effect effect) {
+		return square.getStartTurnEffect(effect);
 	}
 	
 	/**
