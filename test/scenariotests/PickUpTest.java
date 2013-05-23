@@ -8,6 +8,7 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
 import org.junit.Test;
+import effects.RaceFactory;
 import player.IPlayer;
 import player.PlayerDataBase;
 import square.Direction;
@@ -29,7 +30,7 @@ public class PickUpTest extends SetupTestGrid {
 	@Test(expected = ItemNotOnSquareException.class)
 	public void testPickup_NotOnSquare() {
 		moveCont.move(Direction.SOUTH);
-		pickUpCont.pickUpItem(new LightGrenade());
+		pickUpCont.pickUpItem(new LightGrenade(new RaceFactory()));
 	}
 	
 	/**

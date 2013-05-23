@@ -22,6 +22,11 @@ import effects.EffectFactory;
  */
 public class CTFMode implements GameMode {
 	
+	/**
+	 * The minimum number of players at the start of CTFMode
+	 */
+	public static final int MINIMUM_NUMBER_OF_PLAYERS = 2;
+	
 	private int						numberOfPlayers;
 	private Map<Player, Integer>	capturedFlagCount;
 	

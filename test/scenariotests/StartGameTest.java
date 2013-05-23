@@ -1,9 +1,12 @@
 package scenariotests;
 
-import game.Game;
+import grid.builder.GridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import org.junit.Before;
 import org.junit.Test;
+import game.CTFMode;
+import game.GameRunner;
+import game.RaceMode;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.NewGameController;
@@ -19,54 +22,92 @@ public class StartGameTest {
 	
 	@Before
 	public void setUp() {
-		Game game = new Game();
+		GameRunner game = new GameRunner();
 		newGameCont = new NewGameController(game);
 	}
 	
 	@Test
-	public void testNewGameCorrectDimensions() {
-		newGameCont.newGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
+	public void testNewRaceGameCorrectDimensions() {
+		newGameCont.newRaceGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
 				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT);
 	}
 	
+	@Test
+	public void testNewCTFGameCorrectDimensions() {
+		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNewGameInCorrectDimensions() {
-		newGameCont.newGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH - 1,
+	public void testNewRaceGameInCorrectDimensions() {
+		newGameCont.newRaceGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH - 1,
 				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT - 1);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNewGame_negativeDimensions() {
-		newGameCont.newGame(-1, 10);
+	public void testNewCTFGameInCorrectDimensions() {
+		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH - 1,
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT - 1,
+				CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNewRaceGame_negativeDimensions() {
+		newGameCont.newRaceGame(-1, 10);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNewCTFGame_negativeDimensions() {
+		newGameCont.newCTFGame(-1, 10, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test
-	public void testNewGameFromFile() {
-		newGameCont.newGame("grid.txt");
+	public void testNewRaceGameFromFile() {
+		newGameCont.newRaceGame("grid.txt");
+	}
+	
+	@Test
+	public void testNewCTFGameFromFile() {
+		newGameCont.newRaceGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile() {
-		newGameCont.newGame("grid_invalidCharacter.txt");
+	public void testInvaldidFileRace() {
+		newGameCont.newRaceGame("grid_invalidCharacter.txt");
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile2() {
-		newGameCont.newGame("grid_oneStartingPosition.txt");
+	public void testInvaldidFileCTF() {
+		newGameCont.newCTFGame("grid_invalidCharacter.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile3() {
+	public void testInvaldidFile2Race() {
+		newGameCont.newRaceGame("grid_oneStartingPosition.txt");
+	}
+	
+	@Test(expected = InvalidGridFileException.class)
+	public void testInvaldidFile2CTF() {
+		newGameCont.newCTFGame("grid_oneStartingPosition.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+	}
+	
+	@Test(expected = InvalidGridFileException.class)
+	public void testInvaldidFile3Race() {
 		newGameCont.newGame("grid_unreachableIsland.txt");
 	}
 	
 	@Test(expected = GridBuildException.class)
-	public void testInvaldidFile4() {
+	public void testInvaldidFile4Race() {
 		newGameCont.newGame("file_that_doesn't exist.txt");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullInput() {
-		newGameCont.newGame(null);
+	public void testNullInputRace() {
+		newGameCont.newRaceGame(null);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullInputCTF() {
+		newGameCont.newCTFGame(null);
 	}
 }

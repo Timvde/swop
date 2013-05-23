@@ -27,21 +27,26 @@ public class GameRunner {
 	private GUI					gui;
 	
 	/**
-	 * main method, will create a new GameRunner instance to start the gui
+	 * main method, will create a new GameRunner instance and start the gui
 	 * 
 	 * @param args
 	 *        arguments are ignored
 	 */
 	public static void main(String[] args) {
-		new GameRunner();
+		new GameRunner().createGUI();
 	}
 	
 	/**
-	 * Start the initialization and run the GUI.
+	 * Creates a new GameRunner instance (without starting the gui)
 	 */
-	GameRunner() {
+	public GameRunner() {
 		this.playerDB = new PlayerDataBase();
-		
+	}
+	
+	/**
+	 * In a separate method so we can test withouth creating a gui
+	 */
+	private void createGUI() {
 		// create all the controllers, giving them the DB
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);

@@ -95,7 +95,7 @@ public class NewGameController {
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
 	 */
-	public void newRaceGame(String file, int numberOfPlayers) {
+	public void newCTFGame(String file, int numberOfPlayers) {
 		GameMode mode = new CTFMode(numberOfPlayers);
 		this.gameRunner.newGame(mode, file);
 	}

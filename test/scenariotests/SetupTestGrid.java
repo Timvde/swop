@@ -1,14 +1,14 @@
 package scenariotests;
 
 import static org.junit.Assert.assertEquals;
+import effects.RaceFactory;
 import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import player.PlayerDataBase;
-import square.PlayerStartingPosition;
 import square.SquareContainer;
 import controllers.EndTurnController;
 import controllers.MoveController;
@@ -27,14 +27,14 @@ public class SetupTestGrid {
 	
 	@Before
 	public void setUp() {
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new RaceFactory());
 		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
 				false);
 		director.construct();
 		grid = builder.getResult();
 		
-		// make a set with the startingpostions in a deterministic order
-		Set<SquareContainer> playerstartingpositions = new LinkedHashSet<SquareContainer>();
+		// make a list with the startingpostions in a deterministic order
+		List<SquareContainer> playerstartingpositions = new ArrayList<SquareContainer>();
 		playerstartingpositions.add((SquareContainer) grid
 				.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS));
 		playerstartingpositions.add( (SquareContainer) grid
