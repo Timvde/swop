@@ -159,9 +159,11 @@ public class DummyGridBuilder implements GridBuilder {
 	 * constraints on lightgrenade placement.
 	 */
 	private void assertValidLightGrenades() {
-		assertEquals(
-				(int) Math.ceil(getNumberOfSquares()
-						* RandomGridBuilderDirector.PERCENTAGE_OF_GRENADES), LGList.size());
+		int numberOfLG = (int) Math.ceil(getNumberOfSquares()
+				* RandomGridBuilderDirector.PERCENTAGE_OF_GRENADES);
+		
+		assertTrue(numberOfLG == LGList.size()
+				|| LGList.size() == playerStartingPositions.size());
 		
 		// A light grenade cannot be placed on a wall
 		assertTrue(Collections.disjoint(LGList, wallParts));
@@ -199,9 +201,10 @@ public class DummyGridBuilder implements GridBuilder {
 	 * constraints on uncharched identity disk placement.
 	 */
 	private void assertValidIDdisks() {
-		assertEquals(
-				(int) Math.ceil(getNumberOfSquares()
-						* RandomGridBuilderDirector.PERCENTAGE_OF_IDENTITY_DISKS), IDList.size());
+		int numberOfID = (int) Math.ceil(getNumberOfSquares()
+				* RandomGridBuilderDirector.PERCENTAGE_OF_IDENTITY_DISKS);
+		
+		assertTrue(numberOfID == IDList.size() || LGList.size() == playerStartingPositions.size());
 		
 		// An identity disc cannot be placed on a wall
 		assertTrue(Collections.disjoint(IDList, wallParts));

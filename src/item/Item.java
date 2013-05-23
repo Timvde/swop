@@ -19,7 +19,6 @@ import effects.EmptyEffect;
 public abstract class Item implements IItem {
 	
 	private int						id;
-	protected EffectFactory			effectFactory;
 	private static AtomicInteger	nextID	= new AtomicInteger();
 	
 	/**
@@ -27,17 +26,6 @@ public abstract class Item implements IItem {
 	 */
 	public Item() {
 		this.id = nextID.incrementAndGet();
-	}
-	
-	/**
-	 * Constructs a new Item and gives it a unique ID and specified factory.
-	 * 
-	 * @param effectFactory
-	 *        The effect factory this item will use to get its needed effect.
-	 */
-	public Item(EffectFactory effectFactory) {
-		this.id = nextID.incrementAndGet();
-		this.effectFactory = effectFactory;
 	}
 	
 	public int getId() {
@@ -102,7 +90,7 @@ public abstract class Item implements IItem {
 	 * @return the effect of the item
 	 */
 	public Effect getEffect() {
-		return effectFactory.getEmptyEffect();
+		return new EmptyEffect();
 	}
 	
 	@Override
