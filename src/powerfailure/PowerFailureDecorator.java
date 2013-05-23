@@ -2,6 +2,7 @@ package powerfailure;
 
 import java.util.Observable;
 import item.Effect;
+import item.EmptyEffect;
 import item.IItem;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
@@ -32,14 +33,16 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public void addItem(IItem item) {
-		Effect effect = this.powerfailure.getEffect();
+	protected void addItem(IItem item, Effect effect) {
+		Effect powerFailureEffect = this.powerfailure.getEffect();
+		effect.addEffect(powerFailureEffect);
 		super.addItem(item, effect);
 	}
 	
 	@Override 
-	public void addPlayer(IPlayer player) {
-		Effect effect = this.powerfailure.getEffect();
+	protected void addPlayer(IPlayer player, Effect effect) {
+		Effect powerFailureEffect = this.powerfailure.getEffect();
+		effect.addEffect(powerFailureEffect);
 		super.addPlayer(player, effect);
 	}
 
@@ -93,5 +96,12 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 		else if (!powerfailure.equals(other.powerfailure))
 			return false;
 		return true;
+	}
+
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		Effect powerFailureEffect = powerfailure.getStartTurnEffect();
+		effect.addEffect(powerFailureEffect);
+		return super.getStartTurnEffect(effect);
 	}
 }

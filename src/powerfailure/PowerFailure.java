@@ -73,7 +73,7 @@ public abstract class PowerFailure implements Property {
 	 *        The turn event to let the powerfailure know about.
 	 */
 	public abstract void updateStatus(TurnEvent event);
-
+	
 	/**
 	 * Return the square this power failure is located on.
 	 * 
@@ -81,5 +81,15 @@ public abstract class PowerFailure implements Property {
 	 */
 	protected SquareContainer getSquare() {
 		return square;
+	}
+	
+	/**
+	 * Return the effect that should be executed when a player enters a square
+	 * with a power failure.
+	 * 
+	 * @return The effect to be executed
+	 */
+	public Effect getStartTurnEffect() {
+		return new PowerFailureStartTurnEffect();
 	}
 }
