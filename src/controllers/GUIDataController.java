@@ -1,9 +1,11 @@
 package controllers;
 
+import game.Game;
 import grid.Coordinate;
 import grid.Grid;
 import item.IItem;
 import java.util.List;
+import java.util.Observer;
 import java.util.Set;
 import player.IPlayer;
 import player.PlayerDataBase;
@@ -20,6 +22,7 @@ public class GUIDataController {
 	
 	private PlayerDataBase	playerDB;
 	private Grid			grid;
+	private Game game;
 	
 	/**
 	 * Create a new gui data controller.
@@ -30,11 +33,12 @@ public class GUIDataController {
 	 *        The grid the controller will use. This may be <code>null</code>,
 	 *        but then one has to call the {@link #setGrid(Grid)} method later.
 	 */
-	public GUIDataController(PlayerDataBase playerDB, Grid grid) {
+	public GUIDataController(PlayerDataBase playerDB, Grid grid, Game game) {
 		if (playerDB == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");
 		this.playerDB = playerDB;
 		this.grid = grid;
+		this.game = game;
 	}
 	
 	/**
@@ -142,6 +146,10 @@ public class GUIDataController {
 	@SuppressWarnings("javadoc")
 	public int getGridHeight() {
 		return this.grid.getHeight();
+	}
+	
+	public void addAsGameObserver(Observer object) {
+		this.game.addObserver(object);
 	}
 	
 }

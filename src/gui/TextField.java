@@ -19,4 +19,11 @@ public final class TextField {
 		this.textfield.setText(t);
 	}
 	
+	public void enable() {
+		this.textfield.setEnabled(true);
+	}
+	
+	public void disable() {
+		this.textfield.setEnabled(false);
+	}
 }
