@@ -8,7 +8,7 @@ import grid.builder.DeterministicGridBuilderDirector;
 import org.junit.Test;
 import player.IPlayer;
 import player.Player;
-import player.PlayerDataBase;
+import player.PlayerActionManager;
 import player.PlayerState;
 import square.Direction;
 import ObjectronExceptions.IllegalActionException;
@@ -42,7 +42,7 @@ public class MovePlayerTest extends SetupTestGrid {
 		
 		// The system adds 1 to the number of actions that the player has
 		// performed during this turn.
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
 				playerDB.getAllowedNumberOfActions(playerDB.getCurrentPlayer()));
 	}
 	

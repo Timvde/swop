@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 import player.IPlayer;
 import player.Player;
-import player.PlayerDataBase;
+import player.PlayerActionManager;
 import square.Direction;
 import ObjectronExceptions.IllegalActionException;
 
@@ -44,7 +44,7 @@ public class EndTurnTest extends SetupTestGrid {
 	@Test(expected = IllegalActionException.class)
 	public void testEndTurn_ToManyActions() {
 		IPlayer player = playerDB.getCurrentPlayer();
-		for (int i = 0; i < PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN; i++) {
+		for (int i = 0; i < PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN; i++) {
 			moveCont.move(Direction.WEST);
 		}
 		

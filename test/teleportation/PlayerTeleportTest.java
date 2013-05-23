@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import item.DummyEffectFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class PlayerTeleportTest {
 		start = new NormalSquare(neighbours);
 		destination = new NormalSquare(neighbours);
 		PlayerDataBase db = new PlayerDataBase();
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		db.createNewDB(builder.getResult().getAllStartingPositions());
 		

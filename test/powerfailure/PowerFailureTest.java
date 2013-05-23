@@ -10,6 +10,7 @@ import player.TurnEvent;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
+import effects.PowerFailureEffect;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {

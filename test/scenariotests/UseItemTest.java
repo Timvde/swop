@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import game.Game;
 import gui.GUI;
+import item.DummyEffectFactory;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
@@ -147,7 +148,7 @@ public class UseItemTest extends SetupTestGrid {
 	
 	@Test(expected = IllegalUseException.class)
 	public void testUse_NotInInventory() {
-		useItemCont.useItem(new LightGrenade());
+		useItemCont.useItem(new LightGrenade(new DummyEffectFactory()));
 	}
 	
 	/**

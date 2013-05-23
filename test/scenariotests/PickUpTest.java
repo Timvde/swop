@@ -3,14 +3,14 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import item.DummyEffectFactory;
 import item.IItem;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
 import org.junit.Test;
-import effects.RaceFactory;
 import player.IPlayer;
-import player.PlayerDataBase;
+import player.PlayerActionManager;
 import square.Direction;
 import ObjectronExceptions.InventoryFullException;
 import ObjectronExceptions.ItemNotOnSquareException;
@@ -30,7 +30,7 @@ public class PickUpTest extends SetupTestGrid {
 	@Test(expected = ItemNotOnSquareException.class)
 	public void testPickup_NotOnSquare() {
 		moveCont.move(Direction.SOUTH);
-		pickUpCont.pickUpItem(new LightGrenade(new RaceFactory()));
+		pickUpCont.pickUpItem(new LightGrenade(new DummyEffectFactory()));
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class PickUpTest extends SetupTestGrid {
 		
 		// The system adds 1 to the number of actions that the player has
 		// performed during this turn.
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
 				playerDB.getAllowedNumberOfActions(player1));
 	}
 	
@@ -99,7 +99,7 @@ public class PickUpTest extends SetupTestGrid {
 		
 		// The system adds 1 to the number of actions that the player has
 		// performed during this turn.
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 4,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 4,
 				playerDB.getAllowedNumberOfActions(player2));
 	}
 	

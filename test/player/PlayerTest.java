@@ -14,6 +14,7 @@ import java.util.Observer;
 import org.junit.Before;
 import org.junit.Test;
 import square.Direction;
+import square.NormalSquare;
 import square.SquareContainer;
 import item.DummyEffectFactory;
 import ObjectronExceptions.IllegalActionException;
@@ -47,7 +48,7 @@ public class PlayerTest implements Observer {
 	public void testConstructor() {
 		// check init turn stuff and basic fields
 		assertEquals(false, player.hasMovedYet());
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertNotNull(player.getStartingPosition());
 		assertEquals(player.getStartingPosition(), player.getCurrentLocation());
@@ -61,7 +62,7 @@ public class PlayerTest implements Observer {
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullDB() {
 		new Player(null, new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
-				new PlayerStartingPosition()));
+				new NormalSquare()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -102,15 +103,6 @@ public class PlayerTest implements Observer {
 	}
 	
 	@Test
-	public void testEndTurnWithoutMove() {
-		player.endTurn();
-		
-		// test whether player sets itself lost and reported it
-		assertEquals(PlayerState.LOST, player.getPlayerState());
-		assertEquals(TurnEvent.END_GAME, this.getTurnEventOfNotify());
-	}
-	
-	@Test
 	public void testCanPerformAction() {
 		assertIsCurrentPlayerTurn();
 		switchPlayers();
@@ -135,7 +127,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.useItem(new LightGrenade());
+			player.useItem(new LightGrenade(new DummyEffectFactory()));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -143,7 +135,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.pickUpItem(new LightGrenade());
+			player.pickUpItem(new LightGrenade(new DummyEffectFactory()));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -157,7 +149,7 @@ public class PlayerTest implements Observer {
 		
 		// test the initial number of actions,
 		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
@@ -166,14 +158,14 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test again
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
 		// subtract another two: nb of actions will become zero
 		// --> player must have asked the db to switch players
 		player.skipNumberOfActions(2);
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
 				player.getAllowedNumberOfActions());
 		assertIsNotCurrentPlayerTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
@@ -182,7 +174,7 @@ public class PlayerTest implements Observer {
 		switchPlayers();
 		assertIsCurrentPlayerTurn();
 		
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		
 		// subtract four at once
@@ -197,12 +189,12 @@ public class PlayerTest implements Observer {
 	public void testAssignNewTurn() {
 		assertIsCurrentPlayerTurn();
 		db.assignNewTurn(player);
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		assertIsCurrentPlayerTurn();
 		
-		player.skipNumberOfActions(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
+		player.skipNumberOfActions(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
 		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		// player should have switched turns (allowed nb actions < 0)
