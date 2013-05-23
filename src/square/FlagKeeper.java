@@ -18,7 +18,8 @@ public interface FlagKeeper {
 	Flag giveFlag();
 	
 	/**
-	 * Returns the current position the flagkeeper is standing on.
+	 * Returns the current position the flagkeeper is standing on. This cannot
+	 * be <code>null</code>.
 	 * 
 	 * @return the current position the flagkeeper is standing on.
 	 */

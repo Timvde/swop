@@ -9,7 +9,7 @@ import game.CTFMode;
  * mode}.
  * 
  */
-public class CTFFactory extends AbtractEffectFactory {
+public class CTFEffectFactory extends AbtractEffectFactory {
 	
 	/**
 	 * Returns an explode effect chained with a drop flag effect.

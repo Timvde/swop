@@ -1,10 +1,8 @@
 package effects;
 
 import item.Flag;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import square.Direction;
 import square.FlagKeeper;
 import square.SquareContainer;
 import square.TronObject;
@@ -15,28 +13,30 @@ import square.TronObject;
  */
 public class DropFlagEffect extends AbstractEffect {
 	
+	/**
+	 * This method will drop the flag of the specified tronobject (if it is a
+	 * flagkeeper) onto one of the neigbouring squares.
+	 * 
+	 * @throws IllegalStateException
+	 *         The flagkeeper's current square must have at least one neigbour.
+	 */
 	@Override
-	public void execute(TronObject object) {
+	public void execute(TronObject object) throws IllegalStateException {
 		FlagKeeper flagkeeper = object.asFlagKeeper();
 		if (flagkeeper != null) {
 			Flag flag = flagkeeper.giveFlag();
 			if (flag != null) {
-				List<SquareContainer> neighbours = this.getAllNeighboursOf(flagkeeper
-						.getCurrentPosition());
+				List<SquareContainer> neighbours = flagkeeper.getCurrentPosition()
+						.getAllNeighbours();
+				if (neighbours.size() == 0)
+					throw new IllegalStateException(
+							" The flagkeeper's current square must have at least one neigbour.");
+				
 				neighbours.get(new Random().nextInt(neighbours.size())).addItem(flag);
 			}
 		}
 		
 		super.execute(object);
-	}
-	
-	private List<SquareContainer> getAllNeighboursOf(SquareContainer sq) {
-		List<SquareContainer> result = new ArrayList<SquareContainer>();
-		for (Direction dir : Direction.values()) {
-			if (sq.getNeighbourIn(dir) != null)
-				result.add(sq.getNeighbourIn(dir));
-		}
-		return result;
 	}
 	
 }

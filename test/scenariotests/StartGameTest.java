@@ -1,12 +1,10 @@
 package scenariotests;
 
-import grid.builder.GridBuilderDirector;
+import game.CTFMode;
+import game.GameRunner;
 import grid.builder.RandomGridBuilderDirector;
 import org.junit.Before;
 import org.junit.Test;
-import game.CTFMode;
-import game.GameRunner;
-import game.RaceMode;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.NewGameController;
@@ -26,22 +24,29 @@ public class StartGameTest {
 		newGameCont = new NewGameController(game);
 	}
 	
+	// ############## test newRaceGame(int, int) ################
 	@Test
 	public void testNewRaceGameCorrectDimensions() {
 		newGameCont.newRaceGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
 				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT);
 	}
 	
-	@Test
-	public void testNewCTFGameCorrectDimensions() {
-		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
-				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
-	}
-	
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewRaceGameInCorrectDimensions() {
 		newGameCont.newRaceGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH - 1,
 				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT - 1);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNewRaceGame_negativeDimensions() {
+		newGameCont.newRaceGame(-1, 10);
+	}
+	
+	// ############## test newCTFGame(int, int) ################
+	@Test
+	public void testNewCTFGameCorrectDimensions() {
+		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -52,23 +57,28 @@ public class StartGameTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNewRaceGame_negativeDimensions() {
-		newGameCont.newRaceGame(-1, 10);
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
 	public void testNewCTFGame_negativeDimensions() {
 		newGameCont.newCTFGame(-1, 10, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNewCTFGameInCorrectNumberOfPlayers() {
+		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT,
+				CTFMode.MINIMUM_NUMBER_OF_PLAYERS - 1);
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testNewCTFGameIllegalNumberOfPlayers() {
+		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT,
+				RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS + 1);
+	}
+	
+	// ############## test newRaceGame(String) ################
 	@Test
 	public void testNewRaceGameFromFile() {
 		newGameCont.newRaceGame("grid.txt");
-	}
-	
-	@Test
-	public void testNewCTFGameFromFile() {
-		newGameCont.newCTFGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
@@ -77,13 +87,34 @@ public class StartGameTest {
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFileCTF() {
-		newGameCont.newCTFGame("grid_invalidCharacter.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+	public void testInvaldidFile2Race() {
+		newGameCont.newRaceGame("grid_oneStartingPosition.txt");
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile2Race() {
-		newGameCont.newRaceGame("grid_oneStartingPosition.txt");
+	public void testInvaldidFile3Race() {
+		newGameCont.newRaceGame("grid_unreachableIsland.txt");
+	}
+	
+	@Test(expected = GridBuildException.class)
+	public void testInvaldidFile4Race() {
+		newGameCont.newRaceGame("file_that_doesn't exist.txt");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullInputRace() {
+		newGameCont.newRaceGame(null);
+	}
+	
+	// ############## test newCTFGame(String, int) ################
+	@Test
+	public void testNewCTFGameFromFile() {
+		newGameCont.newCTFGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+	}
+	
+	@Test(expected = InvalidGridFileException.class)
+	public void testInvaldidFileCTF() {
+		newGameCont.newCTFGame("grid_invalidCharacter.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
@@ -92,18 +123,8 @@ public class StartGameTest {
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile3Race() {
-		newGameCont.newRaceGame("grid_unreachableIsland.txt");
-	}
-	
-	@Test(expected = InvalidGridFileException.class)
 	public void testInvaldidFile3CTF() {
 		newGameCont.newCTFGame("grid_unreachableIsland.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
-	}
-	
-	@Test(expected = GridBuildException.class)
-	public void testInvaldidFile4Race() {
-		newGameCont.newRaceGame("file_that_doesn't exist.txt");
 	}
 	
 	@Test(expected = GridBuildException.class)
@@ -112,12 +133,18 @@ public class StartGameTest {
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullInputRace() {
-		newGameCont.newRaceGame(null);
+	public void testNullInputCTF() {
+		newGameCont.newCTFGame(null, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullInputCTF() {
-		newGameCont.newCTFGame(null, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
+	public void testCTFInCorrectNumberOfPlayers() {
+		newGameCont.newCTFGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS - 1);
+	}
+	
+	@Test(expected = IllegalStateException.class)
+	public void testCTFIllegalNumberOfPlayers() {
+		newGameCont.newCTFGame("grid.txt",
+				RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS + 1);
 	}
 }

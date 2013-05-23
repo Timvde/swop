@@ -1,5 +1,6 @@
 package item.lightgrenade;
 
+import org.hamcrest.Factory;
 import effects.EffectFactory;
 import effects.ExplodeEffect;
 import item.IItem;
@@ -25,6 +26,7 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
 public class LightGrenade extends Item {
 	
 	private LightGrenadeState	state;
+	private EffectFactory		effectFactory;
 	
 	/**
 	 * create a new light grenade, the state of this light grenade will be
@@ -34,8 +36,11 @@ public class LightGrenade extends Item {
 	 *        The effect factory this item will use to get its needed effect.
 	 */
 	public LightGrenade(EffectFactory effectFactory) {
-		super(effectFactory);
-		state = LightGrenadeState.INACTIVE;
+		if (effectFactory == null)
+			throw new IllegalArgumentException("effectfactory cannot be null");
+		
+		this.effectFactory = effectFactory;
+		this.state = LightGrenadeState.INACTIVE;
 	}
 	
 	/**

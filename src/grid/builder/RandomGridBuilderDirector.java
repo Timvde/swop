@@ -17,6 +17,11 @@ import square.Wall;
  */
 public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
+	/**
+	 * The number of candidate player starting positions on a automatically
+	 * generated grid.
+	 */
+	public static final int		NUMBER_OF_PLAYER_STARTS				= 4;
 	/** The minimum (default) width of the grid. */
 	public static final int		MINIMUM_GRID_WIDTH				= 10;
 	/** The minimum (default) height of the grid. */

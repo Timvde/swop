@@ -24,6 +24,7 @@ public class Teleporter extends Item {
 	 * teleporter.
 	 */
 	private boolean			skipNextTeleport;
+	private EffectFactory	effectFactory;
 	
 	/**
 	 * Create a new teleporter that can teleport objects to the specified
@@ -40,7 +41,10 @@ public class Teleporter extends Item {
 	 *        The effect factory this item will use to get its needed effect.
 	 */
 	public Teleporter(Teleporter destination, SquareContainer square, EffectFactory effectFactory) {
-		super(effectFactory);
+		if (effectFactory == null | square == null)
+			throw new IllegalArgumentException("arguments cannot be null");
+		
+		this.effectFactory = effectFactory;
 		this.destination = destination;
 		this.square = square;
 	}

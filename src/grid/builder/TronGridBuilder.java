@@ -179,8 +179,8 @@ public class TronGridBuilder implements GridBuilder {
 			return false;
 		else if (grid.get(coordinate).isWall())
 			return false;
-		else if (grid.get(coordinate).getStartingPosition() < 1)
-			return false;
+		/*else if (grid.get(coordinate).getStartingPosition() < 1)
+			return false;*/
 		else
 			return true;
 	}

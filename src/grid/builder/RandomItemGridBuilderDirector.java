@@ -127,8 +127,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 				int x = startCoord.getX() - 2 + rand.nextInt(5);
 				int y = startCoord.getY() - 2 + rand.nextInt(5);
 				position = new Coordinate(x, y);
-			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position)
-					|| startingCoordinates.contains(position));
+			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position));
 			placedLGCoordinates.add(position);
 		}
 		

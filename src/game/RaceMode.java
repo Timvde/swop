@@ -5,7 +5,7 @@ import player.IPlayer;
 import player.PlayerDataBase;
 import player.TurnEvent;
 import effects.EffectFactory;
-import effects.RaceFactory;
+import effects.RaceEffectFactory;
 
 /**
  * In RaceMode the goal for each player is to reach the starting location of the
@@ -55,6 +55,6 @@ public class RaceMode implements GameMode {
 	
 	@Override
 	public EffectFactory getEffectFactory() {
-		return new RaceFactory();
+		return new RaceEffectFactory();
 	}
 }
