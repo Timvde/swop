@@ -61,7 +61,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
-		this.lightTrail = new LightTrail();
+		this.lightTrail = new LightTrail(startingPosition);
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
 		this.setStartingPosition(startingPosition);

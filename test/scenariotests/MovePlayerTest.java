@@ -1,24 +1,28 @@
 package scenariotests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import game.CTFMode;
 import game.GameMode;
 import game.RaceMode;
 import grid.Coordinate;
 import grid.builder.DeterministicGridBuilderDirector;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import player.Player;
 import player.PlayerActionManager;
 import player.PlayerState;
 import player.TronPlayer;
 import player.actions.MoveAction;
 import square.Direction;
+import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -30,18 +34,22 @@ import ObjectronExceptions.IllegalMoveException;
  * grid - Cannot cross lightrail - Player must always do a move action in turn
  */
 @SuppressWarnings("javadoc")
-@RunWith(Theories.class)
+@RunWith(Parameterized.class)
 public class MovePlayerTest extends SetUpTestGrid {
 	
-	public static @DataPoints
-	GameMode[]	candidates	= { new RaceMode(),
-			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	@Parameters
+	public static Collection<Object[]> generateData() {
+		ArrayList<Object[]> result = new ArrayList<Object[]>();
+		result.add(new Object[] { new RaceMode() });
+		result.add(new Object[] { new CTFMode(
+				DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) });
+		return result;
+	}
 	
 	/**
-	 * This method will be called with all gamemodes.
+	 * The constructor will be called by junit for every gamemode.
 	 */
-	@Theory
-	public void setUp(GameMode mode) {
+	public MovePlayerTest(GameMode mode) {
 		super.setUp(mode);
 	}
 	
@@ -63,8 +71,8 @@ public class MovePlayerTest extends SetUpTestGrid {
 		
 		// The system adds 1 to the number of actions that the player has
 		// performed during this turn.
-		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
-				playerDB.getCurrentPlayer().getAllowedNumberOfActions());
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1, playerDB
+				.getCurrentPlayer().getAllowedNumberOfActions());
 	}
 	
 	@Test
@@ -169,13 +177,19 @@ public class MovePlayerTest extends SetUpTestGrid {
 		endTurnCont.endTurn();
 		
 		// player 2
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		Player player2 = playerDB.getCurrentPlayer();
+		SquareContainer player2Start = player2.getCurrentPosition();
 		moveCont.move(Direction.EAST);
-		endTurnCont.endTurn();
-		
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+
 		// player 1
+		assertSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
-		// endTurnCont.endTurn();
 		
+		assertEquals(player2Start, player1.getCurrentPosition());
 		assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Observable;
 import player.Player;
 import player.TronPlayer;
 import effects.Effect;
+import effects.EmptyEffect;
 
 /**
  * A class that represents a part of a wall.
@@ -99,5 +100,10 @@ public class WallPart extends AbstractSquare {
 	@Override
 	public boolean hasProperty(PropertyType property) {
 		return property == PropertyType.WALL;
+	}
+
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		return new EmptyEffect();
 	} 
 }

@@ -1,16 +1,14 @@
 package gui;
 
-import square.Direction;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class DummyGUI extends GUI {
-
-	public DummyGUI() {
-		super(null, null, null, null, null, null);
-	}
-
+@SuppressWarnings("javadoc")
+public class DummyGUI implements Observer {
+	
 	@Override
-	public Direction getBasicDirection() {
-		return Direction.SOUTH;
+	public void update(Observable o, Object arg) {
+		// do nothing
 	}
 }

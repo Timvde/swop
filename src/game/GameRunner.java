@@ -1,12 +1,12 @@
 package game;
 
-import java.io.FileNotFoundException;
 import grid.Grid;
 import grid.GuiGridAdapter;
 import grid.builder.FileGridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import gui.GUI;
+import java.io.FileNotFoundException;
 import player.PlayerDataBase;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.EndTurnController;
@@ -23,10 +23,15 @@ import controllers.UseItemController;
  */
 public class GameRunner {
 	
-	private PlayerDataBase		playerDB;
-	private Game				game;
-	private GUIDataController	guiDataCont;
-	private GUI					gui;
+	protected PlayerDataBase		playerDB;
+	protected Game					game;
+	protected GUIDataController		guiDataCont;
+	protected MoveController		moveCont;
+	protected PickUpItemController	pickUpCont;
+	protected UseItemController		useItemCont;
+	protected EndTurnController		endTurnCont;
+	protected NewGameController		newGameCont;
+	private GUI						gui;
 	
 	/**
 	 * main method, will create a new GameRunner instance and start the gui
@@ -44,14 +49,13 @@ public class GameRunner {
 	public GameRunner() {
 		this.playerDB = new PlayerDataBase();
 		
-		// create all the controllers, giving them the DB
-		MoveController moveCont = new MoveController(this.playerDB);
-		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
-		UseItemController useItemCont = new UseItemController(this.playerDB);
-		EndTurnController endTurnCont = new EndTurnController(this.playerDB);
-		NewGameController newGameCont = new NewGameController(this);
+		moveCont = new MoveController(this.playerDB);
+		pickUpCont = new PickUpItemController(this.playerDB);
+		useItemCont = new UseItemController(this.playerDB);
+		endTurnCont = new EndTurnController(this.playerDB);
+		newGameCont = new NewGameController(this);
 		// grid is still unknown
-		this.guiDataCont = new GUIDataController(this.playerDB, null);
+		guiDataCont = new GUIDataController(this.playerDB, null);
 		
 		gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, guiDataCont);
 		
@@ -137,7 +141,7 @@ public class GameRunner {
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in the grid.
 	 */
-	private void createGame(GameMode mode, Grid grid) throws IllegalStateException {
+	protected void createGame(GameMode mode, Grid grid) throws IllegalStateException {
 		if (grid == null || mode == null)
 			throw new IllegalArgumentException("args cannot be null");
 		

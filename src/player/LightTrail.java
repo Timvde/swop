@@ -24,14 +24,15 @@ public class LightTrail implements Property {
 	private LinkedList<SquareContainer>	lightTrail;
 	
 	/** the maximum length of this light trail */
-	private static final int			MAXIMUM_LENGTH	= 3;
+	private static final int			MAXIMUM_LENGTH	= 4;
 	
 	/**
 	 * Create a new lightTrail behind a player. The length of the newly created
 	 * lightTrail will be zero.
 	 */
-	public LightTrail() {
+	public LightTrail(SquareContainer startSquare) {
 		lightTrail = new LinkedList<SquareContainer>();
+		lightTrail.add(startSquare);
 	}
 	
 	/**
@@ -54,8 +55,11 @@ public class LightTrail implements Property {
 		if (!isValidNewSquare(currentSquare))
 			throw new IllegalArgumentException(
 					"the specified square could not be added to the lightTrail!");
+		
+		if (!lightTrail.isEmpty())
+			lightTrail.getFirst().addProperty(this);
+		
 		lightTrail.addFirst(currentSquare);
-		currentSquare.addProperty(this);
 		
 		if (lightTrail.size() > MAXIMUM_LENGTH)
 			lightTrail.removeLast().removeProperty(this);
