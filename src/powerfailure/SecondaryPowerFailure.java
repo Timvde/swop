@@ -4,27 +4,28 @@ import java.util.Random;
 import player.TurnEvent;
 import square.Direction;
 import square.SquareContainer;
+import effects.EffectFactory;
 
 /**
  * This class represents a secondary power failure.
  */
 public class SecondaryPowerFailure extends PowerFailure {
 	
-	private static final int		TIME_TO_LIVE	= 2;
-	private Direction				direction;
+	private static final int	TIME_TO_LIVE	= 2;
+	private Direction			direction;
 	
-	private PrimaryPowerFailure		primaryPowerFailure;
-	private PowerFailure	tertiaryPowerFailure;
-	private boolean					clockwise;
+	private PrimaryPowerFailure	primaryPowerFailure;
+	private boolean				clockwise;
 	
 	/**
 	 * Create a secondary power failure for a given square.
 	 * 
 	 * @param primaryPowerFailure
 	 *        the primary power failure who created this power failure
-	 * 
+	 * @param factory
+	 *        The EffectFactory to use to create effects.
 	 */
-	public SecondaryPowerFailure(PrimaryPowerFailure primaryPowerFailure) {
+	public SecondaryPowerFailure(PrimaryPowerFailure primaryPowerFailure, EffectFactory factory) {
 		timeToLive = TIME_TO_LIVE;
 		this.primaryPowerFailure = primaryPowerFailure;
 		clockwise = new Random().nextBoolean();
@@ -33,16 +34,17 @@ public class SecondaryPowerFailure extends PowerFailure {
 		if (square != null)
 			square.addProperty(this);
 		
+		this.effectFactory = factory;
+		
 		createTernaryPowerFailure();
 	}
 	
 	private void createTernaryPowerFailure() {
-		tertiaryPowerFailure = new TertiaryPowerFailure(this);
+		new TertiaryPowerFailure(this, effectFactory);
 	}
 	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		System.out.println(this + " " + event);
 		decreaseTimeToLive();
 		
 		// rotate the power failure

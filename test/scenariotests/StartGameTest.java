@@ -3,9 +3,9 @@ package scenariotests;
 import game.CTFMode;
 import game.GameRunner;
 import grid.builder.RandomGridBuilderDirector;
+import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
-import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 import controllers.NewGameController;
 
@@ -77,73 +77,73 @@ public class StartGameTest {
 	
 	// ############## test newRaceGame(String) ################
 	@Test
-	public void testNewRaceGameFromFile() {
+	public void testNewRaceGameFromFile() throws FileNotFoundException {
 		newGameCont.newRaceGame("grid.txt");
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFileRace() {
+	public void testInvaldidFileRace() throws FileNotFoundException {
 		newGameCont.newRaceGame("grid_invalidCharacter.txt");
 	}
 	
-	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile2Race() {
+	@Test(expected = IllegalStateException.class)
+	public void testInvaldidFile2Race() throws FileNotFoundException {
 		newGameCont.newRaceGame("grid_oneStartingPosition.txt");
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile3Race() {
+	public void testInvaldidFile3Race() throws FileNotFoundException {
 		newGameCont.newRaceGame("grid_unreachableIsland.txt");
 	}
 	
-	@Test(expected = GridBuildException.class)
-	public void testInvaldidFile4Race() {
+	@Test(expected = FileNotFoundException.class)
+	public void testInvaldidFile4Race() throws FileNotFoundException {
 		newGameCont.newRaceGame("file_that_doesn't exist.txt");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullInputRace() {
+	public void testNullInputRace() throws FileNotFoundException {
 		newGameCont.newRaceGame(null);
 	}
 	
 	// ############## test newCTFGame(String, int) ################
 	@Test
-	public void testNewCTFGameFromFile() {
+	public void testNewCTFGameFromFile() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFileCTF() {
+	public void testInvaldidFileCTF() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid_invalidCharacter.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
-	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile2CTF() {
+	@Test(expected = IllegalStateException.class)
+	public void testInvaldidFile2CTF() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid_oneStartingPosition.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = InvalidGridFileException.class)
-	public void testInvaldidFile3CTF() {
+	public void testInvaldidFile3CTF() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid_unreachableIsland.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
-	@Test(expected = GridBuildException.class)
-	public void testInvaldidFile4CTF() {
+	@Test(expected = FileNotFoundException.class)
+	public void testInvaldidFile4CTF() throws FileNotFoundException {
 		newGameCont.newCTFGame("file_that_doesn't exist.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testNullInputCTF() {
+	public void testNullInputCTF() throws FileNotFoundException {
 		newGameCont.newCTFGame(null, CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void testCTFInCorrectNumberOfPlayers() {
+	public void testCTFInCorrectNumberOfPlayers() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS - 1);
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public void testCTFIllegalNumberOfPlayers() {
+	public void testCTFIllegalNumberOfPlayers() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid.txt", RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS + 1);
 	}
 }

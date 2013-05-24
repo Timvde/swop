@@ -1,5 +1,6 @@
 package controllers;
 
+import gui.ArgumentsHandler;
 import gui.GUI;
 import item.IItem;
 import player.IPlayerDataBase;
@@ -11,8 +12,8 @@ import ObjectronExceptions.IllegalUseException;
  */
 public class UseItemController {
 	
-	private IPlayerDataBase	playerDB;
-	private GUI				gui;
+	private IPlayerDataBase		playerDB;
+	private ArgumentsHandler	argumentsHandler;
 	
 	/**
 	 * Create a new use item controller with a given player database. After
@@ -30,14 +31,13 @@ public class UseItemController {
 	}
 	
 	/**
-	 * Set the specified user interface as the user interface for this
-	 * controller.
+	 * Set an ArgumentsHandler for this controller
 	 * 
-	 * @param gui
-	 *        the user interface to set
+	 * @param argumentsHandler
+	 *        The handler to set
 	 */
-	public void setGUI(GUI gui) {
-		this.gui = gui;
+	public void setArgumentsHandler(ArgumentsHandler argumentsHandler) {
+		this.argumentsHandler = argumentsHandler;
 	}
 	
 	/**
@@ -46,14 +46,14 @@ public class UseItemController {
 	 * 
 	 * @param item
 	 *        The item that will be used.
-	 * @throws IllegalUseException 
-	 * 		The item cannot be used.
+	 * @throws IllegalUseException
+	 *         The item cannot be used.
 	 */
 	public void useItem(IItem item) throws IllegalUseException {
 		// If the item used is an identity disk, a direction must be set before
 		// the item
 		// can be used. As described in the documentation of identity disk.
 		
-		playerDB.getCurrentPlayer().performAction(new UseAction(item));
+		playerDB.getCurrentPlayer().performAction(new UseAction(item, argumentsHandler));
 	}
 }

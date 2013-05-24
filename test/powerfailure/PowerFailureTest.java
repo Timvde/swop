@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import player.TurnEvent;
+import scenariotests.SetupTestGrid;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
 import effects.PowerFailureEffect;
+import effects.RaceEffectFactory;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
@@ -39,7 +41,7 @@ public class PowerFailureTest {
 		
 		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
-		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 		assertEquals(true, sq.hasPowerFailure());
 		
 		pf.updateStatus(TurnEvent.END_ACTION);
@@ -51,7 +53,7 @@ public class PowerFailureTest {
 		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
 		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
-		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 		assertTrue(sq.hasPowerFailure());
 		
 		pf.updateStatus(TurnEvent.END_TURN);
@@ -66,7 +68,7 @@ public class PowerFailureTest {
 		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
 		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
-		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 		assertEquals(PowerFailureEffect.class, pf.getEffect().getClass());
 	}
 }

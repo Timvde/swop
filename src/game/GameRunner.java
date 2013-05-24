@@ -1,6 +1,8 @@
 package game;
 
+import java.io.FileNotFoundException;
 import grid.Grid;
+import grid.GuiGridAdapter;
 import grid.builder.FileGridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
@@ -33,7 +35,7 @@ public class GameRunner {
 	 *        arguments are ignored
 	 */
 	public static void main(String[] args) {
-		new GameRunner().createGUI();
+		new GameRunner().showGUI();
 	}
 	
 	/**
@@ -41,12 +43,7 @@ public class GameRunner {
 	 */
 	public GameRunner() {
 		this.playerDB = new PlayerDataBase();
-	}
-	
-	/**
-	 * In a separate method so we can test withouth creating a gui
-	 */
-	private void createGUI() {
+		
 		// create all the controllers, giving them the DB
 		MoveController moveCont = new MoveController(this.playerDB);
 		PickUpItemController pickUpCont = new PickUpItemController(this.playerDB);
@@ -59,8 +56,13 @@ public class GameRunner {
 		gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, guiDataCont);
 		
 		// Set the initialized GUI as the gui for the controllers
-		useItemCont.setGUI(gui);
-		
+		useItemCont.setArgumentsHandler(gui);
+	}
+	
+	/**
+	 * In a separate method so we can test without creating a gui
+	 */
+	private void showGUI() {
 		java.awt.EventQueue.invokeLater(gui);
 	}
 	
@@ -82,6 +84,9 @@ public class GameRunner {
 	 *         starting locations defined in grid to be created.
 	 */
 	public void newGame(GameMode mode, int width, int height) throws IllegalStateException {
+		if (mode == null)
+			throw new IllegalArgumentException("the mode cannot be null");
+		
 		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.setHeight(height);
@@ -105,9 +110,13 @@ public class GameRunner {
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in the grid to be created.
+	 * @throws FileNotFoundException
 	 */
 	public void newGame(GameMode mode, String file) throws InvalidGridFileException,
-			IllegalStateException {
+			IllegalStateException, FileNotFoundException {
+		if (mode == null || file == null)
+			throw new IllegalArgumentException("the file and mode cannot be null");
+		
 		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
 		director.construct();
@@ -129,10 +138,14 @@ public class GameRunner {
 	 *         starting locations defined in the grid.
 	 */
 	private void createGame(GameMode mode, Grid grid) throws IllegalStateException {
-		guiDataCont.setGrid(grid);
+		if (grid == null || mode == null)
+			throw new IllegalArgumentException("args cannot be null");
+		
+		guiDataCont.setGrid(new GuiGridAdapter(grid));
 		
 		// fix observers of old game
-		game.deleteObservers();
+		if (game != null)
+			game.deleteObservers();
 		
 		// create a new Game and fix observers
 		game = new Game(mode, grid, playerDB);

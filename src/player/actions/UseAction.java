@@ -1,6 +1,8 @@
 package player.actions;
 
+import gui.ArgumentsHandler;
 import item.IItem;
+import item.UseArguments;
 import player.TronPlayer;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
@@ -11,24 +13,27 @@ import ObjectronExceptions.IllegalUseException;
  */
 public class UseAction implements Action {
 	
-	private IItem	item;
+	private IItem				item;
+	private ArgumentsHandler	argumentshandler;
 	
 	/**
 	 * Create a new UseAction to use a specified item
 	 * 
 	 * @param item
-	 *        the item to use
+	 *        The item to use
+	 * @param handler
+	 *        The handler used to get extra user information
 	 */
-	public UseAction(IItem item) {
+	public UseAction(IItem item, ArgumentsHandler handler) {
 		if (item == null)
 			throw new IllegalArgumentException("The specified item cannot be null.");
 		this.item = item;
-		
+		this.argumentshandler = handler;
 	}
 	
 	/**
-	 * {@link IItem#use(SquareContainer) use} the given item. The item must be in the
-	 * inventory of the player.
+	 * {@link IItem#use(SquareContainer) use} the given item. The item must be
+	 * in the inventory of the player.
 	 * 
 	 * @throws IllegalActionException
 	 *         This player must be allowed to perform an action, i.e.
@@ -40,7 +45,7 @@ public class UseAction implements Action {
 	 */
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentPosition();
-		if (!player.canPerformAction(this))
+		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!player.getInventoryContent().contains(item))
 			throw new IllegalUseException("The item is not in the inventory");
@@ -50,18 +55,15 @@ public class UseAction implements Action {
 		
 		// try and use the item
 		try {
-			item.use(square);
+			UseArguments<?> arguments = item.getUseArguments();
+			argumentshandler.handleArguments(arguments);
+			item.use(square, arguments);
 		}
 		catch (IllegalUseException e) {
 			// re-add the item to the inventory and re-throw the exception
 			player.getInventory().addItem(item);
 			throw e;
 		}
-	}
-
-	@Override
-	public int getCost() {
-		return 1;
 	}
 	
 }

@@ -3,13 +3,13 @@ package square;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import java.util.Random;
+import java.util.Set;
 import player.Player;
 import player.TurnEvent;
-import powerfailure.PrimaryPowerFailure;
 import effects.Effect;
 
 /**
@@ -23,11 +23,10 @@ import effects.Effect;
  */
 public class SquareContainer extends AbstractSquare {
 	
-	private static final boolean					ENABLE_POWER_FAILURE	= true;
-	private static final float						POWER_FAILURE_CHANCE	= 0.01F;
 	private AbstractSquare							square;
 	private HashMap<Direction, SquareContainer>		neighbours;
 	private Map<Property, AbstractSquareDecorator>	decorators;
+	private PropertyCreator							powerFailureCreator;
 	
 	/**
 	 * Create a new square container with specified neighbours, after this
@@ -108,6 +107,15 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
+	 * Returns a set of the properties that affect this square.
+	 * 
+	 * @return the properties of this square
+	 */
+	public Set<Property> getProperties() {
+		return new HashSet<Property>(decorators.keySet());
+	}
+	
+	/**
 	 * Add a new specified property to this square.
 	 * 
 	 * @param property
@@ -117,6 +125,17 @@ public class SquareContainer extends AbstractSquare {
 		AbstractSquareDecorator decorator = property.getDecorator(square);
 		decorators.put(property, decorator);
 		this.square = decorator;
+	}
+	
+	/**
+	 * Add a {@link PropertyCreator} to this square. Each turn, this square will
+	 * ask the property creator to affect him.
+	 * 
+	 * @param creator
+	 *        The property creator.
+	 */
+	public void addPropertyCreator(PropertyCreator creator) {
+		this.powerFailureCreator = creator;
 	}
 	
 	/**
@@ -164,45 +183,39 @@ public class SquareContainer extends AbstractSquare {
 	
 	/* ----------- Forwarding Methods ----------------- */
 	
+	@Override
 	public IItem pickupItem(int ID) throws IllegalArgumentException {
 		return square.pickupItem(ID);
 	}
 	
+	@Override
 	public List<IItem> getCarryableItems() {
 		return square.getCarryableItems();
 	}
 	
+	@Override
 	public Player getPlayer() {
 		return square.getPlayer();
 	}
 	
-	public boolean hasLightTrail() {
-		return square.hasLightTrail();
-	}
-	
 	@Override
-	public boolean hasForceField() {
-		return square.hasForceField();
-	}
-	
 	public boolean contains(Object object) {
 		return square.contains(object);
 	}
 	
+	@Override
 	public boolean hasPlayer() {
 		return square.hasPlayer();
 	}
 	
-	public boolean hasPowerFailure() {
-		return square.hasPowerFailure();
+	@Override
+	public void addPlayer(Player p) {
+		square.addPlayer(p);
 	}
 	
-	public void placeLightTrail() {
-		square.placeLightTrail();
-	}
-	
-	public void removeLightTrail() {
-		square.removeLightTrail();
+	@Override
+	public void addItem(IItem item) {
+		square.addItem(item);
 	}
 	
 	@Override
@@ -213,18 +226,22 @@ public class SquareContainer extends AbstractSquare {
 		return result;
 	}
 	
+	@Override
 	public void remove(Object object) {
 		square.remove(object);
 	}
 	
+	@Override
 	public List<IItem> getAllItems() {
 		return square.getAllItems();
 	}
 	
+	@Override
 	public boolean canBeAdded(IItem item) {
 		return square.canBeAdded(item);
 	}
 	
+	@Override
 	public boolean canAddPlayer() {
 		return square.canAddPlayer();
 	}
@@ -240,6 +257,11 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	@Override
+	public boolean hasProperty(PropertyType property) {
+		return square.hasProperty(property);
+	}
+	
+	@Override
 	protected void addItem(IItem item, Effect effect) {
 		square.addItem(item, effect);
 	}
@@ -252,15 +274,11 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
-	 * This method has a chance of {@value #POWER_FAILURE_CHANCE} to initiate a
-	 * new power failure on this square.
+	 * This method will ask the property creator to affect him. This might or
+	 * might not happen, depending on the creator's characteristics.
 	 */
 	public void updatePowerFailure() {
-		if (ENABLE_POWER_FAILURE) {
-			Random rand = new Random();
-			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
-				new PrimaryPowerFailure(this);
-		}
+		powerFailureCreator.affect(this);
 	}
 	
 	/**
@@ -278,17 +296,7 @@ public class SquareContainer extends AbstractSquare {
 		
 		return null;
 	}
-	
-	@Override
-	public boolean isWall() {
-		return square.isWall();
-	}
-	
-	@Override
-	public int getStartingPosition() {
-		return square.getStartingPosition();
-	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -304,7 +312,7 @@ public class SquareContainer extends AbstractSquare {
 		}
 		else if (!square.equals(other.square))
 			return false;
-		return true;
+		return true; 
 	}
 	
 	public Effect getStartTurnEffect(Effect effect) {

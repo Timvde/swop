@@ -72,7 +72,7 @@ public class PlayerDBTest {
 		List<SquareContainer> list = new ArrayList<SquareContainer>();
 		SquareContainer square1 = new SquareContainer(
 				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
-		square1.addProperty(new StartingPositionProperty(1));
+		square1.addProperty(new StartingPositionProperty());
 		list.add(square1);
 		list.add(square1);
 		
@@ -144,7 +144,7 @@ public class PlayerDBTest {
 			result.add(curPlayer);
 			
 			// let the cur player end his turn
-			playerDB.endPlayerTurn(curPlayer);
+			playerDB.getCurrentPlayer().endTurn();
 			// now the curPlayer should have changed
 			assertNotSame(curPlayer, playerDB.getCurrentPlayer());
 			assertFalse(curPlayer.canPerformAction());

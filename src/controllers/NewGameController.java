@@ -4,7 +4,9 @@ import game.CTFMode;
 import game.GameMode;
 import game.GameRunner;
 import game.RaceMode;
+import java.io.FileNotFoundException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
+import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 /**
  * A controller for the GUI to create new games.
@@ -72,11 +74,12 @@ public class NewGameController {
 	 * 
 	 * @param file
 	 *        The filepath of the grid-file.
+	 * @throws FileNotFoundException
 	 * @throws GridBuildException
 	 *         The grid file must exist, adhere the correct rules and it cannot
 	 *         contain invalid characters.
 	 */
-	public void newRaceGame(String file) {
+	public void newRaceGame(String file) throws InvalidGridFileException, IllegalStateException, FileNotFoundException {
 		GameMode mode = new RaceMode();
 		this.gameRunner.newGame(mode, file);
 	}
@@ -88,6 +91,7 @@ public class NewGameController {
 	 *        The filepath of the grid-file.
 	 * @param numberOfPlayers
 	 *        the number of players in the game
+	 * @throws FileNotFoundException 
 	 * @throws GridBuildException
 	 *         The grid file must exist, adhere the correct rules and it cannot
 	 *         contain invalid characters.
@@ -98,7 +102,7 @@ public class NewGameController {
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
 	 */
-	public void newCTFGame(String file, int numberOfPlayers) {
+	public void newCTFGame(String file, int numberOfPlayers) throws InvalidGridFileException, IllegalStateException, FileNotFoundException {
 		GameMode mode = new CTFMode(numberOfPlayers);
 		this.gameRunner.newGame(mode, file);
 	}

@@ -6,6 +6,7 @@ import java.util.Random;
 import player.TurnEvent;
 import square.Direction;
 import square.SquareContainer;
+import effects.EffectFactory;
 
 /**
  * This class represents a tertiary power failure.
@@ -19,13 +20,14 @@ public class TertiaryPowerFailure extends PowerFailure {
 	 * Create a power failure for a given square.
 	 * 
 	 * @param secondaryPowerFailure
-	 * 
+	 *        Its secondary power failure
+	 * @param factory
+	 *        The EffectFactory to use to create effects.
 	 */
-	public TertiaryPowerFailure(SecondaryPowerFailure secondaryPowerFailure) {
+	public TertiaryPowerFailure(SecondaryPowerFailure secondaryPowerFailure, EffectFactory factory) {
 		this.secondaryPowerFailure = secondaryPowerFailure;
-		timeToLive = TIME_TO_LIVE;
-		
-		square = calculateSquare();
+		updateSquare();
+		this.effectFactory = factory;
 	}
 	
 	@Override
@@ -37,9 +39,7 @@ public class TertiaryPowerFailure extends PowerFailure {
 			timeToLive = TIME_TO_LIVE;
 			if (square != null)
 				square.removeProperty(this);
-			square = calculateSquare();
-			if (square != null)
-				square.addProperty(this);
+			updateSquare();
 		}
 	}
 	
@@ -63,5 +63,11 @@ public class TertiaryPowerFailure extends PowerFailure {
 			return secondaryPowerFailure.getSquare().getNeighbourIn(randomDirection);
 		else
 			return null;
+	}
+	
+	private void updateSquare() {
+		square = calculateSquare();
+		if (square != null)
+			square.addProperty(this);
 	}
 }

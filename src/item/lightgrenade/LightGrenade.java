@@ -2,9 +2,10 @@ package item.lightgrenade;
 
 import item.IItem;
 import item.Item;
+import item.UseArguments;
 import square.SquareContainer;
+import ObjectronExceptions.IllegalUseException;
 import effects.Effect;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import effects.EffectFactory;
 import effects.ExplodeEffect;
 
@@ -102,11 +103,11 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
+	public void use(SquareContainer square, UseArguments<?> arguments) throws IllegalUseException {
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
-				throw new CannotPlaceLightGrenadeException(
+				throw new IllegalUseException(
 						"There is already a light grenade on the square");
 		
 		// try and add this light grenade to the square

@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import item.DummyEffectFactory;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,16 +40,15 @@ public class GridTest {
 				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
 		Map<Coordinate, SquareContainer> map = new HashMap<Coordinate, SquareContainer>();
 		map.put(new Coordinate(0, 0), square);
-		grid = new Grid(map);
+		grid = new Grid(map, new ArrayList<SquareContainer>());
 		
 		assertEquals(1, grid.size());
 		assertTrue(grid.getGrid().containsValue(square));
-		
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGrid_nullArgument() {
-		new Grid(null);
+		new Grid(null, null);
 	}
 	
 	@Test

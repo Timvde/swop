@@ -48,8 +48,10 @@ public class Game extends Observable implements Observer {
 		
 		// unwrap the superfluous playerstarts
 		List<SquareContainer> list = grid.getAllStartingPositions();
-		for (int i = mode.getNumberOfPlayers() - 1; i < list.size(); i++)
-			list.get(i).removeProperty(new StartingPositionProperty(i));
+		for (int i = mode.getNumberOfPlayers(); i < list.size(); i++)
+			list.get(i).removeProperty(new StartingPositionProperty());
+		
+		list = list.subList(0, mode.getNumberOfPlayers());
 		
 		playerDB.createNewDB(list);
 		fixObserversPlayerDB(grid, playerDB);

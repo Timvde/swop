@@ -1,11 +1,12 @@
 package powerfailure;
 
-import item.IItem;
 import java.util.Observable;
+import item.IItem;
 import player.Player;
 import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
+import square.PropertyType;
 import effects.Effect;
 
 /**
@@ -25,7 +26,7 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	 */
 	public PowerFailureDecorator(AbstractSquare square, PowerFailure powerfailure) {
 		super(square);
-		if (powerfailure == null) 
+		if (powerfailure == null)
 			throw new IllegalArgumentException("powerfailure cannot be null");
 		
 		this.powerfailure = powerfailure;
@@ -44,34 +45,7 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 		effect.addEffect(powerFailureEffect);
 		super.addPlayer(player, effect);
 	}
-
-	@Override
-	public boolean hasPowerFailure() {
-		return true;
-	}
 	
-	@Override 
-	public void update(Observable o, Object arg) {
-		square.update(o, arg);
-		
-		if (arg instanceof TurnEvent) {
-			switch ((TurnEvent) arg) {
-				case END_ACTION:
-					if (hasPowerFailure()) {
-						powerfailure.updateStatus(TurnEvent.END_ACTION);
-					}
-					break;
-				case END_TURN:
-					if (hasPowerFailure()) {
-						powerfailure.updateStatus(TurnEvent.END_TURN);
-					}
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -79,7 +53,7 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 		result = prime * result + ((powerfailure == null) ? 0 : powerfailure.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -90,9 +64,8 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 			return false;
 		
 		PowerFailureDecorator other = (PowerFailureDecorator) obj;
-		if (!this.hasPowerFailure() && other.hasPowerFailure())
-			return false;
-		else if (!powerfailure.equals(other.powerfailure))
+		
+		if (!powerfailure.equals(other.powerfailure))
 			return false;
 		return true;
 	}
@@ -102,5 +75,17 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 		Effect powerFailureEffect = powerfailure.getStartTurnEffect();
 		effect.addEffect(powerFailureEffect);
 		return super.getStartTurnEffect(effect);
+	}
+	
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return property == PropertyType.POWER_FAILURE ? true : square.hasProperty(property);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof TurnEvent)
+			powerfailure.updateStatus((TurnEvent) arg);
+		super.update(o, arg);
 	}
 }

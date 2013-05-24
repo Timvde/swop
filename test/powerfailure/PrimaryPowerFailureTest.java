@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import effects.RaceEffectFactory;
 import player.TurnEvent;
 import square.Direction;
 import square.NormalSquare;
@@ -22,12 +23,17 @@ public class PrimaryPowerFailureTest {
 	public void setUp() throws Exception {
 		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
 		sq = new SquareContainer(neighbours, new NormalSquare());
-		pf = new PrimaryPowerFailure(sq);
+		pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public final void testConstructor_nullArgument() {
-		new PrimaryPowerFailure(null);
+		new PrimaryPowerFailure(null, new RaceEffectFactory());
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public final void testConstructor_nullArgument2() {
+		new PrimaryPowerFailure(sq, null);
 	}
 	
 	@Test

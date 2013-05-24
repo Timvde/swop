@@ -6,8 +6,8 @@ import javax.swing.JComboBox;
 
 public final class ComboBox {
 	
-	final JComboBox cb;
-	Runnable clickHandler;
+	final JComboBox	cb;
+	Runnable		clickHandler;
 	
 	ComboBox(JComboBox cb) {
 		this.cb = cb;

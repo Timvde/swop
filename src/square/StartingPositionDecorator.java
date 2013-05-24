@@ -1,5 +1,6 @@
 package square;
 
+import player.LightTrailDecorator;
 import item.IItem;
 
 /**
@@ -8,32 +9,19 @@ import item.IItem;
  */
 public class StartingPositionDecorator extends AbstractSquareDecorator {
 	
-	private int	number;
-	
 	/**
 	 * Create a new starting position decorator for a specified square
 	 * 
 	 * @param square
 	 *        the square who will be decorated
-	 * @param number
-	 *        the number of this startingposition
-	 * @throws IllegalArgumentException the number of a startingposition must be > 0
 	 */
-	public StartingPositionDecorator(AbstractSquare square, int number) throws IllegalArgumentException{
+	public StartingPositionDecorator(AbstractSquare square) {
 		super(square);
-		if (number < 1)
-			throw new IllegalArgumentException(
-					"the number of a startingposition must be in the valid range");
-		
-		this.number = number;
 	}
 	
-	/**
-	 * Returns the number of this starting position.
-	 */
-	@Override
-	public int getStartingPosition() {
-		return number;
+	@Override 
+	public boolean hasProperty(PropertyType property) {
+		return property == PropertyType.STARTING_POSITION ? true : square.hasProperty(property);
 	}
 	
 	/**
@@ -43,5 +31,20 @@ public class StartingPositionDecorator extends AbstractSquareDecorator {
 	@Override
 	public boolean canBeAdded(IItem item) {
 		return false;
+		//FIXME dit mag wel at runtime?
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof StartingPositionDecorator))
+			return false;
+		
+		StartingPositionDecorator other = (StartingPositionDecorator) obj;
+		
+		return this.square.equals(other.square);
 	}
 }
