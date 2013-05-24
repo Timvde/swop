@@ -773,13 +773,11 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 				case PLAYER_WON:
 					JOptionPane
 							.showMessageDialog(gui.getFrame(),
-									"Player " + guiDataController.getCurrentPlayer()
-											+ " has won the game!");
+									"The current player has won the game!");
 					break;
 				case PLAYER_LOSE:
 					JOptionPane.showMessageDialog(gui.getFrame(),
-							"Player " + guiDataController.getCurrentPlayer()
-									+ " has lost the game!");
+							"The current player has lost the game!");
 					break;
 			}
 		}
