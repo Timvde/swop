@@ -59,7 +59,12 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 */
 	@Override
 	public void construct() throws InvalidGridFileException {
-		builder.createNewEmptyGrid();
+		try {
+			reset();
+		}
+		catch (FileNotFoundException e1) {
+			throw new InvalidGridFileException("file not found");
+		}
 		
 		GridDimension gridDim = readGridFromFile();
 		placeItemsOnBoard(startingCoordinates, gridDim.getWidth(), gridDim.getHeight());
