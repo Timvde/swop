@@ -14,6 +14,7 @@ import item.lightgrenade.LightGrenadeState;
 import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -631,6 +632,10 @@ public class GUI implements Runnable, Observer {
 						catch (GridBuildException e) {
 							JOptionPane.showMessageDialog(gui.getFrame(),
 									"The specified file is invalid.");
+						}
+						catch (FileNotFoundException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"The specified file could not be found.");
 						}
 					}
 				});

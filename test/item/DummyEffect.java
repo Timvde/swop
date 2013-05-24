@@ -4,6 +4,7 @@ import item.lightgrenade.LightGrenade;
 import square.TronObject;
 import effects.AbstractEffect;
 import effects.Effect;
+import effects.ExplodeEffect;
 
 
 @SuppressWarnings("javadoc")
@@ -14,7 +15,7 @@ public class DummyEffect extends AbstractEffect {
 	@Override
 	public void execute(TronObject object) {
 		if (object instanceof LightGrenade)
-			((LightGrenade) object).getEffect().increaseStrength();
+			((ExplodeEffect) ((LightGrenade) object).getEffect()).increaseStrength();
 		isExecuted = true;
 		super.execute(object);
 	}

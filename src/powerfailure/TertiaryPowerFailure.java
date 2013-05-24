@@ -6,6 +6,7 @@ import java.util.Random;
 import player.TurnEvent;
 import square.Direction;
 import square.SquareContainer;
+import effects.EffectFactory;
 
 /**
  * This class represents a tertiary power failure.
@@ -20,11 +21,13 @@ public class TertiaryPowerFailure extends PowerFailure {
 	 * 
 	 * @param secondaryPowerFailure
 	 *        Its secondary power failure
-	 * 
+	 * @param factory
+	 *        The EffectFactory to use to create effects.
 	 */
-	public TertiaryPowerFailure(SecondaryPowerFailure secondaryPowerFailure) {
+	public TertiaryPowerFailure(SecondaryPowerFailure secondaryPowerFailure, EffectFactory factory) {
 		this.secondaryPowerFailure = secondaryPowerFailure;
 		updateSquare();
+		this.effectFactory = factory;
 	}
 	
 	@Override

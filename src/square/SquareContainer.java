@@ -25,11 +25,10 @@ import effects.Effect;
  */
 public class SquareContainer extends AbstractSquare {
 	
-	private static final boolean					ENABLE_POWER_FAILURE	= true;
-	private static final float						POWER_FAILURE_CHANCE	= 0.01F;
 	private AbstractSquare							square;
 	private HashMap<Direction, SquareContainer>		neighbours;
 	private Map<Property, AbstractSquareDecorator>	decorators;
+	private PropertyCreator							powerFailureCreator;
 	
 	/**
 	 * Create a new square container with specified neighbours, after this
@@ -128,6 +127,17 @@ public class SquareContainer extends AbstractSquare {
 		AbstractSquareDecorator decorator = property.getDecorator(square);
 		decorators.put(property, decorator);
 		this.square = decorator;
+	}
+	
+	/**
+	 * Add a {@link PropertyCreator} to this square. Each turn, this square will
+	 * ask the property creator to affect him.
+	 * 
+	 * @param creator
+	 *        The property creator.
+	 */
+	public void addPropertyCreator(PropertyCreator creator) {
+		this.powerFailureCreator = creator;
 	}
 	
 	/**
@@ -266,15 +276,11 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
-	 * This method has a chance of {@value #POWER_FAILURE_CHANCE} to initiate a
-	 * new power failure on this square.
+	 * This method will ask the property creator to affect him. This might or
+	 * might not happen, depending on the creator's characteristics.
 	 */
 	public void updatePowerFailure() {
-		if (ENABLE_POWER_FAILURE) {
-			Random rand = new Random();
-			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
-				new PrimaryPowerFailure(this);
-		}
+		powerFailureCreator.affect(this);
 	}
 	
 	/**
