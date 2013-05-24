@@ -126,6 +126,9 @@ public class TronGridBuilder implements GridBuilder {
 	
 	@Override
 	public void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException {
+		if (from == null || to == null)
+			throw new IllegalArgumentException("the coords cannot be null");
+		
 		Teleporter start = getTeleporter(from);
 		Teleporter destination = getTeleporter(to);
 		
@@ -179,8 +182,8 @@ public class TronGridBuilder implements GridBuilder {
 			return false;
 		else if (grid.get(coordinate).isWall())
 			return false;
-		/*else if (grid.get(coordinate).getStartingPosition() < 1)
-			return false;*/
+		else if (grid.get(coordinate).getStartingPosition() < 1)
+			return false;
 		else
 			return true;
 	}
