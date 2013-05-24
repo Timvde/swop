@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import player.PlayerState;
 import square.Direction;
 import square.NormalSquare;
 import square.PropertyType;
@@ -79,6 +80,7 @@ public class TronGridBuilder implements GridBuilder {
 	
 	@Override
 	public void addPlayerStartingPosition(Coordinate coordinate, int number) {
+		System.out.println("Adding a player starting position");
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		if (startingPositions.keySet().contains(number))
@@ -89,6 +91,7 @@ public class TronGridBuilder implements GridBuilder {
 			grid.put(coordinate, new SquareContainer(neighbours, new NormalSquare()));
 			numberOfSquares++;
 		}
+		startingPositions.put(number, coordinate);
 		grid.get(coordinate).addProperty(new StartingPositionProperty());
 	}
 	

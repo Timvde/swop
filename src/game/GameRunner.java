@@ -107,7 +107,7 @@ public class GameRunner {
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in the grid to be created.
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public void newGame(GameMode mode, String file) throws InvalidGridFileException,
 			IllegalStateException, FileNotFoundException {
@@ -135,7 +135,8 @@ public class GameRunner {
 		guiDataCont.setGrid(new GuiGridAdapter(grid));
 		
 		// fix observers of old game
-		game.deleteObservers();
+		if (game != null)
+			game.deleteObservers();
 		
 		// create a new Game and fix observers
 		game = new Game(mode, grid, playerDB);
