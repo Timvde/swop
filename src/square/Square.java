@@ -1,6 +1,7 @@
 package square;
 
 import item.IItem;
+import item.lightgrenade.LightGrenade;
 import java.util.List;
 import player.Player;
 import player.TronPlayer;
@@ -29,13 +30,6 @@ public interface Square {
 	public Player getPlayer();
 	
 	/**
-	 * Checks whether or not a light trail is currently active on this square.
-	 * 
-	 * @return whether or not a light trail is currently active on this square.
-	 */
-	public boolean hasLightTrail();
-	
-	/**
 	 * Returns whether or not this Square holds currently a {@link TronPlayer
 	 * player}
 	 * 
@@ -44,27 +38,21 @@ public interface Square {
 	public boolean hasPlayer();
 	
 	/**
-	 * @return Whether or not this ASquare has a power failure.
-	 */
-	public boolean hasPowerFailure();
-	
-	/**
-	 * @return Whether or not this ASquare has a force field.
-	 */
-	public boolean hasForceField();
-	
-	/**
-	 * Returns whether this square represents a wall
+	 * Returns whether this square contains the specified object
 	 * 
-	 * @return true if this square represents a wall
+	 * @param object
+	 *        the object to test
+	 * @return true if this square contains the item
 	 */
-	public boolean isWall();
+	public boolean contains(Object object);
 	
 	/**
-	 * Returns whether this square is a starting position
+	 * Returns whether this square has a specified property
 	 * 
-	 * @return true if this square is a starting position
+	 * @param property
+	 *        the property type to test
+	 * @return true if the square had the specified property
 	 */
-	public boolean isStartingPosition();
+	public boolean hasProperty(PropertyType property);
 	
 }
