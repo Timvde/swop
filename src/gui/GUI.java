@@ -579,6 +579,7 @@ public class GUI implements Runnable, Observer {
 									int width = Integer.parseInt(gridWidthTextField.getText());
 									int height = Integer.parseInt(gridHeightTextField.getText());
 									newGameController.newRaceGame(width, height);
+									gui.repaint();
 								}
 								catch (NumberFormatException e) {
 									JOptionPane.showMessageDialog(gui.getFrame(),
@@ -592,6 +593,7 @@ public class GUI implements Runnable, Observer {
 									int numberOfPlayers = Integer.parseInt(numPlayersCTFTextField
 											.getText());
 									newGameController.newCTFGame(width, height, numberOfPlayers);
+									gui.repaint();
 								}
 								catch (NumberFormatException e) {
 									JOptionPane.showMessageDialog(gui.getFrame(),
@@ -601,7 +603,11 @@ public class GUI implements Runnable, Observer {
 						}
 						catch (IllegalArgumentException e) {
 							JOptionPane.showMessageDialog(gui.getFrame(),
-									"Please specify valid dimensions for the grid");
+									"Please specify valid input for the grid: " + e.getMessage());
+						}
+						catch (IllegalStateException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please specify valid input for the grid: " + e.getMessage());
 						}
 					}
 				});
@@ -616,12 +622,14 @@ public class GUI implements Runnable, Observer {
 						try {
 							if (modeComboBox.getSelectedIndex() == 0) {
 								newGameController.newRaceGame(fileName);
+								gui.repaint();
 							}
 							if (modeComboBox.getSelectedIndex() == 1) {
 								try {
 									int numberOfPlayers = Integer.parseInt(numPlayersCTFTextField
 											.getText());
 									newGameController.newCTFGame(fileName, numberOfPlayers);
+									gui.repaint();
 								}
 								catch (NumberFormatException e) {
 									JOptionPane.showMessageDialog(gui.getFrame(),
@@ -636,6 +644,14 @@ public class GUI implements Runnable, Observer {
 						catch (FileNotFoundException e) {
 							JOptionPane.showMessageDialog(gui.getFrame(),
 									"The specified file could not be found.");
+						}
+						catch (IllegalArgumentException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please specify valid input for the grid: " + e.getMessage());
+						}
+						catch (IllegalStateException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please specify valid input for the grid: " + e.getMessage());
 						}
 					}
 				});

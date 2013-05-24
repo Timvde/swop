@@ -68,7 +68,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		GridDimension gridDim = readGridFromFile();
 		placeItemsOnBoard(startingCoordinates, gridDim.getWidth(), gridDim.getHeight());
 		
-		if (!isValidGrid(grid)) {
+		if (!isValidGrid()) {
 			try {
 				reset();
 			}
@@ -86,23 +86,23 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		startingCoordinates = new HashMap<Integer, Coordinate>();
 	}
 	
-	private boolean isValidGrid(Map<Coordinate, Expression> grid2) {
+	private boolean isValidGrid() {
 		if (gridHasUnreachableIslands())
 			return false;
-		else if (hasDubbleStartingPositions())
+		else if (hasDoubleStartingPositions())
 			return false;
 		else
 			return true;
 	}
 	
-	private boolean hasDubbleStartingPositions() {
+	private boolean hasDoubleStartingPositions() {
 		Set<Integer> values = new HashSet<Integer>();
 		for (Coordinate startingCoordinate : startingCoordinates.values()) {
 			if (values.contains(((StartingSquareExpression) grid.get(startingCoordinate)).getId()))
-				return false;
+				return true;
 			values.add(((StartingSquareExpression) grid.get(startingCoordinate)).getId());
 		}
-		return true;
+		return false;
 		
 	}
 	
@@ -120,8 +120,10 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 			j = 0;
 			while (parser.hasNextStatement() && !parser.isAtEndOfLine()) {
 				Expression expression = parser.nextExpression();
-				if (expression != null)
+				if (expression != null) {
 					expression.build(builder, new Coordinate(j, i));
+					grid.put(new Coordinate(j, i), expression);
+				}
 				if (expression instanceof StartingSquareExpression) {
 					int id = ((StartingSquareExpression) expression).getId();
 					startingCoordinates.put(id, new Coordinate(j, i));
@@ -148,7 +150,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	private boolean gridHasUnreachableIslands() {
 		Set<Coordinate> squaresReachableFromStart = new HashSet<Coordinate>();
 		List<Coordinate> coordinatesToVisit = builder
-				.getAllReachableNeighboursOf(this.startingCoordinates.get(0));
+				.getAllReachableNeighboursOf(this.startingCoordinates.get(1));
 		
 		while (!coordinatesToVisit.isEmpty()) {
 			Coordinate curCoordinate = coordinatesToVisit.remove(0);

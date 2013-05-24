@@ -80,16 +80,18 @@ public class TronGridBuilder implements GridBuilder {
 	
 	@Override
 	public void addPlayerStartingPosition(Coordinate coordinate, int number) {
-		System.out.println("Adding a player starting position");
 		if (coordinate == null)
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
-		if (startingPositions.keySet().contains(number))
-			throw new IllegalArgumentException("the startingposition number is already used");
+		if (startingPositions.keySet().contains(number)) {
+			if (startingPositions.get(number).equals(coordinate))
+				return; // the starting position is already added
+			else
+				throw new IllegalArgumentException(
+						"the startingposition number is already used with another coordinate");
+		}
 		
 		if (!grid.containsKey(coordinate)) {
-			Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
-			grid.put(coordinate, new SquareContainer(neighbours, new NormalSquare()));
-			numberOfSquares++;
+			addSquare(coordinate);
 		}
 		startingPositions.put(number, coordinate);
 		grid.get(coordinate).addProperty(new StartingPositionProperty());
