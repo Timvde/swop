@@ -1,7 +1,5 @@
 package player;
 
-import game.Game;
-import grid.Grid;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,17 +8,9 @@ import square.Square;
 import square.SquareContainer;
 
 /**
- * A class to store {@link TronPlayer players}, to appoint the current player
- * allowed to play and to manage his number of alllowed actions. PlayerDataBase
- * is an {@link Observable} and will notify its observers (passing the
- * {@link PlayerState} of the player whos turn is ended as an argument) any time
- * a player switch has occurered.
- * 
- * {@link Grid} will observe the database in order to update the powerfailured
- * {@link Square}s. {@link Game} as well will observe the database to be
- * notified when a Player has won/lost the game.
- * 
- * TODO update doc
+ * This class will keep track of the {@link TronPlayer players}, and who is the
+ * current player. Other classes can observe the PlayerDataBase, which will be
+ * notified of a {@link TurnEvent} at the end of each action.
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
@@ -72,10 +62,14 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/**
 	 * Returns whether or not the specified startingpositions list is valid.
-	 * I.e. : <li>It cannot be <code>null</code></li> <li>It must contain at
-	 * least one position</li> <li>There can be no duplicates in the
-	 * startingpositions</li> <li>All the squares must be a
-	 * {@link Square#getStartingPosition() starting position}</li>
+	 * I.e. :
+	 * <ul>
+	 * <li>It cannot be <code>null</code></li>
+	 * <li>It must contain at least one position</li>
+	 * <li>There can be no duplicates in the startingpositions</li>
+	 * <li>All the squares must be a {@link Square#getStartingPosition()
+	 * starting position}</li>
+	 * </ul>
 	 * 
 	 * @param startingPositions
 	 *        the list to test.
@@ -144,9 +138,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	private void endPlayerTurn(TronPlayer player) {
 		if (!player.equals(getCurrentPlayer())) {
-			// Only the current player can end its turn. By returning instead of
-			// throwing, we actually handle this problem correctly without
-			// having to catch an exception on other places.
+			/*
+			 * Only the current player can end its turn. By returning instead of
+			 * throwing, we actually handle this problem correctly without
+			 * having to catch an exception on other places.
+			 */
 			return;
 		}
 		notifyTurnEvent(TurnEvent.END_TURN);
@@ -157,9 +153,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 		TronPlayer newPlayer = playerList.get(currentPlayerIndex);
 		
-		// Assign new actions to the specified player and set him active.
-		// This may introduce a new player switch (the resulting penalty
-		// after adding new actions may still be < 0)
+		/*
+		 * Assign new actions to the specified player and set him active. This
+		 * may introduce a new player switch (the resulting penalty after adding
+		 * new actions may still be < 0)
+		 */
 		assignNewTurn(newPlayer);
 	}
 	
@@ -218,8 +216,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public void clearDataBase() {
 		for (TronPlayer player : this.playerList) {
-			// set all references of the player to null so that no-one can still
-			// play with an old player.
+			/*
+			 * Set all references of the player to null so that no-one can still
+			 * play with an old player.
+			 */
 			player.endPlayerLife();
 		}
 		this.playerList.clear();
