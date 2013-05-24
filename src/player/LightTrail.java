@@ -113,6 +113,6 @@ public class LightTrail implements Property {
 
 	@Override
 	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
-		return null;
+		return new LightTrailDecorator(square);
 	}
 }

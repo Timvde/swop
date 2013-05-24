@@ -13,7 +13,15 @@ import grid.builder.expressions.WallExpression;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
+/**
+ * File parser to parse a file for the TRON game and return an according expression
+ * Squares can be defined by one of the following chars: *,# and ' '. Each square can have 
+ * several arguments. Arguments are separated by a : char. If the items require an additional argument
+ * these can be added with a . separator. 
+ *
+ */
 public class TronFileParser {
 	
 	private final File	file;
@@ -44,7 +52,10 @@ public class TronFileParser {
 	 * @return true if the file can be parsed, else false
 	 */
 	public boolean isValidFile(File file) {
-		return true;
+		if (file == null)
+			return false;
+		else
+			return true;
 	}
 	
 	public Expression nextExpression() {
@@ -73,9 +84,9 @@ public class TronFileParser {
 	
 	private Expression getItemExpression(String statement) {
 		for (String item : statement.split(":")) {
-			switch (item) {
+			switch (item.split(".")[0]) {
 				case "LG":
-					return new LightGrenadeExpression();
+					return new LightGrenadeExpression(item);
 				case "CID":
 					return new IdentityDiskExpression(true);
 				case "UID":
@@ -93,6 +104,9 @@ public class TronFileParser {
 	}
 	
 	private Expression getSquareExpression(char square) {
+		if (Character.isDigit(square))
+			return new StartingSquareExpression(Character.getNumericValue(square));
+		
 		switch (square) {
 			case ' ':
 				return new SquareExpression();
@@ -100,21 +114,11 @@ public class TronFileParser {
 				return new WallExpression();
 			case '*':
 				return new EmptyExpression();
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				return new StartingSquareExpression();
 			default:
-				throw new IllegalStateException("The char was not recognized!");
+				throw new InvalidGridFileException("The char was not recognized!");
 		}
 	}
-
+	
 	public void readEndOfLine() {
 		scanner.next("\\n");
 	}

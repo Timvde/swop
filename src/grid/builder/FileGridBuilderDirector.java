@@ -70,10 +70,23 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	private boolean isValidGrid(Map<Coordinate, Expression> grid2) {
 		if (gridHasUnreachableIslands())
 			return false;
+		else if (hasDubbleStartingPositions())
+			return false;
 		else
 			return true;
 	}
 	
+	private boolean hasDubbleStartingPositions() {
+		Set<Integer> values = new HashSet<Integer>();
+		for (Coordinate startingCoordinate : startingCoordinates) {
+			if (values.contains(((StartingSquareExpression) grid.get(startingCoordinate)).getId()))
+				return false;
+			values.add(((StartingSquareExpression) grid.get(startingCoordinate)).getId());
+		}
+		return true;
+			
+	}
+
 	/**
 	 * This method will construct the grid as specified in the gridFile.
 	 * 

@@ -5,7 +5,7 @@ import java.util.List;
 import player.Player;
 
 /**
- * 
+ * A more usable interface of square for the gui 
  */
 public interface GuiSquare {
 	

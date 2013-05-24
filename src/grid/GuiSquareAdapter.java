@@ -7,6 +7,7 @@ import player.LightTrail;
 import player.Player;
 import powerfailure.PowerFailure;
 import square.Property;
+import square.PropertyType;
 import square.SquareContainer;
 
 /**
@@ -79,12 +80,12 @@ public class GuiSquareAdapter implements GuiSquare {
 	
 	@Override
 	public boolean isWall() {
-		return false;
+		return square.hasProperty(PropertyType.WALL);
 	}
 	
 	@Override
 	public boolean isStartingPosition() {
-		return false;
+		return square.hasProperty(PropertyType.STARTING_POSITION);
 	}
 	
 	@Override

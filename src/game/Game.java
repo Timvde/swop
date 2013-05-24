@@ -61,7 +61,7 @@ public class Game implements Observer {
 		NewGameController newGameCont = new NewGameController(this);
 		
 		// Here grid is still null
-		this.guiDataCont = new GUIDataController(this.playerDB, new GuiGridAdapter(this.grid));
+		this.guiDataCont = new GUIDataController(this.playerDB, null);
 		
 		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
 				this.guiDataCont);
