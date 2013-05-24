@@ -2,6 +2,7 @@ package item.lightgrenade;
 
 import item.IItem;
 import item.Item;
+import item.UseArguments;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalUseException;
 import effects.Effect;
@@ -102,7 +103,7 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void use(SquareContainer square) throws IllegalUseException {
+	public void use(SquareContainer square, UseArguments<?> arguments) throws IllegalUseException {
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)

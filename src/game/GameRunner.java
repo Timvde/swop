@@ -56,11 +56,11 @@ public class GameRunner {
 		gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont, guiDataCont);
 		
 		// Set the initialized GUI as the gui for the controllers
-		useItemCont.setGUI(gui);
+		useItemCont.setArgumentsHandler(gui);
 	}
 	
 	/**
-	 * In a separate method so we can test withouth creating a gui
+	 * In a separate method so we can test without creating a gui
 	 */
 	private void showGUI() {
 		java.awt.EventQueue.invokeLater(gui);

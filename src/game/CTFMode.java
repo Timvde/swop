@@ -71,7 +71,7 @@ public class CTFMode implements GameMode {
 			for (IItem item : curPlayer.getInventoryContent())
 				if (item instanceof Flag) {
 					// teleport back
-					item.use(curPlayer.getCurrentPosition());
+					item.use(curPlayer.getCurrentPosition(), item.getUseArguments());
 					capturedFlagCount.put(curPlayer, capturedFlagCount.get(curPlayer) + 1);
 				}
 		}

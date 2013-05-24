@@ -6,6 +6,7 @@ import grid.Coordinate;
 import grid.GuiSquare;
 import item.IItem;
 import item.Item;
+import item.UseArguments;
 import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
 import item.identitydisk.IdentityDisk;
@@ -43,7 +44,7 @@ import controllers.UseItemController;
  * 
  * @author Tom
  */
-public class GUI implements Runnable, Observer {
+public class GUI implements Runnable, Observer, ArgumentsHandler {
 	
 	private AGUI					gui;
 	
@@ -783,6 +784,15 @@ public class GUI implements Runnable, Observer {
 			}
 		}
 		//else do nothing; return
+	}
+
+	@Override
+	public void handleArguments(UseArguments<?> arguments) {
+		int response = JOptionPane
+				.showOptionDialog(null, arguments.getQuestion(),
+						"This item needs more info", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+						null, arguments.getPossibleAnswers().toArray(), arguments.getPossibleAnswers().get(0));
+		arguments.setUserChoice(arguments.getPossibleAnswers().get(response));
 	}
 	
 }
