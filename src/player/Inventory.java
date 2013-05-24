@@ -6,8 +6,12 @@ import java.util.List;
 import item.IItem;
 
 /**
+<<<<<<< HEAD
+ * An inventory of {@link Item}s that is carried by a {@link Player}.
+=======
  * An inventory of {@link Item}s that is carried by a
  * {@link TronPlayer}.
+>>>>>>> tim_wil_ook_een_happy_place
  */
 public class Inventory implements IInventory {
 	
@@ -89,8 +93,7 @@ public class Inventory implements IInventory {
 	/**
 	 * returns whether this inventory contains the specified element. More
 	 * formally this method returns <tt>true</tt> if and only if this inventory
-	 * contains at least one item <tt>i</tt> such that
-	 * <tt> item.equals(i) </tt>
+	 * contains at least one item <tt>i</tt> such that <tt> item.equals(i) </tt>
 	 * 
 	 * @param item
 	 *        the item whose presence in this inventory is to be tested
@@ -98,6 +101,13 @@ public class Inventory implements IInventory {
 	 */
 	public boolean hasItem(IItem item) {
 		return contents.contains(item);
+	}
+	
+	/**
+	 * Removes all items from the inventory.
+	 */
+	void removeAll() {
+		contents = new ArrayList<IItem>();
 	}
 	
 }

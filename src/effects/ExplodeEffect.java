@@ -1,7 +1,9 @@
-package item.lightgrenade;
+package effects;
 
-import item.AbstractEffect;
 import square.TronObject;
+import item.lightgrenade.Explodable;
+import item.lightgrenade.LightGrenade;
+import item.lightgrenade.LightGrenadeState;
 
 /**
  * An explosion effect

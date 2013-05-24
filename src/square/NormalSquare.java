@@ -1,14 +1,13 @@
 package square;
 
-import item.Effect;
-import item.EmptyEffect;
 import item.IItem;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import player.Player;
-import player.TronPlayer;
+import effects.Effect;
+import effects.EmptyEffect;
 
 /**
  * A NormalSquare represents a postion that can hold {@link IItem items} and
@@ -29,11 +28,6 @@ public class NormalSquare extends AbstractSquare {
 	 */
 	public NormalSquare() {
 		itemList = new ArrayList<IItem>();
-	}
-	
-	@Override
-	public void addItem(IItem item) {
-		addItem(item, new EmptyEffect());
 	}
 	
 	@Override
@@ -106,7 +100,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Returns whether or not this Square has currently a {@link TronPlayer}, i.e.
+	 * Returns whether or not this Square has currently a {@link Player}, i.e.
 	 * <code>{@link #getPlayer()}!= null</code>.
 	 * 
 	 * @return Whether this square has a Player.
@@ -114,11 +108,6 @@ public class NormalSquare extends AbstractSquare {
 	@Override
 	public boolean hasPlayer() {
 		return player != null;
-	}
-	
-	@Override
-	public void addPlayer(Player player) {
-		addPlayer(player, new EmptyEffect());
 	}
 	
 	@Override
@@ -194,4 +183,12 @@ public class NormalSquare extends AbstractSquare {
 	public boolean hasProperty(PropertyType property) {
 		return false;
 	}
+
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		// Nothing to chain
+		return effect;
+	}
+	
+	
 }

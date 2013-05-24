@@ -34,7 +34,7 @@ public class MoveAction implements Action {
 	 * in a specified {@link Direction}. More formally the postconditions are:
 	 * 
 	 * <li>The new location of this player is
-	 * <code>{@link TronPlayer#getCurrentLocation() 
+	 * <code>{@link TronPlayer#getCurrentPosition() 
 	 * currentLocationBefore}{@link SquareContainer#getNeighbourIn(Direction) 
 	 * .getNeighbour(direction)}</code>.</li>
 	 * 
@@ -49,7 +49,7 @@ public class MoveAction implements Action {
 	 *         direction.
 	 */
 	public void execute(TronPlayer player) {
-		SquareContainer square = (SquareContainer) player.getCurrentLocation();
+		SquareContainer square = (SquareContainer) player.getCurrentPosition();
 		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!isValidDirection(direction))

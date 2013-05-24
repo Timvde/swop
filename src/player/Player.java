@@ -3,7 +3,6 @@ package player;
 import item.IItem;
 import java.util.List;
 import player.actions.Action;
-import square.Square;
 import square.SquareContainer;
 import square.TronObject;
  
@@ -38,7 +37,7 @@ public interface Player extends TronObject {
 	 * 
 	 * @return the square this player currently stands on.
 	 */
-	public Square getCurrentLocation();
+	public SquareContainer getCurrentPosition();
 	
 	/**
 	 * Returns the {@link Inventory}-content associated with this player.
@@ -66,7 +65,7 @@ public interface Player extends TronObject {
 	 * Returns whether this player can perform an action. A player can perform
 	 * an action if: <li>his state is {@link PlayerState#ACTIVE}</li> <li>he has
 	 * performed less then
-	 * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current
+	 * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} in his current
 	 * turn (i.e. <code>{@link #getAllowedNumberOfActions()} > 0</code> ).</li>
 	 * 
 	 * @return whether this player is allowed to perform an action.

@@ -1,11 +1,11 @@
 package powerfailure;
 
-import item.Effect;
 import item.IItem;
 import player.Player;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.PropertyType;
+import effects.Effect;
 
 /**
  * A decorator to modify a square with a power failure effect.
@@ -31,14 +31,16 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public void addItem(IItem item) {
-		Effect effect = this.powerfailure.getEffect();
+	protected void addItem(IItem item, Effect effect) {
+		Effect powerFailureEffect = this.powerfailure.getEffect();
+		effect.addEffect(powerFailureEffect);
 		super.addItem(item, effect);
 	}
 	
-	@Override
-	public void addPlayer(Player player) {
-		Effect effect = this.powerfailure.getEffect();
+	@Override 
+	protected void addPlayer(Player player, Effect effect) {
+		Effect powerFailureEffect = this.powerfailure.getEffect();
+		effect.addEffect(powerFailureEffect);
 		super.addPlayer(player, effect);
 	}
 	
@@ -64,6 +66,13 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 		if (!powerfailure.equals(other.powerfailure))
 			return false;
 		return true;
+	}
+
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		Effect powerFailureEffect = powerfailure.getStartTurnEffect();
+		effect.addEffect(powerFailureEffect);
+		return super.getStartTurnEffect(effect);
 	}
 	
 	@Override

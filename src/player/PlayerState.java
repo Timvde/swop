@@ -3,10 +3,12 @@ package player;
 import square.Square;
 
 
+
 /**
  * PlayerState controls the actions of a player. A player can only perform
- * actions when he is in the {@link #ACTIVE} state. It is highly encouraged to check each transition
- * between state with the {@link #isAllowedTransistionTo(PlayerState)} method.
+ * actions when he is in the {@link #ACTIVE} state. It is highly encouraged to
+ * check each transition between state with the
+ * {@link #isAllowedTransistionTo(PlayerState)} method.
  */
 public enum PlayerState {
 	/**
@@ -37,12 +39,14 @@ public enum PlayerState {
 			if (toState == null) {
 				return false;
 			}
-			// one can only go to active from the waiting state
-			return (toState == this) || (toState == ACTIVE);
+			// one can only go to active or finished from the waiting state
+			return (toState == this) || (toState == ACTIVE) || (toState == FINISHED);
 		}
 	},
 	
 	/**
+	 * A {@link Player player} is in the finished state when he has won/lost the
+	 * game. A player cannot perform any actions in the finished state.
 	 * A {@link Player player} is in the finished state when he has reached his
 	 * target {@link Square square}. When a player has reached this position,
 	 * he cannot perform actions.
@@ -57,27 +61,11 @@ public enum PlayerState {
 			// one can go nowhere from the finished state
 			return (toState == this);
 		}
-	},
-	
-	/**
-	 * A {@link Player player} is in the lost state when he has performed an
-	 * action or a series of actions that caused the player to lose the game.
-	 */
-	LOST {
-		
-		@Override
-		public boolean isAllowedTransistionTo(PlayerState toState) {
-			if (toState == null) {
-				return false;
-			}
-			// one can go nowhere from the lost state
-			return (toState == this);
-		}
 	};
 	
 	/**
-	 * Returns whether or not a transition from this state to a specified state is
-	 * allowed.
+	 * Returns whether or not a transition from this state to a specified state
+	 * is allowed.
 	 * 
 	 * @param toState
 	 *        the given other state

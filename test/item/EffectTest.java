@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
+import effects.Effect;
 
 @SuppressWarnings("javadoc")
 public class EffectTest {

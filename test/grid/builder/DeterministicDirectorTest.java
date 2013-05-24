@@ -4,13 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import grid.Coordinate;
-import grid.Grid;
 import item.IItem;
 import item.teleporter.Teleporter;
 import org.junit.Before;
 import org.junit.Test;
 import square.AbstractSquare;
+import square.PropertyType;
+import effects.RaceEffectFactory;
+import grid.Coordinate;
+import grid.Grid;
 
 @SuppressWarnings("javadoc")
 public class DeterministicDirectorTest {
@@ -19,7 +21,7 @@ public class DeterministicDirectorTest {
 	
 	@Before
 	public void setUp() {
-		builder = new TronGridBuilder();
+		builder = new TronGridBuilder(new RaceEffectFactory());
 		GridBuilderDirector director = new DeterministicGridBuilderDirector(builder, false);
 		director.construct();
 	}
@@ -42,8 +44,10 @@ public class DeterministicDirectorTest {
 	public void testDeterministicPlayerPositions() {
 		Grid grid = builder.getResult();
 		
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).isStartingPosition());
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).isStartingPosition());
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS)
+				.hasProperty(PropertyType.STARTING_POSITION));
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS)
+				.hasProperty(PropertyType.STARTING_POSITION));
 	}
 	
 	@Test

@@ -4,6 +4,9 @@ import item.IItem;
 import item.Item;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalUseException;
+import effects.Effect;
+import effects.EffectFactory;
+import effects.ExplodeEffect;
 
 /**
  * Light grenades are items that can be picked up and used by a player. There
@@ -23,13 +26,21 @@ import ObjectronExceptions.IllegalUseException;
 public class LightGrenade extends Item {
 	
 	private LightGrenadeState	state;
+	private EffectFactory		effectFactory;
 	
 	/**
 	 * create a new light grenade, the state of this light grenade will be
 	 * inactive.
+	 * 
+	 * @param effectFactory
+	 *        The effect factory this item will use to get its needed effect.
 	 */
-	public LightGrenade() {
-		state = LightGrenadeState.INACTIVE;
+	public LightGrenade(EffectFactory effectFactory) {
+		if (effectFactory == null)
+			throw new IllegalArgumentException("effectfactory cannot be null");
+		
+		this.effectFactory = effectFactory;
+		this.state = LightGrenadeState.INACTIVE;
 	}
 	
 	/**
@@ -63,14 +74,17 @@ public class LightGrenade extends Item {
 	
 	/**
 	 * This method sets the state of the grenade to {@link LightGrenadeState}
-	 * .EXPLODED
+	 * .EXPLODED <br>
+	 * <br>
+	 * <b>One should NOT call this method manually. This is done by the
+	 * {@link ExplodeEffect}!</b>
 	 * 
 	 * @throws IllegalStateException
 	 *         The transition to the EXPLODED state must be valid from the
 	 *         current state:
 	 *         <code>this.getState().isAllowedTransistionTo(LightGrenadeState.EXPLODED)</code>
 	 */
-	void explode() throws IllegalStateException {
+	public void explode() throws IllegalStateException {
 		if (!this.state.isAllowedTransistionTo(LightGrenadeState.EXPLODED))
 			throw new IllegalStateException("Illegal transition from " + this.state.toString()
 					+ " to 'exploded'");
@@ -109,7 +123,7 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public ExplodeEffect getEffect() {
-		return new ExplodeEffect(this);
+	public Effect getEffect() {
+		return effectFactory.getExplodeEffect(this);
 	}
 }

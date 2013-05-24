@@ -4,6 +4,7 @@ import item.Item;
 import item.teleporter.Teleportable;
 import square.Direction;
 import square.SquareContainer;
+import effects.Effect;
 
 /**
  * Charged Identity disk can be launched by players on the grid. The disk will
@@ -36,7 +37,8 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 				moveDisk(direction);
 				// test if we have hit a player (and hit him if we have)
 				if (currentSquare.hasPlayer()) {
-					currentSquare.getPlayer().asExplodable().skipNumberOfActions(3);
+					Effect effect = new IdentityDiskEffect();
+					effect.execute(currentSquare.getPlayer());
 					break;
 				}
 			}
@@ -97,12 +99,30 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	}
 	
 	/**
+	 * Check if the given direction is a valid direction in which an ID can be
+	 * shot in.
+	 */
+	private boolean isValidDirection(Direction direction) {
+		if (direction == null)
+			return false;
+		if (!direction.isPrimaryDirection())
+			return false;
+		
+		return true;
+	}
+	
+	/**
 	 * Set the direction in which the disk will be fired.
 	 * 
 	 * @param direction
 	 *        the direction in which the disk will be fired.
+	 * @throws IllegalArgumentException
+	 *         If the given direction is not a valid direction.
 	 */
 	public void setDirection(Direction direction) {
+		if (!isValidDirection(direction))
+			throw new IllegalArgumentException("The direction is not a valid direction.");
+		
 		this.direction = direction;
 	}
 	

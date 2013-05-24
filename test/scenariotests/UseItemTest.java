@@ -3,13 +3,20 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import game.CTFMode;
+import game.GameMode;
+import game.RaceMode;
+import grid.builder.DeterministicGridBuilderDirector;
 import gui.GUI;
+import item.DummyEffectFactory;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenadeState;
 import java.util.List;
 import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theory;
 import square.AbstractSquare;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
@@ -24,7 +31,19 @@ import ObjectronExceptions.IllegalUseException;
  * @author Tom
  */
 @SuppressWarnings("javadoc")
-public class UseItemTest extends SetupTestGrid {
+public class UseItemTest extends SetUpTestGrid {
+	
+	public static @DataPoints
+	GameMode[]	candidates	= { new RaceMode(),
+			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	
+	/**
+	 * This method will be called with all gamemodes.
+	 */
+	@Theory
+	public void setUp(GameMode mode) {
+		super.setUp(mode);
+	}
 	
 	@Test
 	public void testSuccess_LG() {
@@ -39,7 +58,7 @@ public class UseItemTest extends SetupTestGrid {
 		endTurnCont.endTurn();
 		
 		// player 1 pick up LG
-		LightGrenade LG = (LightGrenade) playerDB.getCurrentPlayer().getCurrentLocation()
+		LightGrenade LG = (LightGrenade) playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems().get(0);
 		pickUpCont.pickUpItem(LG);
 		useItemCont.useItem(LG);
@@ -49,7 +68,7 @@ public class UseItemTest extends SetupTestGrid {
 		 * light grenade is not carriable, and therefore I can't replace this
 		 * with getCarriableItems(), like the rest
 		 */
-		assertTrue(((AbstractSquare) playerDB.getCurrentPlayer().getCurrentLocation()).contains(LG));
+		assertTrue(((AbstractSquare) playerDB.getCurrentPlayer().getCurrentPosition()).contains(LG));
 		assertEquals(LightGrenadeState.ACTIVE, LG.getState());
 		
 	}
@@ -80,11 +99,11 @@ public class UseItemTest extends SetupTestGrid {
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
-		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		moveCont.move(Direction.EAST);
-		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
 		endTurnCont.endTurn();
@@ -116,10 +135,10 @@ public class UseItemTest extends SetupTestGrid {
 		// player 1
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentLocation()
+		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems().get(0);
 		pickUpCont.pickUpItem(id);
-		assertFalse(playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems()
+		assertFalse(playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems()
 				.contains(id));
 		endTurnCont.endTurn();
 		
@@ -139,7 +158,7 @@ public class UseItemTest extends SetupTestGrid {
 	
 	@Test(expected = IllegalUseException.class)
 	public void testUse_NotInInventory() {
-		useItemCont.useItem(new LightGrenade());
+		useItemCont.useItem(new LightGrenade(new DummyEffectFactory()));
 	}
 	
 	/**

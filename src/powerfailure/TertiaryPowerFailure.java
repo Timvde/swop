@@ -19,13 +19,12 @@ public class TertiaryPowerFailure extends PowerFailure {
 	 * Create a power failure for a given square.
 	 * 
 	 * @param secondaryPowerFailure
+	 *        Its secondary power failure
 	 * 
 	 */
 	public TertiaryPowerFailure(SecondaryPowerFailure secondaryPowerFailure) {
 		this.secondaryPowerFailure = secondaryPowerFailure;
-		timeToLive = TIME_TO_LIVE;
-		
-		square = calculateSquare();
+		updateSquare();
 	}
 	
 	@Override
@@ -37,9 +36,7 @@ public class TertiaryPowerFailure extends PowerFailure {
 			timeToLive = TIME_TO_LIVE;
 			if (square != null)
 				square.removeProperty(this);
-			square = calculateSquare();
-			if (square != null)
-				square.addProperty(this);
+			updateSquare();
 		}
 	}
 	
@@ -63,5 +60,11 @@ public class TertiaryPowerFailure extends PowerFailure {
 			return secondaryPowerFailure.getSquare().getNeighbourIn(randomDirection);
 		else
 			return null;
+	}
+	
+	private void updateSquare() {
+		square = calculateSquare();
+		if (square != null)
+			square.addProperty(this);
 	}
 }

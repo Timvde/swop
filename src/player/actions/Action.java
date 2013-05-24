@@ -3,12 +3,11 @@ package player.actions;
 import player.Player;
 import player.TronPlayer;
 import square.Square;
-import square.SquareContainer;
 
 /**
  * Action is an interaction between a {@link Player} and a {@link Square}.
- * actions can be executed by players with the
- * {@link #execute(TronPlayer)} method.
+ * actions can be executed by players with the {@link #execute(TronPlayer)}
+ * method.
  */
 public interface Action {
 	

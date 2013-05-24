@@ -1,5 +1,7 @@
 package player;
 
+import game.GameMode;
+import item.Flag;
 import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
@@ -8,39 +10,41 @@ import java.util.concurrent.atomic.AtomicInteger;
 import player.actions.Action;
 import powerfailure.AffectedByPowerFailure;
 import square.AbstractSquare;
-import square.Square;
+import square.FlagKeeper;
 import square.SquareContainer;
+import ObjectronExceptions.IllegalActionException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform
- * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} {@link Action actions}
- * during a turn.
+ * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} {@link Action
+ * actions} during a turn.
  */
-public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure, Explodable {
+public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure, Explodable,
+		FlagKeeper {
 	
 	/**
 	 * The id of the player, not really used, but hey ... let's do something
 	 * crazy FIXME DO we stil need the id? in GUI?
 	 */
-	private int						id;
-	private static AtomicInteger	nextID	= new AtomicInteger();
+	private int							id;
+	private static AtomicInteger		nextID	= new AtomicInteger();
 	
-	/** A boolean representing whether the player has moved */
-	private boolean					hasMoved;
 	/** The starting square of this player */
-	private SquareContainer			startSquare;
+	private SquareContainer				startSquare;
 	/** The square where the player is currently standing */
-	private SquareContainer			currentSquare;
+	private SquareContainer				currentSquare;
 	/** The inventory of the player */
-	private Inventory				inventory;
+	private Inventory					inventory;
 	/** The light trail of the player */
-	private LightTrail				lightTrail;
+	private LightTrail					lightTrail;
 	/** The state of the player */
-	private PlayerState				state;
+	private PlayerState					state;
 	/** The player database in which the player is placed */
-	private PlayerDataBase			playerDB;
+	private PlayerDataBase				playerDB;
+	/** The Action Manager that manages this player's actions */
+	private final PlayerActionManager	actionManager;
 	
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
@@ -58,10 +62,10 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
-		this.hasMoved = false;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
 		this.setStartingPosition(startingPosition);
+		this.actionManager = new PlayerActionManager(this);
 	}
 	
 	/**
@@ -96,7 +100,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	@Override
-	public Square getCurrentLocation() {
+	public SquareContainer getCurrentPosition() {
 		return this.currentSquare;
 	}
 	
@@ -116,41 +120,55 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	@Override
 	public int getAllowedNumberOfActions() {
-		return playerDB.getAllowedNumberOfActions(this);
+		return actionManager.getNumberOfActionsLeft();
 	}
 	
 	@Override
 	public void skipNumberOfActions(int numberOfActionsToSkip) {
-		playerDB.skipNumberOfActions(this, numberOfActionsToSkip);
+		actionManager.decrementNumberOfActions(numberOfActionsToSkip);
+	}
+	
+	/**
+	 * This method ends the turn of this player. Note that some {@link GameMode
+	 * game modes} let the player lose the game if this method is called before
+	 * he did a move action, (i.e. if <code>{@link #hasMovedYet()}</code> is
+	 * false when calling this method, this player loses the game).
+	 * 
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an EndTurnAction, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
+	 */
+	public void endTurn() throws IllegalActionException {
+		if (!canPerformAction())
+			throw new IllegalActionException("The player must be allowed to perform an action.");
+		
+		actionManager.resetActions();
+	}
+	
+	/**
+	 * Indicate that this player has to skip his next turn.
+	 */
+	public void skipNextTurn() {
+		actionManager.skipNextNTurns(1);
 	}
 	
 	@Override
 	public boolean hasMovedYet() {
-		return this.hasMoved;
+		return this.actionManager.hasMoved();
 	}
 	
 	/**
-	 * To be called when the player performed a move-action succesfully.
+	 * To be called when the player performed a move-action successfully.
 	 * 
 	 * PostCondtion: {@link #hasMovedYet() this.hasMoved()}= true
 	 */
 	public void setHasMoved() {
-		this.hasMoved = true;
-	}
-	
-	/**
-	 * To be called when the player's turn end, to reset the hasMoved history.
-	 * 
-	 * Postcondition: {@link #hasMoved this.hasMoved()} = false
-	 */
-	void resetHasMoved() {
-		this.hasMoved = false;
+		actionManager.setHasMoved();
 	}
 	
 	@Override
 	public boolean canPerformAction() {
-		return this.state == PlayerState.ACTIVE && getStartingPosition() != null
-				&& getAllowedNumberOfActions() > 0;
+		return this.state == PlayerState.ACTIVE && getAllowedNumberOfActions() > 0;
 	}
 	
 	/**
@@ -186,7 +204,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	@Override
 	public String toString() {
 		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + getAllowedNumberOfActions()
-				+ ", hasMoved=" + hasMoved + ", currentSquare=" + currentSquare + ", state="
+				+ ", hasMoved=" + actionManager.hasMoved() + ", currentSquare=" + currentSquare + ", state="
 				+ state + "]";
 	}
 	
@@ -230,7 +248,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 */
 	@Override
 	public void damageByPowerFailure() {
-		this.skipNumberOfActions(getAllowedNumberOfActions());
+		this.endTurn();
 	}
 	
 	@Override
@@ -245,15 +263,18 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	/**
 	 * Sets all references of the player to null so that no-one can modify the
-	 * game with an old player.
+	 * game with an old player. The state of the player will be set to FINISHED.
+	 * 
+	 * <b>NOTE:</b> After calling this method one cannot use the player object
+	 * anymore (as nullpointers will be thrown).
 	 */
-	void destroy() {
+	void endPlayerLife() {
 		this.playerDB = null;
 		this.currentSquare = null;
 		this.id = -1;
-		this.inventory = null;
-		this.lightTrail = null;
-		this.state = null;
+		this.inventory.removeAll();
+		this.lightTrail.destroy();
+		this.state = PlayerState.FINISHED;
 		
 		if (currentSquare != null)
 			this.currentSquare.remove(this);
@@ -261,17 +282,30 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	public void performAction(Action action) {
 		action.execute(this);
+		actionManager.performedAction();
 		
 		// end a players action
-		playerDB.decreaseAllowedNumberOfActions(this);
+		playerDB.actionPerformed(this);
 		lightTrail.updateLightTrail(currentSquare);
 	}
-
-	/**
-	 * Let the player loose the current game
-	 */
-	public void looseGame() {
-		setPlayerState(PlayerState.LOST);
-		playerDB.reportGameLost(this);
+	
+	PlayerActionManager getActionManager() {
+		return actionManager;
+	}
+	
+	@Override
+	public FlagKeeper asFlagKeeper() {
+		return this;
+	}
+	
+	@Override
+	public Flag giveFlag() {
+		for (IItem item : getInventoryContent()) {
+			if (item instanceof Flag) {
+				this.inventory.removeItem(item);
+				return (Flag) item;
+			}
+		}
+		return null;
 	}
 }

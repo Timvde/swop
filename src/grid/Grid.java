@@ -4,10 +4,10 @@ import grid.builder.GridBuilder;
 import grid.builder.GridBuilderDirector;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import square.PlayerStartingPosition;
-import square.Property;
 import square.SquareContainer;
 
 /**
@@ -17,6 +17,7 @@ import square.SquareContainer;
 public class Grid implements IGrid {
 	
 	private Map<Coordinate, SquareContainer>	grid;
+	private List<SquareContainer>	startingpositions;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -28,11 +29,14 @@ public class Grid implements IGrid {
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
+	 * @param startingpositions
+	 *        a sorted list of all the startingpositions on the grid (from smaller to larger).
 	 */
-	public Grid(Map<Coordinate, SquareContainer> grid) {
-		if (grid == null)
-			throw new IllegalArgumentException("Null grid could not be created!");
+	public Grid(Map<Coordinate, SquareContainer> grid, List<SquareContainer> startingpositions) {
+		if (grid == null || startingpositions == null)
+			throw new IllegalArgumentException("Null input, grid could not be created!");
 		this.grid = grid;
+		this.startingpositions = startingpositions;
 	}
 	
 	/**
@@ -46,12 +50,23 @@ public class Grid implements IGrid {
 	}
 	
 	/**
-	 * Return the grid.
+	 * Return the grid. (for testing purposes)
 	 * 
 	 * @return returns the grid
 	 */
-	public Map<Coordinate, SquareContainer> getGrid() {
+	Map<Coordinate, SquareContainer> getGrid() {
 		return new HashMap<Coordinate, SquareContainer>(grid);
+	}
+	
+	/**
+	 * Returns an iterator over all the {@link SquareContainer squares} in the
+	 * grid. There are no guarantees concerning the order in which they are
+	 * returned.
+	 * 
+	 * @return an iterator over the squares of this grid.
+	 */
+	public Iterator<SquareContainer> getGridIterator() {
+		return new GridIterator(this.grid.values().iterator());
 	}
 	
 	@Override
@@ -116,17 +131,12 @@ public class Grid implements IGrid {
 	}
 	
 	/**
-	 * Get all the starting positions.
+	 * Get all the starting positions. The list will be sorted by their
+	 * startingposition number (from smaller to larger).
 	 * 
-	 * @return a set of all the startingpositions on the grid.
+	 * @return a sorted list of all the startingpositions on the grid.
 	 */
-	public Set<SquareContainer> getAllStartingPositions() {
-		Set<SquareContainer> result = new HashSet<SquareContainer>();
-		for (SquareContainer square : grid.values()) {
-			for (Property property : square.getProperties())
-				if (property instanceof PlayerStartingPosition)
-					result.add(square);
-		}
-		return result;
+	public List<SquareContainer> getAllStartingPositions() {
+		return this.startingpositions;
 	}
 }

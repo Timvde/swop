@@ -39,7 +39,7 @@ public class UseAction implements Action {
 	 *         The player must be allowed to use the item.
 	 */
 	public void execute(TronPlayer player) {
-		SquareContainer square = (SquareContainer) player.getCurrentLocation();
+		SquareContainer square = (SquareContainer) player.getCurrentPosition();
 		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!player.getInventoryContent().contains(item))

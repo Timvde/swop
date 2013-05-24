@@ -3,6 +3,7 @@ package player;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import item.DummyEffectFactory;
 import item.Item;
 import item.lightgrenade.LightGrenade;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class InventoryTest {
 	
 	@Test
 	public void testInventory() {
-		Item item = new LightGrenade();
+		Item item = new LightGrenade(new DummyEffectFactory());
 		assertEquals(inventory.getItems().size(), 0);
 		inventory.addItem(item);
 		assertEquals(inventory.getItems().size(), 1);
@@ -35,7 +36,7 @@ public class InventoryTest {
 	public void testFullInventory() {
 		// try and add seven items to the inventory
 		for (int i = 0; i < 7; i++) {
-			inventory.addItem(new LightGrenade());
+			inventory.addItem(new LightGrenade(new DummyEffectFactory()));
 		}
 	}
 	
@@ -51,7 +52,7 @@ public class InventoryTest {
 	public void testRemoveItem() {
 		// put six items in the inventory
 		for (int i = 0; i < inventory.getMaxNumberOfItems(); i++)
-			inventory.addItem(new LightGrenade());
+			inventory.addItem(new LightGrenade(new DummyEffectFactory()));
 		
 		// test the size
 		assertEquals(6, inventory.size());
@@ -59,7 +60,7 @@ public class InventoryTest {
 		inventory.removeItem(null);
 		assertEquals(6, inventory.size());
 		// try removing a new light grenade
-		inventory.removeItem(new LightGrenade());
+		inventory.removeItem(new LightGrenade(new DummyEffectFactory()));
 		assertEquals(6, inventory.size());
 		// remove an item from the inventory
 		for (int i = 1; i <= inventory.getMaxNumberOfItems(); i++) {
@@ -70,11 +71,11 @@ public class InventoryTest {
 	
 	@Test
 	public void testHasItem() {
-		LightGrenade lg = new LightGrenade();
+		LightGrenade lg = new LightGrenade(new DummyEffectFactory());
 		assertFalse(inventory.hasItem(lg));
 		inventory.addItem(lg);
 		assertTrue(inventory.hasItem(lg));
-		assertFalse(inventory.hasItem(new LightGrenade()));
+		assertFalse(inventory.hasItem(new LightGrenade(new DummyEffectFactory())));
 		assertFalse(inventory.hasItem(null));
 		inventory.removeItem(lg);
 		assertFalse(inventory.hasItem(lg));
@@ -84,7 +85,7 @@ public class InventoryTest {
 	public void testEncapsulation() {
 		// put six items in the inventory
 		for (int i = 0; i < inventory.getMaxNumberOfItems(); i++)
-			inventory.addItem(new LightGrenade());
+			inventory.addItem(new LightGrenade(new DummyEffectFactory()));
 		
 		// empty the returned list
 		inventory.getItems().clear();

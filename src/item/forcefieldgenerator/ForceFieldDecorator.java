@@ -7,6 +7,7 @@ import player.Player;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.PropertyType;
+import effects.Effect;
 
 /**
  * A force field decorator modifies the square to simulate a square that is
@@ -42,21 +43,21 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public void addPlayer(Player p) {
+	protected void addPlayer(Player player, Effect effect) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
 			throw new IllegalStateException(" a player cannot move onto a force field");
 		
-		super.addPlayer(p);
+		super.addPlayer(player, effect);
 	}
 	
 	@Override
-	public void addItem(IItem item) {
+	protected void addItem(IItem item, Effect effect) {
 		/*
 		 * Identity Disks have to be destroyed by a Force Field, so we don't
 		 * want to add them anymore
 		 */
 		if (forceField.getState() == ForceFieldState.INACTIVE || !(item instanceof IdentityDisk))
-			super.addItem(item);
+			super.addItem(item, effect);
 	}
 	
 	@Override

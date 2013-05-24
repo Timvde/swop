@@ -56,9 +56,9 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 * to the grid under construction is finished.</b>
 	 * 
 	 * @param startingCoordinates
-	 *        a list with the starting coordinates of the players. This is
-	 *        needed as some Tron-constraints depend on the players starting
-	 *        positions.
+	 *        a set with the starting numbers and corresponding coordinates of
+	 *        the players. This is needed as some Tron-constraints depend on the
+	 *        players starting positions.
 	 * @param maxX
 	 *        The maximal w coordinate of a square inside the constructed grid
 	 *        (i.e. the maximal width).
@@ -66,14 +66,17 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 *        The maximal y coordinate of a square inside the constructed grid
 	 *        (i.e. the maximal height).
 	 */
-	protected void placeItemsOnBoard(List<Coordinate> startingCoordinates, int maxX, int maxY) {
-		for (Coordinate coordinate : startingCoordinates) {
-			builder.addPlayerStartingPosition(coordinate);
-		}
-		placeLightGrenades(startingCoordinates, maxX, maxY);
-		Map<Coordinate, Coordinate> teleporters = placeTeleporters(startingCoordinates, maxX, maxY);
-		placeIdentityDisks(startingCoordinates, teleporters, maxX, maxY);
-		placeForceFieldGenerators(startingCoordinates, maxX, maxY);
+	protected void placeItemsOnBoard(Map<Integer, Coordinate> startingCoordinates, int maxX,
+			int maxY) {
+		for (Integer number : startingCoordinates.keySet())
+			builder.addPlayerStartingPosition(startingCoordinates.get(number), number);
+		
+		List<Coordinate> startCoords = new ArrayList<Coordinate>(startingCoordinates.values());
+		
+		placeLightGrenades(startCoords, maxX, maxY);
+		Map<Coordinate, Coordinate> teleporters = placeTeleporters(startCoords, maxX, maxY);
+		placeIdentityDisks(startCoords, teleporters, maxX, maxY);
+		placeForceFieldGenerators(startCoords, maxX, maxY);
 	}
 	
 	/**
@@ -126,8 +129,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 				int x = startCoord.getX() - 2 + rand.nextInt(5);
 				int y = startCoord.getY() - 2 + rand.nextInt(5);
 				position = new Coordinate(x, y);
-			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position)
-					|| startingCoordinates.contains(position));
+			} while (!builder.canPlaceItem(position) || placedLGCoordinates.contains(position));
 			placedLGCoordinates.add(position);
 		}
 		

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import item.DummyEffectFactory;
 import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import java.util.Observable;
@@ -18,7 +19,7 @@ import player.actions.MoveAction;
 import player.actions.PickupItemAction;
 import player.actions.UseAction;
 import square.Direction;
-import square.PlayerStartingPosition;
+import square.NormalSquare;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -26,14 +27,14 @@ import ObjectronExceptions.IllegalMoveException;
 @SuppressWarnings("javadoc")
 public class PlayerTest implements Observer {
 	
-	private TronPlayer			player;
+	private TronPlayer		player;
 	private PlayerDataBase	db;
 	private TurnEvent		notifiedWithTurnEvent;
 	private Grid			grid;
 	
 	@Before
 	public void setUp() {
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		grid = builder.getResult();
 		
@@ -51,10 +52,10 @@ public class PlayerTest implements Observer {
 	public void testConstructor() {
 		// check init turn stuff and basic fields
 		assertEquals(false, player.hasMovedYet());
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertNotNull(player.getStartingPosition());
-		assertEquals(player.getStartingPosition(), player.getCurrentLocation());
+		assertEquals(player.getStartingPosition(), player.getCurrentPosition());
 		assertEquals(0, player.getInventoryContent().size());
 		
 		// test whether the player is appointed by the db as the current player
@@ -64,8 +65,8 @@ public class PlayerTest implements Observer {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullDB() {
-		new TronPlayer(null, new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
-				new PlayerStartingPosition()));
+		new TronPlayer(null, new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -110,8 +111,8 @@ public class PlayerTest implements Observer {
 		player.performAction(new EndTurnAction());
 		
 		// test whether player sets itself lost and reported it
-		assertEquals(PlayerState.LOST, player.getPlayerState());
-		assertEquals(TurnEvent.END_GAME, this.getTurnEventOfNotify());
+		assertEquals(PlayerState.FINISHED, player.getPlayerState());
+		assertEquals(TurnEvent.END_TURN, this.getTurnEventOfNotify());
 	}
 	
 	@Test
@@ -139,7 +140,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.performAction(new UseAction(new LightGrenade()));
+			player.performAction(new UseAction(new LightGrenade(new DummyEffectFactory())));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -147,7 +148,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.performAction(new PickupItemAction(new LightGrenade()));
+			player.performAction(new PickupItemAction(new LightGrenade(new DummyEffectFactory())));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -160,8 +161,8 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test the initial number of actions,
-		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 4
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
@@ -170,14 +171,14 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test again
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
 		// subtract another two: nb of actions will become zero
 		// --> player must have asked the db to switch players
 		player.skipNumberOfActions(2);
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
 				player.getAllowedNumberOfActions());
 		assertIsNotCurrentPlayerTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
@@ -186,7 +187,7 @@ public class PlayerTest implements Observer {
 		switchPlayers();
 		assertIsCurrentPlayerTurn();
 		
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		
 		// subtract four at once
@@ -201,12 +202,12 @@ public class PlayerTest implements Observer {
 	public void testAssignNewTurn() {
 		assertIsCurrentPlayerTurn();
 		db.assignNewTurn(player);
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		assertIsCurrentPlayerTurn();
 		
-		player.skipNumberOfActions(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
+		player.skipNumberOfActions(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
 		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		// player should have switched turns (allowed nb actions < 0)
@@ -230,7 +231,7 @@ public class PlayerTest implements Observer {
 	/* ############ PlayerDb methods (private) ############# */
 	
 	private void switchPlayers() {
-		db.endPlayerTurn((TronPlayer) db.getCurrentPlayer());
+		db.getCurrentPlayer().endTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 	}
 	

@@ -1,9 +1,6 @@
-package powerfailure;
+package effects;
 
 import square.TronObject;
-import item.AbstractEffect;
-import item.Effect;
-import item.lightgrenade.ExplodeEffect;
 
 /**
  * The effect a power failure has on an {@link TronObject object}

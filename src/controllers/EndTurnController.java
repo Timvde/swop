@@ -1,6 +1,7 @@
 package controllers;
 
 import player.IPlayerDataBase;
+import player.actions.EndTurnAction;
 
 /**
  * This controller will manage the end turn action.
@@ -30,7 +31,7 @@ public class EndTurnController {
 	 * End the turn of the current player.
 	 */
 	public void endTurn() {
-		playerDB.endCurrentPlayerTurn();
+		playerDB.getCurrentPlayer().performAction(new EndTurnAction());
 	}
 	
 }
