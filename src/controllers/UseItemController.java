@@ -1,7 +1,6 @@
 package controllers;
 
 import gui.ArgumentsHandler;
-import gui.GUI;
 import item.IItem;
 import player.IPlayerDataBase;
 import player.actions.UseAction;

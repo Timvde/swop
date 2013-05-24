@@ -284,9 +284,9 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		action.execute(this);
 		actionManager.performedAction();
 		
+		lightTrail.updateLightTrail(currentSquare);
 		// end a players action
 		playerDB.actionPerformed(this);
-		lightTrail.updateLightTrail(currentSquare);
 	}
 	
 	PlayerActionManager getActionManager() {

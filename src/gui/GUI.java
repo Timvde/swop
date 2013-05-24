@@ -79,8 +79,15 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 	/**
 	 * Image objects for displaying on the GUI.
 	 */
-	private Image					playerRedImage;
-	private Image					playerBlueImage;
+	private Image					player1;
+	private Image					player2;
+	private Image					player3;
+	private Image					player4;
+	private Image					player5;
+	private Image					player6;
+	private Image					player7;
+	private Image					player8;
+	private Image					player9;
 	private Image					wallImage;
 	private Image					lightGrenadeImage;
 	private Image					lightGrenadeExplodedImage;
@@ -286,7 +293,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(playerBlueImage, guiCoord.getX(),
+									graphics.drawImage(player1, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									break;
 								case 2:
@@ -294,7 +301,70 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(playerRedImage, guiCoord.getX(),
+									graphics.drawImage(player2, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 3:
+									if (guiDataController.getCurrentPlayer().getID() == 3) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player3, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 4:
+									if (guiDataController.getCurrentPlayer().getID() == 4) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player4, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 5:
+									if (guiDataController.getCurrentPlayer().getID() == 5) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player5, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 6:
+									if (guiDataController.getCurrentPlayer().getID() == 6) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player6, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 7:
+									if (guiDataController.getCurrentPlayer().getID() == 7) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player7, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 8:
+									if (guiDataController.getCurrentPlayer().getID() == 8) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player8, guiCoord.getX(),
+											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									
+									break;
+								case 9:
+									if (guiDataController.getCurrentPlayer().getID() == 9) {
+										graphics.drawImage(greenBackground, guiCoord.getX(),
+												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									}
+									graphics.drawImage(player9, guiCoord.getX(),
 											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
@@ -334,8 +404,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 		};
 		
 		// Initialize images
-		this.playerRedImage = gui.loadImage("player_red.png", SQUARE_SIZE, SQUARE_SIZE);
-		this.playerBlueImage = gui.loadImage("player_blue.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player1 = gui.loadImage("player_red.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player2 = gui.loadImage("player_blue.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.wallImage = gui.loadImage("wall.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeExplodedImage = gui.loadImage("lightgrenade_exploded.png", SQUARE_SIZE,

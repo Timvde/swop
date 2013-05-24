@@ -154,9 +154,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		TronPlayer newPlayer = playerList.get(currentPlayerIndex);
 		
 		/*
-		 * Assign new actions to the specified player and set him active. This
-		 * may introduce a new player switch (the resulting penalty after adding
-		 * new actions may still be < 0)
+		 * Assign new actions to the specified player and set him active.
+		 * This may introduce a new player switch (the resulting penalty
+		 * after adding new actions may still be < 0)
 		 */
 		assignNewTurn(newPlayer);
 	}

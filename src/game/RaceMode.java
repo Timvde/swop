@@ -30,7 +30,6 @@ public class RaceMode implements GameMode {
 		for (Player player : playerList)
 			if ((!curPlayer.equals(player))
 					&& curPlayer.getCurrentPosition().equals(player.getStartingPosition())) {
-				playerDB.clearDataBase();
 				return true;
 			}
 				
@@ -41,8 +40,9 @@ public class RaceMode implements GameMode {
 	public boolean checkCurrentPlayerHasLost(PlayerDataBase playerDB, TurnEvent turnEvent) {
 		Player curPlayer = playerDB.getCurrentPlayer();
 		// check whether the current player ended his turn without moving
-		if (turnEvent == TurnEvent.END_TURN && !curPlayer.hasMovedYet())
+		if (turnEvent == TurnEvent.END_TURN && !curPlayer.hasMovedYet()) {
 			return true;
+		}
 		return false;
 	}
 	
