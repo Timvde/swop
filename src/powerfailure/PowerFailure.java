@@ -6,7 +6,7 @@ import square.AbstractSquareDecorator;
 import square.Property;
 import square.SquareContainer;
 import effects.Effect;
-import effects.PowerFailureEffect;
+import effects.EffectFactory;
 
 /**
  * This class represents a power failure. This is a property that affects
@@ -34,6 +34,11 @@ public abstract class PowerFailure implements Property {
 	protected SquareContainer	square;
 	
 	/**
+	 * The factory to use to create effects
+	 */
+	protected EffectFactory effectFactory;
+	
+	/**
 	 * When a turn ends, a PowerFailure has to decrease the number of turns or
 	 * actions left it is power failured. When it is set to zero, the power
 	 * failure will be released.
@@ -58,7 +63,7 @@ public abstract class PowerFailure implements Property {
 	 * @return the effect of this power failure
 	 */
 	public Effect getEffect() {
-		return new PowerFailureEffect();
+		return effectFactory.getPowerFailureEffect();
 	}
 	
 	@Override
