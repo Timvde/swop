@@ -1,8 +1,9 @@
 package gui;
 
+import game.Game;
 import game.GameEvent;
 import grid.Coordinate;
-import grid.Grid;
+import grid.GuiSquare;
 import item.IItem;
 import item.Item;
 import item.forcefieldgenerator.ForceFieldGenerator;
@@ -21,8 +22,6 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import player.Player;
 import square.Direction;
-import square.Square;
-import game.Game;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -212,7 +211,7 @@ public class GUI implements Runnable, Observer {
 					}
 					
 					for (Coordinate c : gridCoords) {
-						Square square = guiDataController.getSquareAt(c);
+						GuiSquare square = guiDataController.getSquareAt(c);
 						Player player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
@@ -694,17 +693,12 @@ public class GUI implements Runnable, Observer {
 	
 	/**
 	 * Draw a whole Grid object on the GUI.
-	 * 
-	 * @param grid
-	 *        The Grid to draw.
 	 */
-	public void draw(Grid grid) {
-		this.guiDataController.setGrid(grid);
-		
+	public void draw() {		
 		if (this.gui != null)
 			gui.repaint();
 	}
-	
+	 
 	/**
 	 * This method will convert the game Grid coordinate to x and y coordinates
 	 * on the GUI frame.

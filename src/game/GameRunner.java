@@ -1,6 +1,8 @@
 package game;
 
+import java.io.FileNotFoundException;
 import grid.Grid;
+import grid.GuiGridAdapter;
 import grid.builder.FileGridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
@@ -105,9 +107,10 @@ public class GameRunner {
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
 	 *         given by the mode} must be less then or equal to the number of
 	 *         starting locations defined in the grid to be created.
+	 * @throws FileNotFoundException 
 	 */
 	public void newGame(GameMode mode, String file) throws InvalidGridFileException,
-			IllegalStateException {
+			IllegalStateException, FileNotFoundException {
 		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
 		director.construct();
@@ -129,7 +132,7 @@ public class GameRunner {
 	 *         starting locations defined in the grid.
 	 */
 	private void createGame(GameMode mode, Grid grid) throws IllegalStateException {
-		guiDataCont.setGrid(grid);
+		guiDataCont.setGrid(new GuiGridAdapter(grid));
 		
 		// fix observers of old game
 		game.deleteObservers();

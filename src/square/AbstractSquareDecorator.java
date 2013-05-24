@@ -34,16 +34,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		square.update(o, arg);
 	}
 	
-	@Override
-	public boolean isWall() {
-		return square.isWall();
-	}
-	
-	@Override
-	public int getStartingPosition() {
-		return square.getStartingPosition();
-	}
-	
 	final AbstractSquare getSquare() {
 		return square;
 	}
@@ -66,10 +56,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.getPlayer();
 	}
 	
-	public boolean hasLightTrail() {
-		return square.hasLightTrail();
-	}
-	
 	public boolean contains(Object object) {
 		return square.contains(object);
 	}
@@ -78,16 +64,12 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.hasPlayer();
 	}
 	
-	public boolean hasPowerFailure() {
-		return square.hasPowerFailure();
+	public void addPlayer(Player p) throws IllegalArgumentException {
+		square.addPlayer(p);
 	}
 	
-	public void placeLightTrail() {
-		square.placeLightTrail();
-	}
-	
-	public void removeLightTrail() {
-		square.removeLightTrail();
+	public void addItem(IItem item) throws IllegalArgumentException {
+		square.addItem(item);
 	}
 	
 	public void remove(Object object) {
@@ -128,9 +110,8 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		square.addPlayer(player, effect);
 	}
 	
-	@Override
-	public boolean hasForceField() {
-		return square.hasForceField();
+	public boolean hasProperty(PropertyType property) {
+		return square.hasProperty(property);
 	}
 	
 	@Override

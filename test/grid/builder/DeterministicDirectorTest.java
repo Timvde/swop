@@ -9,6 +9,7 @@ import item.teleporter.Teleporter;
 import org.junit.Before;
 import org.junit.Test;
 import square.AbstractSquare;
+import square.PropertyType;
 import effects.RaceEffectFactory;
 import grid.Coordinate;
 import grid.Grid;
@@ -43,8 +44,10 @@ public class DeterministicDirectorTest {
 	public void testDeterministicPlayerPositions() {
 		Grid grid = builder.getResult();
 		
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS).getStartingPosition() > 0);
-		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS).getStartingPosition() > 0);
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER1_START_POS)
+				.hasProperty(PropertyType.STARTING_POSITION));
+		assertTrue(grid.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS)
+				.hasProperty(PropertyType.STARTING_POSITION));
 	}
 	
 	@Test

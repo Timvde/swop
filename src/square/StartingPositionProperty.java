@@ -8,21 +8,9 @@ import player.Player;
  */
 public class StartingPositionProperty implements Property {
 	
-	private int	number;
-	
-	/**
-	 * Creates a new StartingPosition property with a specified number.
-	 * 
-	 * @param number
-	 *        the number of the starting position.F
-	 */
-	public StartingPositionProperty(int number) {
-		this.number = number;
-	}
-	
 	@Override
 	public StartingPositionDecorator getDecorator(AbstractSquare square) {
-		return new StartingPositionDecorator(square, number);
+		return new StartingPositionDecorator(square);
 	}
 	
 }

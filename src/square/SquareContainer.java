@@ -3,10 +3,12 @@ package square;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Random;
+import java.util.Set;
 import player.Player;
 import player.TurnEvent;
 import powerfailure.PrimaryPowerFailure;
@@ -108,6 +110,15 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
+	 * Returns a set of the properties that affect this square.
+	 * 
+	 * @return the properties of this square
+	 */
+	public Set<Property> getProperties() {
+		return new HashSet<Property>(decorators.keySet());
+	}
+	
+	/**
 	 * Add a new specified property to this square.
 	 * 
 	 * @param property
@@ -164,45 +175,39 @@ public class SquareContainer extends AbstractSquare {
 	
 	/* ----------- Forwarding Methods ----------------- */
 	
+	@Override
 	public IItem pickupItem(int ID) throws IllegalArgumentException {
 		return square.pickupItem(ID);
 	}
 	
+	@Override
 	public List<IItem> getCarryableItems() {
 		return square.getCarryableItems();
 	}
 	
+	@Override
 	public Player getPlayer() {
 		return square.getPlayer();
 	}
 	
-	public boolean hasLightTrail() {
-		return square.hasLightTrail();
-	}
-	
 	@Override
-	public boolean hasForceField() {
-		return square.hasForceField();
-	}
-	
 	public boolean contains(Object object) {
 		return square.contains(object);
 	}
 	
+	@Override
 	public boolean hasPlayer() {
 		return square.hasPlayer();
 	}
 	
-	public boolean hasPowerFailure() {
-		return square.hasPowerFailure();
+	@Override
+	public void addPlayer(Player p) {
+		square.addPlayer(p);
 	}
 	
-	public void placeLightTrail() {
-		square.placeLightTrail();
-	}
-	
-	public void removeLightTrail() {
-		square.removeLightTrail();
+	@Override
+	public void addItem(IItem item) {
+		square.addItem(item);
 	}
 	
 	@Override
@@ -213,18 +218,22 @@ public class SquareContainer extends AbstractSquare {
 		return result;
 	}
 	
+	@Override
 	public void remove(Object object) {
 		square.remove(object);
 	}
 	
+	@Override
 	public List<IItem> getAllItems() {
 		return square.getAllItems();
 	}
 	
+	@Override
 	public boolean canBeAdded(IItem item) {
 		return square.canBeAdded(item);
 	}
 	
+	@Override
 	public boolean canAddPlayer() {
 		return square.canAddPlayer();
 	}
@@ -237,6 +246,11 @@ public class SquareContainer extends AbstractSquare {
 	@Override
 	protected void addPlayer(Player player, Effect effect) {
 		square.addPlayer(player, effect);
+	}
+	
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return square.hasProperty(property);
 	}
 	
 	@Override
@@ -278,17 +292,7 @@ public class SquareContainer extends AbstractSquare {
 		
 		return null;
 	}
-	
-	@Override
-	public boolean isWall() {
-		return square.isWall();
-	}
-	
-	@Override
-	public int getStartingPosition() {
-		return square.getStartingPosition();
-	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -304,7 +308,7 @@ public class SquareContainer extends AbstractSquare {
 		}
 		else if (!square.equals(other.square))
 			return false;
-		return true;
+		return true; 
 	}
 	
 	public Effect getStartTurnEffect(Effect effect) {
