@@ -1,7 +1,11 @@
 package scenariotests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import item.IItem;
+import item.identitydisk.UnchargedIdentityDisk;
+import java.util.List;
 import game.CTFMode;
 import game.GameMode;
 import game.RaceMode;
@@ -10,6 +14,7 @@ import grid.builder.DeterministicGridBuilderDirector;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theory;
+import player.actions.UseAction;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -90,5 +95,41 @@ public class TeleportationTest extends SetUpTestGrid {
 		
 		// check whether the teleportation did not happen ..
 		assertTrue(exceptionThrown);
+	}
+	
+	/**
+	 * Test if an identity disk flies through a teleporter correctly.
+	 */
+	@Test
+	public void testTeleportation_IDFliesThrough() {
+		// move player 1
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
+				.getCarryableItems();
+		
+		assertEquals(1, itemsList.size());
+		assertTrue(itemsList.get(0) instanceof UnchargedIdentityDisk);
+		
+		UnchargedIdentityDisk ID = (UnchargedIdentityDisk) itemsList.get(0);
+		pickUpCont.pickUpItem(ID);
+		
+		moveCont.move(Direction.EAST);
+		
+		// Player 2 actions
+		moveCont.move(Direction.NORTH);
+		endTurnCont.endTurn();
+		
+		// Player 1 actions
+		moveCont.move(Direction.EAST);
+		
+		ID.setDirection(Direction.SOUTH);
+		// we do not use the controller here because it will give a nullpointer
+		// after asking the gui for the direction:
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
+		
+		// Check if the ID landed on the correct spot
+		assertTrue(grid.getSquareAt(new Coordinate(0,9)).getCarryableItems().contains(ID));
+
 	}
 }
