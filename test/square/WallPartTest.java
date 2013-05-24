@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import item.DummyEffectFactory;
 import item.lightgrenade.LightGrenade;
-import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
@@ -17,7 +17,7 @@ public class WallPartTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		wall = new WallPart(Collections.<Direction, AbstractSquare> emptyMap());
+		wall = new WallPart();
 	}
 	
 	@Test
@@ -28,7 +28,7 @@ public class WallPartTest {
 	
 	@Test
 	public void testGetCarryableItems_encapsulation() {
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
 		
 		// try and add a light grenade to the wall
 		// Illegally i must say but who cares about that, lets just say i'm an
@@ -72,16 +72,6 @@ public class WallPartTest {
 	@Test
 	public void testHasPowerFailure() {
 		assertFalse(wall.hasPowerFailure());
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void testAddPowerFailure() {
-		wall.addPowerFailure(null);
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void testRemovePowerFailure() {
-		wall.removePowerFailure(null);
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)

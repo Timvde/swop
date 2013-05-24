@@ -7,12 +7,12 @@ import square.NormalSquare;
 import square.SquareContainer;
 
 /**
- * A dummy implementation of {@link Player}. This implementation of player
+ * A dummy implementation of {@link TronPlayer}. This implementation of player
  * focuses on the testing of the {@link PowerFailure} class. The method
- * {@link Player#damageByPowerFailure()} is overwritten for testing purposes.
+ * {@link TronPlayer#damageByPowerFailure()} is overwritten for testing purposes.
  * 
  */
-public class DummyPlayer extends Player {
+public class DummyPlayer extends TronPlayer {
 	
 	private boolean	damageByPowerFailure;
 	private int		numberOfActionsSkipped;

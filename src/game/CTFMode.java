@@ -63,14 +63,15 @@ public class CTFMode implements GameMode {
 	public boolean checkCurrentPlayerHasWon(PlayerDataBase playerDB, TurnEvent turnEvent) {
 		Player curPlayer = playerDB.getCurrentPlayer();
 		
-		if (curPlayer.getCurrentLocation().equals(curPlayer.getStartingPosition())) {
+		if (curPlayer.getCurrentPosition().equals(curPlayer.getStartingPosition())) {
 			/*
 			 * the player moved to his starting location; check if he has any
 			 * flags
 			 */
 			for (IItem item : curPlayer.getInventoryContent())
 				if (item instanceof Flag) {
-					curPlayer.useItem(item);
+					// teleport back
+					item.use(curPlayer.getCurrentPosition());
 					capturedFlagCount.put(curPlayer, capturedFlagCount.get(curPlayer) + 1);
 				}
 		}
@@ -96,7 +97,7 @@ public class CTFMode implements GameMode {
 			 */
 			for (IItem item : curPlayer.getInventoryContent()) {
 				if (item instanceof Flag)
-					curPlayer.getCurrentLocation().addItem(item);
+					curPlayer.getCurrentPosition().addItem(item);
 			}
 			playerDB.removeCurrentPlayer();
 			return true;

@@ -29,7 +29,7 @@ public class PlayerDBTest {
 	public void setUp() {
 		playerDB = new PlayerDataBase();
 		
-		//build a grid to fill the db
+		// build a grid to fill the db
 		builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		
@@ -46,11 +46,11 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testCreateNewDB() {
-		List<IPlayer> playerList = playerDB.getAllPlayers();
+		List<Player> playerList = playerDB.getAllPlayers();
 		assertIsCorrectPlayerList(playerList);
 		
 		playerDB.createNewDB(builder.getResult().getAllStartingPositions());
-		List<IPlayer> playerList2 = playerDB.getAllPlayers();
+		List<Player> playerList2 = playerDB.getAllPlayers();
 		assertIsCorrectPlayerList(playerList2);
 		
 		// the two lists should contain different players
@@ -70,7 +70,8 @@ public class PlayerDBTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateNewDBDuplicateListInput() {
 		List<SquareContainer> list = new ArrayList<SquareContainer>();
-		SquareContainer square1 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		SquareContainer square1 = new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
 		square1.addProperty(new StartingPositionProperty(1));
 		list.add(square1);
 		list.add(square1);
@@ -81,8 +82,10 @@ public class PlayerDBTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateNewDBNoStartingPos() {
 		List<SquareContainer> list = new ArrayList<SquareContainer>();
-		SquareContainer square1 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
-		SquareContainer square2 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		SquareContainer square1 = new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		SquareContainer square2 = new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
 		list.add(square1);
 		list.add(square2);
 		
@@ -91,41 +94,41 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testClearDB() {
-		List<IPlayer> playerList = playerDB.getAllPlayers();
+		List<Player> playerList = playerDB.getAllPlayers();
 		playerDB.clearDataBase();
 		assertSame(0, playerDB.getNumberOfPlayers());
 		
-		for (IPlayer player : playerList) {
+		for (Player player : playerList) {
 			assertFalse(player.canPerformAction());
 		}
 	}
 	
-	private void assertIsCorrectPlayerList(List<IPlayer> playerList) {
+	private void assertIsCorrectPlayerList(List<Player> playerList) {
 		// all players should have WAITING state
-		for (IPlayer player : playerList)
-			assertSame(PlayerState.WAITING, ((Player) player).getPlayerState());
+		for (Player player : playerList)
+			assertSame(PlayerState.WAITING, ((TronPlayer) player).getPlayerState());
 		
 		assertIsSet(playerList);
 		assertCorrectOrder(playerList);
 	}
 	
-	private void assertIsSet(List<IPlayer> playerList) {
-		Set<IPlayer> set = new HashSet<IPlayer>(playerList);
+	private void assertIsSet(List<Player> playerList) {
+		Set<Player> set = new HashSet<Player>(playerList);
 		assertSame(playerList.size(), set.size());
 	}
 	
-	private void assertCorrectOrder(List<IPlayer> playerList) {
-		List<IPlayer> orderedList = this.getAllPlayerFromDB();
+	private void assertCorrectOrder(List<Player> playerList) {
+		List<Player> orderedList = this.getAllPlayerFromDB();
 		
 		assertSame(orderedList.size(), playerList.size());
 		for (int i = 0; i < orderedList.size(); i++)
 			assertSame(playerList.get(i), orderedList.get(i));
 	}
 	
-	private void containDifferentPlayers(List<IPlayer> playerList, List<IPlayer> playerList2) {
+	private void containDifferentPlayers(List<Player> playerList, List<Player> playerList2) {
 		assertEquals(playerList.size(), playerList2.size());
-		for (IPlayer p1 : playerList)
-			for (IPlayer p2 : playerList2)
+		for (Player p1 : playerList)
+			for (Player p2 : playerList2)
 				assertNotSame(p1, p2);
 	}
 	
@@ -133,11 +136,11 @@ public class PlayerDBTest {
 	 * Returns an ordered list with all the Players in the
 	 * {@link PlayerDataBase} (by simulating player switches).
 	 */
-	private List<IPlayer> getAllPlayerFromDB() {
-		List<IPlayer> result = new ArrayList<IPlayer>();
+	private List<Player> getAllPlayerFromDB() {
+		List<Player> result = new ArrayList<Player>();
 		
 		for (int i = 0; i < playerDB.getNumberOfPlayers(); i++) {
-			Player curPlayer = (Player) playerDB.getCurrentPlayer();
+			TronPlayer curPlayer = (TronPlayer) playerDB.getCurrentPlayer();
 			result.add(curPlayer);
 			
 			// let the cur player end his turn

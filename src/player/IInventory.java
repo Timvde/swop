@@ -5,7 +5,7 @@ import item.Item;
 import java.util.List;
 
 /**
- * An inventory of {@link Item items} is carried by a {@link Player player}. The
+ * An inventory of {@link Item items} is carried by a {@link TronPlayer player}. The
  * inventory cannot hold more then a {@link #getMaxNumberOfItems() maximum}
  * number of items. 
  */

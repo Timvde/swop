@@ -1,6 +1,7 @@
 package controllers;
 
 import player.IPlayerDataBase;
+import player.actions.MoveAction;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -35,7 +36,7 @@ public class MoveController {
 	 *         If the given direction is not a legal move.
 	 */
 	public void move(Direction direction) throws IllegalMoveException {
-		playerDB.getCurrentPlayer().moveInDirection(direction);
+		playerDB.getCurrentPlayer().performAction(new MoveAction(direction));
 	}
 	
 }

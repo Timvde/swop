@@ -1,9 +1,9 @@
 package game;
 
 import java.util.List;
-import player.IPlayer;
 import player.PlayerDataBase;
 import player.TurnEvent;
+import player.Player;
 import effects.EffectFactory;
 import effects.RaceEffectFactory;
 
@@ -23,13 +23,13 @@ public class RaceMode implements GameMode {
 	
 	@Override
 	public boolean checkCurrentPlayerHasWon(PlayerDataBase playerDB, TurnEvent turnEvent) {
-		List<IPlayer> playerList = playerDB.getAllPlayers();
-		IPlayer curPlayer = playerDB.getCurrentPlayer();
+		List<Player> playerList = playerDB.getAllPlayers();
+		Player curPlayer = playerDB.getCurrentPlayer();
 		
 		// check whether the player has reached the start of another
-		for (IPlayer player : playerList)
+		for (Player player : playerList)
 			if ((!curPlayer.equals(player))
-					&& curPlayer.getCurrentLocation().equals(player.getStartingPosition())) {
+					&& curPlayer.getCurrentPosition().equals(player.getStartingPosition())) {
 				playerDB.clearDataBase();
 				return true;
 			}
@@ -39,7 +39,7 @@ public class RaceMode implements GameMode {
 	
 	@Override
 	public boolean checkCurrentPlayerHasLost(PlayerDataBase playerDB, TurnEvent turnEvent) {
-		IPlayer curPlayer = playerDB.getCurrentPlayer();
+		Player curPlayer = playerDB.getCurrentPlayer();
 		// check whether the current player ended his turn without moving
 		if (turnEvent == TurnEvent.END_TURN && !curPlayer.hasMovedYet()) {
 			playerDB.clearDataBase();

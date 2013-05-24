@@ -1,11 +1,11 @@
 package effects;
 
 import item.IItem;
-import player.IPlayer;
+import item.teleporter.Teleporter;
+import player.Player;
 import square.AbstractSquare;
 import square.SquareContainer;
 import square.TronObject;
-import item.teleporter.Teleporter;
 
 /**
  * A Teleportation effect
@@ -47,8 +47,8 @@ public class TeleportationEffect extends AbstractEffect {
 		
 		if (object instanceof IItem)
 			destinationSquare.addItem((IItem) object);
-		else if (object instanceof IPlayer)
-			destinationSquare.addPlayer((IPlayer) object);
+		else if (object instanceof Player)
+			destinationSquare.addPlayer((Player) object);
 		
 		object.asTeleportable().setSquare(destinationSquare);
 	}

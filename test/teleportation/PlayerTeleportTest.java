@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
-import player.Player;
+import player.TronPlayer;
 import player.PlayerDataBase;
 import square.AbstractSquare;
 import square.Direction;
@@ -21,7 +21,7 @@ public class PlayerTeleportTest {
 	
 	private NormalSquare	start;
 	private NormalSquare	destination;
-	private Player	player;
+	private TronPlayer	player;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -32,7 +32,7 @@ public class PlayerTeleportTest {
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		db.createNewDB(builder.getResult().getAllStartingPositions());
 		
-		player = (Player) db.getCurrentPlayer();
+		player = (TronPlayer) db.getCurrentPlayer();
 		// start.addPlayer(player);
 		// player.setStartingPosition(start);
 		

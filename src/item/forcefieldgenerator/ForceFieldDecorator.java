@@ -3,7 +3,7 @@ package item.forcefieldgenerator;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import java.util.Observable;
-import player.IPlayer;
+import player.Player;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import effects.Effect;
@@ -35,18 +35,18 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	
 	@Override
 	public void remove(Object object) {
-		if (forceField.getState() == ForceFieldState.ACTIVE && object instanceof IPlayer)
+		if (forceField.getState() == ForceFieldState.ACTIVE && object instanceof Player)
 			throw new IllegalStateException("a player cannot move when there is a forcefield");
 		
 		super.remove(object);
 	}
 	
 	@Override
-	protected void addPlayer(IPlayer p, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
 			throw new IllegalStateException(" a player cannot move onto a force field");
 		
-		super.addPlayer(p, effect);
+		super.addPlayer(player, effect);
 	}
 	
 	@Override

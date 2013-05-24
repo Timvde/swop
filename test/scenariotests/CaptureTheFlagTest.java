@@ -11,12 +11,12 @@ import item.IItem;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import player.IPlayer;
 import player.Player;
 import player.PlayerState;
 import square.AbstractSquare;
 import square.Direction;
 import square.Square;
+import player.TronPlayer;
 
 /**
  * Test the capture the flag mode
@@ -63,7 +63,7 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 	@Test
 	public void testPlayerWinsWhenCapturedAllTheFlags() {
 		// Player 1
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH);
 		// now player 1 is teleported
@@ -79,9 +79,9 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
 		// now player 1 is on the startsquare of player 2
-		assertNotSame(PlayerState.FINISHED, ((Player) player1).getPlayerState());
+		assertNotSame(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 		// pickup the flag:
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		assertEquals(1, itemsList.size());
 		assertTrue(itemsList.get(0) instanceof Flag);
@@ -104,7 +104,7 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		moveCont.move(Direction.NORTH);
 		// now player 1 is back on his start with the flag of player 2 --> he
 		// wins
-		assertEquals(PlayerState.FINISHED, ((Player) player1).getPlayerState());
+		assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 		
 		// When a player captures a flag, that flag is returned to its starting
 		// location.
@@ -123,7 +123,7 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 	@Test
 	public void testPlayerDies() {
 		// Player 1
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH);
 		// now player 1 is teleported
@@ -139,9 +139,9 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
 		// now player 1 is on the startsquare of player 2
-		assertNotSame(PlayerState.FINISHED, ((Player) player1).getPlayerState());
+		assertNotSame(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 		// pickup the flag:
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		assertEquals(1, itemsList.size());
 		assertTrue(itemsList.get(0) instanceof Flag);
@@ -158,10 +158,10 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		
 		// player 1
 		assertEquals(player1, playerDB.getCurrentPlayer());
-		Square player1LastSq = player1.getCurrentLocation();
+		Square player1LastSq = player1.getCurrentPosition();
 		// end player 1 turn without moving --> he will loose
 		endTurnCont.endTurn();
-		assertSame(PlayerState.LOST, ((Player) player1).getPlayerState());
+		assertSame(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 		
 		// check flag is dropped:
 		List<IItem> list = player1LastSq.getCarryableItems();

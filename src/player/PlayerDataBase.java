@@ -3,16 +3,15 @@ package player;
 import game.Game;
 import grid.Grid;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import square.Square;
 import square.SquareContainer;
+import player.Player;
 
 /**
- * A class to store {@link Player players}, to appoint the current player
+ * A class to store {@link TronPlayer players}, to appoint the current player
  * allowed to play and to manage his number of alllowed actions. PlayerDataBase
  * is an {@link Observable} and will notify its observers (passing the
  * {@link PlayerState} of the player whos turn is ended as an argument) any time
@@ -26,9 +25,8 @@ import square.SquareContainer;
  */
 public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
-	private List<Player>						playerList;
-	private int									currentPlayerIndex;
-	private Map<IPlayer, PlayerActionManager>	actionManager;
+	private List<TronPlayer>	playerList;
+	private int					currentPlayerIndex;
 	
 	/**
 	 * Creates a new empty PlayerDataBase. To fill the database with players,
@@ -37,13 +35,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * throw an exception.
 	 */
 	public PlayerDataBase() {
-		this.playerList = new ArrayList<Player>();
-		this.actionManager = new HashMap<IPlayer, PlayerActionManager>();
+		this.playerList = new ArrayList<TronPlayer>();
 	}
 	
 	/**
-	 * This method creates a new database with {@link Player players} with the
-	 * specified starting positions. The Players will all have the
+	 * This method creates a new database with {@link TronPlayer players} with
+	 * the specified starting positions. The Players will all have the
 	 * {@link PlayerState#WAITING} state.
 	 * 
 	 * The order of the players is determined by the specified starting
@@ -61,13 +58,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		if (!isValidStartingPositionList(startingPositions))
 			throw new IllegalArgumentException("the list of starting positions must be valid");
 		
-		Player.resetUniqueIdcounter();
+		TronPlayer.resetUniqueIdcounter();
 		this.clearDataBase();
 		
 		for (SquareContainer playerStartingPosition : startingPositions) {
-			Player newPlayer = new Player(this, playerStartingPosition);
+			TronPlayer newPlayer = new TronPlayer(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
-			this.actionManager.put(newPlayer, new PlayerActionManager(newPlayer));
 		}
 		
 		// Set the first player as starting player.
@@ -101,7 +97,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	@Override
-	public Player getCurrentPlayer() throws IllegalStateException {
+	public TronPlayer getCurrentPlayer() throws IllegalStateException {
 		if (getNumberOfPlayers() == 0)
 			throw new IllegalStateException("The PlayerDatabase is empty.");
 		
@@ -113,8 +109,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * 
 	 * @return a list of all the players in the database.
 	 */
-	public List<IPlayer> getAllPlayers() {
-		return new ArrayList<IPlayer>(this.playerList);
+	public List<Player> getAllPlayers() {
+		return new ArrayList<Player>(this.playerList);
 	}
 	
 	/**
@@ -132,8 +128,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * (i.e. {@link #getCurrentPlayer()}), this method will return. Else it will
 	 * set the state of the specified player to {@link PlayerState#WAITING} and
 	 * set the next player to {@link PlayerState#ACTIVE}. This next player then
-	 * receives {@value Player#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions for his
-	 * turn.
+	 * receives {@value TronPlayer#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions for
+	 * his turn.
 	 * 
 	 * This method will also check whether the player has reached his finish
 	 * position. If this is the case he will set the state of the player to
@@ -147,29 +143,26 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *        The player who wants to end his turn. Only the current player can
 	 *        do this.
 	 */
-	void endPlayerTurn(Player player) {
+	void endPlayerTurn(TronPlayer player) {
 		if (!player.equals(getCurrentPlayer())) {
 			// Only the current player can end its turn. By returning instead of
 			// throwing, we actually handle this problem correctly without
 			// having to catch an exception on other places.
 			return;
 		}
+		notifyTurnEvent(TurnEvent.END_TURN);
+		
 		// Switch players and assign a new turn
-		resetTurnRelatedPropertiesOf(player);
+		player.getActionManager().resetActions();
 		player.setPlayerState(PlayerState.WAITING);
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
-		Player newPlayer = playerList.get(currentPlayerIndex);
-		
-		notifyTurnEvent(TurnEvent.END_TURN);
+		TronPlayer newPlayer = playerList.get(currentPlayerIndex);
 		
 		// Assign new actions to the specified player and set him active.
 		// This may introduce a new player switch (the resulting penalty
 		// after adding new actions may still be < 0)
 		assignNewTurn(newPlayer);
-	}
-	
-	private PlayerActionManager getActionManager(IPlayer player) {
-		return this.actionManager.get(player);
+		
 	}
 	
 	private void notifyTurnEvent(TurnEvent event) {
@@ -187,69 +180,24 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * This method is called by the {@link PlayerDataBase} when it assigns the
 	 * next player.
 	 */
-	void assignNewTurn(Player player) {
+	void assignNewTurn(TronPlayer player) {
 		player.setPlayerState(PlayerState.ACTIVE);
 		
-		getActionManager(player).assignNewTurn(player);
+		player.getActionManager().assignNewTurn();
 		
 		// allowed number of actions could be <= 0 because of penalties
 		checkEndTurn(player);
-	}
-	
-	private void resetTurnRelatedPropertiesOf(Player player) {
-		player.resetHasMoved();
-		getActionManager(player).resetNumberOfActions();
 	}
 	
 	/**
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
-	private void checkEndTurn(Player player) {
-		if (getAllowedNumberOfActions(player) <= 0) {
+	private void checkEndTurn(TronPlayer player) {
+		if (player.getAllowedNumberOfActions() <= 0) {
 			// this method will return if it's not this player's turn
 			endPlayerTurn(player);
 		}
-	}
-	
-	/**
-	 * This method lets a player skip a number of actions. He doesn't need to be
-	 * the active player at this moment.
-	 * 
-	 * @param player
-	 *        The player which needs to skip actions.
-	 * @param numberOfActionsToSkip
-	 *        The number of actions to skip
-	 */
-	public void skipNumberOfActions(Player player, int numberOfActionsToSkip) {
-		getActionManager(player).skipNumberOfActions(numberOfActionsToSkip);
-		
-		checkEndTurn(player);
-	}
-	
-	/**
-	 * Returns the allowed number of actions of the specified player or 0 if the
-	 * specified player is not in the game.
-	 * 
-	 * @param player
-	 *        the player to get the number of actions from
-	 * @return The allowed number of actions of the specified player or 0 if the
-	 *         specified player is not in the game.
-	 */
-	public int getAllowedNumberOfActions(IPlayer player) {
-		if (actionManager.containsKey(player))
-			return getActionManager(player).getNumberOfActionsLeft();
-		return 0;
-	}
-	
-	/**
-	 * Skips the next turn of a player.
-	 * 
-	 * @param player
-	 *        The player which needs to skip a turn.
-	 */
-	public void skipNextTurn(Player player) {
-		getActionManager(player).skipNextNTurns(1);
 	}
 	
 	/**
@@ -259,9 +207,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * If after decreasing the allowed number of actions by one, this player has
 	 * no more actions left, his turn will end.
 	 */
-	void actionPerformed(Player player) {
-		notifyTurnEvent(TurnEvent.END_ACTION);
-		skipNumberOfActions(player, 1);
+	void actionPerformed(TronPlayer player) {
+		if (player.equals(getCurrentPlayer())) {
+			notifyTurnEvent(TurnEvent.END_ACTION);
+			checkEndTurn(player);
+		}
 	}
 	
 	/**
@@ -269,7 +219,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * use an old Player reference to break the game.
 	 */
 	public void clearDataBase() {
-		for (Player p : this.playerList) {
+		for (TronPlayer p : this.playerList) {
 			// set all references of the player to null so that no-one can still
 			// play with an old player.
 			p.endPlayerLife();
@@ -282,15 +232,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * 
 	 * <b>FOR TESTING PURPOSES ONLY</b>
 	 * 
-	 * @return The other player
+	 * @return The next player
 	 */
-	Player getNextPlayer() {
+	TronPlayer getNextPlayer() {
 		return playerList.get((currentPlayerIndex + 1) % getNumberOfPlayers());
-	}
-	
-	@Override
-	public void endCurrentPlayerTurn() {
-		this.playerList.get(currentPlayerIndex).endTurn();
 	}
 	
 	/**
@@ -298,7 +243,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * possessed disappear.
 	 */
 	public void removeCurrentPlayer() {
-		Player curPlayer = this.playerList.get(currentPlayerIndex);
+		TronPlayer curPlayer = this.playerList.get(currentPlayerIndex);
 		curPlayer.endPlayerLife();
 		this.playerList.remove(curPlayer);
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();

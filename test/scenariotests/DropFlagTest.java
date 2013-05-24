@@ -12,10 +12,10 @@ import item.identitydisk.IdentityDisk;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import player.IPlayer;
 import square.Direction;
 import square.Square;
 import square.SquareContainer;
+import player.Player;
 
 /**
  * This test class tests all cases when a flag should be dropped, and whether it
@@ -32,17 +32,17 @@ public class DropFlagTest extends SetUpTestGrid {
 	@Test
 	public void hitByLightGrenadeTest() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH); // Player 1 teleports
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
 		assertNotSame(player1, playerDB.getCurrentPlayer());
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
-		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		useItemCont.useItem(lightGrenade1);
@@ -65,7 +65,7 @@ public class DropFlagTest extends SetUpTestGrid {
 		// Player 1 actions
 		assertSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
-		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem flag = items2.get(0);
 		pickUpCont.pickUpItem(flag);
 		
@@ -76,20 +76,20 @@ public class DropFlagTest extends SetUpTestGrid {
 		
 		assertFalse(playerDB.getCurrentPlayer().getInventoryContent().contains(flag));
 		assertTrue(itemInSurroundingSquaresOf(flag, playerDB.getCurrentPlayer()
-				.getCurrentLocation()));
+				.getCurrentPosition()));
 	}
 	
 	@Test
 	public void passThroughTeleporterTest() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH); // Player 1 teleports
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
 		assertNotSame(player1, playerDB.getCurrentPlayer());
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
@@ -99,7 +99,7 @@ public class DropFlagTest extends SetUpTestGrid {
 		assertSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH);
-		List<IItem> items = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem flag = items.get(0);
 		pickUpCont.pickUpItem(flag);
 		assertTrue(playerDB.getCurrentPlayer().getInventoryContent().contains(flag));
@@ -125,17 +125,17 @@ public class DropFlagTest extends SetUpTestGrid {
 	@Test
 	public void hitByIdentityDisk() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH); // Player 1 teleports
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
 		assertNotSame(player1, playerDB.getCurrentPlayer());
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
-		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem identityDisk = items1.get(0);
 		pickUpCont.pickUpItem(identityDisk);
 		moveCont.move(Direction.EAST);
@@ -144,7 +144,7 @@ public class DropFlagTest extends SetUpTestGrid {
 		assertSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.SOUTH);
-		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem flag = items2.get(0);
 		pickUpCont.pickUpItem(flag);
 		assertTrue(playerDB.getCurrentPlayer().getInventoryContent().contains(flag));
@@ -161,7 +161,7 @@ public class DropFlagTest extends SetUpTestGrid {
 		assertSame(player1, playerDB.getCurrentPlayer());
 		assertFalse(playerDB.getCurrentPlayer().getInventoryContent().contains(flag));
 		assertTrue(itemInSurroundingSquaresOf(flag, playerDB.getCurrentPlayer()
-				.getCurrentLocation()));
+				.getCurrentPosition()));
 	}
 	
 	private boolean itemInSurroundingSquaresOf(IItem flag, Square square) {

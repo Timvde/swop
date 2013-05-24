@@ -6,7 +6,12 @@ import java.util.List;
 import item.IItem;
 
 /**
+<<<<<<< HEAD
  * An inventory of {@link Item}s that is carried by a {@link Player}.
+=======
+ * An inventory of {@link Item}s that is carried by a
+ * {@link TronPlayer}.
+>>>>>>> tim_wil_ook_een_happy_place
  */
 public class Inventory implements IInventory {
 	

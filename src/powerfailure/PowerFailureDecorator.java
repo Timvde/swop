@@ -1,13 +1,12 @@
 package powerfailure;
 
-import java.util.Observable;
-import item.Effect;
-import item.EmptyEffect;
 import item.IItem;
+import java.util.Observable;
+import player.Player;
+import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
-import player.IPlayer;
-import player.TurnEvent;
+import effects.Effect;
 
 /**
  * A decorator to modify a square with a power failure effect.
@@ -40,7 +39,7 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override 
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		Effect powerFailureEffect = this.powerfailure.getEffect();
 		effect.addEffect(powerFailureEffect);
 		super.addPlayer(player, effect);

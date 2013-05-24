@@ -11,6 +11,7 @@ public class PlayerActionManager {
 	/** The maximum number of actions a Player is allowed to do in one turn */
 	public static final int	MAX_NUMBER_OF_ACTIONS_PER_TURN	= 4;
 	
+	private TronPlayer		player;
 	private int				actionsLeft;
 	private int				numberOfTurnsToSkip;
 	
@@ -20,7 +21,8 @@ public class PlayerActionManager {
 	 * @param player
 	 *        The player which this ActionManager manages
 	 */
-	public PlayerActionManager(Player player) {
+	public PlayerActionManager(TronPlayer player) {
+		this.player = player;
 		this.actionsLeft = 0;
 		this.numberOfTurnsToSkip = 0;
 	}
@@ -53,19 +55,20 @@ public class PlayerActionManager {
 	}
 	
 	/**
-	 * Makes this player skip a specified number of actions
+	 * Makes this player decrement his number of actions left with the specified
+	 * amount.
 	 * 
 	 * @param numberOfActionsToSkip
 	 *        The number of actions to skip
 	 */
-	void skipNumberOfActions(int numberOfActionsToSkip) {
+	void decrementNumberOfActions(int numberOfActionsToSkip) {
 		this.actionsLeft -= numberOfActionsToSkip;
 	}
 	
 	/**
 	 * Reset the number of actions left
 	 */
-	void resetNumberOfActions() {
+	void resetActions() {
 		this.actionsLeft = 0;
 	}
 	
@@ -75,11 +78,11 @@ public class PlayerActionManager {
 	 * 
 	 * @param player
 	 */
-	void assignNewTurn(Player player) {
+	void assignNewTurn() {
 		if (getNumberOfTurnsToSkip() > 0)
 			numberOfTurnsToSkip--;
 		else {
-			Effect effect = player.getCurrentLocation().getStartTurnEffect();
+			Effect effect = player.getCurrentPosition().getStartTurnEffect();
 			
 			effect.execute(player);
 			

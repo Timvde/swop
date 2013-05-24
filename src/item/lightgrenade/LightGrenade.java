@@ -126,5 +126,4 @@ public class LightGrenade extends Item {
 	public Effect getEffect() {
 		return effectFactory.getExplodeEffect(this);
 	}
-	
 }

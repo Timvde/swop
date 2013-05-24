@@ -1,8 +1,8 @@
 package powerfailure;
 
-import item.AbstractEffect;
-import player.Player;
+import player.TronPlayer;
 import square.TronObject;
+import effects.AbstractEffect;
 
 /**
  * This class represents an effect to be executed on a player when he resides on
@@ -18,10 +18,11 @@ public class PowerFailureStartTurnEffect extends AbstractEffect {
 	
 	@Override
 	public void execute(TronObject object) {
-		if (object instanceof Player) {
-			Player player = (Player) object;
+		if (object instanceof TronPlayer) {
+			TronPlayer player = (TronPlayer) object;
 			player.skipNumberOfActions(POWER_FAILURE_PENALTY_AT_START_TURN);
 		}
+		super.execute(object);
 	}
 	
 }

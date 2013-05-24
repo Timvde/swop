@@ -14,6 +14,10 @@ import java.util.Observable;
 import java.util.Observer;
 import org.junit.Before;
 import org.junit.Test;
+import player.actions.EndTurnAction;
+import player.actions.MoveAction;
+import player.actions.PickupItemAction;
+import player.actions.UseAction;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
@@ -23,7 +27,7 @@ import ObjectronExceptions.IllegalMoveException;
 @SuppressWarnings("javadoc")
 public class PlayerTest implements Observer {
 	
-	private Player			player;
+	private TronPlayer		player;
 	private PlayerDataBase	db;
 	private TurnEvent		notifiedWithTurnEvent;
 	private Grid			grid;
@@ -39,7 +43,7 @@ public class PlayerTest implements Observer {
 		// make this class an observer for testing purposes
 		db.addObserver(this);
 		
-		player = (Player) db.getCurrentPlayer();
+		player = (TronPlayer) db.getCurrentPlayer();
 	}
 	
 	/* ######################### CONSTRUCTOR TESTS ######################### */
@@ -51,23 +55,23 @@ public class PlayerTest implements Observer {
 		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertNotNull(player.getStartingPosition());
-		assertEquals(player.getStartingPosition(), player.getCurrentLocation());
+		assertEquals(player.getStartingPosition(), player.getCurrentPosition());
 		assertEquals(0, player.getInventoryContent().size());
 		
 		// test whether the player is appointed by the db as the current player
 		assertIsCurrentPlayerTurn();
-		assertTrue(player.canPerformAction());
+		assertTrue(player.canPerformAction(new EndTurnAction()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullDB() {
-		new Player(null, new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
-				new NormalSquare()));
+		new TronPlayer(null, new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor_nullArgumentSquare() {
-		new Player(db, null);
+		new TronPlayer(db, null);
 	}
 	
 	/* ######################### TURN TESTS ######################### */
@@ -76,7 +80,7 @@ public class PlayerTest implements Observer {
 	public void testEndTurnWithMove() throws IllegalMoveException {
 		doMove();
 		
-		player.endTurn();
+		player.performAction(new EndTurnAction());
 		assertIsNotCurrentPlayerTurn();
 	}
 	
@@ -91,7 +95,7 @@ public class PlayerTest implements Observer {
 		boolean moved = false;
 		for (Direction dir : Direction.values()) {
 			try {
-				player.moveInDirection(dir);
+				player.performAction(new MoveAction(dir));
 				moved = true;
 				break;
 			}
@@ -103,6 +107,15 @@ public class PlayerTest implements Observer {
 	}
 	
 	@Test
+	public void testEndTurnWithoutMove() {
+		player.performAction(new EndTurnAction());
+		
+		// test whether player sets itself lost and reported it
+		assertEquals(PlayerState.FINISHED, player.getPlayerState());
+		assertEquals(TurnEvent.END_TURN, this.getTurnEventOfNotify());
+	}
+	
+	@Test
 	public void testCanPerformAction() {
 		assertIsCurrentPlayerTurn();
 		switchPlayers();
@@ -111,7 +124,7 @@ public class PlayerTest implements Observer {
 		boolean exceptionThrown = false;
 		
 		try {
-			player.endTurn();
+			player.performAction(new EndTurnAction());
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -119,7 +132,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.moveInDirection(Direction.NORTH);
+			player.performAction(new MoveAction(Direction.NORTH));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -127,7 +140,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.useItem(new LightGrenade(new DummyEffectFactory()));
+			player.performAction(new UseAction(new LightGrenade(new DummyEffectFactory())));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -135,7 +148,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.pickUpItem(new LightGrenade(new DummyEffectFactory()));
+			player.performAction(new PickupItemAction(new LightGrenade(new DummyEffectFactory())));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -148,7 +161,7 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test the initial number of actions,
-		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
+		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 4
 		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
@@ -208,12 +221,6 @@ public class PlayerTest implements Observer {
 		assertIsNotCurrentPlayerTurn();
 	}
 	
-	@Test
-	public void testIsValidDirection() {
-		assertTrue(player.isValidDirection(Direction.NORTH));
-		assertFalse(player.isValidDirection(null));
-	}
-	
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o instanceof PlayerDataBase && arg instanceof TurnEvent) {
@@ -224,7 +231,7 @@ public class PlayerTest implements Observer {
 	/* ############ PlayerDb methods (private) ############# */
 	
 	private void switchPlayers() {
-		db.endPlayerTurn((Player) db.getCurrentPlayer());
+		db.endPlayerTurn((TronPlayer) db.getCurrentPlayer());
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 	}
 	
@@ -239,7 +246,7 @@ public class PlayerTest implements Observer {
 		assertFalse(player.equals(db.getCurrentPlayer()));
 		assertEquals(PlayerState.WAITING, player.getPlayerState());
 		
-		assertEquals(PlayerState.ACTIVE, ((Player) db.getCurrentPlayer()).getPlayerState());
+		assertEquals(PlayerState.ACTIVE, ((TronPlayer) db.getCurrentPlayer()).getPlayerState());
 	}
 	
 	/**

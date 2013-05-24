@@ -17,6 +17,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theory;
+import square.AbstractSquare;
 import square.Direction;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
@@ -58,7 +59,7 @@ public class UseItemTest extends SetUpTestGrid {
 		endTurnCont.endTurn();
 		
 		// player 1 pick up LG
-		LightGrenade LG = (LightGrenade) playerDB.getCurrentPlayer().getCurrentLocation()
+		LightGrenade LG = (LightGrenade) playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems().get(0);
 		pickUpCont.pickUpItem(LG);
 		useItemCont.useItem(LG);
@@ -68,7 +69,7 @@ public class UseItemTest extends SetUpTestGrid {
 		 * light grenade is not carriable, and therefore I can't replace this
 		 * with getCarriableItems(), like the rest
 		 */
-		assertTrue(playerDB.getCurrentPlayer().getCurrentLocation().contains(LG));
+		assertTrue(((AbstractSquare) playerDB.getCurrentPlayer().getCurrentPosition()).contains(LG));
 		assertEquals(LightGrenadeState.ACTIVE, LG.getState());
 		
 	}
@@ -99,11 +100,11 @@ public class UseItemTest extends SetUpTestGrid {
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
-		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items1 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem lightGrenade1 = items1.get(0);
 		pickUpCont.pickUpItem(lightGrenade1);
 		moveCont.move(Direction.EAST);
-		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems();
+		List<IItem> items2 = playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems();
 		IItem lightGrenade2 = items2.get(0);
 		pickUpCont.pickUpItem(lightGrenade2);
 		endTurnCont.endTurn();
@@ -135,10 +136,10 @@ public class UseItemTest extends SetUpTestGrid {
 		// player 1
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentLocation()
+		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems().get(0);
 		pickUpCont.pickUpItem(id);
-		assertFalse(playerDB.getCurrentPlayer().getCurrentLocation().getCarryableItems()
+		assertFalse(playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems()
 				.contains(id));
 		endTurnCont.endTurn();
 		

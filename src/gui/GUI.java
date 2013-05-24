@@ -19,7 +19,7 @@ import java.util.Observer;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JOptionPane;
-import player.IPlayer;
+import player.Player;
 import square.Direction;
 import square.Square;
 import game.Game;
@@ -213,7 +213,7 @@ public class GUI implements Runnable, Observer {
 					
 					for (Coordinate c : gridCoords) {
 						Square square = guiDataController.getSquareAt(c);
-						IPlayer player = square.getPlayer();
+						Player player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// TODO // Draw finish lines

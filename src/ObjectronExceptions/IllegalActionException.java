@@ -1,9 +1,9 @@
 package ObjectronExceptions;
 
-import player.IPlayer;
+import player.Player;
 
 /**
- * Thrown to indicate that an {@link IPlayer} has invoked an action-method when
+ * Thrown to indicate that an {@link Player} has invoked an action-method when
  * he's not allowed to do so.
  */
 public class IllegalActionException extends RuntimeException {

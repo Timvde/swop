@@ -15,7 +15,8 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theory;
-import player.IPlayer;
+import player.Player;
+import player.actions.UseAction;
 import square.Direction;
 
 @SuppressWarnings("javadoc")
@@ -40,10 +41,10 @@ public class IdentityDiskTest extends SetUpTestGrid {
 	@Test
 	public void testPickup_ID_Success() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertEquals(1, itemsList.size());
@@ -53,7 +54,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		pickUpCont.pickUpItem(ID);
 		
 		// The system removes the item from the gameboard
-		assertFalse(player1.getCurrentLocation().getCarryableItems().contains(ID));
+		assertFalse(player1.getCurrentPosition().getCarryableItems().contains(ID));
 		// and puts it in the inventory of the player
 		player1.getInventoryContent().contains(ID);
 	}
@@ -66,10 +67,10 @@ public class IdentityDiskTest extends SetUpTestGrid {
 	@Test
 	public void testShoot_ID_GridBorder() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertEquals(1, itemsList.size());
@@ -90,14 +91,14 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		ID.setDirection(Direction.EAST);
 		// we do not use the controller here because it will give a nullpointer
 		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().useItem(ID);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
 		// Check if the ID is no longer in the inventory
 		assertFalse(player1.getInventoryContent().contains(ID));
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
 		
 		// See if the ID landed on the correct square
-		List<IItem> itemsList2 = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList2 = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertTrue(itemsList2.contains(ID));
@@ -111,10 +112,10 @@ public class IdentityDiskTest extends SetUpTestGrid {
 	@Test
 	public void testShoot_ID_Wall() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertEquals(1, itemsList.size());
@@ -127,7 +128,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		
 		// Player 2 actions
 		assertNotSame(player1, playerDB.getCurrentPlayer());
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.NORTH);
 		endTurnCont.endTurn();
 		
@@ -136,7 +137,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		ID.setDirection(Direction.SOUTH);
 		// we do not use the controller here because it will give a nullpointer
 		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().useItem(ID);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
 		// Check if the ID is no longer in the inventory
 		assertFalse(player1.getInventoryContent().contains(ID));
 		moveCont.move(Direction.SOUTH);
@@ -151,7 +152,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		// Player 1 actions
 		assertSame(player1, playerDB.getCurrentPlayer());
 		// See if the ID landed on the correct square
-		List<IItem> itemsList2 = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList2 = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertTrue(itemsList2.contains(ID));
@@ -164,10 +165,10 @@ public class IdentityDiskTest extends SetUpTestGrid {
 	@Test
 	public void testShoot_ID_Player() {
 		// Player 1 actions
-		IPlayer player1 = playerDB.getCurrentPlayer();
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertEquals(1, itemsList.size());
@@ -180,7 +181,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		
 		// Player 2 actions
 		assertNotSame(player1, playerDB.getCurrentPlayer());
-		IPlayer player2 = playerDB.getCurrentPlayer();
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTHEAST);
@@ -204,7 +205,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		ID.setDirection(Direction.SOUTH);
 		// we do not use the controller here because it will give a nullpointer
 		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().useItem(ID);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
 		endTurnCont.endTurn();
 		
 		// Test if it is again player 1's turn (player 2 skipped turn):
@@ -219,7 +220,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 	public void testDirection_ID_Null() {
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertEquals(1, itemsList.size());
@@ -239,7 +240,7 @@ public class IdentityDiskTest extends SetUpTestGrid {
 	public void testDirection_ID_Wrong() {
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentLocation()
+		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
 		
 		assertEquals(1, itemsList.size());

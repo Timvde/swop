@@ -126,9 +126,8 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 				}
 				numberOfRows++;
 			}
-			br.close();
 			dis.close();
-			fis.close();
+			br.close();
 			return new GridDimension(numberOfColls, numberOfRows);
 		}
 		catch (IOException e) {

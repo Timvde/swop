@@ -26,6 +26,7 @@ public class Flag extends Item {
 	 */
 	@Override
 	public void use(SquareContainer square) {
+		// FIXME: Check of square een starting position is
 		this.teleportBack();
 	}
 	
