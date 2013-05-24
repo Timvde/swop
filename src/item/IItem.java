@@ -26,7 +26,7 @@ public interface IItem extends TronObject {
 	 * @param square
 	 *        the square on which the item was used.
 	 * @throws IllegalUseException
-	 *         When the item cannot be used
+	 *         When the item cannot be used on the specified square
 	 */
 	public void use(SquareContainer square) throws IllegalUseException;
 	

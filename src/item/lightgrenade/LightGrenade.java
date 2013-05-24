@@ -3,7 +3,7 @@ package item.lightgrenade;
 import item.IItem;
 import item.Item;
 import square.SquareContainer;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalUseException;
 
 /**
  * Light grenades are items that can be picked up and used by a player. There
@@ -88,11 +88,11 @@ public class LightGrenade extends Item {
 	}
 	
 	@Override
-	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
+	public void use(SquareContainer square) throws IllegalUseException {
 		// check if this light grenade can be added to the square
 		for (IItem item : square.getAllItems())
 			if (item instanceof LightGrenade)
-				throw new CannotPlaceLightGrenadeException(
+				throw new IllegalUseException(
 						"There is already a light grenade on the square");
 		
 		// try and add this light grenade to the square
@@ -106,57 +106,6 @@ public class LightGrenade extends Item {
 	@Override
 	public char toChar() {
 		return 'l';
-	}
-	
-	/************************* LigthGrenadeEnum *************************/
-	
-	/**
-	 * An enumeration of the states a {@link LightGrenade} can have and the
-	 * allowed transitions between them.
-	 */
-	public enum LightGrenadeState {
-		
-		/**
-		 * Initial state, the grenade is disarmed (before pickup)
-		 */
-		INACTIVE {
-			
-			@Override
-			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return (toState == this) || (toState == ACTIVE);
-			}
-		},
-		/**
-		 * The grenade is armed. Hide your kids, hide your wives!
-		 */
-		ACTIVE {
-			
-			@Override
-			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return (toState == this) || (toState == EXPLODED);
-			}
-		},
-		/**
-		 * The grenade is exploded. (It is worthless now)
-		 */
-		EXPLODED {
-			
-			@Override
-			public boolean isAllowedTransistionTo(LightGrenadeState toState) {
-				return false;
-			}
-		};
-		
-		/**
-		 * Returns whether or not a transition from this state to a give state
-		 * is allowed.
-		 * 
-		 * @param toState
-		 *        the given other state
-		 * @return whether or not a transition from this state to a give state
-		 *         is allowed.
-		 */
-		public abstract boolean isAllowedTransistionTo(LightGrenadeState toState);
 	}
 	
 	@Override
