@@ -8,7 +8,6 @@ import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import player.actions.Action;
-import player.actions.EndTurnAction;
 import powerfailure.AffectedByPowerFailure;
 import square.AbstractSquare;
 import square.FlagKeeper;
@@ -32,8 +31,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	private int							id;
 	private static AtomicInteger		nextID	= new AtomicInteger();
 	
-	/** A boolean representing whether the player has moved */
-	private boolean						hasMoved;
 	/** The starting square of this player */
 	private SquareContainer				startSquare;
 	/** The square where the player is currently standing */
@@ -65,7 +62,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		this.id = nextID.incrementAndGet();
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail();
-		this.hasMoved = false;
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
 		this.setStartingPosition(startingPosition);
@@ -139,15 +135,14 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 * false when calling this method, this player loses the game).
 	 * 
 	 * @throws IllegalActionException
-	 *         This player must be allowed to perform an action, i.e.
-	 *         <code>{@link #canPerformAction(Action)}</code>.
+	 *         This player must be allowed to perform an EndTurnAction, i.e.
+	 *         <code>{@link #canPerformAction()}</code>.
 	 */
 	public void endTurn() throws IllegalActionException {
-		if (!canPerformAction(new EndTurnAction()))
+		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
-		lightTrail.updateLightTrail();
-		playerDB.endPlayerTurn(this);
+		actionManager.resetActions();
 	}
 	
 	/**
@@ -159,7 +154,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	@Override
 	public boolean hasMovedYet() {
-		return this.hasMoved;
+		return this.actionManager.hasMoved();
 	}
 	
 	/**
@@ -168,22 +163,12 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 * PostCondtion: {@link #hasMovedYet() this.hasMoved()}= true
 	 */
 	public void setHasMoved() {
-		this.hasMoved = true;
-	}
-	
-	/**
-	 * To be called when the player's turn end, to reset the hasMoved history.
-	 * 
-	 * Postcondition: {@link #hasMoved this.hasMoved()} = false
-	 */
-	void resetHasMoved() {
-		this.hasMoved = false;
+		actionManager.setHasMoved();
 	}
 	
 	@Override
-	public boolean canPerformAction(Action action) {
-		return this.state == PlayerState.ACTIVE && getStartingPosition() != null
-				&& getAllowedNumberOfActions() >= action.getCost();
+	public boolean canPerformAction() {
+		return this.state == PlayerState.ACTIVE && getAllowedNumberOfActions() > 0;
 	}
 	
 	/**
@@ -219,7 +204,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	@Override
 	public String toString() {
 		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + getAllowedNumberOfActions()
-				+ ", hasMoved=" + hasMoved + ", currentSquare=" + currentSquare + ", state="
+				+ ", hasMoved=" + actionManager.hasMoved() + ", currentSquare=" + currentSquare + ", state="
 				+ state + "]";
 	}
 	
@@ -263,7 +248,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 */
 	@Override
 	public void damageByPowerFailure() {
-		this.skipNumberOfActions(getAllowedNumberOfActions());
+		this.endTurn();
 	}
 	
 	@Override
@@ -297,7 +282,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	public void performAction(Action action) {
 		action.execute(this);
-		actionManager.decrementNumberOfActions(action.getCost());
+		actionManager.performedAction();
 		
 		// end a players action
 		playerDB.actionPerformed(this);

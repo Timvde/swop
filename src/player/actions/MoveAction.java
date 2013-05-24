@@ -49,7 +49,7 @@ public class MoveAction implements Action {
 	 */
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentPosition();
-		if (!player.canPerformAction(this))
+		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!isValidDirection(direction))
 			throw new IllegalArgumentException("The specified direction is not valid.");
@@ -139,10 +139,5 @@ public class MoveAction implements Action {
 		// it looks like the player crosses a light trail
 		// he will not get away with this ...
 		return true;
-	}
-
-	@Override
-	public int getCost() {
-		return 1;
 	}
 }

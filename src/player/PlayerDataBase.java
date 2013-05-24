@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Observable;
 import square.Square;
 import square.SquareContainer;
-import player.Player;
 
 /**
  * A class to store {@link TronPlayer players}, to appoint the current player
@@ -143,7 +142,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *        The player who wants to end his turn. Only the current player can
 	 *        do this.
 	 */
-	void endPlayerTurn(TronPlayer player) {
+	private void endPlayerTurn(TronPlayer player) {
 		if (!player.equals(getCurrentPlayer())) {
 			// Only the current player can end its turn. By returning instead of
 			// throwing, we actually handle this problem correctly without
@@ -162,7 +161,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		// This may introduce a new player switch (the resulting penalty
 		// after adding new actions may still be < 0)
 		assignNewTurn(newPlayer);
-		
 	}
 	
 	private void notifyTurnEvent(TurnEvent event) {
@@ -219,10 +217,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * use an old Player reference to break the game.
 	 */
 	public void clearDataBase() {
-		for (TronPlayer p : this.playerList) {
+		for (TronPlayer player : this.playerList) {
 			// set all references of the player to null so that no-one can still
 			// play with an old player.
-			p.endPlayerLife();
+			player.endPlayerLife();
 		}
 		this.playerList.clear();
 	}

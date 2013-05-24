@@ -18,11 +18,4 @@ public interface Action {
 	 *        The player who will perform the action
 	 */
 	void execute(TronPlayer player);
-	
-	/**
-	 * Returns the cost of this action, i.e. how many actions it takes to
-	 * perform.
-	 * @return The cost of this action
-	 */
-	public int getCost();
 }
