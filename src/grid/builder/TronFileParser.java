@@ -76,7 +76,7 @@ public class TronFileParser {
 		return scanner.hasNext("\\n");
 	}
 	
-	public boolean hasNextStatement() {
+	public boolean hasNextValidStatement() {
 		return scanner.hasNext("([ \\d*#])(?::(\\S+?(?=[ \\d*#])))?");
 	}
 	

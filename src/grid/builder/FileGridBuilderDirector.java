@@ -116,9 +116,12 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	 */
 	private GridDimension readGridFromFile() throws InvalidGridFileException {
 		int i = 0, j = 0;
-		while (parser.hasNextStatement()) {
+		while (parser.hasNextValidStatement()) {
 			j = 0;
-			while (parser.hasNextStatement() && !parser.isAtEndOfLine()) {
+			while (!parser.isAtEndOfLine()) {
+				if (!parser.hasNextValidStatement()) {
+					throw new InvalidGridFileException("invalid grid symbol");
+				}
 				Expression expression = parser.nextExpression();
 				if (expression != null) {
 					expression.build(builder, new Coordinate(j, i));

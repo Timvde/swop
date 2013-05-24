@@ -86,7 +86,7 @@ public class StartGameTest {
 		newGameCont.newRaceGame("grid_invalidCharacter.txt");
 	}
 	
-	@Test(expected = InvalidGridFileException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testInvaldidFile2Race() throws FileNotFoundException {
 		newGameCont.newRaceGame("grid_oneStartingPosition.txt");
 	}
@@ -117,7 +117,7 @@ public class StartGameTest {
 		newGameCont.newCTFGame("grid_invalidCharacter.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
 	
-	@Test(expected = InvalidGridFileException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testInvaldidFile2CTF() throws FileNotFoundException {
 		newGameCont.newCTFGame("grid_oneStartingPosition.txt", CTFMode.MINIMUM_NUMBER_OF_PLAYERS);
 	}
