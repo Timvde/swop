@@ -1,5 +1,6 @@
 package player;
 
+import game.GameMode;
 import item.Flag;
 import item.IItem;
 import item.lightgrenade.Explodable;
@@ -26,12 +27,13 @@ import ObjectronExceptions.ItemNotOnSquareException;
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform
- * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions during a turn.
- * These actions are {@link #moveInDirection(Direction) move},
+ * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} actions during a
+ * turn. These actions are {@link #moveInDirection(Direction) move},
  * {@link #pickUpItem(IItem) pickup} an item, {@link #useItem(IItem) use} an
  * item and {@link #endTurn() end} the turn.
  */
-public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable, FlagKeeper {
+public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Explodable,
+		FlagKeeper {
 	
 	/**
 	 * The id of the player, not really used, but hey ... let's do something
@@ -196,10 +198,10 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	/* #################### Move methods #################### */
 	
 	/**
-	 * This method ends the turn of this player. This player will lose the game
-	 * if this method is called before he did a move action, (i.e. if
-	 * <code>{@link #hasMovedYet()}</code> is false when calling this method,
-	 * this player loses the game).
+	 * This method ends the turn of this player. Note that some {@link GameMode
+	 * game modes} let the player loose the game if this method is called before
+	 * he did a move action, (i.e. if <code>{@link #hasMovedYet()}</code> is
+	 * false when calling this method, this player loses the game).
 	 * 
 	 * @throws IllegalActionException
 	 *         This player must be allowed to perform an action, i.e.
@@ -209,15 +211,8 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
-		if (this.hasMovedYet()) {
-			// this player's turn will end;
-			lightTrail.updateLightTrail();
-			playerDB.endPlayerTurn(this);
-		}
-		else {
-			// setPlayerState will check if we can transition to the LOST state
-			this.setPlayerState(PlayerState.LOST);
-		}
+		lightTrail.updateLightTrail();
+		playerDB.endPlayerTurn(this);
 	}
 	
 	/**
@@ -456,25 +451,28 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 	
 	/**
 	 * Sets all references of the player to null so that no-one can modify the
-	 * game with an old player.
+	 * game with an old player. The state of the player will be set to FINISHED.
+	 * 
+	 * <b>NOTE:</b> After calling this method one cannot use the player object
+	 * anymore (as nullpointers will be thrown).
 	 */
-	void destroy() {
+	void endPlayerLife() {
 		this.playerDB = null;
 		this.currentSquare = null;
 		this.id = -1;
 		this.inventory.removeAll();
 		this.lightTrail.destroy();
-		this.state = PlayerState.LOST;
+		this.state = PlayerState.FINISHED;
 		
 		if (currentSquare != null)
 			this.currentSquare.remove(this);
 	}
-
+	
 	@Override
 	public FlagKeeper asFlagKeeper() {
 		return this;
 	}
-
+	
 	@Override
 	public Flag giveFlag() {
 		for (IItem item : getInventoryContent()) {
@@ -485,7 +483,7 @@ public class Player implements IPlayer, Teleportable, AffectedByPowerFailure, Ex
 		}
 		return null;
 	}
-
+	
 	@Override
 	public SquareContainer getCurrentPosition() {
 		return this.currentSquare;

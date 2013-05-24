@@ -3,9 +3,16 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import game.CTFMode;
+import game.GameMode;
+import game.RaceMode;
 import grid.Coordinate;
 import grid.builder.DeterministicGridBuilderDirector;
 import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 import player.IPlayer;
 import player.Player;
 import player.PlayerActionManager;
@@ -22,7 +29,20 @@ import ObjectronExceptions.IllegalMoveException;
  * grid - Cannot cross lightrail - Player must always do a move action in turn
  */
 @SuppressWarnings("javadoc")
-public class MovePlayerTest extends SetupTestGrid {
+@RunWith(Theories.class)
+public class MovePlayerTest extends SetUpTestGrid {
+	
+	public static @DataPoints
+	GameMode[]	candidates	= { new RaceMode(),
+			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	
+	/**
+	 * This method will be called with all gamemodes.
+	 */
+	@Theory
+	public void setUp(GameMode mode) {
+		super.setUp(mode);
+	}
 	
 	/**
 	 * Move player 1 to the south
@@ -153,7 +173,7 @@ public class MovePlayerTest extends SetupTestGrid {
 		
 		// player 1
 		moveCont.move(Direction.SOUTH);
-	//	endTurnCont.endTurn();
+		// endTurnCont.endTurn();
 		
 		assertEquals(PlayerState.FINISHED, ((Player) player1).getPlayerState());
 	}

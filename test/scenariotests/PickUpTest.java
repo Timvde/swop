@@ -3,12 +3,18 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import game.CTFMode;
+import game.GameMode;
+import game.RaceMode;
+import grid.builder.DeterministicGridBuilderDirector;
 import item.DummyEffectFactory;
 import item.IItem;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
 import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theory;
 import player.IPlayer;
 import player.PlayerActionManager;
 import square.Direction;
@@ -19,8 +25,19 @@ import ObjectronExceptions.ItemNotOnSquareException;
  * Tests the "Pick Up An Item" use case.
  */
 @SuppressWarnings("javadoc")
-public class PickUpTest extends SetupTestGrid {
+public class PickUpTest extends SetUpTestGrid {
 	
+	public static @DataPoints
+	GameMode[]	candidates	= { new RaceMode(),
+			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	
+	/**
+	 * This method will be called with all gamemodes.
+	 */
+	@Theory
+	public void setUp(GameMode mode) {
+		super.setUp(mode);
+	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testPickup_Null() {
@@ -64,7 +81,7 @@ public class PickUpTest extends SetupTestGrid {
 	 * player 2 will pickup the LG NothEast of him
 	 */
 	@Test
-	public void testPickup_LG_Success() {		
+	public void testPickup_LG_Success() {
 		// Player 1 actions
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
@@ -116,7 +133,7 @@ public class PickUpTest extends SetupTestGrid {
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
 		endTurnCont.endTurn();
-
+		
 		// Player 1 actions
 		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.WEST);

@@ -3,6 +3,10 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import game.CTFMode;
+import game.GameMode;
+import game.RaceMode;
+import grid.builder.DeterministicGridBuilderDirector;
 import gui.GUI;
 import item.DummyEffectFactory;
 import item.IItem;
@@ -11,6 +15,8 @@ import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenadeState;
 import java.util.List;
 import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theory;
 import square.Direction;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
@@ -25,7 +31,19 @@ import ObjectronExceptions.IllegalUseException;
  * @author Tom
  */
 @SuppressWarnings("javadoc")
-public class UseItemTest extends SetupTestGrid {
+public class UseItemTest extends SetUpTestGrid {
+	
+	public static @DataPoints
+	GameMode[]	candidates	= { new RaceMode(),
+			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	
+	/**
+	 * This method will be called with all gamemodes.
+	 */
+	@Theory
+	public void setUp(GameMode mode) {
+		super.setUp(mode);
+	}
 	
 	@Test
 	public void testSuccess_LG() {

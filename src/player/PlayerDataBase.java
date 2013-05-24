@@ -272,7 +272,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		for (Player p : this.playerList) {
 			// set all references of the player to null so that no-one can still
 			// play with an old player.
-			p.destroy();
+			p.endPlayerLife();
 		}
 		this.playerList.clear();
 	}
@@ -299,7 +299,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public void removeCurrentPlayer() {
 		Player curPlayer = this.playerList.get(currentPlayerIndex);
-		curPlayer.destroy();
+		curPlayer.endPlayerLife();
 		this.playerList.remove(curPlayer);
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 	}

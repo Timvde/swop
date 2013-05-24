@@ -5,15 +5,33 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import game.CTFMode;
+import game.GameMode;
+import game.RaceMode;
+import grid.builder.DeterministicGridBuilderDirector;
 import item.IItem;
 import item.identitydisk.UnchargedIdentityDisk;
 import java.util.List;
 import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theory;
 import player.IPlayer;
 import square.Direction;
 
 @SuppressWarnings("javadoc")
-public class IdentityDiskTest extends SetupTestGrid {
+public class IdentityDiskTest extends SetUpTestGrid {
+	
+	public static @DataPoints
+	GameMode[]	candidates	= { new RaceMode(),
+			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	
+	/**
+	 * This method will be called with all gamemodes.
+	 */
+	@Theory
+	public void setUp(GameMode mode) {
+		super.setUp(mode);
+	}
 	
 	/**
 	 * Player 1 will pickup the ID west of him and we will check if it is picked
