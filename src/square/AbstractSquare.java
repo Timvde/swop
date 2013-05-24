@@ -51,22 +51,6 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract void addPlayer(Player p) throws IllegalArgumentException;
 	
 	/**
-	 * This method sets the haslightTrail for this square. <br>
-	 * <br>
-	 * <b>Do NOT use this method.</b> The light trail is automatically updated
-	 * by the light trail as the player moves around the grid.
-	 */
-	public abstract void placeLightTrail();
-	
-	/**
-	 * Remove the light trail from this square. <br>
-	 * <br>
-	 * <b>Do NOT use this method.</b> The light trail is automatically updated
-	 * by the light trail as the player moves around the grid.
-	 */
-	public abstract void removeLightTrail();
-	
-	/**
 	 * Add a specified item to the square, the item may be affected by other
 	 * items on the square.
 	 * 
@@ -132,53 +116,11 @@ public abstract class AbstractSquare implements Square, Observer {
 	 */
 	protected abstract void addItem(IItem item, Effect effect);
 	
-	/* Default implementation */
-	
-	/**
-	 * Default implementation will return <code>false</code>.
-	 */
-	@Override
-	public boolean isWall() {
-		return false;
-	}
-	
-	/**
-	 * Default implementation will return <code>false</code>.
-	 */
-	@Override
-	public boolean isStartingPosition() {
-		return false;
-	}
-	
-	/**
-	 * Default implementation will return <code>false</code>.
-	 */
-	@Override
-	public boolean hasForceField() {
-		return false;
-	}
-	
-	/**
-	 * Default implementation will return <code>false</code>.
-	 */
-	@Override
-	public boolean hasPowerFailure() {
-		return false;
-	}
-	
 	/**
 	 * Default implementation will return <code>false</code>.
 	 */
 	@Override
 	public boolean hasPlayer() {
-		return false;
-	}
-	
-	/**
-	 * Default implementation will return <code>false</code>.
-	 */
-	@Override
-	public boolean hasLightTrail() {
 		return false;
 	}
 	

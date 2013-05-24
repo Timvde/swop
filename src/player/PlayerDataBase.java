@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 import player.actions.EndTurnAction;
+import square.PropertyType;
 import square.Square;
 import square.SquareContainer;
 
@@ -165,7 +166,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		int allowedNumberOfActionsLeft = getAllowedNumberOfActions(player);
 		
-		if (player.getCurrentLocation().hasPowerFailure()) {
+		if (player.getCurrentLocation().hasProperty(PropertyType.POWER_FAILURE)) {
 			/*
 			 * decrease the allowed number of actions by the right amount (do
 			 * not use the method skipNumberOfActions() as this will call

@@ -1,10 +1,12 @@
 package game;
 
 import grid.Grid;
+import grid.GuiGridAdapter;
 import grid.builder.FileGridBuilderDirector;
 import grid.builder.RandomGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import gui.GUI;
+import java.io.FileNotFoundException;
 import java.util.Observable;
 import java.util.Observer;
 import player.Player;
@@ -59,7 +61,7 @@ public class Game implements Observer {
 		NewGameController newGameCont = new NewGameController(this);
 		
 		// Here grid is still null
-		this.guiDataCont = new GUIDataController(this.playerDB, this.grid);
+		this.guiDataCont = new GUIDataController(this.playerDB, null);
 		
 		this.gui = new GUI(moveCont, pickUpCont, useItemCont, newGameCont, endTurnCont,
 				this.guiDataCont);
@@ -120,7 +122,13 @@ public class Game implements Observer {
 		System.out.println("Creating new game from file: " + file);
 		
 		TronGridBuilder builder = new TronGridBuilder();
-		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
+		FileGridBuilderDirector director;
+		try {
+			director = new FileGridBuilderDirector(builder, file);
+		}
+		catch (FileNotFoundException e) {
+			throw new InvalidGridFileException("");
+		}
 		director.construct();
 		
 		startGameWithGrid(builder.getResult());
@@ -128,8 +136,8 @@ public class Game implements Observer {
 	
 	private void startGameWithGrid(Grid grid) {
 		this.setGrid(grid);
-		this.guiDataCont.setGrid(grid);
-		this.gui.draw(grid);
+		this.guiDataCont.setGrid(new GuiGridAdapter(grid));
+		this.gui.draw();
 		
 		
 		

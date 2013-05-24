@@ -11,26 +11,24 @@ import player.Player;
 import player.TronPlayer;
 
 /**
- * A Square represents a place on a grid, which a player can stand on, as long
- * as it is not prevented by the square's internal state. Moving to another
- * Square can have side effects.
+ * A NormalSquare represents a postion that can hold {@link IItem items} and
+ * where a {@link Player player} can stand on, as long as it is not prevented
+ * by the square's internal state. Several side effects can occur when moving
+ * players and adding items.
  */
 public class NormalSquare extends AbstractSquare {
 	
 	/** the list of items in this square */
-	private List<IItem>		itemList;
+	private List<IItem>	itemList;
 	/** the player on this square */
-	private Player			player; 
-	/** a boolean representing whether there is a light trail on this square */
-	private boolean			lightTrail;
+	private Player		player;
 	
 	/**
-	 * Create a new normal square
+	 * Default constructor.
 	 * 
 	 */
 	public NormalSquare() {
 		itemList = new ArrayList<IItem>();
-		lightTrail = false;
 	}
 	
 	@Override
@@ -38,9 +36,12 @@ public class NormalSquare extends AbstractSquare {
 		addItem(item, new EmptyEffect());
 	}
 	
+	@Override
 	protected void addItem(IItem item, Effect effect) {
 		if (!canBeAdded(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
+		if (effect == null)
+			throw new IllegalArgumentException("null effect");
 		
 		itemList.add(item);
 		
@@ -51,18 +52,14 @@ public class NormalSquare extends AbstractSquare {
 	@Override
 	public void remove(Object object) {
 		// test if the player needs to be removed
-		if (player == object)
+		if (player!= null && player.equals(object))
 			player = null;
-		// else remove player from the item list
+		// else remove object from the item list
 		else
 			itemList.remove(object);
 	}
 	
-	/**
-	 * returns all the items on this square
-	 * 
-	 * @return the items on this square
-	 */
+	@Override
 	public List<IItem> getAllItems() {
 		return new ArrayList<IItem>(itemList);
 	}
@@ -74,21 +71,6 @@ public class NormalSquare extends AbstractSquare {
 			if (item.isCarriable())
 				result.add(item);
 		return result;
-	}
-	
-	@Override
-	public boolean hasLightTrail() {
-		return lightTrail;
-	}
-	
-	@Override
-	public void placeLightTrail() {
-		lightTrail = true;
-	}
-	
-	@Override
-	public void removeLightTrail() {
-		lightTrail = false;
 	}
 	
 	@Override
@@ -115,9 +97,9 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Returns the IPlayer on this square
+	 * Returns the player on this square
 	 * 
-	 * @return An IPlayer, if there is one, otherwise null.
+	 * @return A player, if there is one, otherwise null.
 	 */
 	public Player getPlayer() {
 		return player;
@@ -139,18 +121,13 @@ public class NormalSquare extends AbstractSquare {
 		addPlayer(player, new EmptyEffect());
 	}
 	
-	/**
-	 * Add a player to the square and execute a specified effect on it.
-	 * 
-	 * @param player
-	 *        the player to add
-	 * @param effect
-	 *        the effect to execute on the player after the player has been
-	 *        added
-	 */
+	@Override
 	protected void addPlayer(Player player, Effect effect) {
-		if (!canAddPlayer())
+		if (!canAddPlayer() || player == null)
 			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
+		if (effect == null)
+			throw new IllegalArgumentException("null effect");
+		
 		this.player = player;
 		this.executeEffect(player, effect);
 	}
@@ -165,9 +142,7 @@ public class NormalSquare extends AbstractSquare {
 	 */
 	@Override
 	public boolean canAddPlayer() {
-		if (this.hasLightTrail())
-			return false;
-		else if (this.hasPlayer())
+		if (this.hasPlayer())
 			return false;
 		else
 			return true;
@@ -205,13 +180,18 @@ public class NormalSquare extends AbstractSquare {
 			out += ' ';
 		}
 		if (out.equals(""))
-			out = (hasPowerFailure() ? "p " : "s ");
+			out = "s ";
 		
 		return out;
 	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		// nothing to do 
+		// nothing to do; decorators may overrride this
+	}
+
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return false;
 	}
 }

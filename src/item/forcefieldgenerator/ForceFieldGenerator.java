@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import square.AbstractSquare;
 import square.Direction;
+import square.PropertyType;
 import square.SquareContainer;
 
 /**
@@ -37,7 +38,7 @@ public class ForceFieldGenerator extends Item {
 			for (int i = 0; i < 3; i++) {
 				neighbour = neighbour.getNeighbourIn(direction);
 				listOfSquares.add(neighbour);
-				if (neighbour == null || neighbour.isWall())
+				if (neighbour == null || neighbour.hasProperty(PropertyType.WALL))
 					break;
 				ForceFieldGenerator neighbouringGenerator = getForceFieldGeneratorOnSquare(neighbour);
 				if (neighbouringGenerator != null) {
