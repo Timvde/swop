@@ -167,14 +167,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-	 * This method will under normal circumstances increase the allowed number
-	 * of actions left with {@link #MAX_NUMBER_OF_ACTIONS_PER_TURN}.
+	 * This method will make sure a new turn is assigned to a player correctly.
+	 * It will take into account all properties of a square that can affect a
+	 * player's turns.
 	 * 
-	 * When this player is on a power failured square, the number of actions
-	 * lost will be {@value #POWER_FAILURE_PENALTY_AT_START_TURN}.
-	 * 
-	 * This method is called by the {@link PlayerDataBase} when it assigns the
-	 * next player.
+	 * @param player
+	 *        The player to assign a new turn to
 	 */
 	void assignNewTurn(TronPlayer player) {
 		player.setPlayerState(PlayerState.ACTIVE);
