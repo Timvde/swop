@@ -49,7 +49,11 @@ public class Wall {
 	/**
 	 * Get the start coordinate of a wall. This will always be the one closest
 	 * to the origin.
+<<<<<<< HEAD
+	 * @return the starting coordinate
+=======
 	 * @return the starting coordinate for this wall
+>>>>>>> tim_wil_ook_een_happy_place
 	 */
 	public Coordinate getStart() {
 		return start;

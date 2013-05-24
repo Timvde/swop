@@ -23,7 +23,7 @@ public class StartingSquareExpression implements Expression {
 	
 	@Override
 	public void build(GridBuilder builder, Coordinate coordinate) {
-		builder.addPlayerStartingPosition(coordinate);
+		builder.addPlayerStartingPosition(coordinate, id);
 	}
 	
 	/**

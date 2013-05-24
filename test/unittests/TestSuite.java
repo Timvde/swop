@@ -1,9 +1,9 @@
 package unittests;
 
-import item.EffectTest;
-import item.lightgrenade.LightGrenadeTest;
 import grid.CoordinateTest;
 import grid.GridTest;
+import item.EffectTest;
+import item.lightgrenade.LightGrenadeTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

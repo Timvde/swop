@@ -1,10 +1,11 @@
 package square;
 
-import item.Effect;
 import item.IItem;
 import java.util.List;
 import java.util.Observer;
 import player.Player;
+import effects.Effect;
+import effects.EmptyEffect;
 
 /**
  * This class defines objects that represent a location on a Grid. It also
@@ -41,14 +42,16 @@ public abstract class AbstractSquare implements Square, Observer {
 	 * Add a specified player to this square. This method is also responsible
 	 * for executing any additional {@link Effect effects}.
 	 * 
-	 * @param p
+	 * @param player
 	 *        the player who wants to be placed on this square
 	 * 
 	 * @throws IllegalArgumentException
 	 *         It must be possible to add the player to this square. More
 	 *         formally <code>{@link #canAddPlayer()}</code> .
 	 */
-	public abstract void addPlayer(Player p) throws IllegalArgumentException;
+	public void addPlayer(Player player) throws IllegalArgumentException {
+		addPlayer(player, new EmptyEffect());
+	}
 	
 	/**
 	 * Add a specified item to the square, the item may be affected by other
@@ -60,7 +63,9 @@ public abstract class AbstractSquare implements Square, Observer {
 	 *         It must be possible to add the item to this square. More formally
 	 *         <code>{@link #canBeAdded(IItem)}</code>.
 	 */
-	public abstract void addItem(IItem item) throws IllegalArgumentException;
+	public void addItem(IItem item) throws IllegalArgumentException {
+		addItem(item, new EmptyEffect());
+	}
 	
 	/**
 	 * Removes an object from this square, if the object is not placed on this
@@ -124,4 +129,14 @@ public abstract class AbstractSquare implements Square, Observer {
 		return false;
 	}
 	
+	/**
+	 * Returns the effect a player has to undergo at the beginning of its turn.
+	 * 
+	 * @return The effect to execute on a player
+	 */
+	public Effect getStartTurnEffect() {
+		return getStartTurnEffect(new EmptyEffect());
+	}
+
+	protected abstract Effect getStartTurnEffect(Effect effect);
 }

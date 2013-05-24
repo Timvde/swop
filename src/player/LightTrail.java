@@ -111,6 +111,10 @@ public class LightTrail implements Property {
 		return new ArrayList<AbstractSquare>(lightTrail);
 	}
 
+	void destroy() {
+		// TODO Auto-generated method stub
+	}
+		
 	@Override
 	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
 		return new LightTrailDecorator(square);

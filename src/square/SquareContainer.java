@@ -1,7 +1,7 @@
 package square;
 
-import item.Effect;
 import item.IItem;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +10,9 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 import player.Player;
+import player.TurnEvent;
 import powerfailure.PrimaryPowerFailure;
+import effects.Effect;
 
 /**
  * Square container manages the decorators for square. Because the lifetime of a
@@ -259,7 +261,8 @@ public class SquareContainer extends AbstractSquare {
 	@Override
 	public void update(Observable o, Object arg) {
 		square.update(o, arg);
-		this.updatePowerFailure();
+		if (arg == TurnEvent.END_TURN)
+			this.updatePowerFailure();
 	}
 	
 	/**
@@ -306,6 +309,24 @@ public class SquareContainer extends AbstractSquare {
 		else if (!square.equals(other.square))
 			return false;
 		return true; 
+	}
+	
+	public Effect getStartTurnEffect(Effect effect) {
+		return square.getStartTurnEffect(effect);
+	}
+	
+	/**
+	 * Returns a list with all the neigbours of this square.
+	 * 
+	 * @return a list with all the neigbours of this square.
+	 */
+	public List<SquareContainer> getAllNeighbours() {
+		List<SquareContainer> result = new ArrayList<SquareContainer>();
+		for (Direction dir : Direction.values()) {
+			if (this.getNeighbourIn(dir) != null)
+				result.add(this.getNeighbourIn(dir));
+		}
+		return result;
 	}
 	
 }

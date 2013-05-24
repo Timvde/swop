@@ -1,11 +1,11 @@
-package item.teleporter;
+package effects;
 
-import item.AbstractEffect;
 import item.IItem;
+import item.teleporter.Teleporter;
 import player.Player;
+import square.AbstractSquare;
 import square.SquareContainer;
 import square.TronObject;
-import square.AbstractSquare;
 
 /**
  * A Teleportation effect

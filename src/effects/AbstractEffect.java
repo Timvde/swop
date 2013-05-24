@@ -1,4 +1,4 @@
-package item;
+package effects;
 
 import square.TronObject;
 

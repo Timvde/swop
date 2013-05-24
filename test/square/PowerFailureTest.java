@@ -1,7 +1,8 @@
 package square;
 
-import static org.junit.Assert.*;
-import item.Effect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import item.lightgrenade.LightGrenade;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.Map;
 import org.junit.Test;
 import player.DummyPlayer;
 import player.TurnEvent;
+import effects.Effect;
+import powerfailure.PrimaryPowerFailure;
 
 @SuppressWarnings("javadoc")
 public class PowerFailureTest {
@@ -19,14 +22,14 @@ public class PowerFailureTest {
 	public final void testPowerFailure() {
 		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
 		
-		Square sq1 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq2 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq3 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq4 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq5 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq6 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq7 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		Square sq8 = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
+		Square sq1 = new NormalSquare();
+		Square sq2 = new NormalSquare();
+		Square sq3 = new NormalSquare();
+		Square sq4 = new NormalSquare();
+		Square sq5 = new NormalSquare();
+		Square sq6 = new NormalSquare();
+		Square sq7 = new NormalSquare();
+		Square sq8 = new NormalSquare();
 		
 		neighbours.put(Direction.NORTH, sq1);
 		neighbours.put(Direction.NORTHEAST, sq2);

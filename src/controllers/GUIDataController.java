@@ -29,7 +29,8 @@ public class GUIDataController {
 	 * @param playerDB
 	 *        The player database the controller will use.
 	 * @param grid
-	 *        The grid the controller will use.
+	 *        The grid the controller will use. This may be <code>null</code>,
+	 *        but then one has to call the {@link #setGrid(Grid)} method later.
 	 */
 	public GUIDataController(PlayerDataBase playerDB, GuiGrid grid) {
 		if (playerDB == null)
@@ -53,7 +54,11 @@ public class GUIDataController {
 	/**
 	 * Set the grid of the controller to a new grid.
 	 * 
+<<<<<<< HEAD
+	 * @param g
+=======
 	 * @param grid
+>>>>>>> tim_wil_ook_een_happy_place
 	 *        The new grid for this controller
 	 */
 	public void setGrid(GuiGrid grid) {
@@ -85,7 +90,7 @@ public class GUIDataController {
 	 * @return list of items
 	 */
 	public List<IItem> getItemsOnSquareOfCurrentPlayer() {
-		Square currSq = getCurrentPlayer().getCurrentLocation();
+		Square currSq = getCurrentPlayer().getCurrentPosition();
 		return currSq.getCarryableItems();
 	}
 	

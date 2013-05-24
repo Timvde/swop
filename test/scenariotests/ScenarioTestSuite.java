@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @SuppressWarnings("javadoc")
 @RunWith(Suite.class)
-@SuiteClasses({ EndTurnTest.class, MovePlayerTest.class, PickUpTest.class, StartGameTest.class, UseItemTest.class })
+@SuiteClasses({ IdentityDiskTest.class, EndTurnTest.class, MovePlayerTest.class, PickUpTest.class, StartGameTest.class, UseItemTest.class })
     public class ScenarioTestSuite {
 	
 	    @BeforeClass 

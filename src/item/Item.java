@@ -4,7 +4,11 @@ import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.concurrent.atomic.AtomicInteger;
 import powerfailure.AffectedByPowerFailure;
+import square.FlagKeeper;
 import square.TronObject;
+import effects.Effect;
+import effects.EffectFactory;
+import effects.EmptyEffect;
 
 /**
  * an abstract implementation of the item interface. This class offers some
@@ -17,15 +21,15 @@ public abstract class Item implements IItem {
 	private int						id;
 	private static AtomicInteger	nextID	= new AtomicInteger();
 	
-	public int getId() {
-		return this.id;
-	}
-	
 	/**
 	 * Constructs a new Item and gives it a unique ID.
 	 */
 	public Item() {
 		this.id = nextID.incrementAndGet();
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	/**
@@ -52,6 +56,17 @@ public abstract class Item implements IItem {
 	 */
 	@Override
 	public Explodable asExplodable() {
+		return null;
+	}
+	
+	/**
+	 * By default an item is not a flagkeeper, therefore this method returns
+	 * null. Subclasses implementing the flagkeeper interface should override
+	 * this method with the specifications described
+	 * {@link TronObject#asFlagKeeper() here}.
+	 */
+	@Override
+	public FlagKeeper asFlagKeeper() {
 		return null;
 	}
 	

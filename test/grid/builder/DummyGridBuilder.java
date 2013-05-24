@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import grid.Coordinate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,11 +67,12 @@ public class DummyGridBuilder implements GridBuilder {
 	}
 	
 	@Override
-	public void addPlayerStartingPosition(Coordinate coordinate) {
+	public void addPlayerStartingPosition(Coordinate coordinate, int number) {
 		if (wallParts.contains(coordinate))
 			throw new IllegalArgumentException("This coordinate is already occupied by a wall");
 		if (!playerStartingPositions.add(coordinate))
 			throw new IllegalArgumentException("There's already a playerstart at this coordinate");
+		// TODO number check
 	}
 	
 	@Override
@@ -149,7 +149,9 @@ public class DummyGridBuilder implements GridBuilder {
 	 * constraints on player placement.
 	 */
 	private void assertValidPlayerPositions() {
-		assertEquals(GridBuilderDirector.NUMBER_OF_PLAYERS, playerStartingPositions.size());
+		assertEquals(RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS,
+				playerStartingPositions.size());
+		// TODO ...
 	}
 	
 	/**
@@ -157,9 +159,11 @@ public class DummyGridBuilder implements GridBuilder {
 	 * constraints on lightgrenade placement.
 	 */
 	private void assertValidLightGrenades() {
-		assertEquals(
-				(int) Math.ceil(getNumberOfSquares()
-						* RandomGridBuilderDirector.PERCENTAGE_OF_GRENADES), LGList.size());
+		int numberOfLG = (int) Math.ceil(getNumberOfSquares()
+				* RandomGridBuilderDirector.PERCENTAGE_OF_GRENADES);
+		
+		assertTrue(numberOfLG == LGList.size()
+				|| LGList.size() == playerStartingPositions.size());
 		
 		// A light grenade cannot be placed on a wall
 		assertTrue(Collections.disjoint(LGList, wallParts));
@@ -197,9 +201,10 @@ public class DummyGridBuilder implements GridBuilder {
 	 * constraints on uncharched identity disk placement.
 	 */
 	private void assertValidIDdisks() {
-		assertEquals(
-				(int) Math.ceil(getNumberOfSquares()
-						* RandomGridBuilderDirector.PERCENTAGE_OF_IDENTITY_DISKS), IDList.size());
+		int numberOfID = (int) Math.ceil(getNumberOfSquares()
+				* RandomGridBuilderDirector.PERCENTAGE_OF_IDENTITY_DISKS);
+		
+		assertTrue(numberOfID == IDList.size() || LGList.size() == playerStartingPositions.size());
 		
 		// An identity disc cannot be placed on a wall
 		assertTrue(Collections.disjoint(IDList, wallParts));
@@ -243,19 +248,20 @@ public class DummyGridBuilder implements GridBuilder {
 		// the disc must be placed such that the length of the shortest path
 		// from each player to the disc differs by at most 2 squares
 		//
-		//	TODO test has nullpointer, but the shortest path is ok
+		// TODO test has nullpointer, but the shortest path is ok
 		//
-		//		List<Integer> pathLengths = new ArrayList<Integer>();
-		//		for (Coordinate CIDCoord : CIDList) {
-		//			for (Coordinate c : playerStartingPositions) {
-		//				pathLengths.add(getLengthOfShortestPath(c, CIDCoord));
-		//			}
-		//			for (Integer i : pathLengths) {
-		//				for (Integer j : pathLengths)
-		//					if (Math.abs(i - j) > RandomGridBuilderDirector.MAX_CID_SHORTEST_PATH_DISTANCE)
-		//						fail("shortest path not ok");
-		//			}
-		//		}
+		// List<Integer> pathLengths = new ArrayList<Integer>();
+		// for (Coordinate CIDCoord : CIDList) {
+		// for (Coordinate c : playerStartingPositions) {
+		// pathLengths.add(getLengthOfShortestPath(c, CIDCoord));
+		// }
+		// for (Integer i : pathLengths) {
+		// for (Integer j : pathLengths)
+		// if (Math.abs(i - j) >
+		// RandomGridBuilderDirector.MAX_CID_SHORTEST_PATH_DISTANCE)
+		// fail("shortest path not ok");
+		// }
+		// }
 		
 		// A charged identity disc cannot be placed on a wall.
 		assertTrue(Collections.disjoint(CIDList, wallParts));
@@ -350,9 +356,9 @@ public class DummyGridBuilder implements GridBuilder {
 		
 		assertTrue(Collections.disjoint(playerStartingPositions, wallParts));
 	}
-
+	
 	@Override
 	public void placeForceFieldGenerator(Coordinate Coordinate) throws GridBuildException {
-		// TODO 
+		// TODO
 	}
 }

@@ -6,13 +6,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import item.DummyEffectFactory;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.PlayerDataBase;
-import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
@@ -26,7 +27,7 @@ public class GridTest {
 	@Before
 	public void setUp() throws Exception {
 		playerDb = new PlayerDataBase();
-		TronGridBuilder builder = new TronGridBuilder();
+		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
 		this.grid = builder.getResult();
 		playerDb.createNewDB(grid.getAllStartingPositions());
@@ -35,19 +36,19 @@ public class GridTest {
 	@Test
 	public final void testGrid() {
 		// create a new map
-		SquareContainer square = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		SquareContainer square = new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
 		Map<Coordinate, SquareContainer> map = new HashMap<Coordinate, SquareContainer>();
 		map.put(new Coordinate(0, 0), square);
-		grid = new Grid(map);
+		grid = new Grid(map, new ArrayList<SquareContainer>());
 		
 		assertEquals(1, grid.size());
 		assertTrue(grid.getGrid().containsValue(square));
-		
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGrid_nullArgument() {
-		new Grid(null);
+		new Grid(null, null);
 	}
 	
 	@Test

@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -84,6 +86,17 @@ public abstract class AGUI {
 		l.setClickHandler(clickHandler);
 		
 		return l;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public final ComboBox createComboBox(int x, int y, int w, int h, String[] options, Runnable clickHandler) {
+		JComboBox cb = new JComboBox(options);
+		cb.setLocation(x, y);
+		cb.setSize(w, h);
+		panel.add(cb);
+		ComboBox c = new ComboBox(cb);
+		c.setClickHandler(clickHandler);
+		return c;
 	}
 	
 	public final TextField createTextField(int x, int y, int width, int height) {

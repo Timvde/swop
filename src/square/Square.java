@@ -1,7 +1,6 @@
 package square;
 
 import item.IItem;
-import item.lightgrenade.LightGrenade;
 import java.util.List;
 import player.Player;
 import player.TronPlayer;

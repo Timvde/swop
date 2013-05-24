@@ -42,7 +42,6 @@ public class SecondaryPowerFailure extends PowerFailure {
 	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		
 		decreaseTimeToLive();
 		
 		// rotate the power failure
@@ -54,9 +53,6 @@ public class SecondaryPowerFailure extends PowerFailure {
 			if (square != null)
 				square.addProperty(this);
 		}
-		
-		if (tertiaryPowerFailure != null)
-			tertiaryPowerFailure.updateStatus(event);
 	}
 	
 	/**

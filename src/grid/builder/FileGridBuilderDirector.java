@@ -6,7 +6,6 @@ import grid.builder.expressions.Expression;
 import grid.builder.expressions.StartingSquareExpression;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,13 +16,13 @@ import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 /**
  * Director that will create a grid specified in a file. For the placement of
  * items it will call the
- * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(List, int, int)
+ * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(Map, int, int)
  * supertype method}.
  */
 public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	private Map<Coordinate, Expression>	grid;
-	private List<Coordinate>			startingCoordinates;
+	private Map<Integer, Coordinate>	startingCoordinates;
 	private TronFileParser				parser;
 	private File						file;
 	
@@ -41,7 +40,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	public FileGridBuilderDirector(GridBuilder builder, String filepath)
 			throws FileNotFoundException {
 		super(builder);
-		startingCoordinates = new ArrayList<Coordinate>();
+		startingCoordinates = new HashMap<Integer, Coordinate>();
 		grid = new HashMap<Coordinate, Expression>();
 		File file = new File(filepath);
 		parser = new TronFileParser(file);
@@ -84,7 +83,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		builder.createNewEmptyGrid();
 		grid = new HashMap<Coordinate, Expression>();
 		parser = new TronFileParser(file);
-		startingCoordinates = new ArrayList<Coordinate>();
+		startingCoordinates = new HashMap<Integer, Coordinate>();
 	}
 	
 	private boolean isValidGrid(Map<Coordinate, Expression> grid2) {
@@ -98,7 +97,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	private boolean hasDubbleStartingPositions() {
 		Set<Integer> values = new HashSet<Integer>();
-		for (Coordinate startingCoordinate : startingCoordinates) {
+		for (Coordinate startingCoordinate : startingCoordinates.values()) {
 			if (values.contains(((StartingSquareExpression) grid.get(startingCoordinate)).getId()))
 				return false;
 			values.add(((StartingSquareExpression) grid.get(startingCoordinate)).getId());
@@ -123,8 +122,10 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 				Expression expression = parser.nextExpression();
 				if (expression != null)
 					expression.build(builder, new Coordinate(j, i));
-				if (expression instanceof StartingSquareExpression)
-					startingCoordinates.add(new Coordinate(j, i));
+				if (expression instanceof StartingSquareExpression) {
+					int id = ((StartingSquareExpression) expression).getId();
+					startingCoordinates.put(id, new Coordinate(j, i));
+				}
 				j++;
 				
 			}

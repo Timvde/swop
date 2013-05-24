@@ -4,7 +4,7 @@ import item.IItem;
 import java.util.List;
 import java.util.Observable;
 import player.Player;
-import item.Effect;
+import effects.Effect;
 
 /**
  * AbstractSquareDecorator is an abstract implementation of a square decorator.
@@ -112,5 +112,10 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	
 	public boolean hasProperty(PropertyType property) {
 		return square.hasProperty(property);
+	}
+	
+	@Override
+	protected Effect getStartTurnEffect(Effect effect) {
+		return square.getStartTurnEffect(effect);
 	}
 }

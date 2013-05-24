@@ -9,14 +9,18 @@ import grid.Grid;
  */
 public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	
+	/** the number of players on the test grid */
+	public static final int			NUMBER_OF_PLAYERS_ON_TEST_GRID	= 2;
 	/** The size of the predifined grid */
-	public static final int			PREDIFINED_GRID_SIZE	= 10;
+	public static final int			PREDIFINED_GRID_SIZE			= 10;
 	/** The coordinate of the startingpostion of the first player */
-	public static final Coordinate	PLAYER1_START_POS		= new Coordinate(
-																	PREDIFINED_GRID_SIZE - 1, 0);
+	public static final Coordinate	PLAYER1_START_POS				= new Coordinate(
+																			PREDIFINED_GRID_SIZE - 1,
+																			0);
 	/** The coordinate of the startingposition of the second player */
-	public static final Coordinate	PLAYER2_START_POS		= new Coordinate(0,
-																	PREDIFINED_GRID_SIZE - 1);
+	public static final Coordinate	PLAYER2_START_POS				= new Coordinate(
+																			0,
+																			PREDIFINED_GRID_SIZE - 1);
 	private boolean					usePowerfailure;
 	
 	/**
@@ -89,8 +93,8 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.placeUnchargedIdentityDisc(new Coordinate(7, 0));
 		builder.placeUnchargedIdentityDisc(new Coordinate(2, 9));
 		
-		builder.addPlayerStartingPosition(PLAYER1_START_POS);
-		builder.addPlayerStartingPosition(PLAYER2_START_POS);
+		builder.addPlayerStartingPosition(PLAYER1_START_POS, 1);
+		builder.addPlayerStartingPosition(PLAYER2_START_POS, 2);
 		
 		Coordinate t1 = new Coordinate(PREDIFINED_GRID_SIZE - 1, 2);
 		Coordinate t2 = new Coordinate(0, PREDIFINED_GRID_SIZE - 3);
