@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
+import effects.RaceEffectFactory;
 import player.TurnEvent;
 import square.Direction;
 import square.NormalSquare;
@@ -31,7 +32,7 @@ public class SecondaryPowerFailureTest {
 			list.add(new SquareContainer(squares, new NormalSquare()));
 		}
 		
-		pf = new PrimaryPowerFailure(sq);
+		pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 	}
 	
 	@Test

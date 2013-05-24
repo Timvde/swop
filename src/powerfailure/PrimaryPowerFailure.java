@@ -21,8 +21,8 @@ public class PrimaryPowerFailure extends PowerFailure {
 	 *        The EffectFactory to use to create effects.
 	 */
 	public PrimaryPowerFailure(SquareContainer square, EffectFactory factory) {
-		if (square == null)
-			throw new IllegalArgumentException();
+		if (square == null || factory == null)
+			throw new IllegalArgumentException("Arguments cannot be null");
 		this.square = square;
 		square.addProperty(this);
 		this.effectFactory = factory;

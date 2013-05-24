@@ -15,6 +15,7 @@ import square.SquareContainer;
 import square.WallPart;
 import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import effects.Effect;
+import effects.RaceEffectFactory;
 
 @SuppressWarnings("javadoc")
 public class LightGrenadeTest {
@@ -102,7 +103,7 @@ public class LightGrenadeTest {
 	@Test
 	public void testIncreasedStrenghtExplode() throws CannotPlaceLightGrenadeException {
 		activateLightGrenade();
-		Effect effect = new PrimaryPowerFailure(emptySquare).getEffect();
+		Effect effect = new PrimaryPowerFailure(emptySquare, new RaceEffectFactory()).getEffect();
 		effect.addEffect(lightGrenade.getEffect());
 		effect.execute(affectedPlayer);
 		// test if the strength was increased

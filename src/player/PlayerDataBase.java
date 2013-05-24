@@ -136,7 +136,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *        The player who wants to end his turn. Only the current player can
 	 *        do this.
 	 */
-	private void endPlayerTurn(TronPlayer player) {
+	void endPlayerTurn(TronPlayer player) {
 		if (!player.equals(getCurrentPlayer())) {
 			/*
 			 * Only the current player can end its turn. By returning instead of

@@ -3,6 +3,7 @@ package square;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import effects.RaceEffectFactory;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import item.DummyEffectFactory;
@@ -12,25 +13,24 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import player.DummyPlayer;
 import player.Player;
 import player.PlayerDataBase;
-import powerfailure.PrimaryPowerFailure;
 
 @SuppressWarnings("javadoc")
 public class SquareTest {
 	
-	private static NormalSquare	square;
-	private static Player playerOnSquare;
+	private static NormalSquare		square;
+	private static SquareContainer	squareContainer;
+	private static Player			playerOnSquare;
 	
 	@Before
 	public void setUp() {
 		square = new NormalSquare();
-		
+		squareContainer = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				square);
 		
 		TronGridBuilder builder = new TronGridBuilder(new DummyEffectFactory());
 		new DeterministicGridBuilderDirector(builder, false).construct();
@@ -38,23 +38,23 @@ public class SquareTest {
 		db.createNewDB(builder.getResult().getAllStartingPositions());
 		
 		playerOnSquare = db.getCurrentPlayer();
-		square.addPlayer(db.getCurrentPlayer());
+		squareContainer.addPlayer(db.getCurrentPlayer());
 	}
 	
 	@Test
 	public void testAddItem() {
 		Item item = new LightGrenade(new DummyEffectFactory());
-		square.addItem(item);
+		squareContainer.addItem(item);
 		assertTrue(square.getCarryableItems().contains(item));
 		assertTrue(square.contains(item));
-		square.remove(item);
+		squareContainer.remove(item);
 		assertEquals(square.getCarryableItems().size(), 0);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testAddItem_nullArgument() {
 		assertFalse(square.canBeAdded((Item) null));
-		square.addItem(null);
+		squareContainer.addItem(null);
 	}
 	
 	@Test
@@ -64,24 +64,24 @@ public class SquareTest {
 	}
 	
 	@Test
-	public void testRemove() {		
+	public void testRemove() {
 		// place some stuff on the square
 		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
-		square.addItem(lightGrenade);
+		squareContainer.addItem(lightGrenade);
 		
 		// test if null removes anything (it shouldn't)
-		square.remove(null);
+		squareContainer.remove(null);
 		assertTrue(square.contains(playerOnSquare));
 		assertTrue(square.contains(lightGrenade));
 		
 		// remove the player from the square
-		square.remove(playerOnSquare);
+		squareContainer.remove(playerOnSquare);
 		assertFalse(square.contains(playerOnSquare));
 		assertTrue(square.contains(lightGrenade));
 		assertFalse(square.hasPlayer());
 		
 		// remove the light grenade from the square
-		square.remove(lightGrenade);
+		squareContainer.remove(lightGrenade);
 		assertFalse(square.contains(lightGrenade));
 		assertFalse(square.contains(playerOnSquare));
 		assertFalse(square.hasPlayer());
@@ -99,14 +99,14 @@ public class SquareTest {
 		assertFalse(square.contains(lightGrenade));
 		
 		// add a player to the square
-		square.remove(playerOnSquare);
-		square.addPlayer(player);
+		squareContainer.remove(playerOnSquare);
+		squareContainer.addPlayer(player);
 		assertTrue(square.contains(player));
 		assertFalse(square.contains(lightGrenade));
 		assertFalse(square.contains(null));
 		
 		// add an item to the square
-		square.addItem(lightGrenade);
+		squareContainer.addItem(lightGrenade);
 		assertTrue(square.contains(lightGrenade));
 		assertTrue(square.contains(player));
 		assertTrue(square.hasPlayer());
@@ -115,7 +115,7 @@ public class SquareTest {
 	@Test
 	public void testPlayer() {
 		assertEquals(square.getPlayer(), playerOnSquare);
-		square.remove(playerOnSquare);
+		squareContainer.remove(playerOnSquare);
 		assertEquals(square.getPlayer(), null);
 	}
 	
@@ -129,67 +129,10 @@ public class SquareTest {
 	}
 	
 	@Test
-	public void testHasPowerFailure() {
-		// setup (add a neighbour and create a powerfailure)
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
-		for (Direction direction : Direction.values()) {
-			neighbours.put(direction, new Square(Collections.<Direction, ASquare> emptyMap()));
-		}
-		NormalSquare sq = new NormalSquare();
-		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(sq);
-		
-		// test if the primary power failure is set
-		assertTrue(sq.hasPowerFailure());
-		
-		// Test if exactly one of the neighbours has a power failure too
-		int numberOfPowerFailures = 0;
-		for (Direction direction : Direction.values()) {
-			if (neighbours.get(direction).hasPowerFailure())
-				numberOfPowerFailures++;
-		}
-		assertEquals(1,numberOfPowerFailures);
-		
-		// make the power failure run out of lives
-		powerFailure.decreaseTimeToLive();
-		powerFailure.decreaseTimeToLive();
-		powerFailure.decreaseTimeToLive();
-		
-		// check the squares again
-		assertFalse(sq.hasPowerFailure());
-	}
-	
-	@Test
-	public void testRemovePowerFailure() {
-		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(square);
-		
-		// null arguments should not be remove
-		square.removePowerFailure(null);
-		assertEquals(powerFailure, square.getPowerFailure());
-		
-		// other power failures should also not remove the current power failure
-	
-		square.removePowerFailure(new PrimaryPowerFailure(new Square(Collections
-				.<Direction, ASquare> emptyMap())));
-		assertEquals(powerFailure, square.getPowerFailure());
-		
-		// default case ... not much to say
-		square.removePowerFailure(powerFailure);
-		assertEquals(null, square.getPowerFailure());
-		
-		// if there is no power failure, nothing should happen by this
-		square.removePowerFailure(powerFailure);
-		assertEquals(null, square.getPowerFailure());
-		
-		// a last hopeless try
-		square.removePowerFailure(null);
-		assertEquals(null, square.getPowerFailure());
-	}
-	
-	@Test
 	public void testGetCarryableItems() {
 		// add some items to the square
 		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
-		Teleporter teleporter = new Teleporter(null, square);
+		Teleporter teleporter = new Teleporter(null, squareContainer, new RaceEffectFactory());
 		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
 		square.addItem(lightGrenade);
@@ -206,7 +149,7 @@ public class SquareTest {
 	public void testGetCarryableItems_encapsulation() {
 		// add some items to the square
 		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
-		Teleporter teleporter = new Teleporter(null, square);
+		Teleporter teleporter = new Teleporter(null, squareContainer, new RaceEffectFactory());
 		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
 		square.addItem(lightGrenade);
@@ -223,15 +166,15 @@ public class SquareTest {
 	public void testPickUpItem() {
 		// add some items to the square
 		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
-		Teleporter teleporter = new Teleporter(null, square);
+		Teleporter teleporter = new Teleporter(null, squareContainer, new RaceEffectFactory());
 		IdentityDisk identityDisk = new UnchargedIdentityDisk();
 		
-		square.addItem(lightGrenade);
-		square.addItem(identityDisk);
-		square.addItem(teleporter);
+		squareContainer.addItem(lightGrenade);
+		squareContainer.addItem(identityDisk);
+		squareContainer.addItem(teleporter);
 		
 		// pick up the light grenade
-		assertEquals(lightGrenade, square.pickupItem(lightGrenade.getId()));
+		assertEquals(lightGrenade, squareContainer.pickupItem(lightGrenade.getId()));
 		assertFalse(square.contains(lightGrenade));
 		assertTrue(square.contains(teleporter));
 		assertTrue(square.contains(identityDisk));
@@ -245,53 +188,38 @@ public class SquareTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testPickUpItem_itemDoesNotExist() {
-		square.pickupItem(0);
+		squareContainer.pickupItem(0);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testPickUpItem_itemIsNotCarryable() {
-		Teleporter teleporter = new Teleporter(null, square);
-		square.addItem(teleporter);
-		square.pickupItem(teleporter.getId());
+		Teleporter teleporter = new Teleporter(null, squareContainer, new RaceEffectFactory());
+		squareContainer.addItem(teleporter);
+		squareContainer.pickupItem(teleporter.getId());
 	}
 	
 	@Test
 	public void testAddPlayer() {
-		// setup (make a new player and make sure he is not placed on the
-		// square)
-		square.remove(playerOnSquare);
+		/*
+		 * setup (make a new player and make sure he is not placed on the
+		 * square)
+		 */
+		squareContainer.remove(playerOnSquare);
 		
 		assertFalse(square.hasPlayer());
 		assertFalse(square.contains(playerOnSquare));
 		
 		// add a player to the square
-		square.addPlayer(playerOnSquare);
+		squareContainer.addPlayer(playerOnSquare);
 		
 		// test if the player is placed on the square
 		assertTrue(square.contains(playerOnSquare));
 		assertTrue(square.hasPlayer());
 	}
 	
-	@Test
-	public void testAddPlayer_executeEffect() {
-		// make a player to test with
-		DummyPlayer player = new DummyPlayer();
-		NormalSquare newSquare = new NormalSquare(Collections.<Direction, AbstractSquare> emptyMap());
-		
-		// create a square with power failure
-		new PrimaryPowerFailure(newSquare);
-		
-		// start testing
-		// when the player moves onto the square, he will suffer from this. He
-		// will be (hopefully) affected by a power failure.
-		
-		newSquare.addPlayer(player);
-		assertTrue(player.isDamagedByPowerFailure());
-	}
-	
 	@Test(expected = IllegalArgumentException.class)
 	public void testAddPlayer_allreadyPlayerOnSquare() {
 		assertFalse(square.canAddPlayer());
 		square.addPlayer(new DummyPlayer());
-	} 
+	}
 }

@@ -60,7 +60,7 @@ public class PlayerTest implements Observer {
 		
 		// test whether the player is appointed by the db as the current player
 		assertIsCurrentPlayerTurn();
-		assertTrue(player.canPerformAction(new EndTurnAction()));
+		assertTrue(player.canPerformAction());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
