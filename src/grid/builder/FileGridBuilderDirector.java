@@ -25,6 +25,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	private Map<Coordinate, Expression>	grid;
 	private List<Coordinate>			startingCoordinates;
 	private TronFileParser				parser;
+	private File						file;
 	
 	/**
 	 * Create a new GridBuilderDirector which will use the specified builder to
@@ -42,7 +43,9 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		super(builder);
 		startingCoordinates = new ArrayList<Coordinate>();
 		grid = new HashMap<Coordinate, Expression>();
-		parser = new TronFileParser(new File(filepath));
+		File file = new File(filepath);
+		parser = new TronFileParser(file);
+		this.file = file;
 	}
 	
 	/**
@@ -62,9 +65,21 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		placeItemsOnBoard(startingCoordinates, gridDim.getWidth(), gridDim.getHeight());
 		
 		if (!isValidGrid(grid)) {
-			builder.createNewEmptyGrid();
+			try {
+				reset();
+			}
+			catch (FileNotFoundException e) {
+				// Do nothing because we're already throwing an exception
+			}
 			throw new InvalidGridFileException("The specified grid was not valid");
 		}
+	}
+	
+	private void reset() throws FileNotFoundException {
+		builder.createNewEmptyGrid();
+		grid = new HashMap<Coordinate, Expression>();
+		parser = new TronFileParser(file);
+		startingCoordinates = new ArrayList<Coordinate>();
 	}
 	
 	private boolean isValidGrid(Map<Coordinate, Expression> grid2) {
@@ -84,9 +99,9 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 			values.add(((StartingSquareExpression) grid.get(startingCoordinate)).getId());
 		}
 		return true;
-			
+		
 	}
-
+	
 	/**
 	 * This method will construct the grid as specified in the gridFile.
 	 * 
@@ -99,15 +114,14 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		int i = 0, j = 0;
 		while (parser.hasNextStatement()) {
 			j = 0;
-			while (parser.hasNextStatement() 
-					&& !parser.isAtEndOfLine()) {
+			while (parser.hasNextStatement() && !parser.isAtEndOfLine()) {
 				Expression expression = parser.nextExpression();
 				if (expression != null)
 					expression.build(builder, new Coordinate(j, i));
 				if (expression instanceof StartingSquareExpression)
 					startingCoordinates.add(new Coordinate(j, i));
 				j++;
-
+				
 			}
 			parser.readEndOfLine();
 			i++;
@@ -160,7 +174,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 		
 		public int getWidth() {
 			return width;
-		} 
+		}
 		
 		public int getHeight() {
 			return height;
