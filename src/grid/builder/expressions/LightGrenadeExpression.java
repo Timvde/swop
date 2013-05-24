@@ -6,33 +6,9 @@ import grid.builder.GridBuilder;
 
 public class LightGrenadeExpression implements Expression {
 	
-	private Coordinate	destination;
-
-	public LightGrenadeExpression(String expression) {
-		String[] agruments = expression.split(".");
-		int x = Character.getNumericValue(agruments[1].charAt(0));
-		int y = Character.getNumericValue(agruments[2].charAt(0));
-		
-		setDestination(new Coordinate(x, y));
-	}
-	
 	@Override
 	public void build(GridBuilder builder, Coordinate coordinate) {
 		builder.placeLightGrenade(coordinate);
-	}
-
-	/**
-	 * @return the destination
-	 */
-	public Coordinate getDestination() {
-		return destination;
-	}
-
-	/**
-	 * @param destination the destination to set
-	 */
-	private void setDestination(Coordinate destination) {
-		this.destination = destination;
 	}
 	
 }

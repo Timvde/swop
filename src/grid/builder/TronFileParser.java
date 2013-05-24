@@ -86,13 +86,13 @@ public class TronFileParser {
 		for (String item : statement.split(":")) {
 			switch (item.split(".")[0]) {
 				case "LG":
-					return new LightGrenadeExpression(item);
+					return new LightGrenadeExpression();
 				case "CID":
 					return new IdentityDiskExpression(true);
 				case "UID":
 					return new IdentityDiskExpression(false);
 				case "T":
-					return new TeleporterExpression();
+					return new TeleporterExpression(item);
 				case "FFG":
 					return new ForceFieldGeneratorExpression();
 				default:
