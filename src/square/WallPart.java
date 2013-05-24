@@ -94,5 +94,10 @@ public class WallPart extends AbstractSquare {
 	@Override
 	public void update(Observable o, Object arg) {
 		// Wallparts don't have to do anything
+	}
+
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return property == PropertyType.WALL;
 	} 
 }

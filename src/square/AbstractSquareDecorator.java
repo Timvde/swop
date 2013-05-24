@@ -109,4 +109,8 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	protected void addPlayer(Player player, Effect effect) {
 		square.addPlayer(player, effect);
 	}
+	
+	public boolean hasProperty(PropertyType property) {
+		return square.hasProperty(property);
+	}
 }

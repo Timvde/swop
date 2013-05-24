@@ -1,7 +1,6 @@
 package gui;
 
 import grid.Coordinate;
-import grid.Grid;
 import grid.GuiSquare;
 import item.IItem;
 import item.Item;

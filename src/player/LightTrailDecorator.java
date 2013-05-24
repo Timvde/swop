@@ -2,6 +2,7 @@ package player;
 
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
+import square.PropertyType;
 
 /**
  * 
@@ -24,5 +25,10 @@ public class LightTrailDecorator extends AbstractSquareDecorator {
 	@Override
 	public boolean canAddPlayer() {
 		return false;
+	}
+	
+	@Override 
+	public boolean hasProperty(PropertyType property) {
+		return property == PropertyType.LIGHT_TRAIL ? true : square.hasProperty(property);
 	}
 }

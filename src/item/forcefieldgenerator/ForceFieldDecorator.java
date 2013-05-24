@@ -6,6 +6,7 @@ import java.util.Observable;
 import player.Player;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
+import square.PropertyType;
 
 /**
  * A force field decorator modifies the square to simulate a square that is
@@ -84,6 +85,11 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 		forceField.update();
 		
 		super.update(o, arg);
+	}
+	
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return property == PropertyType.FORCE_FIELD ? true : square.hasProperty(property);
 	}
 	
 }

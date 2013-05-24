@@ -247,6 +247,11 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	@Override
+	public boolean hasProperty(PropertyType property) {
+		return square.hasProperty(property);
+	}
+	
+	@Override
 	protected void addItem(IItem item, Effect effect) {
 		square.addItem(item, effect);
 	}

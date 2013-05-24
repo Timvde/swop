@@ -23,10 +23,7 @@ public class GuiGridAdapter implements GuiGrid {
 	}
 	
 	private boolean isValidGrid(Grid grid) {
-		if (grid == null)
-			return false;
-		else
-			return true;
+		return true;
 	}
 	
 	@Override
@@ -38,12 +35,11 @@ public class GuiGridAdapter implements GuiGrid {
 	public Set<Coordinate> getAllGridCoordinates() throws IllegalArgumentException {
 		return grid.getAllGridCoordinates();
 	}
-
 	
 	public int getWidth() {
 		return grid.getWidth();
 	}
-
+	
 	public int getHeight() {
 		// TODO Auto-generated method stub
 		return grid.getHeight();

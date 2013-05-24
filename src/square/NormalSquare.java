@@ -189,4 +189,9 @@ public class NormalSquare extends AbstractSquare {
 	public void update(Observable o, Object arg) {
 		// nothing to do; decorators may overrride this
 	}
+
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return false;
+	}
 }

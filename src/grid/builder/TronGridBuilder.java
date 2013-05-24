@@ -14,7 +14,7 @@ import java.util.Map;
 import square.Direction;
 import square.NormalSquare;
 import square.PlayerStartingPosition;
-import square.Property;
+import square.PropertyType;
 import square.SquareContainer;
 import square.WallPart;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -159,26 +159,12 @@ public class TronGridBuilder implements GridBuilder {
 			return false;
 		if (!grid.containsKey(coordinate))
 			return false;
-		else if (isWall(grid.get(coordinate)))
+		else if (grid.get(coordinate).hasProperty(PropertyType.WALL))
 			return false;
-		else if (isStartingPosition(grid.get(coordinate)))
+		else if (grid.get(coordinate).hasProperty(PropertyType.STARTING_POSITION))
 			return false;
 		else
 			return true;
-	}
-	
-	private boolean isWall(SquareContainer squareContainer) {
-		for (Property property : squareContainer.getProperties())
-			if (property instanceof WallPart)
-				return true;
-		return false;
-	}
-	
-	private boolean isStartingPosition(SquareContainer squareContainer) {
-		for (Property property : squareContainer.getProperties())
-			if (property instanceof PlayerStartingPosition)
-				return true;
-		return false;
 	}
 
 	/**
