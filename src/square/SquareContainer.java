@@ -7,11 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import java.util.Random;
 import java.util.Set;
 import player.Player;
 import player.TurnEvent;
-import powerfailure.PrimaryPowerFailure;
 import effects.Effect;
 
 /**
