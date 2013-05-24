@@ -97,4 +97,12 @@ public abstract class Item implements IItem {
 	public char toChar() {
 		return 'i';
 	}
+	
+	/**
+	 * By default an item does not require addition parameters from the user
+	 */
+	@Override
+	public UseArguments<?> getUseArguments() {
+		return null;
+	}
 }

@@ -80,7 +80,6 @@ public class PlayerActionManager {
 	 */
 	void resetActions() {
 		this.actionsLeft = 0;
-		this.hasMoved = false;
 	}
 	
 	/**
@@ -93,6 +92,7 @@ public class PlayerActionManager {
 		if (getNumberOfTurnsToSkip() > 0)
 			numberOfTurnsToSkip--;
 		else {
+			this.hasMoved = false;
 			Effect effect = player.getCurrentPosition().getStartTurnEffect();
 			
 			effect.execute(player);

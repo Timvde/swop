@@ -1,7 +1,10 @@
 package item.identitydisk;
 
 import item.Item;
+import item.UseArguments;
 import item.teleporter.Teleportable;
+import java.util.ArrayList;
+import java.util.List;
 import square.Direction;
 import square.SquareContainer;
 import effects.Effect;
@@ -19,14 +22,14 @@ import effects.Effect;
 public abstract class IdentityDisk extends Item implements Teleportable {
 	
 	private SquareContainer	currentSquare;
-	private Direction		direction;
 	
 	@Override
-	public void use(SquareContainer square) {
-		if (direction == null)
+	public void use(SquareContainer square, UseArguments<?> arguments) {
+		if (!isValidUseArguments(square, arguments))
 			throw new IllegalStateException(
 					"The disk cannot be used when there is no direction set!");
 		
+		Direction direction = (Direction) arguments.getUserChoise();
 		setSquare(square);
 		
 		if (!canMoveDisk(direction))
@@ -43,9 +46,22 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 				}
 			}
 		
-		// reset the direction field
-		direction = null;
 		currentSquare = null;
+	}
+	
+	/**
+	 * Checks whether the arguments are valid.
+	 */
+	private boolean isValidUseArguments(SquareContainer square, UseArguments<?> arguments) {
+		if (square == null)
+			return false;
+		if (arguments == null)
+			return false;
+		else if (arguments.getUserChoise() == null
+				|| !(arguments.getUserChoise() instanceof Direction))
+			return false;
+		else
+			return isValidDirection((Direction) arguments.getUserChoise());
 	}
 	
 	/**
@@ -105,29 +121,23 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	private boolean isValidDirection(Direction direction) {
 		if (direction == null)
 			return false;
-		if (!direction.isPrimaryDirection())
-			return false;
-		
-		return true;
-	}
-	
-	/**
-	 * Set the direction in which the disk will be fired.
-	 * 
-	 * @param direction
-	 *        the direction in which the disk will be fired.
-	 * @throws IllegalArgumentException
-	 *         If the given direction is not a valid direction.
-	 */
-	public void setDirection(Direction direction) {
-		if (!isValidDirection(direction))
-			throw new IllegalArgumentException("The direction is not a valid direction.");
-		
-		this.direction = direction;
+		return direction.isPrimaryDirection();
 	}
 	
 	public void setSquare(SquareContainer square) {
 		this.currentSquare = square;
 	}
 	
+	@Override
+	public UseArguments<Direction> getUseArguments() {
+		List<Direction> choices = new ArrayList<Direction>();
+		choices.add(Direction.NORTH);
+		choices.add(Direction.SOUTH);
+		choices.add(Direction.EAST);
+		choices.add(Direction.WEST);
+		
+		String question = "Please specify the direction in which the disc will be fired.";
+		
+		return new UseArguments<Direction>(choices, question);
+	}
 }

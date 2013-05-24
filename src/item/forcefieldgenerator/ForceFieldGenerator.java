@@ -2,6 +2,7 @@ package item.forcefieldgenerator;
 
 import item.IItem;
 import item.Item;
+import item.UseArguments;
 import java.util.ArrayList;
 import java.util.List;
 import square.AbstractSquare;
@@ -17,7 +18,7 @@ import square.SquareContainer;
 public class ForceFieldGenerator extends Item {
 	
 	@Override
-	public void use(SquareContainer square) {
+	public void use(SquareContainer square, UseArguments<?> arguments) {
 		square.addItem(this);
 		
 		findAndCreateForceFields(square);

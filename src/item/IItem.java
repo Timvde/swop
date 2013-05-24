@@ -20,15 +20,19 @@ public interface IItem extends TronObject {
 	public int getId();
 	
 	/**
-	 * Use the this item on a specified square. The implementation of
-	 * use(Square) will be different for each subclass of item.
+	 * Use the this item on a specified square with addition specified
+	 * arguments. The additional arguments can be retrieved by the
+	 * {@link #getUseArguments()} method. But these arguments need input from
+	 * the user.
 	 * 
 	 * @param square
 	 *        the square on which the item was used.
+	 * @param arguments
+	 *        The additional parameters an item needs
 	 * @throws IllegalUseException
 	 *         When the item cannot be used on the specified square
 	 */
-	public void use(SquareContainer square) throws IllegalUseException;
+	public void use(SquareContainer square, UseArguments<?> arguments);
 	
 	/**
 	 * Return whether or not this item can be picked up by a {@link TronPlayer}.
@@ -44,4 +48,14 @@ public interface IItem extends TronObject {
 	 * @return A character representation of this object.
 	 */
 	public char toChar();
+	
+	/**
+	 * Returns a {@link UseArguments} object for the user to add additional
+	 * parameters requested by the item when executing the use method. If this
+	 * item does not require additional parameters, null will be returned.
+	 * 
+	 * @return a new useArguments that can be passed to the
+	 *         {@link #use(SquareContainer, UseArguments)} method
+	 */
+	public UseArguments<?> getUseArguments();
 }

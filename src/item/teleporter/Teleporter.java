@@ -1,6 +1,7 @@
 package item.teleporter;
 
 import item.Item;
+import item.UseArguments;
 import square.SquareContainer;
 import effects.Effect;
 import effects.EffectFactory;
@@ -50,7 +51,7 @@ public class Teleporter extends Item {
 	}
 	
 	@Override
-	public void use(SquareContainer square) {
+	public void use(SquareContainer square, UseArguments<?> arguments) {
 		throw new UnsupportedOperationException(
 				"A teleporter cannot be pickup and thus be placed on an item by a player !!");
 	}
