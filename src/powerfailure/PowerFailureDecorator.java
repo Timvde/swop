@@ -6,7 +6,7 @@ import item.EmptyEffect;
 import item.IItem;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
-import player.IPlayer;
+import player.Player;
 import player.TurnEvent;
 
 /**
@@ -40,7 +40,7 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override 
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		Effect powerFailureEffect = this.powerfailure.getEffect();
 		effect.addEffect(powerFailureEffect);
 		super.addPlayer(player, effect);

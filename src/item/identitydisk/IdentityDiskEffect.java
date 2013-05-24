@@ -1,7 +1,7 @@
 package item.identitydisk;
 
 import item.AbstractEffect;
-import player.Player;
+import player.TronPlayer;
 import square.TronObject;
 
 /**
@@ -12,8 +12,8 @@ public class IdentityDiskEffect extends AbstractEffect {
 	
 	@Override
 	public void execute(TronObject object) {
-		if (object instanceof Player) {
-			Player player = (Player) object;
+		if (object instanceof TronPlayer) {
+			TronPlayer player = (TronPlayer) object;
 			player.skipNextTurn();
 		}
 		

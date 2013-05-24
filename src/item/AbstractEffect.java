@@ -10,7 +10,8 @@ import square.TronObject;
  * To implement an effect, a programmer needs only to implement the
  * {@link #execute(square.TronObject)} method. At the end of this method, the
  * programmer MUST call the execute method of the next effect. This effect is
- * accessible as a protected {@link #next field}.
+ * accessible as a protected field. <br> 
+ * 
  * </p>
  */
 public abstract class AbstractEffect implements Effect {

@@ -112,5 +112,4 @@ public class LightGrenade extends Item {
 	public ExplodeEffect getEffect() {
 		return new ExplodeEffect(this);
 	}
-	
 }

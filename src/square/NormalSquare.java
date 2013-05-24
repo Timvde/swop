@@ -7,25 +7,25 @@ import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-import player.IPlayer;
+import player.Player;
+import player.TronPlayer;
 
 /**
- * A NormalSquare represents a postion that can hold {@link IItem items} and
- * where a {@link IPlayer player} can stand on, as long as it is not prevented
- * by the square's internal state. Several side effects can occur when moving
- * players and adding items.
+ * A Square represents a place on a grid, which a player can stand on, as long
+ * as it is not prevented by the square's internal state. Moving to another
+ * Square can have side effects.
  */
 public class NormalSquare extends AbstractSquare {
 	
 	/** the list of items in this square */
 	private List<IItem>	itemList;
 	/** the player on this square */
-	private IPlayer		player;
+	private Player			player; 
 	/** a boolean representing whether there is a light trail on this square */
 	private boolean		lightTrail;
 	
 	/**
-	 * Default constructor.
+	 * Create a new normal square
 	 * 
 	 */
 	public NormalSquare() {
@@ -109,16 +109,16 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Returns the player on this square
+	 * Returns the {@link Player} on this square
 	 * 
 	 * @return A player, if there is one, otherwise null.
 	 */
-	public IPlayer getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 	
 	/**
-	 * Returns whether or not this Square has currently a {@link IPlayer player}, i.e.
+	 * Returns whether or not this Square has currently a {@link Player}, i.e.
 	 * <code>{@link #getPlayer()}!= null</code>.
 	 * 
 	 * @return Whether this square has a Player.
@@ -129,7 +129,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	protected void addPlayer(IPlayer player, Effect effect) {
+	protected void addPlayer(Player player, Effect effect) {
 		if (!canAddPlayer() || player == null)
 			throw new IllegalArgumentException("The player cannot be added to this square: " + this);
 		if (effect == null)
@@ -140,7 +140,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Test whether a {@link IPlayer player} can be added to this square. A
+	 * Test whether a {@link Player player} can be added to this square. A
 	 * player can be added, if there is no other player placed on this square.
 	 * More formally this method will return <code>true</code> if and only if<br>
 	 * <code>this.hasPlayer() == false && this.hasLightTrail() == false</code>.
@@ -196,7 +196,7 @@ public class NormalSquare extends AbstractSquare {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		// nothing to do; decorators may overrride this
+		// nothing to do 
 	}
 
 	@Override
