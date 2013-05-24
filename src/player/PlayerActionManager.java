@@ -68,6 +68,14 @@ public class PlayerActionManager {
 	}
 	
 	/**
+	 * Indicates this player has performed an action. His action counter will be
+	 * lowered.
+	 */
+	void performedAction() {
+		decrementNumberOfActions(1);
+	}
+	
+	/**
 	 * Reset the number of actions left
 	 */
 	void resetActions() {
@@ -93,14 +101,14 @@ public class PlayerActionManager {
 					MAX_NUMBER_OF_ACTIONS_PER_TURN);
 		}
 	}
-
+	
 	/**
 	 * @return Whether the player has moved yet
 	 */
 	public boolean hasMoved() {
 		return hasMoved;
 	}
-
+	
 	/**
 	 * Indicate that this player has moved.
 	 */

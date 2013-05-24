@@ -42,7 +42,7 @@ public class PickupItemAction implements Action {
 	 */
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentLocation();
-		if (!player.canPerformAction(this))
+		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!square.contains(item))
 			throw new IllegalPickUpException("The specified item is not on the square.");
@@ -59,11 +59,6 @@ public class PickupItemAction implements Action {
 			square.addItem(item);
 			throw new InventoryFullException("The item cannot be added to the inventory.");
 		}
-	}
-
-	@Override
-	public int getCost() {
-		return 1;
 	}
 	
 }

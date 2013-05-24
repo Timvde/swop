@@ -133,10 +133,10 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 * 
 	 * @throws IllegalActionException
 	 *         This player must be allowed to perform an EndTurnAction, i.e.
-	 *         <code>{@link #canPerformAction(Action)}</code>.
+	 *         <code>{@link #canPerformAction()}</code>.
 	 */
 	public void endTurn() throws IllegalActionException {
-		if (!canPerformAction(new EndTurnAction()))
+		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
 		actionManager.resetActions();
@@ -164,8 +164,8 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	@Override
-	public boolean canPerformAction(Action action) {
-		return this.state == PlayerState.ACTIVE && getAllowedNumberOfActions() >= action.getCost();
+	public boolean canPerformAction() {
+		return this.state == PlayerState.ACTIVE && getAllowedNumberOfActions() > 0;
 	}
 	
 	/**
@@ -276,7 +276,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	public void performAction(Action action) {
 		action.execute(this);
-		actionManager.decrementNumberOfActions(action.getCost());
+		actionManager.performedAction();
 		
 		// end a players action
 		playerDB.actionPerformed(this);

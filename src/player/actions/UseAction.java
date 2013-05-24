@@ -40,7 +40,7 @@ public class UseAction implements Action {
 	 */
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentLocation();
-		if (!player.canPerformAction(this))
+		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!player.getInventoryContent().contains(item))
 			throw new IllegalUseException("The item is not in the inventory");
@@ -57,11 +57,6 @@ public class UseAction implements Action {
 			player.getInventory().addItem(item);
 			throw e;
 		}
-	}
-
-	@Override
-	public int getCost() {
-		return 1;
 	}
 	
 }

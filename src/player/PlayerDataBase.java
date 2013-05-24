@@ -156,7 +156,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
-	void checkEndTurn(TronPlayer player) {
+	private void checkEndTurn(TronPlayer player) {
 		if (player.getAllowedNumberOfActions() <= 0) {
 			// this method will return if it's not this player's turn
 			endPlayerTurn(player);
@@ -201,10 +201,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * use an old Player reference to break the game.
 	 */
 	private void clearDataBase() {
-		for (TronPlayer p : this.playerList) {
+		for (TronPlayer player : this.playerList) {
 			// set all references of the player to null so that no-one can still
 			// play with an old player.
-			p.destroy();
+			player.destroy();
 		}
 		this.playerList.clear();
 	}

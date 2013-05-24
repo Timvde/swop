@@ -42,7 +42,6 @@ public class SecondaryPowerFailure extends PowerFailure {
 	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		System.out.println(this + " " + event);
 		decreaseTimeToLive();
 		
 		// rotate the power failure

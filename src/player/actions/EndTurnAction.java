@@ -12,15 +12,10 @@ public class EndTurnAction implements Action {
 	
 	@Override
 	public void execute(TronPlayer player) {
-		if (!player.canPerformAction(this))
+		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
 		player.endTurn();
-	}
-	
-	@Override
-	public int getCost() {
-		return 0;
 	}
 	
 }
