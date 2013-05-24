@@ -1,7 +1,9 @@
 package powerfailure;
 
+import java.util.Observable;
 import item.IItem;
 import player.Player;
+import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.PropertyType;
@@ -78,5 +80,12 @@ public class PowerFailureDecorator extends AbstractSquareDecorator {
 	@Override
 	public boolean hasProperty(PropertyType property) {
 		return property == PropertyType.POWER_FAILURE ? true : square.hasProperty(property);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof TurnEvent)
+			powerfailure.updateStatus((TurnEvent) arg);
+		super.update(o, arg);
 	}
 }
