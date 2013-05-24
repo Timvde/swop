@@ -2,6 +2,7 @@ package player.actions;
 
 import player.TronPlayer;
 import square.Direction;
+import square.PropertyType;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
@@ -131,9 +132,11 @@ public class MoveAction implements Action {
 			return false;
 		
 		// test if both of the neighbours have a light trail
-		else if (!square.getNeighbourIn(direction.getPrimaryDirections().get(0)).hasLightTrail())
+		else if (!square.getNeighbourIn(direction.getPrimaryDirections().get(0)).hasProperty(
+				PropertyType.LIGHT_TRAIL))
 			return false;
-		else if (!square.getNeighbourIn(direction.getPrimaryDirections().get(1)).hasLightTrail())
+		else if (!square.getNeighbourIn(direction.getPrimaryDirections().get(1)).hasProperty(
+				PropertyType.LIGHT_TRAIL))
 			return false;
 		
 		// it looks like the player crosses a light trail

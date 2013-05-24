@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
+import square.PropertyType;
 import square.Square;
 import square.SquareContainer;
 
@@ -62,13 +63,12 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	/**
 	 * Returns whether or not the specified startingpositions list is valid.
-	 * I.e. :
+	 * This means:
 	 * <ul>
 	 * <li>It cannot be <code>null</code></li>
 	 * <li>It must contain at least one position</li>
 	 * <li>There can be no duplicates in the startingpositions</li>
-	 * <li>All the squares must be a {@link Square#getStartingPosition()
-	 * starting position}</li>
+	 * <li>All the squares must be a starting position</li>
 	 * </ul>
 	 * 
 	 * @param startingPositions
@@ -83,7 +83,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		if (new HashSet<SquareContainer>(startingPositions).size() != startingPositions.size())
 			return false;
 		for (SquareContainer squareContainer : startingPositions)
-			if (!(squareContainer.getStartingPosition() > 0))
+			if (!(squareContainer.hasProperty(PropertyType.STARTING_POSITION)))
 				return false;
 		
 		return true;
@@ -176,7 +176,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	void assignNewTurn(TronPlayer player) {
 		player.setPlayerState(PlayerState.ACTIVE);
-		
 		player.getActionManager().assignNewTurn();
 		
 		// allowed number of actions could be <= 0 because of penalties

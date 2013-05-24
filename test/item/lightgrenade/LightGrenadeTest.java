@@ -13,7 +13,7 @@ import square.Direction;
 import square.NormalSquare;
 import square.SquareContainer;
 import square.WallPart;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
+import ObjectronExceptions.IllegalUseException;
 import effects.Effect;
 import effects.RaceEffectFactory;
 
@@ -46,7 +46,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testStateTransision() throws CannotPlaceLightGrenadeException {
+	public void testStateTransision() {
 		assertEquals(LightGrenadeState.INACTIVE, lightGrenade.getState());
 		activateLightGrenade();
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
@@ -63,7 +63,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void TestIsCarriable() throws CannotPlaceLightGrenadeException {
+	public void TestIsCarriable() {
 		assertTrue(lightGrenade.isCarriable());
 		
 		activateLightGrenade();
@@ -74,7 +74,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testUse() throws CannotPlaceLightGrenadeException {
+	public void testUse() {
 		lightGrenade.use(emptySquare);
 		
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
@@ -82,18 +82,18 @@ public class LightGrenadeTest {
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)
-	public void testUse_SquareIsAWall() throws CannotPlaceLightGrenadeException {
+	public void testUse_SquareIsAWall() {
 		lightGrenade.use(new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new WallPart()));
 	}
 	
-	@Test(expected = CannotPlaceLightGrenadeException.class)
+	@Test(expected = IllegalUseException.class)
 	public void testUse_alreadyLightGrenadeOnSquare() {
 		emptySquare.addItem(new LightGrenade(new DummyEffectFactory()));
 		lightGrenade.use(emptySquare);
 	}
 	
 	@Test
-	public void testNormalStrengthExplode() throws CannotPlaceLightGrenadeException {
+	public void testNormalStrengthExplode() {
 		activateLightGrenade();
 		explodeLightGrenade();
 		// test if the strength was increased
@@ -101,7 +101,7 @@ public class LightGrenadeTest {
 	}
 	
 	@Test
-	public void testIncreasedStrenghtExplode() throws CannotPlaceLightGrenadeException {
+	public void testIncreasedStrenghtExplode() {
 		activateLightGrenade();
 		Effect effect = new PrimaryPowerFailure(emptySquare, new RaceEffectFactory()).getEffect();
 		effect.addEffect(lightGrenade.getEffect());
@@ -116,7 +116,7 @@ public class LightGrenadeTest {
 	 * 
 	 * @throws CannotPlaceLightGrenadeException
 	 */
-	public void activateLightGrenade() throws CannotPlaceLightGrenadeException {
+	public void activateLightGrenade() {
 		lightGrenade.use(emptySquare);
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
 		assertTrue(emptySquare.contains(lightGrenade));

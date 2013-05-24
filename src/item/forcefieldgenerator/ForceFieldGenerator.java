@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import square.AbstractSquare;
 import square.Direction;
+import square.PropertyType;
 import square.SquareContainer;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 
 /**
  * This class represents a Force Field Generator. When placed, this item looks
@@ -17,7 +17,7 @@ import ObjectronExceptions.CannotPlaceLightGrenadeException;
 public class ForceFieldGenerator extends Item {
 	
 	@Override
-	public void use(SquareContainer square) throws CannotPlaceLightGrenadeException {
+	public void use(SquareContainer square) {
 		square.addItem(this);
 		
 		findAndCreateForceFields(square);
@@ -38,7 +38,7 @@ public class ForceFieldGenerator extends Item {
 			for (int i = 0; i < 3; i++) {
 				neighbour = neighbour.getNeighbourIn(direction);
 				listOfSquares.add(neighbour);
-				if (neighbour == null || neighbour.isWall())
+				if (neighbour == null || neighbour.hasProperty(PropertyType.WALL))
 					break;
 				ForceFieldGenerator neighbouringGenerator = getForceFieldGeneratorOnSquare(neighbour);
 				if (neighbouringGenerator != null) {

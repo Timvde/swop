@@ -6,6 +6,7 @@ import java.util.Observable;
 import player.Player;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
+import square.PropertyType;
 import effects.Effect;
 
 /**
@@ -60,11 +61,6 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	}
 	
 	@Override
-	public boolean hasForceField() {
-		return forceField.getState() == ForceFieldState.ACTIVE;
-	}
-	
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -90,6 +86,11 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 		forceField.update();
 		
 		super.update(o, arg);
+	}
+	
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return property == PropertyType.FORCE_FIELD ? true : square.hasProperty(property);
 	}
 	
 }

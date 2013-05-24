@@ -29,13 +29,6 @@ public interface Square {
 	public Player getPlayer();
 	
 	/**
-	 * Checks whether or not a light trail is currently active on this square.
-	 * 
-	 * @return whether or not a light trail is currently active on this square.
-	 */
-	public boolean hasLightTrail();
-	
-	/**
 	 * Returns whether or not this Square holds currently a {@link TronPlayer
 	 * player}
 	 * 
@@ -44,32 +37,21 @@ public interface Square {
 	public boolean hasPlayer();
 	
 	/**
-	 * @return Whether or not this ASquare has a power failure.
+	 * Returns whether this square contains the specified object
+	 * 
+	 * @param object
+	 *        the object to test
+	 * @return true if this square contains the item
 	 */
-	public boolean hasPowerFailure();
+	public boolean contains(Object object);
 	
 	/**
-	 * @return Whether or not this ASquare has a force field.
-	 */
-	public boolean hasForceField();
-	
-	/**
-	 * Returns whether this square represents a wall
+	 * Returns whether this square has a specified property
 	 * 
-	 * @return true if this square represents a wall
+	 * @param property
+	 *        the property type to test
+	 * @return true if the square had the specified property
 	 */
-	public boolean isWall();
-	
-	/**
-	 * Returns a number smaller then or equal to zero if this square isn't a
-	 * {@link StartingPositionProperty starting position}, else the number of
-	 * the startingposition (greater then zero).
-	 * 
-	 * More formally: this square has a startingposition if and only if: <code>getStartingPosition() > 0</code>.
-	 * 
-	 * @return The number of the startingposition (>0) or a number (<= 0) if
-	 *         this square isn't a starting position
-	 */
-	public int getStartingPosition();
+	public boolean hasProperty(PropertyType property);
 	
 }

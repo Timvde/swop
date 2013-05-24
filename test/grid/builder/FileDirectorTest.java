@@ -1,15 +1,15 @@
 package grid.builder;
 
 import static org.junit.Assert.assertTrue;
+import java.io.FileNotFoundException;
 import org.junit.Test;
-import ObjectronExceptions.builderExceptions.GridBuildException;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 @SuppressWarnings("javadoc")
 public class FileDirectorTest {
 	
 	@Test
-	public void testFileDirector() {
+	public void testFileDirector() throws FileNotFoundException {
 		DummyGridBuilder builder = new DummyGridBuilder();
 		GridBuilderDirector director = new FileGridBuilderDirector(builder, "grid.txt");
 		director.construct();
@@ -18,7 +18,7 @@ public class FileDirectorTest {
 	}
 	
 	@Test
-	public void testFileDirectorInvalidInput() {
+	public void testFileDirectorInvalidInput() throws FileNotFoundException {
 		DummyGridBuilder builder = new DummyGridBuilder();
 		boolean exceptionThrown = false;
 		try {
@@ -39,19 +39,17 @@ public class FileDirectorTest {
 		assertTrue(exceptionThrown);
 		
 		exceptionThrown = false;
-		GridBuilderDirector director = new FileGridBuilderDirector(builder,
-				"file_that_doesn't exist");
 		try {
-			director.construct();
+			new FileGridBuilderDirector(builder, "file_that_doesn't exist");
 		}
-		catch (GridBuildException e) {
+		catch (FileNotFoundException e) {
 			exceptionThrown = true;
 		}
 		assertTrue(exceptionThrown);
 	}
 	
 	@Test
-	public void testFileDirectorInvalidGridFile() {
+	public void testFileDirectorInvalidGridFile() throws FileNotFoundException {
 		DummyGridBuilder builder = new DummyGridBuilder();
 		GridBuilderDirector director = new FileGridBuilderDirector(builder,
 				"grid_invalidCharacter.txt");

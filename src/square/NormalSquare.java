@@ -10,26 +10,24 @@ import effects.Effect;
 import effects.EmptyEffect;
 
 /**
- * A Square represents a place on a grid, which a player can stand on, as long
- * as it is not prevented by the square's internal state. Moving to another
- * Square can have side effects.
+ * A NormalSquare represents a postion that can hold {@link IItem items} and
+ * where a {@link Player player} can stand on, as long as it is not prevented
+ * by the square's internal state. Several side effects can occur when moving
+ * players and adding items.
  */
 public class NormalSquare extends AbstractSquare {
 	
 	/** the list of items in this square */
 	private List<IItem>	itemList;
 	/** the player on this square */
-	private Player			player; 
-	/** a boolean representing whether there is a light trail on this square */
-	private boolean		lightTrail;
+	private Player		player;
 	
 	/**
-	 * Create a new normal square
+	 * Default constructor.
 	 * 
 	 */
 	public NormalSquare() {
 		itemList = new ArrayList<IItem>();
-		lightTrail = false;
 	}
 	
 	@Override
@@ -70,21 +68,6 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean hasLightTrail() {
-		return lightTrail;
-	}
-	
-	@Override
-	public void placeLightTrail() {
-		lightTrail = true;
-	}
-	
-	@Override
-	public void removeLightTrail() {
-		lightTrail = false;
-	}
-	
-	@Override
 	public IItem pickupItem(int ID) {
 		// try and retrieve the item
 		// only items that are carriable can be picked up!
@@ -108,7 +91,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	/**
-	 * Returns the {@link Player} on this square
+	 * Returns the player on this square
 	 * 
 	 * @return A player, if there is one, otherwise null.
 	 */
@@ -148,9 +131,7 @@ public class NormalSquare extends AbstractSquare {
 	 */
 	@Override
 	public boolean canAddPlayer() {
-		if (this.hasLightTrail())
-			return false;
-		else if (this.hasPlayer())
+		if (this.hasPlayer())
 			return false;
 		else
 			return true;
@@ -188,14 +169,19 @@ public class NormalSquare extends AbstractSquare {
 			out += ' ';
 		}
 		if (out.equals(""))
-			out = (hasPowerFailure() ? "p " : "s ");
+			out = "s ";
 		
 		return out;
 	}
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		// nothing to do 
+		// nothing to do; decorators may overrride this
+	}
+
+	@Override
+	public boolean hasProperty(PropertyType property) {
+		return false;
 	}
 
 	@Override

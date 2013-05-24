@@ -231,7 +231,7 @@ public class PlayerTest implements Observer {
 	/* ############ PlayerDb methods (private) ############# */
 	
 	private void switchPlayers() {
-		db.endPlayerTurn((TronPlayer) db.getCurrentPlayer());
+		db.getCurrentPlayer().endTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 	}
 	

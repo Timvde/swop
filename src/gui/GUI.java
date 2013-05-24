@@ -1,8 +1,9 @@
 package gui;
 
+import game.Game;
 import game.GameEvent;
 import grid.Coordinate;
-import grid.Grid;
+import grid.GuiSquare;
 import item.IItem;
 import item.Item;
 import item.forcefieldgenerator.ForceFieldGenerator;
@@ -13,6 +14,7 @@ import item.lightgrenade.LightGrenadeState;
 import item.teleporter.Teleporter;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -21,8 +23,6 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import player.Player;
 import square.Direction;
-import square.Square;
-import game.Game;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -212,7 +212,7 @@ public class GUI implements Runnable, Observer {
 					}
 					
 					for (Coordinate c : gridCoords) {
-						Square square = guiDataController.getSquareAt(c);
+						GuiSquare square = guiDataController.getSquareAt(c);
 						Player player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
@@ -633,6 +633,10 @@ public class GUI implements Runnable, Observer {
 							JOptionPane.showMessageDialog(gui.getFrame(),
 									"The specified file is invalid.");
 						}
+						catch (FileNotFoundException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"The specified file could not be found.");
+						}
 					}
 				});
 		fileGameButton.setText("File Game");
@@ -694,17 +698,12 @@ public class GUI implements Runnable, Observer {
 	
 	/**
 	 * Draw a whole Grid object on the GUI.
-	 * 
-	 * @param grid
-	 *        The Grid to draw.
 	 */
-	public void draw(Grid grid) {
-		this.guiDataController.setGrid(grid);
-		
+	public void draw() {		
 		if (this.gui != null)
 			gui.repaint();
 	}
-	
+	 
 	/**
 	 * This method will convert the game Grid coordinate to x and y coordinates
 	 * on the GUI frame.

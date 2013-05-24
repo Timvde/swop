@@ -19,7 +19,6 @@ import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theory;
 import square.AbstractSquare;
 import square.Direction;
-import ObjectronExceptions.CannotPlaceLightGrenadeException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 
@@ -128,7 +127,7 @@ public class UseItemTest extends SetUpTestGrid {
 	
 	@Test
 	public void testUseIdentityDisc() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException, CannotPlaceLightGrenadeException {
+			IllegalMoveException {
 		// set a DummyGUI, so we have control over the returned direction by
 		// DummyGUI#getBasicDirection()
 		useItemCont.setGUI(new DummyGUI());

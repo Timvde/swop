@@ -2,17 +2,12 @@ package grid;
 
 import grid.builder.GridBuilder;
 import grid.builder.GridBuilderDirector;
-import item.IItem;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import square.AbstractSquare;
 import square.SquareContainer;
 
 /**
@@ -22,6 +17,7 @@ import square.SquareContainer;
 public class Grid implements IGrid {
 	
 	private Map<Coordinate, SquareContainer>	grid;
+	private List<SquareContainer>	startingpositions;
 	
 	/**
 	 * Create a new grid with a specified grid and player map.
@@ -33,11 +29,14 @@ public class Grid implements IGrid {
 	 * @param grid
 	 *        a map that maps the coordinates of each square to the actual
 	 *        square itself
+	 * @param startingpositions
+	 *        a sorted list of all the startingpositions on the grid (from smaller to larger).
 	 */
-	public Grid(Map<Coordinate, SquareContainer> grid) {
-		if (grid == null)
-			throw new IllegalArgumentException("Null grid could not be created!");
+	public Grid(Map<Coordinate, SquareContainer> grid, List<SquareContainer> startingpositions) {
+		if (grid == null || startingpositions == null)
+			throw new IllegalArgumentException("Null input, grid could not be created!");
 		this.grid = grid;
+		this.startingpositions = startingpositions;
 	}
 	
 	/**
@@ -71,14 +70,7 @@ public class Grid implements IGrid {
 	}
 	
 	@Override
-	public List<IItem> getItemList(Coordinate coordinate) {
-		if (coordinate == null)
-			throw new IllegalArgumentException("the specified coordinate cannot be null");
-		return grid.get(coordinate).getAllItems();
-	}
-	
-	@Override
-	public AbstractSquare getSquareAt(Coordinate coordinate) {
+	public SquareContainer getSquareAt(Coordinate coordinate) {
 		if (coordinate == null)
 			throw new IllegalArgumentException("the specified coordinate cannot be null");
 		return grid.get(coordinate);
@@ -145,26 +137,6 @@ public class Grid implements IGrid {
 	 * @return a sorted list of all the startingpositions on the grid.
 	 */
 	public List<SquareContainer> getAllStartingPositions() {
-		List<SquareContainer> result = new ArrayList<SquareContainer>();
-		for (SquareContainer square : grid.values()) {
-			if (square.getStartingPosition() > 0)
-				result.add(square);
-		}
-		Collections.sort(result, new StartingPositionComparator());
-		return result;
-	}
-	
-	private class StartingPositionComparator implements Comparator<SquareContainer> {
-		
-		@Override
-		public int compare(SquareContainer o1, SquareContainer o2) {
-			if (o1.getStartingPosition() < o2.getStartingPosition())
-				return -1;
-			if (o1.getStartingPosition() > o2.getStartingPosition()) {
-				return 1;
-			}
-			return 0;
-			
-		}
+		return this.startingpositions;
 	}
 }
