@@ -14,6 +14,8 @@ public class PlayerActionManager {
 	private TronPlayer		player;
 	private int				actionsLeft;
 	private int				numberOfTurnsToSkip;
+	/** A boolean representing whether the player has moved */
+	private boolean			hasMoved;
 	
 	/**
 	 * Create a {@link PlayerActionManager} with default values.
@@ -68,8 +70,9 @@ public class PlayerActionManager {
 	/**
 	 * Reset the number of actions left
 	 */
-	void resetNumberOfActions() {
+	void resetActions() {
 		this.actionsLeft = 0;
+		this.hasMoved = false;
 	}
 	
 	/**
@@ -89,5 +92,19 @@ public class PlayerActionManager {
 			this.actionsLeft = Math.min(this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN,
 					MAX_NUMBER_OF_ACTIONS_PER_TURN);
 		}
+	}
+
+	/**
+	 * @return Whether the player has moved yet
+	 */
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+
+	/**
+	 * Indicate that this player has moved.
+	 */
+	public void setHasMoved() {
+		this.hasMoved = true;
 	}
 }

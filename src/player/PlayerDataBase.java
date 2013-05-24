@@ -3,12 +3,9 @@ package player;
 import game.Game;
 import grid.Grid;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
-import player.actions.EndTurnAction;
 import square.Square;
 import square.SquareContainer;
 
@@ -102,7 +99,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 *        The player who wants to end his turn. Only the current player can
 	 *        do this.
 	 */
-	void endPlayerTurn(TronPlayer player) {
+	private void endPlayerTurn(TronPlayer player) {
 		if (!player.equals(getCurrentPlayer())) {
 			// Only the current player can end its turn. By returning instead of
 			// throwing, we actually handle this problem correctly without
@@ -117,7 +114,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		}
 		else {
 			// Switch players and assign a new turn
-			resetTurnRelatedPropertiesOf(player);
+			player.getActionManager().resetActions();
 			player.setPlayerState(PlayerState.WAITING);
 			this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 			TronPlayer newPlayer = playerList.get(currentPlayerIndex);
@@ -153,11 +150,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		// allowed number of actions could be <= 0 because of penalties
 		checkEndTurn(player);
-	}
-	
-	private void resetTurnRelatedPropertiesOf(TronPlayer player) {
-		player.resetHasMoved();
-		player.getActionManager().resetNumberOfActions();
 	}
 	
 	/**
@@ -236,10 +228,5 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	private Square getFinishOfCurrentPlayer() {
 		return getNextPlayer().getStartingPosition();
-	}
-	
-	@Override
-	public void endCurrentPlayerTurn() {
-		getCurrentPlayer().performAction(new EndTurnAction());
 	}
 }

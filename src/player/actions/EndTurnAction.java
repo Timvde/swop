@@ -15,16 +15,9 @@ public class EndTurnAction implements Action {
 		if (!player.canPerformAction(this))
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
-		if (player.hasMovedYet()) {
-			// this player's turn will end;
-			player.endTurn();
-		}
-		else {
-			// setPlayerState will check if we can transition to the LOST state
-			player.loseGame();
-		}
+		player.endTurn();
 	}
-
+	
 	@Override
 	public int getCost() {
 		return 0;
