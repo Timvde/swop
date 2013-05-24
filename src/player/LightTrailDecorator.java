@@ -1,5 +1,6 @@
 package player;
 
+import powerfailure.PowerFailureDecorator;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.PropertyType;
@@ -30,5 +31,19 @@ public class LightTrailDecorator extends AbstractSquareDecorator {
 	@Override 
 	public boolean hasProperty(PropertyType property) {
 		return property == PropertyType.LIGHT_TRAIL ? true : square.hasProperty(property);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof LightTrailDecorator))
+			return false;
+		
+		LightTrailDecorator other = (LightTrailDecorator) obj;
+		
+		return this.square.equals(other.square);
 	}
 }

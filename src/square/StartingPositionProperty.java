@@ -13,4 +13,14 @@ public class StartingPositionProperty implements Property {
 		return new StartingPositionDecorator(square);
 	}
 	
+	@Override
+	public int hashCode() {
+		return "StartingPositionProperty".hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return (other instanceof StartingPositionProperty);
+	}
+	
 }

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import player.PlayerState;
+import powerfailure.PowerFailureCreator;
 import square.Direction;
 import square.NormalSquare;
 import square.PropertyType;
@@ -64,7 +65,9 @@ public class TronGridBuilder implements GridBuilder {
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
-		if (grid.put(coordinate, new SquareContainer(neighbours, new NormalSquare())) == null)
+		SquareContainer square = new SquareContainer(neighbours, new NormalSquare());
+		square.addPropertyCreator(new PowerFailureCreator(effectFactory));
+		if (grid.put(coordinate, square) == null)
 			numberOfSquares++;
 	}
 	
@@ -74,7 +77,9 @@ public class TronGridBuilder implements GridBuilder {
 			throw new IllegalArgumentException("The specified coordinate cannot be null");
 		
 		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
-		if (grid.put(coordinate, new SquareContainer(neighbours, new WallPart())) != null)
+		SquareContainer wall = new SquareContainer(neighbours, new WallPart());
+		wall.addPropertyCreator(new PowerFailureCreator(effectFactory));
+		if (grid.put(coordinate, wall) != null)
 			numberOfSquares--;
 	}
 	
@@ -92,7 +97,6 @@ public class TronGridBuilder implements GridBuilder {
 		
 		if (!grid.containsKey(coordinate)) {
 			addSquare(coordinate);
-		}
 		startingPositions.put(number, coordinate);
 		grid.get(coordinate).addProperty(new StartingPositionProperty());
 	}

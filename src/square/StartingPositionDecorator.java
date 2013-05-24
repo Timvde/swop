@@ -1,5 +1,6 @@
 package square;
 
+import player.LightTrailDecorator;
 import item.IItem;
 
 /**
@@ -31,5 +32,19 @@ public class StartingPositionDecorator extends AbstractSquareDecorator {
 	public boolean canBeAdded(IItem item) {
 		return false;
 		//FIXME dit mag wel at runtime?
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof StartingPositionDecorator))
+			return false;
+		
+		StartingPositionDecorator other = (StartingPositionDecorator) obj;
+		
+		return this.square.equals(other.square);
 	}
 }
