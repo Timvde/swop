@@ -12,12 +12,20 @@ import game.GameRunner;
 import grid.Grid;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
+import gui.DummyGUI;
 
 @SuppressWarnings("javadoc")
 public class DummyGameRunner extends GameRunner {
 	
 	private Grid	grid;
 
+	
+	public DummyGameRunner() {
+		super();
+		super.gui = new DummyGUI();
+	}
+	
+	
 	/**
 	 * Start a new game that is read from a file.
 	 * 

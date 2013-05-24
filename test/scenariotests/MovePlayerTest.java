@@ -1,5 +1,6 @@
 package scenariotests;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -36,7 +37,7 @@ import ObjectronExceptions.IllegalMoveException;
 @SuppressWarnings("javadoc")
 @RunWith(Parameterized.class)
 public class MovePlayerTest extends SetUpTestGrid {
-	
+		
 	@Parameters
 	public static Collection<Object[]> generateData() {
 		ArrayList<Object[]> result = new ArrayList<Object[]>();
@@ -109,27 +110,35 @@ public class MovePlayerTest extends SetUpTestGrid {
 		moveCont.move(Direction.NORTH);
 	}
 	
+	/**
+	 * NOTE: this test may fail because of nondeterministic powerfailures.
+	 */
 	@Test
 	public void testNoTwoPlayersOnOneSquare() {
 		// Player 1 actions
+		Player player1 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.SOUTHWEST);
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		Player player2 = playerDB.getCurrentPlayer();
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.NORTH);
 		
 		// Player 1 actions
+		assertSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTHWEST);
 		moveCont.move(Direction.SOUTHWEST);
 		moveCont.move(Direction.SOUTHWEST);
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
+		assertSame(player2, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.NORTHEAST);
 		
 		boolean exceptionThrown = false;
@@ -184,13 +193,18 @@ public class MovePlayerTest extends SetUpTestGrid {
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
-
+		
 		// player 1
 		assertSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
-		
 		assertEquals(player2Start, player1.getCurrentPosition());
-		assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
+		
+		if (getMode() instanceof RaceMode) {
+			assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
+		}
+		else if (getMode() instanceof CTFMode) {
+			assertEquals(PlayerState.ACTIVE, ((TronPlayer) player1).getPlayerState());
+		}
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

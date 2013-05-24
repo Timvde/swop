@@ -17,6 +17,7 @@ public abstract class SetUpTestGrid {
 	protected UseItemController		useItemCont;
 	protected Grid					grid;
 	protected PlayerDataBase		playerDB;
+	private GameMode				mode;
 	
 	protected void setUp(GameMode mode) {
 		DummyGameRunner runner = new DummyGameRunner();
@@ -28,6 +29,11 @@ public abstract class SetUpTestGrid {
 		this.useItemCont = runner.getUseItemCont();
 		this.playerDB = runner.getPlayerDB();
 		this.grid = runner.getGrid();
+		this.mode = mode;
+	}
+	
+	public GameMode getMode() {
+		return mode;
 	}
 	
 }

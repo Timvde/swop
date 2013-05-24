@@ -31,7 +31,7 @@ public class GameRunner {
 	protected UseItemController		useItemCont;
 	protected EndTurnController		endTurnCont;
 	protected NewGameController		newGameCont;
-	private GUI						gui;
+	protected GUI						gui;
 	
 	/**
 	 * main method, will create a new GameRunner instance and start the gui

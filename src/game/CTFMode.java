@@ -76,7 +76,7 @@ public class CTFMode implements GameMode {
 				}
 		}
 		
-		if (capturedFlagCount.get(curPlayer) == playerDB.getNumberOfPlayers()) {
+		if (capturedFlagCount.containsKey(curPlayer) && capturedFlagCount.get(curPlayer) == playerDB.getNumberOfPlayers()) {
 			// the player has captured all flags of all players still alive
 			playerDB.clearDataBase();
 			return true;
