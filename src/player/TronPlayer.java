@@ -5,19 +5,18 @@ import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import ObjectronExceptions.IllegalActionException;
 import player.actions.Action;
 import player.actions.EndTurnAction;
 import powerfailure.AffectedByPowerFailure;
 import square.AbstractSquare;
-import square.Square;
 import square.SquareContainer;
+import ObjectronExceptions.IllegalActionException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
  * game a player can perform
- * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN} {@link Action actions}
+ * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} {@link Action actions}
  * during a turn.
  */
 public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure, Explodable {
