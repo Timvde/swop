@@ -95,7 +95,7 @@ public class TronGridBuilder implements GridBuilder {
 						"the startingposition number is already used with another coordinate");
 		}
 		
-		if (!grid.containsKey(coordinate)) {
+		if (!grid.containsKey(coordinate))
 			addSquare(coordinate);
 		startingPositions.put(number, coordinate);
 		grid.get(coordinate).addProperty(new StartingPositionProperty());
