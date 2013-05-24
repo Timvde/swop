@@ -135,6 +135,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 	
 	@Override
 	protected Effect getStartTurnEffect(Effect effect) {
-		return square.getStartTurnEffect();
+		return square.getStartTurnEffect(effect);
 	}
 }

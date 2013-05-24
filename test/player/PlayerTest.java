@@ -51,7 +51,7 @@ public class PlayerTest implements Observer {
 	public void testConstructor() {
 		// check init turn stuff and basic fields
 		assertEquals(false, player.hasMovedYet());
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertNotNull(player.getStartingPosition());
 		assertEquals(player.getStartingPosition(), player.getCurrentLocation());
@@ -59,7 +59,7 @@ public class PlayerTest implements Observer {
 		
 		// test whether the player is appointed by the db as the current player
 		assertIsCurrentPlayerTurn();
-		assertTrue(player.canPerformAction());
+		assertTrue(player.canPerformAction(new EndTurnAction()));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -160,8 +160,8 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test the initial number of actions,
-		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 3
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		// Player.MAX_NUMBER_OF_ACTIONS_PER_TURN = 4
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
@@ -170,14 +170,14 @@ public class PlayerTest implements Observer {
 		assertIsCurrentPlayerTurn();
 		
 		// test again
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 1,
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
 		// subtract another two: nb of actions will become zero
 		// --> player must have asked the db to switch players
 		player.skipNumberOfActions(2);
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
 				player.getAllowedNumberOfActions());
 		assertIsNotCurrentPlayerTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
@@ -186,7 +186,7 @@ public class PlayerTest implements Observer {
 		switchPlayers();
 		assertIsCurrentPlayerTurn();
 		
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		
 		// subtract four at once
@@ -201,12 +201,12 @@ public class PlayerTest implements Observer {
 	public void testAssignNewTurn() {
 		assertIsCurrentPlayerTurn();
 		db.assignNewTurn(player);
-		assertEquals(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN,
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		assertIsCurrentPlayerTurn();
 		
-		player.skipNumberOfActions(PlayerDataBase.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
+		player.skipNumberOfActions(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
 		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		// player should have switched turns (allowed nb actions < 0)

@@ -55,12 +55,13 @@ public class PlayerActionManager {
 	}
 	
 	/**
-	 * Makes this player skip a specified number of actions
+	 * Makes this player decrement his number of actions left with the specified
+	 * amount.
 	 * 
 	 * @param numberOfActionsToSkip
 	 *        The number of actions to skip
 	 */
-	void skipNumberOfActions(int numberOfActionsToSkip) {
+	void decrementNumberOfActions(int numberOfActionsToSkip) {
 		this.actionsLeft -= numberOfActionsToSkip;
 	}
 	

@@ -22,6 +22,7 @@ public class PowerFailureStartTurnEffect extends AbstractEffect {
 			TronPlayer player = (TronPlayer) object;
 			player.skipNumberOfActions(POWER_FAILURE_PENALTY_AT_START_TURN);
 		}
+		super.execute(object);
 	}
 	
 }

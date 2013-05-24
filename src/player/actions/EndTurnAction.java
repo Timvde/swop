@@ -12,17 +12,22 @@ public class EndTurnAction implements Action {
 	
 	@Override
 	public void execute(TronPlayer player) {
-		if (!player.canPerformAction())
+		if (!player.canPerformAction(this))
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		
 		if (player.hasMovedYet()) {
 			// this player's turn will end;
-			player.skipNumberOfActions(player.getAllowedNumberOfActions());
+			player.endTurn();
 		}
 		else {
 			// setPlayerState will check if we can transition to the LOST state
-			player.looseGame();
+			player.loseGame();
 		}
+	}
+
+	@Override
+	public int getCost() {
+		return 0;
 	}
 	
 }

@@ -5,7 +5,9 @@ import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import ObjectronExceptions.IllegalActionException;
 import player.actions.Action;
+import player.actions.EndTurnAction;
 import powerfailure.AffectedByPowerFailure;
 import square.AbstractSquare;
 import square.Square;
@@ -41,6 +43,8 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	private PlayerState				state;
 	/** The player database in which the player is placed */
 	private PlayerDataBase			playerDB;
+	/** The Action Manager that manages this player's actions */
+	private final PlayerActionManager actionManager;
 	
 	/**
 	 * Creates a new Player object, with an empty inventory, who has not yet
@@ -62,6 +66,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		this.state = PlayerState.WAITING;
 		this.playerDB = playerDB;
 		this.setStartingPosition(startingPosition);
+		this.actionManager = new PlayerActionManager(this);
 	}
 	
 	/**
@@ -116,19 +121,37 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	@Override
 	public int getAllowedNumberOfActions() {
-		return playerDB.getAllowedNumberOfActions(this);
+		return actionManager.getNumberOfActionsLeft();
 	}
 	
 	@Override
 	public void skipNumberOfActions(int numberOfActionsToSkip) {
-		playerDB.skipNumberOfActions(this, numberOfActionsToSkip);
+		actionManager.decrementNumberOfActions(numberOfActionsToSkip);
+	}
+	
+	/**
+	 * This method ends the turn of this player. Note that some {@link GameMode
+	 * game modes} let the player lose the game if this method is called before
+	 * he did a move action, (i.e. if <code>{@link #hasMovedYet()}</code> is
+	 * false when calling this method, this player loses the game).
+	 * 
+	 * @throws IllegalActionException
+	 *         This player must be allowed to perform an action, i.e.
+	 *         <code>{@link #canPerformAction(EndTurnAction)}</code>.
+	 */
+	public void endTurn() throws IllegalActionException {
+		if (!canPerformAction(new EndTurnAction()))
+			throw new IllegalActionException("The player must be allowed to perform an action.");
+		
+		lightTrail.updateLightTrail();
+		playerDB.endPlayerTurn(this);
 	}
 	
 	/**
 	 * Indicate that this player has to skip his next turn.
 	 */
 	public void skipNextTurn() {
-		this.playerDB.skipNextTurn(this);
+		actionManager.skipNextNTurns(1);
 	}
 	
 	@Override
@@ -137,7 +160,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	/**
-	 * To be called when the player performed a move-action succesfully.
+	 * To be called when the player performed a move-action successfully.
 	 * 
 	 * PostCondtion: {@link #hasMovedYet() this.hasMoved()}= true
 	 */
@@ -155,9 +178,9 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	@Override
-	public boolean canPerformAction() {
+	public boolean canPerformAction(Action action) {
 		return this.state == PlayerState.ACTIVE && getStartingPosition() != null
-				&& getAllowedNumberOfActions() > 0;
+				&& getAllowedNumberOfActions() >= action.getCost();
 	}
 	
 	/**
@@ -268,16 +291,21 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	public void performAction(Action action) {
 		action.execute(this);
+		actionManager.decrementNumberOfActions(action.getCost());
 		
 		// end a players action
 		playerDB.actionPerformed(this);
 		lightTrail.updateLightTrail(currentSquare);
 	}
+	
+	PlayerActionManager getActionManager() {
+		return actionManager;
+	}
 
 	/**
-	 * Let the player loose the current game
+	 * Let the player lose the current game
 	 */
-	public void looseGame() {
+	public void loseGame() {
 		setPlayerState(PlayerState.LOST);
 		playerDB.reportGameLost(this);
 	}

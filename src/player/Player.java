@@ -71,7 +71,7 @@ public interface Player extends TronObject {
 	 * 
 	 * @return whether this player is allowed to perform an action.
 	 */
-	public boolean canPerformAction();
+	public boolean canPerformAction(Action action);
 	
 	/**
 	 * Let the player perform a specified action.

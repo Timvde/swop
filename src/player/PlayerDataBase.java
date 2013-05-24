@@ -27,7 +27,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	private List<TronPlayer>						playerList;
 	private int									currentPlayerIndex;
-	private Map<Player, PlayerActionManager>	actionManager;
 	
 	/**
 	 * Creates a new empty PlayerDataBase. To fill the database with players,
@@ -37,7 +36,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	public PlayerDataBase() {
 		this.playerList = new ArrayList<TronPlayer>();
-		this.actionManager = new HashMap<Player, PlayerActionManager>();
 	}
 	
 	/**
@@ -65,7 +63,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		for (SquareContainer playerStartingPosition : startingPositions) {
 			TronPlayer newPlayer = new TronPlayer(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
-			this.actionManager.put(newPlayer, new PlayerActionManager(newPlayer));
 		}
 		
 		// Set the first player as starting player.
@@ -134,10 +131,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		}
 	}
 	
-	private PlayerActionManager getActionManager(Player player) {
-		return this.actionManager.get(player);
-	}
-	
 	private void notifyTurnEvent(TurnEvent event) {
 		this.setChanged();
 		this.notifyObservers(event);
@@ -156,7 +149,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	void assignNewTurn(TronPlayer player) {
 		player.setPlayerState(PlayerState.ACTIVE);
 		
-		getActionManager(player).assignNewTurn();
+		player.getActionManager().assignNewTurn();
 		
 		// allowed number of actions could be <= 0 because of penalties
 		checkEndTurn(player);
@@ -164,58 +157,18 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	private void resetTurnRelatedPropertiesOf(TronPlayer player) {
 		player.resetHasMoved();
-		getActionManager(player).resetNumberOfActions();
+		player.getActionManager().resetNumberOfActions();
 	}
 	
 	/**
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
-	private void checkEndTurn(TronPlayer player) {
-		if (getAllowedNumberOfActions(player) <= 0) {
+	void checkEndTurn(TronPlayer player) {
+		if (player.getAllowedNumberOfActions() <= 0) {
 			// this method will return if it's not this player's turn
 			endPlayerTurn(player);
 		}
-	}
-	
-	/**
-	 * This method lets a player skip a number of actions. He doesn't need to be
-	 * the active player at this moment.
-	 * 
-	 * @param player
-	 *        The player which needs to skip actions.
-	 * @param numberOfActionsToSkip
-	 *        The number of actions to skip
-	 */
-	public void skipNumberOfActions(TronPlayer player, int numberOfActionsToSkip) {
-		getActionManager(player).skipNumberOfActions(numberOfActionsToSkip);
-		
-		checkEndTurn(player);
-	}
-	
-	/**
-	 * Returns the allowed number of actions of the specified player or 0 if the
-	 * specified player is not in the game.
-	 * 
-	 * @param player
-	 *        the player to get the number of actions from
-	 * @return The allowed number of actions of the specified player or 0 if the
-	 *         specified player is not in the game.
-	 */
-	public int getAllowedNumberOfActions(Player player) {
-		if (actionManager.containsKey(player))
-			return getActionManager(player).getNumberOfActionsLeft();
-		return 0;
-	}
-	
-	/**
-	 * Skips the next turn of a player.
-	 * 
-	 * @param player
-	 *        The player which needs to skip a turn.
-	 */
-	public void skipNextTurn(Player player) {
-		getActionManager(player).skipNextNTurns(1);
 	}
 	
 	/**
@@ -226,8 +179,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * no more actions left, his turn will end.
 	 */
 	void actionPerformed(TronPlayer player) {
-		notifyTurnEvent(TurnEvent.END_ACTION);
-		skipNumberOfActions(player, 1);
+		if (player.equals(getCurrentPlayer())) {
+			notifyTurnEvent(TurnEvent.END_ACTION);
+			checkEndTurn(player);
+		}
 	}
 	
 	/**
