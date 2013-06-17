@@ -64,14 +64,6 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.hasPlayer();
 	}
 	
-	public void addPlayer(Player p) throws IllegalArgumentException {
-		square.addPlayer(p);
-	}
-	
-	public void addItem(IItem item) throws IllegalArgumentException {
-		square.addItem(item);
-	}
-	
 	public void remove(Object object) {
 		square.remove(object);
 	}

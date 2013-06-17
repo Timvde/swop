@@ -209,11 +209,6 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	@Override
-	public void addPlayer(Player p) {
-		square.addPlayer(p);
-	}
-	
-	@Override
 	public void addItem(IItem item) {
 		square.addItem(item);
 	}

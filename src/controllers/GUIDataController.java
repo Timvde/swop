@@ -54,11 +54,7 @@ public class GUIDataController {
 	/**
 	 * Set the grid of the controller to a new grid.
 	 * 
-<<<<<<< HEAD
-	 * @param g
-=======
 	 * @param grid
->>>>>>> tim_wil_ook_een_happy_place
 	 *        The new grid for this controller
 	 */
 	public void setGrid(GuiGrid grid) {

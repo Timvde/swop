@@ -40,7 +40,7 @@ public class ForceField implements Property {
 		this.generator1 = generator1;
 		this.generator2 = generator2;
 		this.squares = squares;
-		this.state = ForceFieldState.ACTIVE;
+		this.state = ForceFieldState.INACTIVE;
 		this.counter = 0;
 		
 		for (SquareContainer square : squares)

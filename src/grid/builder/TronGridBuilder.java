@@ -136,13 +136,13 @@ public class TronGridBuilder implements GridBuilder {
 	@Override
 	public void placeTeleporter(Coordinate from, Coordinate to) throws GridBuildException {
 		if (from == null || to == null)
-			throw new IllegalArgumentException("the coords cannot be null");
+			throw new GridBuildException("the coords cannot be null");
 		
 		Teleporter start = getTeleporter(from);
 		Teleporter destination = getTeleporter(to);
 		
 		if (start.getDestination() != null)
-			throw new IllegalArgumentException("Teleporter on coordinate " + from
+			throw new GridBuildException("Teleporter on coordinate " + from
 					+ " has already a destination!");
 		
 		start.setDestination(destination);

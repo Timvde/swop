@@ -225,10 +225,10 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						// TODO // Draw finish lines
-						// if (square.getStartingPosition()) {
-						// graphics.drawImage(finish, guiCoord.getX(),
-						// guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
-						// }
+						if (square.isStartingPosition()) {
+							graphics.drawImage(finish, guiCoord.getX(),
+									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+						}
 						
 						// Draw powerfailures if necessary
 						if (square.hasPowerFailure()) {
@@ -406,6 +406,13 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 		// Initialize images
 		this.player1 = gui.loadImage("player_red.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.player2 = gui.loadImage("player_blue.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player3 = gui.loadImage("player_gray.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player4 = gui.loadImage("player_yellow.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player5 = gui.loadImage("player_purple.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player6 = gui.loadImage("player_orange.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player7 = gui.loadImage("player_darkblue.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player8 = gui.loadImage("player_green.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.player9 = gui.loadImage("player_cyan.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.wallImage = gui.loadImage("wall.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeImage = gui.loadImage("lightgrenade.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.lightGrenadeExplodedImage = gui.loadImage("lightgrenade_exploded.png", SQUARE_SIZE,

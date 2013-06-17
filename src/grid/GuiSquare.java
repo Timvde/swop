@@ -11,7 +11,7 @@ public interface GuiSquare {
 	
 	/**
 	 * Returns the items on this square that can be picked up by a
-	 * {@link IPlayer player}
+	 * {@link Player player}
 	 * 
 	 * @return a list of all the carriable items on the square
 	 */
@@ -33,7 +33,7 @@ public interface GuiSquare {
 	public boolean hasLightTrail();
 	
 	/**
-	 * Returns whether or not this square holds currently a {@link IPlayer
+	 * Returns whether or not this square holds currently a {@link Player
 	 * player}
 	 * 
 	 * @return Whether this square has a player.
@@ -65,9 +65,7 @@ public interface GuiSquare {
 	public boolean isStartingPosition();
 	
 	/**
-	 * 
-	 * @param object
-	 * @return
+	 * Checks whether this square contains the specified object
 	 */
 	public boolean contains(Object object);
 	

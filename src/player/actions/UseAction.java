@@ -56,7 +56,8 @@ public class UseAction implements Action {
 		// try and use the item
 		try {
 			UseArguments<?> arguments = item.getUseArguments();
-			argumentshandler.handleArguments(arguments);
+			if (arguments != null)
+				argumentshandler.handleArguments(arguments);
 			item.use(square, arguments);
 		}
 		catch (IllegalUseException e) {

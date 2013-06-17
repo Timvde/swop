@@ -3,6 +3,7 @@ package item.forcefieldgenerator;
 import item.IItem;
 import item.identitydisk.IdentityDisk;
 import java.util.Observable;
+import ObjectronExceptions.IllegalMoveException;
 import player.Player;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
@@ -45,7 +46,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	@Override
 	protected void addPlayer(Player player, Effect effect) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
-			throw new IllegalStateException(" a player cannot move onto a force field");
+			throw new IllegalMoveException(" a player cannot move onto a force field");
 		
 		super.addPlayer(player, effect);
 	}
@@ -82,7 +83,6 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		square.update(o, arg);
 		forceField.update();
 		
 		super.update(o, arg);
