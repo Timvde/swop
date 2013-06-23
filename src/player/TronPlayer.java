@@ -281,10 +281,14 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	public void performAction(Action action) {
+		SquareContainer oldSquare = currentSquare;
 		action.execute(this);
 		actionManager.performedAction();
 		
-		lightTrail.updateLightTrail(currentSquare);
+		if (!currentSquare.equals(oldSquare))
+			lightTrail.updateLightTrail(currentSquare);
+		else
+			lightTrail.updateLightTrail();
 		// end a players action
 		playerDB.actionPerformed(this);
 	}

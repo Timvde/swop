@@ -62,11 +62,11 @@ public class LightTrail implements Property {
 		lightTrail.addFirst(currentSquare);
 		
 		if (lightTrail.size() > MAXIMUM_LENGTH)
-			lightTrail.removeLast().removeProperty(this);
+			updateLightTrail();
 	}
 	
 	/**
-	 * Test whether a coordinate is valid as a new part of the lightTrail. This
+	 * Test whether a coordinate is valid as a new part of the light trail. This
 	 * will return false if the lightTrail already contains the specified
 	 * coordinate or if the specified coordinate is not a
 	 * {@link Coordinate#isNeighbour(Coordinate) neighbor} of the first
@@ -79,10 +79,7 @@ public class LightTrail implements Property {
 	 */
 	public boolean isValidNewSquare(AbstractSquare currentSquare) {
 		// null cannot be added to the list
-		if (currentSquare == null)
-			return false;
-		else
-			return true;
+		return currentSquare != null;
 	}
 	
 	/**
@@ -114,11 +111,11 @@ public class LightTrail implements Property {
 	List<AbstractSquare> getLightTrailSquares() {
 		return new ArrayList<AbstractSquare>(lightTrail);
 	}
-
+	
 	void destroy() {
 		// TODO Auto-generated method stub
 	}
-		
+	
 	@Override
 	public AbstractSquareDecorator getDecorator(AbstractSquare square) {
 		return new LightTrailDecorator(square);
