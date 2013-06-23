@@ -130,7 +130,12 @@ public class TronGridBuilder implements GridBuilder {
 		if (!canPlaceItem(coordinate))
 			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
-		grid.get(coordinate).addItem(new ForceFieldGenerator());
+		/*
+		 * We need to "use" the ForceFieldGenerator to make it detect other
+		 * generators and create a force field.
+		 */
+		ForceFieldGenerator ffg = new ForceFieldGenerator();
+		ffg.use(grid.get(coordinate), null);
 	}
 	
 	@Override

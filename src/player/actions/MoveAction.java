@@ -58,7 +58,12 @@ public class MoveAction implements Action {
 			throw new IllegalStepException("The player cannot move in given direction on the grid.");
 		
 		// Update the player's square
-		square.remove(player);
+		try {
+			square.remove(player);
+		}
+		catch (IllegalStateException e) {
+			throw new IllegalMoveException("The player can't move away from his square.");
+		}
 		SquareContainer oldSquare = square;
 		square = square.getNeighbourIn(direction);
 		player.setSquare(square);

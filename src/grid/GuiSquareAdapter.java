@@ -2,6 +2,7 @@ package grid;
 
 import item.IItem;
 import item.forcefieldgenerator.ForceField;
+import item.forcefieldgenerator.ForceFieldState;
 import java.util.List;
 import player.LightTrail;
 import player.Player;
@@ -73,7 +74,7 @@ public class GuiSquareAdapter implements GuiSquare {
 	@Override
 	public boolean hasForceField() {
 		for (Property property : square.getProperties())
-			if (property instanceof ForceField)
+			if (property instanceof ForceField && ((ForceField) property).getState() == ForceFieldState.ACTIVE)
 				return true;
 		return false;
 	}
