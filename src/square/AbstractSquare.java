@@ -39,29 +39,48 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract boolean contains(Object object);
 	
 	/**
-	 * Add a specified player to this square. This method is also responsible
-	 * for executing any additional {@link Effect effects}.
+	 * Add a {@link TronObject} to the square, the {@link TronObject} may be
+	 * affected by the state of the square. This can be used when the specific
+	 * type of {@link TronObject } is not known to the caller.
+	 * 
+	 * @param object
+	 *        The object to be placed on this square
+	 * 
+	 * @throws IllegalArgumentException
+	 *         It must be possible to add the object to this square. More
+	 *         formally <code>{@link #canBeAdded(TronObject)}</code> must be true.
+	 */
+	public void addTronObject(TronObject object) {
+		if (object instanceof IItem)
+			addItem((IItem) object);
+		else
+			addPlayer((Player) object);
+	}
+	
+	/**
+	 * Add a specified player to this square. The player may be affected by the
+	 * state of the square.
 	 * 
 	 * @param player
 	 *        the player who wants to be placed on this square
 	 * 
 	 * @throws IllegalArgumentException
 	 *         It must be possible to add the player to this square. More
-	 *         formally <code>{@link #canAddPlayer()}</code> .
+	 *         formally <code>{@link #canAddPlayer()}</code> must be true.
 	 */
 	public void addPlayer(Player player) throws IllegalArgumentException {
 		addPlayer(player, new EmptyEffect());
 	}
 	
 	/**
-	 * Add a specified item to the square, the item may be affected by other
-	 * items on the square.
+	 * Add a specified item to the square. The item may be affected by the state
+	 * of the square.
 	 * 
 	 * @param item
 	 *        the item to add
 	 * @throws IllegalArgumentException
 	 *         It must be possible to add the item to this square. More formally
-	 *         <code>{@link #canBeAdded(IItem)}</code>.
+	 *         <code>{@link #canAddItem(IItem)}</code> must be true.
 	 */
 	public void addItem(IItem item) throws IllegalArgumentException {
 		addItem(item, new EmptyEffect());
@@ -84,18 +103,34 @@ public abstract class AbstractSquare implements Square, Observer {
 	public abstract List<IItem> getAllItems();
 	
 	/**
+	 * A generic method to test whether a specified {@link TronObject } can be
+	 * added to this square. This can be used when the specific type of
+	 * {@link TronObject } is not known to the caller.
+	 * 
+	 * @param object
+	 *        The object that might or might not be added to this square
+	 * @return Whether or not the specified object can be added
+	 */
+	public boolean canBeAdded(TronObject object) {
+		if (object instanceof IItem)
+			return canAddItem((IItem) object);
+		else
+			return canAddPlayer();
+	}
+	
+	/**
 	 * Test whether an {@link IItem item} can be added to this square
 	 * 
 	 * @param item
 	 *        the item that is to be added
-	 * @return true if the item can be added, else false
+	 * @return Whether or not the specified item can be added
 	 */
-	public abstract boolean canBeAdded(IItem item);
+	public abstract boolean canAddItem(IItem item);
 	
 	/**
 	 * Test whether a {@link Player player} can be added to this square.
 	 * 
-	 * @return true if a player can be added, else false
+	 * @return Whether or not a player can be added
 	 */
 	public abstract boolean canAddPlayer();
 	
@@ -137,6 +172,6 @@ public abstract class AbstractSquare implements Square, Observer {
 	public Effect getStartTurnEffect() {
 		return getStartTurnEffect(new EmptyEffect());
 	}
-
+	
 	protected abstract Effect getStartTurnEffect(Effect effect);
 }

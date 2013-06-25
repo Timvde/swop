@@ -68,7 +68,7 @@ public class WallPart extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean canBeAdded(IItem item) {
+	public boolean canAddItem(IItem item) {
 		return false;
 	}
 	

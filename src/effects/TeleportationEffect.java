@@ -39,17 +39,14 @@ public class TeleportationEffect extends AbstractEffect {
 		if (destinationSquare == null)
 			throw new IllegalArgumentException("Cannot teleport to null!");
 		if (teleporter.getSquare() == null)
-			throw new IllegalStateException("Teleporter is not placed on a squaer");
+			throw new IllegalStateException("Teleporter is not placed on a square");
+		if (!destinationSquare.canBeAdded(object))
+			throw new IllegalStateException("This object can't be teleported to the destination square");
 		
 		AbstractSquare currentSquare  = teleporter.getSquare();
 		
 		currentSquare.remove(object);
-		
-		if (object instanceof IItem)
-			destinationSquare.addItem((IItem) object);
-		else if (object instanceof Player)
-			destinationSquare.addPlayer((Player) object);
-		
+		destinationSquare.addTronObject(object);
 		object.asTeleportable().setSquare(destinationSquare);
 	}
 }

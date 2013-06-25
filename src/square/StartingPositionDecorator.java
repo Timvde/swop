@@ -29,7 +29,7 @@ public class StartingPositionDecorator extends AbstractSquareDecorator {
 	 * contain an item
 	 */
 	@Override
-	public boolean canBeAdded(IItem item) {
+	public boolean canAddItem(IItem item) {
 		return false;
 		//FIXME dit mag wel at runtime?
 	}

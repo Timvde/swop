@@ -32,7 +32,7 @@ public class NormalSquare extends AbstractSquare {
 	
 	@Override
 	protected void addItem(IItem item, Effect effect) {
-		if (!canBeAdded(item))
+		if (!canAddItem(item))
 			throw new IllegalArgumentException("The item could not be placed on this square!");
 		if (effect == null)
 			throw new IllegalArgumentException("null effect");
@@ -138,7 +138,7 @@ public class NormalSquare extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean canBeAdded(IItem item) {
+	public boolean canAddItem(IItem item) {
 		if (item == null)
 			return false;
 		// TODO are there any other preconditions?

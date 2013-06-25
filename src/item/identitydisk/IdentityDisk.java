@@ -77,7 +77,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	public boolean canMoveDisk(Direction direction) {
 		if (currentSquare.getNeighbourIn(direction) == null)
 			return false;
-		else if (!currentSquare.getNeighbourIn(direction).canBeAdded(this))
+		else if (!currentSquare.getNeighbourIn(direction).canAddItem(this))
 			return false;
 		return true;
 	}

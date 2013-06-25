@@ -232,8 +232,8 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	@Override
-	public boolean canBeAdded(IItem item) {
-		return square.canBeAdded(item);
+	public boolean canAddItem(IItem item) {
+		return square.canAddItem(item);
 	}
 	
 	@Override

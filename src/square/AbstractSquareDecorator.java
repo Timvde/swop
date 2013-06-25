@@ -76,8 +76,8 @@ public abstract class AbstractSquareDecorator extends AbstractSquare {
 		return square.getAllItems();
 	}
 	
-	public boolean canBeAdded(IItem item) {
-		return square.canBeAdded(item);
+	public boolean canAddItem(IItem item) {
+		return square.canAddItem(item);
 	}
 	
 	public boolean canAddPlayer() {

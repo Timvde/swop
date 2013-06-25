@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import player.actions.Action;
 import powerfailure.AffectedByPowerFailure;
-import square.AbstractSquare;
 import square.FlagKeeper;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
@@ -220,27 +219,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	@Override
 	public Teleportable asTeleportable() {
 		return this;
-	}
-	
-	/**
-	 * Returns whether the player can teleport to the specified square.
-	 * 
-	 * @param destination
-	 *        the destination to test
-	 * @return true if the player can teleport to the specified square, else
-	 *         false
-	 */
-	public boolean canTeleportTo(AbstractSquare destination) {
-		// test if the destination exists
-		if (destination == null)
-			return false;
-		
-		// test if the square accepts players
-		else if (!destination.canAddPlayer())
-			return false;
-		// anything else?
-		else
-			return true;
 	}
 	
 	/**
