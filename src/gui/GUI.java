@@ -867,7 +867,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 				.showOptionDialog(null, arguments.getQuestion(),
 						"This item needs more info", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
 						null, arguments.getPossibleAnswers().toArray(), arguments.getPossibleAnswers().get(0));
-		arguments.setUserChoice(arguments.getPossibleAnswers().get(response));
+		arguments.setUserChoice(response);
 	}
 	
 }

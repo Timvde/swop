@@ -16,7 +16,7 @@ public class UseArguments<E> {
 	
 	private List<E>	choices;
 	private String	question;
-	private Object	userChoice;
+	private E		userChoice;
 	
 	/**
 	 * Create a new use arguments class with a specified set of choices and a
@@ -59,27 +59,19 @@ public class UseArguments<E> {
 	 * 
 	 * @return the choice of the user
 	 */
-	public Object getUserChoise() {
+	public E getUserChoise() {
 		return userChoice;
 	}
 	
 	/**
-	 * Set the choice of the user. If the {@code set} returned by the
-	 * {@link #getPossibleAnswers()} is empty, any value can be returned. Else
-	 * the specified value must be part of the returned {@code set}. More
-	 * formally, the specified choice must satisfy the following condition:
+	 * Set the choice of the user. The index is retrieved from the order defined
+	 * by {@link #getPossibleAnswers()}.
 	 * 
-	 * <pre>
-	 * {@code 
-	 * this.getPossibleAnswers().isEmpty() ? 
-	 * 		true : this.getPossibleAnswers().contains(choice)
-	 * }
-	 * </pre>
-	 * 
-	 * @param choice
-	 *        The choice of the user
+	 * @param index
+	 *        The index of the choice the user made from
+	 *        {@link #getPossibleAnswers()}
 	 */
-	public void setUserChoice(Object choice) {
-		this.userChoice = choice;
+	public void setUserChoice(int index) {
+		this.userChoice = getPossibleAnswers().get(index);
 	}
 }

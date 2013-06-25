@@ -204,8 +204,8 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	@Override
 	public String toString() {
 		return "Player [id=" + id + ", allowedNumberOfActionsLeft=" + getAllowedNumberOfActions()
-				+ ", hasMoved=" + actionManager.hasMoved() + ", currentSquare=" + currentSquare + ", state="
-				+ state + "]";
+				+ ", hasMoved=" + actionManager.hasMoved() + ", currentSquare=" + currentSquare
+				+ ", state=" + state + "]";
 	}
 	
 	/**
@@ -285,6 +285,10 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		action.execute(this);
 		actionManager.performedAction();
 		
+		/*
+		 * The current square should only be added to the light trail when the
+		 * player has moved.
+		 */
 		if (!currentSquare.equals(oldSquare))
 			lightTrail.updateLightTrail(currentSquare);
 		else
