@@ -113,7 +113,8 @@ public class LightTrail implements Property {
 	}
 	
 	void destroy() {
-		// TODO Auto-generated method stub
+		for (SquareContainer square : lightTrail)
+			square.removeProperty(this);
 	}
 	
 	@Override
