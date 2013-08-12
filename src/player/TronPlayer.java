@@ -8,6 +8,7 @@ import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import player.actions.Action;
+import player.actions.PickupItemAction;
 import powerfailure.AffectedByPowerFailure;
 import square.FlagKeeper;
 import square.SquareContainer;
@@ -258,7 +259,26 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 			this.currentSquare.remove(this);
 	}
 	
+	private boolean isValidAction(Action action) {
+		// Make sure the player only carries one flag
+		if (action instanceof PickupItemAction) {
+			for (IItem i : getInventoryContent()) {
+				if (i instanceof Flag) {
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		return true;
+	}
+	
 	public void performAction(Action action) {
+		if (! isValidAction(action)) {
+			System.out.println("feedback");
+			return;
+		}
+		
 		SquareContainer oldSquare = currentSquare;
 		action.execute(this);
 		actionManager.performedAction();

@@ -55,6 +55,16 @@ public interface GridBuilder {
 			throws IllegalArgumentException;
 	
 	/**
+	 * Place a flag with a certain owner ID at the specified coordinate.
+	 * 
+	 * @param coordinate
+	 * 			The coordinate where the new flag will be added.
+	 * @param id
+	 * 			The owner ID of the flag.
+	 */
+    void placeFlag(Coordinate coordinate, int id);
+	
+	/**
 	 * Place a {@link LightGrenade light grenade} at the specified coordinate.
 	 * 
 	 * @param coordinate

@@ -12,6 +12,7 @@ import square.StartingPositionProperty;
 public class Flag extends Item {
 	
 	private AbstractSquare	home;
+	private int ownerID;
 	
 	/**
 	 * Creates a new Flag with a specified home.
@@ -19,8 +20,9 @@ public class Flag extends Item {
 	 * @param homeSquare
 	 *        The homeSquare of this flag.
 	 */
-	public Flag(AbstractSquare homeSquare) {
+	public Flag(AbstractSquare homeSquare, int ownerID) {
 		this.home = homeSquare;
+		this.ownerID = ownerID;
 	}
 	
 	/**
@@ -28,8 +30,14 @@ public class Flag extends Item {
 	 */
 	@Override
 	public void use(SquareContainer square, UseArguments<?> arguments) {
-		if (square.hasProperty(PropertyType.STARTING_POSITION))
 			this.teleportBack();
+	}
+	
+	/**
+	 * Sends the flag back to its home square.
+	 */
+	public void sendHome() {
+		this.teleportBack();
 	}
 	
 	@Override
@@ -44,6 +52,13 @@ public class Flag extends Item {
 	
 	private void teleportBack() {
 		this.home.addItem(this);
+	}
+	
+	/**
+	 * Return the ID of the player whose flag this is. Use this to identify different flags.
+	 */
+	public int getOwnerID() {
+		return this.ownerID;
 	}
 	
 }

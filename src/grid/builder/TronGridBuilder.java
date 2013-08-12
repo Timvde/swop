@@ -3,6 +3,7 @@ package grid.builder;
 import effects.EffectFactory;
 import grid.Coordinate;
 import grid.Grid;
+import item.Flag;
 import item.IItem;
 import item.forcefieldgenerator.ForceFieldGenerator;
 import item.identitydisk.ChargedIdentityDisk;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import player.PlayerState;
 import powerfailure.PowerFailureCreator;
+import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
 import square.PropertyType;
@@ -270,5 +272,14 @@ public class TronGridBuilder implements GridBuilder {
 			result.add(grid.get(startingPositions.get(startNumber)));
 		}
 		return result;
+	}
+
+	@Override
+	public void placeFlag(Coordinate coordinate, int id) {
+		if (!startingPositions.get(id).equals(coordinate))
+			throw new IllegalStateException("A flag is being added on the wrong square!");
+		
+		AbstractSquare homeSquare = grid.get(coordinate);
+		homeSquare.addItem(new Flag(homeSquare, id));
 	}
 }

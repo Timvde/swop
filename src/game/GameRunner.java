@@ -91,6 +91,7 @@ public class GameRunner {
 		if (mode == null)
 			throw new IllegalArgumentException("the mode cannot be null");
 		
+		// Construct the grid
 		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		director.setHeight(height);

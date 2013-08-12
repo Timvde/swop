@@ -68,8 +68,11 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	 */
 	protected void placeItemsOnBoard(Map<Integer, Coordinate> startingCoordinates, int maxX,
 			int maxY) {
-		for (Integer number : startingCoordinates.keySet())
+		// add starting positions and flags
+		for (Integer number : startingCoordinates.keySet()) {
 			builder.addPlayerStartingPosition(startingCoordinates.get(number), number);
+			builder.placeFlag(startingCoordinates.get(number), number);
+		}
 		
 		List<Coordinate> startCoords = new ArrayList<Coordinate>(startingCoordinates.values());
 		

@@ -1,5 +1,6 @@
 package player.actions;
 
+import item.Flag;
 import item.IItem;
 import player.TronPlayer;
 import square.SquareContainer;
@@ -46,6 +47,15 @@ public class PickupItemAction implements Action {
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		if (!square.contains(item))
 			throw new IllegalPickUpException("The specified item is not on the square.");
+		
+		// if the item is a flag and its the flag of the current player, return the flag
+		// to its home location and leave this method
+		if ((item instanceof Flag) && ((Flag) item).getOwnerID() == player.getID()) {
+			((Flag) item).sendHome();
+			square.remove(item);
+			
+			return;
+		}
 		
 		// remove the item from the square
 		square.remove(item);

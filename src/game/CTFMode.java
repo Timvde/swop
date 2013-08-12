@@ -2,11 +2,13 @@ package game;
 
 import item.Flag;
 import item.IItem;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import player.Player;
 import player.PlayerDataBase;
 import player.TurnEvent;
+import player.actions.UseAction;
 import effects.CTFEffectFactory;
 import effects.EffectFactory;
 
@@ -28,7 +30,7 @@ public class CTFMode implements GameMode {
 	public static final int			MINIMUM_NUMBER_OF_PLAYERS	= 2;
 	
 	private int						numberOfPlayers;
-	private Map<Player, Integer>	capturedFlagCount;
+	private Map<Player, ArrayList<Integer>>	capturedFlags;
 	
 	/**
 	 * Creates a new CTFMode with a specified number of players.
@@ -44,7 +46,7 @@ public class CTFMode implements GameMode {
 			throw new IllegalArgumentException("the number of players must be valid");
 		
 		this.numberOfPlayers = numberOfPlayers;
-		this.capturedFlagCount = new HashMap<Player, Integer>();
+		this.capturedFlags = new HashMap<Player, ArrayList<Integer>>();
 	}
 	
 	/**
@@ -71,12 +73,28 @@ public class CTFMode implements GameMode {
 			for (IItem item : curPlayer.getInventoryContent())
 				if (item instanceof Flag) {
 					// teleport back
-					item.use(curPlayer.getCurrentPosition(), item.getUseArguments());
-					capturedFlagCount.put(curPlayer, capturedFlagCount.get(curPlayer) + 1);
+					// item.use(curPlayer.getCurrentPosition(), item.getUseArguments());
+					curPlayer.performAction(new UseAction(item, null));
+					// See if this flag was already captured. If not, add it to the
+					// list for the current player.
+					int flagOwnerID = ((Flag) item).getOwnerID();
+					ArrayList<Integer> flagsCurPlayer;
+					
+					if (!capturedFlags.containsKey(curPlayer)) {
+						flagsCurPlayer = new ArrayList<Integer>();
+						flagsCurPlayer.add(flagOwnerID);
+						
+						capturedFlags.put(curPlayer, flagsCurPlayer);
+					} else if (!capturedFlags.get(curPlayer).contains(flagOwnerID)) {
+						flagsCurPlayer = capturedFlags.get(curPlayer);
+						flagsCurPlayer.add(flagOwnerID);
+						
+						capturedFlags.put(curPlayer, flagsCurPlayer);
+					}
 				}
 		}
 		
-		if (capturedFlagCount.containsKey(curPlayer) && capturedFlagCount.get(curPlayer) == playerDB.getNumberOfPlayers()) {
+		if (capturedFlags.containsKey(curPlayer) && (capturedFlags.get(curPlayer).size() == playerDB.getNumberOfPlayers() - 1)) {
 			// the player has captured all flags of all players still alive
 			playerDB.clearDataBase();
 			return true;

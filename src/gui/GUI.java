@@ -4,6 +4,7 @@ import game.Game;
 import game.GameEvent;
 import grid.Coordinate;
 import grid.GuiSquare;
+import item.Flag;
 import item.IItem;
 import item.Item;
 import item.UseArguments;
@@ -101,6 +102,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 	private Image					squareBackground;
 	private Image					generatorInactive;
 	private Image					forceField;
+	private Image	flagImage;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -175,7 +177,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 					// This block is executed with each repaint():
 					
 					// Draw some labels:
-					graphics.drawString("x", 64, 35);
+					graphics.drawString("x", 64, 55);
 					graphics.drawString("items on square:", 10, 376);
 					graphics.drawString("items in inventory:", 10, 504);
 					graphics.drawString("CURRENT PLAYER:", 550, 19);
@@ -190,8 +192,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 					
 					int GUIheight = 100 + (SQUARE_SIZE * gridHeight);
 					int GUIwidth = 180 + (SQUARE_SIZE * gridWidth);
-					if (GUIheight < 610)
-						GUIheight = 610;
+					if (GUIheight < 630)
+						GUIheight = 630;
 					if (GUIwidth < 720)
 						GUIwidth = 720;
 					
@@ -224,7 +226,6 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 						Player player = square.getPlayer();
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
-						// TODO // Draw finish lines
 						if (square.isStartingPosition()) {
 							graphics.drawImage(finish, guiCoord.getX(),
 									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
@@ -281,6 +282,10 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 							}
 							if (i instanceof ForceFieldGenerator) {
 								graphics.drawImage(generatorInactive, guiCoord.getX(),
+										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							}
+							if (i.getClass() == Flag.class) {
+								graphics.drawImage(flagImage, guiCoord.getX(),
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
 						}
@@ -429,20 +434,21 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 		this.squareBackground = gui.loadImage("square_background.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.generatorInactive = gui.loadImage("generator_inactive.png", SQUARE_SIZE, SQUARE_SIZE);
 		this.forceField = gui.loadImage("forcefield.png", SQUARE_SIZE, SQUARE_SIZE);
+		this.flagImage = gui.loadImage("flag.png", SQUARE_SIZE, SQUARE_SIZE);
 		
 		// Create the width and height config text fields
-		gridWidthTextField = gui.createTextField(35, 20, 25, 20);
-		gridHeightTextField = gui.createTextField(75, 20, 25, 20);
+		gridWidthTextField = gui.createTextField(35, 40, 25, 20);
+		gridHeightTextField = gui.createTextField(75, 40, 25, 20);
 		gridWidthTextField.setText("12");
 		gridHeightTextField.setText("12");
 		
 		// create the grid from file text field
-		gridFileTextField = gui.createTextField(11, 90, 119, 20);
+		gridFileTextField = gui.createTextField(11, 120, 119, 20);
 		gridFileTextField.setText("grid.txt");
 		
 		/* ---- ---- ---- ---- MODE CHOICE ---- ---- ---- ---- */
 		int modeElementsOffsetX = 35;
-		int modeElementsOffsetY = 155;
+		int modeElementsOffsetY = 10;
 		
 		String[] options = { "Race", "CTF" };
 		modeComboBox = gui.createComboBox(modeElementsOffsetX, modeElementsOffsetY, 70, 20,
@@ -459,9 +465,9 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 				});
 		
 		// create num players CTF text field
-		numPlayersCTFTextField = gui.createTextField(modeElementsOffsetX, modeElementsOffsetY + 25,
+		numPlayersCTFTextField = gui.createTextField(modeElementsOffsetX, modeElementsOffsetY + 173,
 				70, 20);
-		numPlayersCTFTextField.setText("# players");
+		numPlayersCTFTextField.setText("4");
 		numPlayersCTFTextField.disable();
 		/* ---- ---- ---- ---- ----------- ---- ---- ---- ---- */
 		
@@ -646,7 +652,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 				});
 		useItemButton.setText("Use item");
 		// ----
-		Button randomGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 40,
+		Button randomGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 60,
 				120, 30, new Runnable() {
 					
 					public void run() {
@@ -670,7 +676,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 									int height = Integer.parseInt(gridHeightTextField.getText());
 									int numberOfPlayers = Integer.parseInt(numPlayersCTFTextField
 											.getText());
-									newGameController.newCTFGame(width, height, numberOfPlayers);
+									newGameController.newCTFGame(width, height);
 									gui.repaint();
 								}
 								catch (NumberFormatException e) {
@@ -691,7 +697,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 				});
 		randomGameButton.setText("Rndm Game");
 		// ----
-		Button fileGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 111,
+		Button fileGameButton = gui.createButton(actionButtonsOffsetX, actionButtonsOffsetY + 141,
 				120, 30, new Runnable() {
 					
 					public void run() {

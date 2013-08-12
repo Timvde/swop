@@ -1,12 +1,16 @@
 package game;
 
 import grid.Grid;
+import grid.GridIterator;
+import item.Flag;
+import item.IItem;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import player.PlayerDataBase;
 import player.TurnEvent;
+import square.AbstractSquare;
 import square.SquareContainer;
 import square.StartingPositionProperty;
 
@@ -55,6 +59,19 @@ public class Game extends Observable implements Observer {
 		
 		playerDB.createNewDB(list);
 		fixObserversPlayerDB(grid, playerDB);
+		
+		// Remove the flags of the players that don't play. This is the case when the number
+		// of players chosen is not the same as the number of players in the grid file.
+		GridIterator gridIterator = (GridIterator) grid.getGridIterator();
+		while (gridIterator.hasNext()) {
+			SquareContainer square = gridIterator.next();
+			
+			for (IItem item : square.getAllItems()) {
+				if ((item instanceof Flag) && !square.hasPlayer()) {
+					square.remove(item);
+				}
+			}
+		}
 	}
 	
 	private void fixObserversPlayerDB(Grid grid, PlayerDataBase playerDB) {
