@@ -4,7 +4,7 @@ import player.IPlayerDataBase;
 import player.actions.EndTurnAction;
 
 /**
- * This controller will manage the end turn action.
+ * This controller will manage the end turn action
  * 
  * @author Tom
  * 
