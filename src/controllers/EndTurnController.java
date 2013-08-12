@@ -6,12 +6,12 @@ import player.actions.EndTurnAction;
 /**
  * This controller will manage the end turn action.
  * 
- * @author tom
+ * @author Tom
  * 
  */
 public class EndTurnController {
 	
-	private IPlayerDataBase	playerDB;
+	private IPlayerDataBase	playerDB; 
 	
 	/**
 	 * Create a new end turn controller.
