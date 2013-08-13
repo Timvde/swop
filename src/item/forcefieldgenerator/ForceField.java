@@ -67,7 +67,7 @@ public class ForceField implements Property {
 	public void update() {
 		counter++;
 		
-		if (counter >= squares.size() * NUMBER_OF_ACTIONS_TO_SWITCH) {
+		if (counter >= NUMBER_OF_ACTIONS_TO_SWITCH) {
 			switchForceField();
 			counter = 0;
 		}
@@ -75,9 +75,6 @@ public class ForceField implements Property {
 		// check if both generators are still there
 		int numberOfGenerators = 0;
 		for (AbstractSquare square : squares) {
-			System.out.println("Generator1: "+generator1);
-			System.out.println("Generator2: "+generator1);
-			System.out.println("Square: "+square);
 			if (square.contains(generator1) || square.contains(generator2))
 				numberOfGenerators++;
 		}

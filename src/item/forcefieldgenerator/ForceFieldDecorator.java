@@ -5,6 +5,7 @@ import item.identitydisk.IdentityDisk;
 import java.util.Observable;
 import ObjectronExceptions.IllegalMoveException;
 import player.Player;
+import player.TurnEvent;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.PropertyType;
@@ -38,7 +39,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	@Override
 	public void remove(Object object) {
 		if (forceField.getState() == ForceFieldState.ACTIVE && object instanceof Player)
-			throw new IllegalStateException("a player cannot move when there is a forcefield");
+			throw new IllegalStateException("A player cannot move when there is a forcefield.");
 		
 		super.remove(object);
 	}
@@ -46,7 +47,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	@Override
 	protected void addPlayer(Player player, Effect effect) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
-			throw new IllegalMoveException("a player cannot move onto a force field");
+			throw new IllegalMoveException("A player cannot move onto a force field.");
 		
 		super.addPlayer(player, effect);
 	}
@@ -83,6 +84,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	
 	@Override
 	public void update(Observable o, Object arg) {
+		if (((TurnEvent) arg).equals(TurnEvent.END_ACTION))
 		forceField.update();
 		
 		super.update(o, arg);

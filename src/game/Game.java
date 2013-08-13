@@ -4,6 +4,7 @@ import grid.Grid;
 import grid.GridIterator;
 import item.Flag;
 import item.IItem;
+import item.forcefieldgenerator.ForceFieldGenerator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -63,7 +64,8 @@ public class Game extends Observable implements Observer {
 		// Remove the flags of the players that don't play. This is the case
 		// when the number of players chosen is not the same as the number of
 		// players in the grid file. This will also remove ALL flags if
-		// the game mode is not CTF.
+		// the game mode is not CTF. This method will also start to activate
+		// force fields that are present at the start of the game.
 		GridIterator gridIterator = (GridIterator) grid.getGridIterator();
 		while (gridIterator.hasNext()) {
 			SquareContainer square = gridIterator.next();
@@ -76,6 +78,9 @@ public class Game extends Observable implements Observer {
 					else if (!square.hasPlayer()) {
 						square.remove(item);
 					}
+				}
+				if (item instanceof ForceFieldGenerator) {
+					((ForceFieldGenerator) item).findAndCreateForceFields(square);
 				}
 			}
 		}

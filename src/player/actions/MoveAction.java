@@ -62,8 +62,10 @@ public class MoveAction implements Action {
 			square.remove(player);
 		}
 		catch (IllegalStateException e) {
-			throw new IllegalMoveException("The player can't move away from his square.");
+			throw new IllegalMoveException("The player can't move away from his square. "
+					+ e.getMessage());
 		}
+		
 		SquareContainer oldSquare = square;
 		square = square.getNeighbourIn(direction);
 		player.setSquare(square);
@@ -78,6 +80,13 @@ public class MoveAction implements Action {
 			player.setSquare(oldSquare);
 			throw new IllegalMoveException(
 					"The player can't be added to the square in the specified direction.");
+		}
+		catch (IllegalMoveException e) {
+			// Rollback before rethrowing an exception
+			oldSquare.addPlayer(player);
+			player.setSquare(oldSquare);
+			
+			throw e;
 		}
 		
 		// Moving succeeded. Update other stuff.

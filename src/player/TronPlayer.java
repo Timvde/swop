@@ -260,7 +260,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 			this.currentSquare.remove(this);
 	}
 	
-	private boolean isValidAction(Action action) {
+	private boolean hasInventorySpace(Action action) {
 		// Make sure the player only carries one flag
 		if (action instanceof PickupItemAction) {
 			for (IItem i : getInventoryContent()) {
@@ -275,7 +275,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	public void performAction(Action action) {
-		if (! isValidAction(action)) {
+		if (! hasInventorySpace(action)) {
 			throw new InventoryAlreadyContainsFlagException("A player can only carry one flag.");
 		}
 		

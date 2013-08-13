@@ -31,14 +31,19 @@ public class ForceFieldGenerator extends Item {
 	 * @param square
 	 *        The square this forcefield is on
 	 */
-	private void findAndCreateForceFields(SquareContainer square) {
+	public void findAndCreateForceFields(SquareContainer square) {
 		for (Direction direction : Direction.values()) {
+			
 			List<SquareContainer> listOfSquares = new ArrayList<SquareContainer>();
 			SquareContainer neighbour = square;
 			listOfSquares.add(neighbour);
+			
 			for (int i = 0; i < 3; i++) {
 				neighbour = neighbour.getNeighbourIn(direction);
+				
+				if (neighbour != null)
 				listOfSquares.add(neighbour);
+				
 				if (neighbour == null || neighbour.hasProperty(PropertyType.WALL))
 					break;
 				ForceFieldGenerator neighbouringGenerator = getForceFieldGeneratorOnSquare(neighbour);
@@ -46,6 +51,7 @@ public class ForceFieldGenerator extends Item {
 					new ForceField(this, neighbouringGenerator, listOfSquares);
 				}
 			}
+			
 		}
 	}
 	
