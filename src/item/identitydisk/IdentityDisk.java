@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import square.Direction;
 import square.SquareContainer;
+import effects.DropFlagEffect;
 import effects.Effect;
 
 /**
@@ -38,9 +39,12 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		else
 			while (canMoveDisk(direction)) {
 				moveDisk(direction);
-				// test if we have hit a player (and hit him if we have)
+				// test if we have hit a player (and hit him if we have).
+				// Also add a drop flag effect, which will take care of the
+				// flag dropping
 				if (currentSquare.hasPlayer()) {
 					Effect effect = new IdentityDiskEffect();
+					effect.addEffect(new DropFlagEffect());
 					effect.execute(currentSquare.getPlayer());
 					break;
 				}

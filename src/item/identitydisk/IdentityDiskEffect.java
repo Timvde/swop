@@ -17,5 +17,6 @@ public class IdentityDiskEffect extends AbstractEffect {
 			player.skipNextTurn();
 		}
 		
+		super.execute(object);
 	}
 }

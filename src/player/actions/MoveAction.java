@@ -106,12 +106,18 @@ public class MoveAction implements Action {
 	 * @return whether the player can move in the specified direction.
 	 */
 	private boolean canMoveInDirection(SquareContainer square, Direction direction) {
-		if (square.getNeighbourIn(direction) == null)
+		if (square.getNeighbourIn(direction) == null) {
+			System.out.println("No neighbour in that direction!");
 			return false;
-		else if (!square.getNeighbourIn(direction).canAddPlayer())
+		}
+		else if (!square.getNeighbourIn(direction).canAddPlayer()) {
+			System.out.println("Cannot add the player on the new square.");
 			return false;
-		else if (crossesLightTrail(square, direction))
+		}
+		else if (crossesLightTrail(square, direction)) {
+			System.out.println("Cannot move because lighttrail is crossed.");
 			return false;
+		}
 		// darn, we could not stop the player moving
 		// better luck next time
 		return true;

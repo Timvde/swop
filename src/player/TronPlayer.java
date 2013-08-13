@@ -13,6 +13,7 @@ import powerfailure.AffectedByPowerFailure;
 import square.FlagKeeper;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
+import ObjectronExceptions.InventoryAlreadyContainsFlagException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
@@ -275,8 +276,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	public void performAction(Action action) {
 		if (! isValidAction(action)) {
-			System.out.println("feedback");
-			return;
+			throw new InventoryAlreadyContainsFlagException("A player can only carry one flag.");
 		}
 		
 		SquareContainer oldSquare = currentSquare;

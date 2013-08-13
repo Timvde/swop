@@ -60,15 +60,22 @@ public class Game extends Observable implements Observer {
 		playerDB.createNewDB(list);
 		fixObserversPlayerDB(grid, playerDB);
 		
-		// Remove the flags of the players that don't play. This is the case when the number
-		// of players chosen is not the same as the number of players in the grid file.
+		// Remove the flags of the players that don't play. This is the case
+		// when the number of players chosen is not the same as the number of
+		// players in the grid file. This will also remove ALL flags if
+		// the game mode is not CTF.
 		GridIterator gridIterator = (GridIterator) grid.getGridIterator();
 		while (gridIterator.hasNext()) {
 			SquareContainer square = gridIterator.next();
 			
 			for (IItem item : square.getAllItems()) {
-				if ((item instanceof Flag) && !square.hasPlayer()) {
-					square.remove(item);
+				if (item instanceof Flag) {
+					if (!(mode instanceof CTFMode)) {
+						square.remove(item);
+					}
+					else if (!square.hasPlayer()) {
+						square.remove(item);
+					}
 				}
 			}
 		}

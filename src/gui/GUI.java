@@ -26,7 +26,10 @@ import javax.swing.JOptionPane;
 import player.Player;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalPickUpException;
 import ObjectronExceptions.IllegalUseException;
+import ObjectronExceptions.InventoryAlreadyContainsFlagException;
+import ObjectronExceptions.InventoryFullException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 import controllers.EndTurnController;
 import controllers.GUIDataController;
@@ -614,9 +617,20 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 					
 					public void run() {
 						// Use the itemListSelected to access the Item that is
-						// selected in the items on square list!
+						// selected in the items on square list! Catch the 
+						// relevant exceptions for giving feedback to the player.
 						if (itemListSelected != null) {
-							pickUpController.pickUpItem((IItem) itemListSelected);
+							try {
+								pickUpController.pickUpItem((IItem) itemListSelected);
+							}
+							catch (InventoryFullException e) {
+								JOptionPane.showMessageDialog(gui.getFrame(),
+										e.getMessage());
+							}
+							catch (InventoryAlreadyContainsFlagException e) {
+								JOptionPane.showMessageDialog(gui.getFrame(),
+										e.getMessage());
+							}
 							itemListSelected = null;
 							gui.repaint();
 						}
@@ -674,8 +688,6 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 								try {
 									int width = Integer.parseInt(gridWidthTextField.getText());
 									int height = Integer.parseInt(gridHeightTextField.getText());
-									int numberOfPlayers = Integer.parseInt(numPlayersCTFTextField
-											.getText());
 									newGameController.newCTFGame(width, height);
 									gui.repaint();
 								}

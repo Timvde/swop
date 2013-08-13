@@ -80,6 +80,15 @@ public class SquareContainer extends AbstractSquare {
 	}
 	
 	/**
+	 * Check if this square container represents a square that is a wall part.
+	 * 
+	 * @return True if the square contained is an instance of WallPart.
+	 */
+	public boolean isWallPart() {
+		return (this.square instanceof WallPart);
+	}
+	
+	/**
 	 * Returns the neighbour in a specified direction or null if the square has
 	 * no mapping for the neighbour in the specified direction.
 	 * 
@@ -291,7 +300,7 @@ public class SquareContainer extends AbstractSquare {
 		
 		return null;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -307,7 +316,7 @@ public class SquareContainer extends AbstractSquare {
 		}
 		else if (!square.equals(other.square))
 			return false;
-		return true; 
+		return true;
 	}
 	
 	public Effect getStartTurnEffect(Effect effect) {

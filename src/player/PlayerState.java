@@ -46,10 +46,7 @@ public enum PlayerState {
 	
 	/**
 	 * A {@link Player player} is in the finished state when he has won/lost the
-	 * game. A player cannot perform any actions in the finished state.
-	 * A {@link Player player} is in the finished state when he has reached his
-	 * target {@link Square square}. When a player has reached this position,
-	 * he cannot perform actions.
+	 * game.
 	 */
 	FINISHED {
 		
@@ -58,8 +55,8 @@ public enum PlayerState {
 			if (toState == null) {
 				return false;
 			}
-			// one can go nowhere from the finished state
-			return (toState == this);
+			
+			return true;
 		}
 	};
 	

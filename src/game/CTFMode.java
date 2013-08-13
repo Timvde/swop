@@ -65,6 +65,11 @@ public class CTFMode implements GameMode {
 	public boolean checkCurrentPlayerHasWon(PlayerDataBase playerDB, TurnEvent turnEvent) {
 		Player curPlayer = playerDB.getCurrentPlayer();
 		
+		// The current player wins if he or she is the only one left
+		if (playerDB.getNumberOfPlayers() == 1) {
+			return true;
+		}
+		
 		if (curPlayer.getCurrentPosition().equals(curPlayer.getStartingPosition())) {
 			/*
 			 * the player moved to his starting location; check if he has any

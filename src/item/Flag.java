@@ -19,6 +19,8 @@ public class Flag extends Item {
 	 * 
 	 * @param homeSquare
 	 *        The homeSquare of this flag.
+	 * @param ownerID
+	 * 			The ID of the player whose flag this is.
 	 */
 	public Flag(AbstractSquare homeSquare, int ownerID) {
 		this.home = homeSquare;

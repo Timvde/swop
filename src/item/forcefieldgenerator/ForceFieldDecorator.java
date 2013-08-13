@@ -46,7 +46,7 @@ public class ForceFieldDecorator extends AbstractSquareDecorator {
 	@Override
 	protected void addPlayer(Player player, Effect effect) {
 		if (forceField.getState() == ForceFieldState.ACTIVE)
-			throw new IllegalMoveException(" a player cannot move onto a force field");
+			throw new IllegalMoveException("a player cannot move onto a force field");
 		
 		super.addPlayer(player, effect);
 	}
