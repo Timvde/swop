@@ -228,7 +228,9 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 */
 	@Override
 	public void damageByPowerFailure() {
-		this.endTurn();
+		if (canPerformAction()) {
+			this.endTurn();
+		}
 	}
 	
 	@Override
@@ -275,7 +277,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	public void performAction(Action action) {
-		if (! hasInventorySpace(action)) {
+		if (!hasInventorySpace(action)) {
 			throw new InventoryAlreadyContainsFlagException("A player can only carry one flag.");
 		}
 		

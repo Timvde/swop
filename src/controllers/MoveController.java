@@ -28,12 +28,14 @@ public class MoveController {
 	}
 	
 	/**
-	 * Move the current player.
+	 * Move the current player. The IllegalMoveException must be caught in the
+	 * GUI to notify players about move problems.
 	 * 
 	 * @param direction
 	 *        The direction to move the player in.
 	 * @throws IllegalMoveException
-	 *         If the given direction is not a legal move.
+	 *         If the given direction is not a legal move. This can be caught in
+	 *         the GUI to display feedback.
 	 */
 	public void move(Direction direction) throws IllegalMoveException {
 		playerDB.getCurrentPlayer().performAction(new MoveAction(direction));

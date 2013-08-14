@@ -7,6 +7,7 @@ import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalStepException;
+import ObjectronExceptions.IllegalTeleportException;
 
 /**
  * Move action lets a player move on the grid in a direction.
@@ -80,6 +81,16 @@ public class MoveAction implements Action {
 			player.setSquare(oldSquare);
 			throw new IllegalMoveException(
 					"The player can't be added to the square in the specified direction.");
+		}
+		catch (IllegalTeleportException e) {
+			// Rollback before rethrowing an exception
+			square.remove(player);
+			oldSquare.addPlayer(player);
+			player.setSquare(oldSquare);
+			
+			// Throw the exception as a move exception from here, so the GUI can notify
+			// the players.
+			throw new IllegalMoveException(e.getMessage());
 		}
 		catch (IllegalMoveException e) {
 			// Rollback before rethrowing an exception
