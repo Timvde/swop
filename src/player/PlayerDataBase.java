@@ -50,6 +50,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			throw new IllegalArgumentException("the list of starting positions must be valid");
 		
 		TronPlayer.resetUniqueIdcounter();
+		
 		this.clearDataBase();
 		
 		for (SquareContainer playerStartingPosition : startingPositions) {
@@ -60,7 +61,9 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
+		
 		assignNewTurn(playerList.get(currentPlayerIndex));
+		
 	}
 	
 	/**
@@ -213,6 +216,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	void actionPerformed(TronPlayer player) {
 		if (player.equals(getCurrentPlayer())) {
+			System.out.println("action performed..");
 			notifyTurnEvent(TurnEvent.END_ACTION);
 			checkEndTurn(player);
 		}
@@ -223,15 +227,17 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * use an old Player reference to break the game.
 	 */
 	public void clearDataBase() {
-		for (TronPlayer player : this.playerList) {
-			/*
-			 * Set all references of the player to null so that no-one can still
-			 * play with an old player.
-			 */
-			player.endPlayerLife();
-		}
+		
+//		for (TronPlayer player : this.playerList) {
+//			/*
+//			 * Set all references of the player to null so that no-one can still
+//			 * play with an old player.
+//			 */
+//			player.endPlayerLife();
+//		}
 		this.playerList.clear();
 		this.numOfInitialPlayers = 0;
+
 	}
 	
 	/**

@@ -31,7 +31,7 @@ public class GameRunner {
 	protected UseItemController		useItemCont;
 	protected EndTurnController		endTurnCont;
 	protected NewGameController		newGameCont;
-	protected GUI						gui;
+	protected GUI					gui;
 	
 	/**
 	 * main method, will create a new GameRunner instance and start the gui
@@ -121,6 +121,7 @@ public class GameRunner {
 			IllegalStateException, FileNotFoundException {
 		if (mode == null || file == null)
 			throw new IllegalArgumentException("the file and mode cannot be null");
+	
 		
 		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
 		FileGridBuilderDirector director = new FileGridBuilderDirector(builder, file);
@@ -146,6 +147,7 @@ public class GameRunner {
 		if (grid == null || mode == null)
 			throw new IllegalArgumentException("args cannot be null");
 		
+		
 		guiDataCont.setGrid(new GuiGridAdapter(grid));
 		
 		// fix observers of old game
@@ -154,7 +156,9 @@ public class GameRunner {
 		
 		// create a new Game and fix observers
 		game = new Game(mode, grid, playerDB);
+		
 		game.addObserver(gui);
+		
 	}
 	
 }

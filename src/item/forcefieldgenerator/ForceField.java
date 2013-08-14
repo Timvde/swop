@@ -1,9 +1,11 @@
 package item.forcefieldgenerator;
 
 import java.util.List;
+import java.util.Random;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.Property;
+import square.PropertyType;
 import square.SquareContainer;
 
 /**
@@ -16,12 +18,13 @@ import square.SquareContainer;
  */
 public class ForceField implements Property {
 	
-	private static final int	NUMBER_OF_ACTIONS_TO_SWITCH	= 2;
+	private static final int		NUMBER_OF_ACTIONS_TO_SWITCH	= 2;
 	private ForceFieldGenerator		generator1;
 	private ForceFieldGenerator		generator2;
 	private List<SquareContainer>	squares;
 	private ForceFieldState			state;
 	private int						counter;
+	private int						ID;
 	
 	/**
 	 * Create a Force Field.
@@ -34,17 +37,27 @@ public class ForceField implements Property {
 	 *        field
 	 * @param squares
 	 *        All the squares this force field affects
+	 * @param delayedStart
+	 *        A boolean to indicate that this force field needs a delayed start.
+	 *        This is used when a player puts one down and needs time to run.
 	 */
 	public ForceField(ForceFieldGenerator generator1, ForceFieldGenerator generator2,
-			List<SquareContainer> squares) {
+			List<SquareContainer> squares, boolean delayedStart) {
+		System.out.println("creating new FF");
 		this.generator1 = generator1;
 		this.generator2 = generator2;
 		this.squares = squares;
 		this.state = ForceFieldState.INACTIVE;
-		this.counter = 0;
+		this.ID = new Random().nextInt(1000);
 		
-		for (SquareContainer square : squares)
+		if (delayedStart)
+			this.counter = -2;
+		else
+			this.counter = 0;
+		
+		for (SquareContainer square : squares) {
 			square.addProperty(this);
+		}
 	}
 	
 	/**
@@ -65,9 +78,10 @@ public class ForceField implements Property {
 	 * Update this forcefield that an action has happened.
 	 */
 	public void update() {
+		System.out.println(this.ID + " got updated!");
 		counter++;
 		
-		if (counter >= NUMBER_OF_ACTIONS_TO_SWITCH) {
+		if (counter >= (NUMBER_OF_ACTIONS_TO_SWITCH) * this.squares.size()) {
 			switchForceField();
 			counter = 0;
 		}

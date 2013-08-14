@@ -1,7 +1,10 @@
 package player.actions;
 
+import item.forcefieldgenerator.ForceField;
+import item.forcefieldgenerator.ForceFieldState;
 import player.TronPlayer;
 import square.Direction;
+import square.Property;
 import square.PropertyType;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
@@ -52,7 +55,7 @@ public class MoveAction implements Action {
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentPosition();
 		if (!player.canPerformAction()) {
-			System.out.println("Actions left: "+player.getAllowedNumberOfActions());
+			System.out.println("Actions left: " + player.getAllowedNumberOfActions());
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		}
 		if (!isValidDirection(direction))
@@ -90,7 +93,8 @@ public class MoveAction implements Action {
 			oldSquare.addPlayer(player);
 			player.setSquare(oldSquare);
 			
-			// Throw the exception as a move exception from here, so the GUI can notify
+			// Throw the exception as a move exception from here, so the GUI can
+			// notify
 			// the players.
 			throw new IllegalMoveException(e.getMessage());
 		}
@@ -140,6 +144,10 @@ public class MoveAction implements Action {
 			System.out.println("Cannot move because lighttrail is crossed.");
 			return false;
 		}
+		else if (crossesForceField(square, direction)) {
+			System.out.println("Cannot move because force field is crossed.");
+			return false;
+		}
 		// darn, we could not stop the player moving
 		// better luck next time
 		return true;
@@ -164,16 +172,70 @@ public class MoveAction implements Action {
 		else if (square.getNeighbourIn(direction.getPrimaryDirections().get(1)) == null)
 			return false;
 		
-		// test if both of the neighbours have a light trail
-		else if (!square.getNeighbourIn(direction.getPrimaryDirections().get(0)).hasProperty(
+		boolean neighbour1HasLightTrail = false;
+		boolean neighbour2HasLightTrail = false;
+		boolean neighbour1HasPlayer = false;
+		boolean neighbour2HasPlayer = false;
+		
+		// test if both of the neighbours have a light trail or contain the
+		// player whose LT
+		// that is
+		if (square.getNeighbourIn(direction.getPrimaryDirections().get(0)).hasProperty(
 				PropertyType.LIGHT_TRAIL))
-			return false;
-		else if (!square.getNeighbourIn(direction.getPrimaryDirections().get(1)).hasProperty(
+			neighbour1HasLightTrail = true;
+		
+		if (square.getNeighbourIn(direction.getPrimaryDirections().get(0)).hasPlayer())
+			neighbour1HasPlayer = true;
+		
+		if (square.getNeighbourIn(direction.getPrimaryDirections().get(1)).hasProperty(
 				PropertyType.LIGHT_TRAIL))
-			return false;
+			neighbour2HasLightTrail = true;
+		
+		if (square.getNeighbourIn(direction.getPrimaryDirections().get(1)).hasPlayer())
+			neighbour2HasPlayer = true;
 		
 		// it looks like the player crosses a light trail
 		// he will not get away with this ...
-		return true;
+		return ((neighbour1HasLightTrail && neighbour2HasLightTrail) 
+				|| (neighbour1HasLightTrail && neighbour2HasPlayer) 
+				|| (neighbour1HasPlayer && neighbour2HasLightTrail));
+	}
+	
+	/**
+	 * Returns whether the player would cross a force field if he moved in the
+	 * specified direction
+	 * 
+	 * @param direction
+	 *        The direction to test
+	 * @return True if the player crosses a force field, otherwise false
+	 */
+	private boolean crossesForceField(SquareContainer square, Direction direction) {
+		// test if we are moving sideways
+		if (direction.getPrimaryDirections().size() != 2)
+			return false;
+		
+		// test if the square has a neighbour in both directions
+		else if (square.getNeighbourIn(direction.getPrimaryDirections().get(0)) == null)
+			return false;
+		else if (square.getNeighbourIn(direction.getPrimaryDirections().get(1)) == null)
+			return false;
+		
+		SquareContainer neighbour1 = square.getNeighbourIn(direction.getPrimaryDirections().get(0));
+		SquareContainer neighbour2 = square.getNeighbourIn(direction.getPrimaryDirections().get(1));
+		
+		boolean neighbour1HasForcefield = false;
+		boolean neighbour2HasForcefield = false;
+		
+		for (Property property : neighbour1.getProperties())
+			if (property instanceof ForceField
+					&& ((ForceField) property).getState() == ForceFieldState.ACTIVE)
+				neighbour1HasForcefield = true;
+		
+		for (Property property : neighbour2.getProperties())
+			if (property instanceof ForceField
+					&& ((ForceField) property).getState() == ForceFieldState.ACTIVE)
+				neighbour2HasForcefield = true;
+		
+		return (neighbour1HasForcefield && neighbour2HasForcefield);
 	}
 }

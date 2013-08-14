@@ -5,6 +5,7 @@ import item.Item;
 import item.UseArguments;
 import java.util.ArrayList;
 import java.util.List;
+import ObjectronExceptions.IllegalUseException;
 import square.AbstractSquare;
 import square.Direction;
 import square.PropertyType;
@@ -19,9 +20,21 @@ public class ForceFieldGenerator extends Item {
 	
 	@Override
 	public void use(SquareContainer square, UseArguments<?> arguments) {
+		if (squareContainsFFG(square))
+			throw new IllegalUseException(
+					"There can only be one force field generator on a square.");
+		
 		square.addItem(this);
 		
 		findAndCreateForceFields(square);
+	}
+	
+	private boolean squareContainsFFG(SquareContainer square) {
+		for (IItem item : square.getAllItems()) {
+			if (item instanceof ForceFieldGenerator)
+				return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -42,13 +55,16 @@ public class ForceFieldGenerator extends Item {
 				neighbour = neighbour.getNeighbourIn(direction);
 				
 				if (neighbour != null)
-				listOfSquares.add(neighbour);
+					listOfSquares.add(neighbour);
 				
 				if (neighbour == null || neighbour.hasProperty(PropertyType.WALL))
 					break;
 				ForceFieldGenerator neighbouringGenerator = getForceFieldGeneratorOnSquare(neighbour);
 				if (neighbouringGenerator != null) {
-					new ForceField(this, neighbouringGenerator, listOfSquares);
+					if (square.hasPlayer())
+						new ForceField(this, neighbouringGenerator, listOfSquares, true);
+					else
+						new ForceField(this, neighbouringGenerator, listOfSquares, false);
 				}
 			}
 			

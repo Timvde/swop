@@ -48,7 +48,7 @@ public class Game extends Observable implements Observer {
 		if (grid.getAllStartingPositions().size() < mode.getNumberOfPlayers())
 			throw new IllegalStateException(
 					"The number of players must be less then or equal to the number of starting locations defined in the grid");
-		
+	
 		this.mode = mode;
 		
 		// unwrap the superfluous playerstarts
@@ -57,8 +57,9 @@ public class Game extends Observable implements Observer {
 			list.get(i).removeProperty(new StartingPositionProperty());
 		
 		list = list.subList(0, mode.getNumberOfPlayers());
-		
+
 		playerDB.createNewDB(list);
+	
 		fixObserversPlayerDB(grid, playerDB);
 		
 		// Remove the flags of the players that don't play. This is the case

@@ -26,7 +26,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	static final double	PERCENTAGE_OF_GRENADES				= 0.02;
 	static final double	PERCENTAGE_OF_TELEPORTERS			= 0.03;
 	static final double	PERCENTAGE_OF_IDENTITY_DISKS		= 0.02;
-	static final double	PERCENTAGE_OF_GENERATORS			= 0.02;
+	static final double	PERCENTAGE_OF_GENERATORS			= 0.05;
 	static final int	NUMBER_OF_CHARGED_IDENTITY_DISKS	= 1;
 	static final int	MAX_CID_SHORTEST_PATH_DISTANCE		= 2;
 	
@@ -102,6 +102,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	private void addItemCoordinates(List<Coordinate> startingCoordinates, int maxX, int maxY,
 			double percentage, Set<Coordinate> itemLocations) {
 		int numberOfItemsToPlace = (int) Math.ceil(builder.getNumberOfSquares() * percentage);
+
 		while (itemLocations.size() < numberOfItemsToPlace) {
 			Coordinate position = Coordinate.random(maxX + 1, maxY + 1);
 			if (builder.canPlaceItem(position) && !itemLocations.contains(position)
@@ -139,8 +140,9 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 		// place all light grenades
 		addItemCoordinates(startingCoordinates, maxX, maxY, PERCENTAGE_OF_GRENADES,
 				placedLGCoordinates);
-		for (Coordinate coord : placedLGCoordinates)
+		for (Coordinate coord : placedLGCoordinates) {
 			builder.placeLightGrenade(coord);
+		}
 	}
 	
 	/**
@@ -214,20 +216,19 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 		Set<Coordinate> placedIdentityDisksCoordinates = new HashSet<Coordinate>();
 		
 		/*
-		 * A IDdisk should be within a 5x5 square of each starting position. In
-		 * general, this is a 9x9 square with the starting positions in the
-		 * middle.
+		 * A IDdisk should be within a 7x7 square of each starting position.
 		 */
 		Random rand = new Random();
 		for (Coordinate startCoord : startingCoordinates) {
 			Coordinate position = null;
 			do {
-				int x = startCoord.getX() - 4 + rand.nextInt(9);
-				int y = startCoord.getY() - 4 + rand.nextInt(9);
+				int x = startCoord.getX() - 6 + rand.nextInt(13);
+				int y = startCoord.getY() - 6 + rand.nextInt(13);
 				position = new Coordinate(x, y);
 			} while (!builder.canPlaceItem(position)
 					|| placedIdentityDisksCoordinates.contains(position)
 					|| startingCoordinates.contains(position));
+			
 			placedIdentityDisksCoordinates.add(position);
 		}
 		
