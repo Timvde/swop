@@ -12,7 +12,7 @@ public class EndTurnAction implements Action {
 	public void execute(TronPlayer player) {
 		if (!player.canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
-		
+
 		player.endTurn();
 	}
 	

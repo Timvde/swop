@@ -142,8 +142,8 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	public void endTurn() throws IllegalActionException {
 		if (!canPerformAction())
 			throw new IllegalActionException("The player must be allowed to perform an action.");
-		
-		actionManager.resetActions();
+
+		actionManager.resetActionsToEndTurn();
 	}
 	
 	/**
@@ -252,7 +252,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 */
 	void endPlayerLife() {
 		this.playerDB = null;
-		this.currentSquare = null;
 		this.id = -1;
 		this.inventory.removeAll();
 		this.lightTrail.destroy();
@@ -260,6 +259,8 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		
 		if (currentSquare != null)
 			this.currentSquare.remove(this);
+		
+		this.currentSquare = null;
 	}
 	
 	private boolean hasInventorySpace(Action action) {

@@ -32,14 +32,16 @@ public class TertiaryPowerFailure extends PowerFailure {
 	
 	@Override
 	public void updateStatus(TurnEvent event) {
-		decreaseTimeToLive();
-		
-		// rotate the power failure
-		if (timeToLive <= 0) {
-			timeToLive = TIME_TO_LIVE;
-			if (square != null)
-				square.removeProperty(this);
-			updateSquare();
+		if (event == TurnEvent.END_ACTION) {
+			decreaseTimeToLive();
+			
+			// rotate the power failure
+			if (timeToLive <= 0) {
+				timeToLive = TIME_TO_LIVE;
+				if (square != null)
+					square.removeProperty(this);
+				updateSquare();
+			}
 		}
 	}
 	

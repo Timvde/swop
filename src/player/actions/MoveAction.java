@@ -51,8 +51,10 @@ public class MoveAction implements Action {
 	 */
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentPosition();
-		if (!player.canPerformAction())
+		if (!player.canPerformAction()) {
+			System.out.println("Actions left: "+player.getAllowedNumberOfActions());
 			throw new IllegalActionException("The player must be allowed to perform an action.");
+		}
 		if (!isValidDirection(direction))
 			throw new IllegalArgumentException("The specified direction is not valid.");
 		if (!canMoveInDirection(square, direction))

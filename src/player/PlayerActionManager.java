@@ -78,8 +78,9 @@ public class PlayerActionManager {
 	/**
 	 * Reset the number of actions left
 	 */
-	void resetActions() {
-		this.actionsLeft = 0;
+	void resetActionsToEndTurn() {
+		//this.actionsLeft = 0;
+		this.actionsLeft = 1;
 	}
 	
 	/**
@@ -97,8 +98,9 @@ public class PlayerActionManager {
 			
 			effect.execute(player);
 			
-			this.actionsLeft = Math.min(this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN,
-					MAX_NUMBER_OF_ACTIONS_PER_TURN);
+//			this.actionsLeft = Math.min(this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN,
+//					MAX_NUMBER_OF_ACTIONS_PER_TURN);
+			this.actionsLeft = this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		}
 	}
 	

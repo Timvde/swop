@@ -49,7 +49,7 @@ public class Flag extends Item {
 	
 	@Override
 	public String toString() {
-		return "Flag " + home;
+		return "Flag " + ownerID;
 	}
 	
 	private void teleportBack() {

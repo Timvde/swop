@@ -17,6 +17,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	
 	private List<TronPlayer>	playerList;
 	private int					currentPlayerIndex;
+	private int					numOfInitialPlayers;
 	
 	/**
 	 * Creates a new empty PlayerDataBase. To fill the database with players,
@@ -54,6 +55,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		for (SquareContainer playerStartingPosition : startingPositions) {
 			TronPlayer newPlayer = new TronPlayer(this, playerStartingPosition);
 			this.playerList.add(newPlayer);
+			this.numOfInitialPlayers += 1;
 		}
 		
 		// Set the first player as starting player.
@@ -117,6 +119,15 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
+	 * Returns the number of players that initially started in this game.
+	 * 
+	 * @return The number of players at the start of the game.
+	 */
+	public int getNumberOfInitialPlayers() {
+		return this.numOfInitialPlayers;
+	}
+	
+	/**
 	 * Ends a player's turn. If the specified player is not the current player
 	 * (i.e. {@link #getCurrentPlayer()}), this method will return. Else it will
 	 * set the state of the specified player to {@link PlayerState#WAITING} and
@@ -148,15 +159,15 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		notifyTurnEvent(TurnEvent.END_TURN);
 		
 		// Switch players and assign a new turn
-		player.getActionManager().resetActions();
+		// player.getActionManager().resetActions();
 		player.setPlayerState(PlayerState.WAITING);
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 		TronPlayer newPlayer = playerList.get(currentPlayerIndex);
 		
 		/*
-		 * Assign new actions to the specified player and set him active.
-		 * This may introduce a new player switch (the resulting penalty
-		 * after adding new actions may still be < 0)
+		 * Assign new actions to the specified player and set him active. This
+		 * may introduce a new player switch (the resulting penalty after adding
+		 * new actions may still be < 0)
 		 */
 		assignNewTurn(newPlayer);
 	}
@@ -220,6 +231,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 			player.endPlayerLife();
 		}
 		this.playerList.clear();
+		this.numOfInitialPlayers = 0;
 	}
 	
 	/**
