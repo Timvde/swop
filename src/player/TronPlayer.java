@@ -265,7 +265,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	public void performAction(Action action) {
 		SquareContainer oldSquare = currentSquare;
 		action.execute(this);
-		actionManager.performedAction();
 		
 		/*
 		 * The current square should only be added to the light trail when the
@@ -275,6 +274,8 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 			lightTrail.updateLightTrail(currentSquare);
 		else
 			lightTrail.updateLightTrail();
+		
+		actionManager.performedAction();
 	}
 	
 	PlayerActionManager getActionManager() {
