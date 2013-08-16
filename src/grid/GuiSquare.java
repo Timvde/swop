@@ -5,7 +5,7 @@ import java.util.List;
 import player.Player;
 
 /**
- * A more usable interface of square for the gui 
+ * A more usable interface of square for the gui
  */
 public interface GuiSquare {
 	
@@ -66,6 +66,10 @@ public interface GuiSquare {
 	
 	/**
 	 * Checks whether this square contains the specified object
+	 * 
+	 * @param object
+	 *        The object to check.
+	 * @return True if this square contains the object.
 	 */
 	public boolean contains(Object object);
 	

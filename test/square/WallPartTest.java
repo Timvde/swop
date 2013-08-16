@@ -55,33 +55,8 @@ public class WallPartTest {
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)
-	public void removePlayer() {
-		wall.remove(new DummyPlayer());
-	}
-	
-	@Test
-	public void testHasLightTrail() {
-		assertFalse(wall.hasLightTrail());
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
 	public void testPickUpItem() {
 		wall.pickupItem(1);
-	}
-	
-	@Test
-	public void testHasPowerFailure() {
-		assertFalse(wall.hasPowerFailure());
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void testPlaceLightTrail() {
-		wall.placeLightTrail();
-	}
-	
-	@Test(expected = UnsupportedOperationException.class)
-	public void testRemoveLightTrail() {
-		wall.removeLightTrail();
 	}
 	
 	@Test(expected = UnsupportedOperationException.class)

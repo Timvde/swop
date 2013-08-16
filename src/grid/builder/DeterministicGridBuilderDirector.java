@@ -21,6 +21,7 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	public static final Coordinate	PLAYER2_START_POS				= new Coordinate(
 																			0,
 																			PREDIFINED_GRID_SIZE - 1);
+	@SuppressWarnings("unused")
 	private boolean					usePowerfailure;
 	
 	/**
@@ -56,16 +57,16 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 	 * 
 	 * <pre>
 	 * _____________________________
-	 * |  |  |  | F| F| F|  | u|  | 1|
-	 * |  |  |  | F| F| F|  |  |  |  |
-	 * |  |  |  | F| F| F|  | l|  |t1|
+	 * |  |  |  |  |  |  |  | u|  | 1|
+	 * |  |  |  |  |  |  |  |  |  |  |
+	 * |  |  |  |  |  | 1|  | l|  |t1|
 	 * |  |  |  |  |  |  |  |  |  |  |
 	 * |  |  |  |  |  |  |  |  |  |  |
 	 * |  |  |  |  | x| x| x| x| x|  |
 	 * |  |  |  |  |  |  |  | l|  |  |
 	 * |t2|  | l|  |  |  |  |  | l|  |
 	 * |  |  |  |  |  | l| l| l| l|  |
-	 * | 2|  | u|  |  |  |  |  |  |  |
+	 * | 2|2 | u|  |  |  |  |  |  |  |
 	 * -------------------------------
 	 * </pre>
 	 * 
@@ -96,14 +97,13 @@ public class DeterministicGridBuilderDirector extends GridBuilderDirector {
 		builder.addPlayerStartingPosition(PLAYER1_START_POS, 1);
 		builder.addPlayerStartingPosition(PLAYER2_START_POS, 2);
 		
+		builder.placeFlag(PLAYER1_START_POS, 1);
+		builder.placeFlag(PLAYER2_START_POS, 2);
+		
 		Coordinate t1 = new Coordinate(PREDIFINED_GRID_SIZE - 1, 2);
 		Coordinate t2 = new Coordinate(0, PREDIFINED_GRID_SIZE - 3);
 		builder.placeTeleporter(t1, t2);
 		builder.placeTeleporter(t2, t1);
-		
-		if (usePowerfailure) {
-			// TODO do we need support for powerfailures?
-		}
 	}
 	
 	/**

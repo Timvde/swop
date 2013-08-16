@@ -2,6 +2,7 @@ package item.identitydisk;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import item.UseArguments;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,31 +39,39 @@ public class IdentityDiskTest {
 			container = new SquareContainer(neighbours, new NormalSquare());
 		}
 		
-		identityDisk.setDirection(Direction.EAST);
-		identityDisk.use(first);
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(2);
+		UseArguments<?> arguments = identityDisk.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		identityDisk.use(first, arguments);
 		
 		assertEquals(identityDisk, container.getAllItems().get(0));
 	}
 	
 	@Test
 	public final void testUse_ItemCannotMove() {
-		identityDisk.setDirection(Direction.EAST);
-		identityDisk.use(square);
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(2);
+		UseArguments<?> arguments = identityDisk.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		identityDisk.use(square, arguments);
 		
 		assertEquals(identityDisk, square.getAllItems().get(0));
 	}
 	
 	@Test(expected = IllegalStateException.class)
-	public final void testUse_noDirectionSet() {
-		identityDisk.use(new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
-				new NormalSquare()));
-	}
-	
-	@Test(expected = IllegalStateException.class)
-	public final void testUse_useItemTwice() {
-		identityDisk.setDirection(Direction.EAST);
-		identityDisk.use(square);
-		identityDisk.use(square);
+	public final void testUse_useItemNullSquare() {
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(2);
+		UseArguments<?> arguments = identityDisk.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		identityDisk.use(null, arguments);
 	}
 	
 	@Test
@@ -82,8 +91,13 @@ public class IdentityDiskTest {
 			square = new SquareContainer(neighbours, new NormalSquare());
 		}
 		
-		identityDisk.setDirection(Direction.EAST);
-		identityDisk.use(first);
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(2);
+		UseArguments<?> arguments = identityDisk.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		identityDisk.use(first, arguments);
 		
 		assertEquals(identityDisk, goal.getAllItems().get(0));
 		assertTrue(square.getAllItems().isEmpty());
@@ -92,16 +106,6 @@ public class IdentityDiskTest {
 	@Test
 	public final void testIsCarriable() {
 		assertTrue(identityDisk.isCarriable());
-	}
-	
-	@Test
-	public final void testTeleportTo() {
-		// TODO: fix this
-	}
-	
-	@Test(expected = IllegalArgumentException.class)
-	public final void testTeleportTo_nullArgument() {
-		// TODO: fix this
 	}
 	
 	@Test

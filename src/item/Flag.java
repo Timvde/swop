@@ -2,9 +2,7 @@ package item;
 
 import game.CTFMode;
 import square.AbstractSquare;
-import square.PropertyType;
 import square.SquareContainer;
-import square.StartingPositionProperty;
 
 /**
  * A Flag-item for the {@link CTFMode Capture the flag game}.
@@ -58,6 +56,7 @@ public class Flag extends Item {
 	
 	/**
 	 * Return the ID of the player whose flag this is. Use this to identify different flags.
+	 * @return The owner ID.
 	 */
 	public int getOwnerID() {
 		return this.ownerID;

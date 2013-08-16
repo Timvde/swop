@@ -1,11 +1,6 @@
 package scenariotests;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import game.CTFMode;
 import game.GameMode;
 import game.RaceMode;
@@ -19,11 +14,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import player.Player;
 import player.PlayerActionManager;
-import player.PlayerState;
 import player.TronPlayer;
 import player.actions.MoveAction;
 import square.Direction;
-import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
 import ObjectronExceptions.IllegalMoveException;
 
@@ -173,38 +166,6 @@ public class MovePlayerTest extends SetUpTestGrid {
 	public void testMoveOnLightTrail() {
 		moveCont.move(Direction.SOUTH);
 		moveCont.move(Direction.NORTH);
-	}
-	
-	@Test
-	public void testPlayerWin() {
-		// Player 1
-		Player player1 = playerDB.getCurrentPlayer();
-		moveCont.move(Direction.SOUTH);
-		moveCont.move(Direction.SOUTH);
-		// now player 1 is teleported
-		moveCont.move(Direction.SOUTH);
-		endTurnCont.endTurn();
-		
-		// player 2
-		assertNotSame(player1, playerDB.getCurrentPlayer());
-		Player player2 = playerDB.getCurrentPlayer();
-		SquareContainer player2Start = player2.getCurrentPosition();
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
-		moveCont.move(Direction.EAST);
-		
-		// player 1
-		assertSame(player1, playerDB.getCurrentPlayer());
-		moveCont.move(Direction.SOUTH);
-		assertEquals(player2Start, player1.getCurrentPosition());
-		
-		if (getMode() instanceof RaceMode) {
-			assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
-		}
-		else if (getMode() instanceof CTFMode) {
-			assertEquals(PlayerState.ACTIVE, ((TronPlayer) player1).getPlayerState());
-		}
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

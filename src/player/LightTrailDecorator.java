@@ -1,6 +1,5 @@
 package player;
 
-import powerfailure.PowerFailureDecorator;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.PropertyType;

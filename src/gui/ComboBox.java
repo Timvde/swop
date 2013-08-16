@@ -4,11 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 
+@SuppressWarnings("javadoc")
 public final class ComboBox {
 	
+	@SuppressWarnings("rawtypes")
 	final JComboBox	cb;
 	Runnable		clickHandler;
 	
+	@SuppressWarnings("rawtypes")
 	ComboBox(JComboBox cb) {
 		this.cb = cb;
 		cb.addActionListener(new ActionListener() {

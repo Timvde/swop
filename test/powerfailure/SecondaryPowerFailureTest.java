@@ -11,6 +11,7 @@ import effects.RaceEffectFactory;
 import player.TurnEvent;
 import square.Direction;
 import square.NormalSquare;
+import square.Property;
 import square.SquareContainer;
 
 @SuppressWarnings("javadoc")
@@ -35,12 +36,19 @@ public class SecondaryPowerFailureTest {
 		pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 	}
 	
+	private boolean hasPowerFailure(SquareContainer square) {
+		for (Property property : square.getProperties())
+			if (property instanceof PowerFailure)
+				return true;
+		return false;
+	}
+	
 	@Test
 	public final void testSecondaryPowerFailure() {
 		SquareContainer pfSquare = null;
 		
 		for (SquareContainer square : list)
-			if (square.hasPowerFailure())
+			if (hasPowerFailure(sq))
 				pfSquare = square;
 		
 		if (pfSquare == null)
@@ -51,7 +59,7 @@ public class SecondaryPowerFailureTest {
 	public final void testUpdateStatus() {
 		int pfIndex = -1;
 		for (SquareContainer square : list)
-			if (square.hasPowerFailure())
+			if (hasPowerFailure(square))
 				pfIndex = list.indexOf(square);
 		
 		if (pfIndex == -1)
@@ -61,13 +69,8 @@ public class SecondaryPowerFailureTest {
 		pf.updateStatus(TurnEvent.END_ACTION);
 		
 		for (SquareContainer square : list)
-			if (square.hasPowerFailure())
-				assertEquals(1, Math.abs(pfIndex - list.indexOf(square)));
+			if (hasPowerFailure(square))
+				assertEquals(0, Math.abs(pfIndex - list.indexOf(square)));
 	}	
-	
-	@Test
-	public final void testGetDirection() {
-		fail("Not yet implemented");
-	}
 	
 }

@@ -55,7 +55,6 @@ public class MoveAction implements Action {
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentPosition();
 		if (!player.canPerformAction()) {
-			System.out.println("Actions left: " + player.getAllowedNumberOfActions());
 			throw new IllegalActionException("The player must be allowed to perform an action.");
 		}
 		if (!isValidDirection(direction))
@@ -133,19 +132,15 @@ public class MoveAction implements Action {
 	 */
 	private boolean canMoveInDirection(SquareContainer square, Direction direction) {
 		if (square.getNeighbourIn(direction) == null) {
-			System.out.println("No neighbour in that direction!");
 			return false;
 		}
 		else if (!square.getNeighbourIn(direction).canAddPlayer()) {
-			System.out.println("Cannot add the player on the new square.");
 			return false;
 		}
 		else if (crossesLightTrail(square, direction)) {
-			System.out.println("Cannot move because lighttrail is crossed.");
 			return false;
 		}
 		else if (crossesForceField(square, direction)) {
-			System.out.println("Cannot move because force field is crossed.");
 			return false;
 		}
 		// darn, we could not stop the player moving

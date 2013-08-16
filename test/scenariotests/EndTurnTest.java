@@ -3,12 +3,9 @@ package scenariotests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import game.CTFMode;
-import game.GameMode;
-import game.RaceMode;
 import grid.builder.DeterministicGridBuilderDirector;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theory;
 import player.Player;
 import player.PlayerActionManager;
 import player.TronPlayer;
@@ -22,16 +19,9 @@ import ObjectronExceptions.IllegalActionException;
 @SuppressWarnings("javadoc")
 public class EndTurnTest extends SetUpTestGrid {
 	
-	public static @DataPoints
-	GameMode[]	candidates	= { new RaceMode(),
-			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
-	
-	/**
-	 * This method will be called with all gamemodes.
-	 */
-	@Theory
-	public void setUp(GameMode mode) {
-		super.setUp(mode);
+	@Before
+	public void setUp() {
+		super.setUp(new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID));
 	}
 	
 	@Test

@@ -61,8 +61,7 @@ public class NewGameController {
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
 	 */
-	public void newCTFGame(int width, int height)
-			throws IllegalArgumentException {
+	public void newCTFGame(int width, int height) throws IllegalArgumentException {
 		GameMode mode = new CTFMode(4);
 		this.gameRunner.newGame(mode, width, height);
 	}
@@ -72,12 +71,17 @@ public class NewGameController {
 	 * 
 	 * @param file
 	 *        The filepath of the grid-file.
+	 * @throws InvalidGridFileException
+	 *         The grid file is invalid
+	 * @throws IllegalStateException
 	 * @throws FileNotFoundException
+	 *         The file was not found.
 	 * @throws GridBuildException
 	 *         The grid file must exist, adhere the correct rules and it cannot
 	 *         contain invalid characters.
 	 */
-	public void newRaceGame(String file) throws InvalidGridFileException, IllegalStateException, FileNotFoundException {
+	public void newRaceGame(String file) throws InvalidGridFileException, IllegalStateException,
+			FileNotFoundException {
 		GameMode mode = new RaceMode();
 		this.gameRunner.newGame(mode, file);
 	}
@@ -89,7 +93,9 @@ public class NewGameController {
 	 *        The filepath of the grid-file.
 	 * @param numberOfPlayers
 	 *        the number of players in the game
-	 * @throws FileNotFoundException 
+	 * @throws InvalidGridFileException
+	 *         The grid file is invalid.
+	 * @throws FileNotFoundException
 	 * @throws GridBuildException
 	 *         The grid file must exist, adhere the correct rules and it cannot
 	 *         contain invalid characters.
@@ -100,7 +106,8 @@ public class NewGameController {
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
 	 */
-	public void newCTFGame(String file, int numberOfPlayers) throws InvalidGridFileException, IllegalStateException, FileNotFoundException {
+	public void newCTFGame(String file, int numberOfPlayers) throws InvalidGridFileException,
+			IllegalStateException, FileNotFoundException {
 		GameMode mode = new CTFMode(numberOfPlayers);
 		this.gameRunner.newGame(mode, file);
 	}

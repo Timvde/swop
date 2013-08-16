@@ -1,6 +1,5 @@
 package square;
 
-import player.LightTrailDecorator;
 import item.IItem;
 
 /**
@@ -30,8 +29,7 @@ public class StartingPositionDecorator extends AbstractSquareDecorator {
 	 */
 	@Override
 	public boolean canAddItem(IItem item) {
-		return false;
-		//FIXME dit mag wel at runtime?
+		return true;
 	}
 	
 	@Override

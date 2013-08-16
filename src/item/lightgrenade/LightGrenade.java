@@ -70,7 +70,6 @@ public class LightGrenade extends Item {
 					+ " to 'enabled'");
 		
 		this.state = LightGrenadeState.ACTIVE;
-		System.out.println("state: " + this.state);
 	}
 	
 	/**
@@ -114,8 +113,6 @@ public class LightGrenade extends Item {
 		square.addItem(this);
 		
 		this.enable();
-		
-		System.out.println("Lightgrenade enabled.");
 	}
 	
 	@Override

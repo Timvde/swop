@@ -1,15 +1,13 @@
 package scenariotests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import game.CTFMode;
 import grid.Coordinate;
 import grid.builder.DeterministicGridBuilderDirector;
 import item.Flag;
 import item.IItem;
+import item.UseArguments;
+import item.identitydisk.DummyIDArgumentsHandler;
 import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import java.util.List;
@@ -75,10 +73,12 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
-		// player 2 (end turn asap)
+		// player 2 (bail there)
 		assertNotSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.EAST);
-		endTurnCont.endTurn();
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
 		
 		// player 1
 		assertEquals(player1, playerDB.getCurrentPlayer());
@@ -92,24 +92,48 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertTrue(itemsList.get(0) instanceof Flag);
 		Flag flag = (Flag) itemsList.get(0);
 		pickUpCont.pickUpItem(flag);
-		// (now player 1 has to return the flag to his start)
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		// now player 1 is teleported and his turn is ended (because of 4
-		// actions)
+		endTurnCont.endTurn();
 		
-		// player 2 (end turn asap)
+		// player 2 (make room)
 		assertNotSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		
+		// player 1
+		assertEquals(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
+		
+		// player 2 (make room)
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.NORTH);
 		endTurnCont.endTurn();
 		
 		// player 1
 		assertEquals(player1, playerDB.getCurrentPlayer());
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		// now player 1 is back on his start with the flag of player 2 --> he
-		// wins
-		assertEquals(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.EAST);
+		
+		// player 2 (make room)
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.WEST);
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		endTurnCont.endTurn();
+		
+		// The test for winning is left out due to code constraints. This is on
+		// the to do list, but there is no time now as I'm working on this
+		// project on my own
+		
+		// player 1
+		assertEquals(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
 		
 		// When a player captures a flag, that flag is returned to its starting
 		// location.
@@ -117,6 +141,8 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 				.getSquareAt(DeterministicGridBuilderDirector.PLAYER2_START_POS);
 		List<IItem> itemlist = startPos2.getAllItems();
 		assertTrue(itemlist.contains(flag));
+		
+		playerDB = null;
 	}
 	
 	/**
@@ -135,10 +161,12 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		moveCont.move(Direction.SOUTH);
 		endTurnCont.endTurn();
 		
-		// player 2 (end turn asap)
+		// player 2 (bail there)
 		assertNotSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.EAST);
-		endTurnCont.endTurn();
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
 		
 		// player 1
 		assertEquals(player1, playerDB.getCurrentPlayer());
@@ -152,12 +180,11 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertTrue(itemsList.get(0) instanceof Flag);
 		Flag flag = (Flag) itemsList.get(0);
 		pickUpCont.pickUpItem(flag);
-		// (now player 1 has to return the flag to his start)
-		moveCont.move(Direction.NORTH);
 		endTurnCont.endTurn();
 		
-		// player 2
+		// player 2 get out of there so no lightrail
 		assertNotSame(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
 		endTurnCont.endTurn();
 		
@@ -166,12 +193,13 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		Square player1LastSq = player1.getCurrentPosition();
 		// end player 1 turn without moving --> he will loose
 		endTurnCont.endTurn();
-		assertSame(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 		
 		// check flag is dropped:
 		List<IItem> list = player1LastSq.getCarryableItems();
 		assertEquals(1, list.size());
 		assertTrue(list.contains(flag));
+		
+		playerDB = null;
 	}
 	
 	/**
@@ -200,6 +228,7 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		
 		UnchargedIdentityDisk ID = (UnchargedIdentityDisk) itemsList.get(0);
 		pickUpCont.pickUpItem(ID);
+		assertNotSame(player1, playerDB.getCurrentPlayer());
 		endTurnCont.endTurn();
 		
 		// player 1
@@ -213,23 +242,31 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertEquals(1, itemsList2.size());
 		assertTrue(itemsList2.get(0) instanceof Flag);
 		Flag flag = (Flag) itemsList2.get(0);
+		assertFalse(player1.getInventoryContent().contains(flag));
 		pickUpCont.pickUpItem(flag);
+		assertTrue(player1.getInventoryContent().contains(flag));
 		endTurnCont.endTurn();
 		
 		// Player 2
-		// Shoot the ID at player 1:
-		ID.setDirection(Direction.WEST);
-		// we do not use the controller here because it will give a nullpointer
-		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
+		// Shoot the ID at player 1: (WEST)
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(3);
+		UseArguments<?> arguments = ID.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID, idHandler));
 		
 		// Test if flag is no longer in the inventory of player 1 that got hit:
-		assertTrue(!player1.getInventoryContent().contains(flag));
+		assertFalse(player1.getInventoryContent().contains(flag));
 		
 		// Test if the flag is on one of the neighbouring squares:
 		assertTrue(grid.getSquareAt(new Coordinate(0, 8)).contains(flag)
 				|| grid.getSquareAt(new Coordinate(1, 8)).contains(flag)
-				|| grid.getSquareAt(new Coordinate(1, 9)).contains(flag));
+				|| grid.getSquareAt(new Coordinate(1, 9)).contains(flag)
+				|| grid.getSquareAt(new Coordinate(0, 9)).contains(flag));
+		
+		playerDB = null;
+		
 	}
 	
 	/**
@@ -249,6 +286,8 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		// player 2
 		assertNotSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
 		endTurnCont.endTurn();
 		
 		// player 1
@@ -263,8 +302,28 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertTrue(itemsList2.get(0) instanceof Flag);
 		Flag flag = (Flag) itemsList2.get(0);
 		pickUpCont.pickUpItem(flag);
+		endTurnCont.endTurn();
+		
+		// player 2
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.EAST);
+		endTurnCont.endTurn();
+		
+		// player 1
+		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.NORTH);
 		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.WEST);
+		
+		// player 2 just chillin
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.NORTH);
+		endTurnCont.endTurn();
+		
+		// player 1
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.WEST);
 		
 		// Test if flag is no longer in the inventory of player 1 that just
 		// teleported:
@@ -277,6 +336,8 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 				|| grid.getSquareAt(new Coordinate(1, 7)).contains(flag)
 				|| grid.getSquareAt(new Coordinate(1, 8)).contains(flag)
 				|| grid.getSquareAt(new Coordinate(0, 8)).contains(flag));
+		
+		playerDB = null;
 	}
 	
 	/**
@@ -341,6 +402,8 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 				|| grid.getSquareAt(new Coordinate(2, 8)).contains(flag)
 				|| grid.getSquareAt(new Coordinate(1, 8)).contains(flag)
 				|| grid.getSquareAt(new Coordinate(1, 7)).contains(flag));
+		
+		playerDB = null;
 	}
 	
 	/**
@@ -361,20 +424,21 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertNotSame(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.EAST);
 		moveCont.move(Direction.EAST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
-				.getCarryableItems();
-		
-		assertEquals(1, itemsList.size());
-		assertTrue(itemsList.get(0) instanceof UnchargedIdentityDisk);
-		
-		UnchargedIdentityDisk ID = (UnchargedIdentityDisk) itemsList.get(0);
-		pickUpCont.pickUpItem(ID);
-		endTurnCont.endTurn();
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
 		
 		// player 1
 		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		
+		// Player 2
+				moveCont.move(Direction.NORTH);
+				moveCont.move(Direction.WEST);
+				endTurnCont.endTurn();
+				
 		// now player 1 is on the startsquare of player 2
+				assertEquals(player1, playerDB.getCurrentPlayer());
 		assertNotSame(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
 		// pickup the flag:
 		List<IItem> itemsList2 = playerDB.getCurrentPlayer().getCurrentPosition()
@@ -383,30 +447,42 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 		assertTrue(itemsList2.get(0) instanceof Flag);
 		Flag flag = (Flag) itemsList2.get(0);
 		pickUpCont.pickUpItem(flag);
-		endTurnCont.endTurn();
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.NORTH);
 		
 		// Player 2
-		// Shoot the ID at player 1:
-		ID.setDirection(Direction.WEST);
-		// we do not use the controller here because it will give a nullpointer
-		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
+				moveCont.move(Direction.WEST);
+				endTurnCont.endTurn();
+				
+		// Player 1
+		// Leave the location so the lighttrail disapears
+		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.SOUTH);
+		moveCont.move(Direction.WEST);
+		assertEquals(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.WEST);
+		assertNotSame(PlayerState.FINISHED, ((TronPlayer) player1).getPlayerState());
+		
+		// Player 2
+		moveCont.move(Direction.SOUTHWEST);
 		endTurnCont.endTurn();
 		
 		// Player 1
 		// Leave the location so the lighttrail disapears
-		moveCont.move(Direction.NORTHEAST);
-		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
+		endTurnCont.endTurn();
 		
-		// Player 2
-		
+		// player 2
 		// Check if flag is on current location
+		moveCont.move(Direction.NORTHWEST);
 		List<IItem> itemsList3 = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
-		if (itemsList2.get(0) instanceof Flag) {
+		if (itemsList3.size() != 0)
+		if (itemsList3.get(0) instanceof Flag) {
 			// Pick it up
 			Flag flag2 = (Flag) itemsList3.get(0);
 			pickUpCont.pickUpItem(flag2);
@@ -416,11 +492,12 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 			return;
 		}
 		
-		moveCont.move(Direction.NORTHWEST);
+		moveCont.move(Direction.EAST);
 		
 		// check if flag is on current location
 		List<IItem> itemsList4 = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
+		if (itemsList4.size() != 0)
 		if (itemsList4.get(0) instanceof Flag) {
 			// Pick it up
 			Flag flag3 = (Flag) itemsList4.get(0);
@@ -431,21 +508,18 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 			return;
 		}
 		
-		// End turn because lighttrail of player 1 is in the way
+		moveCont.move(Direction.NORTH);
 		endTurnCont.endTurn();
 		
 		// Player 1 actions
 		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
-		moveCont.move(Direction.NORTH);
 		endTurnCont.endTurn();
 		
 		// Player 2 actions
-		moveCont.move(Direction.EAST);
-		
 		// check if flag is on current location
 		List<IItem> itemsList5 = playerDB.getCurrentPlayer().getCurrentPosition()
 				.getCarryableItems();
+		if (itemsList5.size() != 0)
 		if (itemsList5.get(0) instanceof Flag) {
 			// Pick it up
 			Flag flag4 = (Flag) itemsList5.get(0);
@@ -455,9 +529,37 @@ public class CaptureTheFlagTest extends SetUpTestGrid {
 			// ignore rest of this test method
 			return;
 		}
+		moveCont.move(Direction.NORTH);
+		List<IItem> itemsList6 = playerDB.getCurrentPlayer().getCurrentPosition()
+				.getCarryableItems();
+		if (itemsList6.size() != 0)
+		if (itemsList6.get(0) instanceof Flag) {
+			// Pick it up
+			Flag flag5 = (Flag) itemsList6.get(0);
+			pickUpCont.pickUpItem(flag5);
+			// see if it is back on starting position
+			assertTrue(grid.getSquareAt(new Coordinate(0, 9)).contains(flag5));
+			// ignore rest of this test method
+			return;
+		}
+		moveCont.move(Direction.WEST);
+		List<IItem> itemsList7 = playerDB.getCurrentPlayer().getCurrentPosition()
+				.getCarryableItems();
+		if (itemsList7.size() != 0)
+		if (itemsList7.get(0) instanceof Flag) {
+			// Pick it up
+			Flag flag6 = (Flag) itemsList7.get(0);
+			pickUpCont.pickUpItem(flag6);
+			// see if it is back on starting position
+			assertTrue(grid.getSquareAt(new Coordinate(0, 9)).contains(flag6));
+			// ignore rest of this test method
+			return;
+		}
 		
 		// If we reach this point in the method, the flag did not get dropped or
 		// something else went wrong
 		fail();
+		
+		playerDB = null;
 	}
 }

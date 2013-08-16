@@ -141,7 +141,6 @@ public class NormalSquare extends AbstractSquare {
 	public boolean canAddItem(IItem item) {
 		if (item == null)
 			return false;
-		// TODO are there any other preconditions?
 		return true;
 	}
 	

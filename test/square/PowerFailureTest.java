@@ -10,7 +10,9 @@ import java.util.Map;
 import org.junit.Test;
 import player.DummyPlayer;
 import player.TurnEvent;
+import effects.RaceEffectFactory;
 import effects.Effect;
+import powerfailure.PowerFailure;
 import powerfailure.PrimaryPowerFailure;
 
 @SuppressWarnings("javadoc")
@@ -20,65 +22,78 @@ public class PowerFailureTest {
 	
 	@Test
 	public final void testPowerFailure() {
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
 		
-		Square sq1 = new NormalSquare();
-		Square sq2 = new NormalSquare();
-		Square sq3 = new NormalSquare();
-		Square sq4 = new NormalSquare();
-		Square sq5 = new NormalSquare();
-		Square sq6 = new NormalSquare();
-		Square sq7 = new NormalSquare();
-		Square sq8 = new NormalSquare();
+		Square sq1 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq2 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq3 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq4 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq5 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq6 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq7 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		Square sq8 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
 		
-		neighbours.put(Direction.NORTH, sq1);
-		neighbours.put(Direction.NORTHEAST, sq2);
-		neighbours.put(Direction.EAST, sq3);
-		neighbours.put(Direction.SOUTHEAST, sq4);
-		neighbours.put(Direction.SOUTH, sq5);
-		neighbours.put(Direction.SOUTHWEST, sq6);
-		neighbours.put(Direction.WEST, sq7);
-		neighbours.put(Direction.NORTHWEST, sq8);
+		neighbours.put(Direction.NORTH, (SquareContainer) sq1);
+		neighbours.put(Direction.NORTHEAST, (SquareContainer) sq2);
+		neighbours.put(Direction.EAST, (SquareContainer) sq3);
+		neighbours.put(Direction.SOUTHEAST, (SquareContainer) sq4);
+		neighbours.put(Direction.SOUTH, (SquareContainer) sq5);
+		neighbours.put(Direction.SOUTHWEST, (SquareContainer) sq6);
+		neighbours.put(Direction.WEST, (SquareContainer) sq7);
+		neighbours.put(Direction.NORTHWEST, (SquareContainer) sq8);
 		
-		Square sq = new Square(neighbours);
+		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
-		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
-		assertEquals(pf, sq.getPowerFailure());
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
+		assertEquals(pf, getPowerFailure(sq));
 		
 		pf.updateStatus(TurnEvent.END_ACTION);
 		pf.updateStatus(TurnEvent.END_ACTION);
+	}
+	
+	private PowerFailure getPowerFailure(SquareContainer square) {
+		for (Property property : square.getProperties())
+			if (property instanceof PowerFailure)
+				return ((PowerFailure) property);
+		
+		return null;
 	}
 	
 	@Test
 	public final void testDecreaseTimeToLive() {
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
-		Square sq = new Square(neighbours);
+		Map<Direction, SquareContainer> neighbours = new HashMap<Direction, SquareContainer>();
+		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
-		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq);
-		
-		pf.updateStatus(TurnEvent.END_TURN);
-		
-		assertEquals(pf, sq.getPowerFailure());
-		pf.updateStatus(TurnEvent.END_TURN);
-		
-		assertEquals(pf, sq.getPowerFailure());
+		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 		
 		pf.updateStatus(TurnEvent.END_TURN);
 		
-		assertNull(sq.getPowerFailure());
+		assertEquals(pf, getPowerFailure(sq));
+		pf.updateStatus(TurnEvent.END_TURN);
+		
+		assertNull(getPowerFailure(sq));
 	}
 	
 	@Test
 	public final void testExecute_alreadyModifiedAnItem() {
-		Square emptySquare = new Square(Collections.<Direction, AbstractSquare> emptyMap());
-		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(emptySquare);
+		SquareContainer emptySquare = new SquareContainer(
+				Collections.<Direction, SquareContainer> emptyMap(), new NormalSquare());
+		PrimaryPowerFailure powerFailure = new PrimaryPowerFailure(emptySquare, new RaceEffectFactory());
 		DummyPlayer player = new DummyPlayer();
-		LightGrenade lightGrenade = new LightGrenade();
+		LightGrenade lightGrenade = new LightGrenade(new RaceEffectFactory());
 		lightGrenade.use(emptySquare, null);
 		Effect effect = powerFailure.getEffect();
 		effect.addEffect(lightGrenade.getEffect());
 		effect.execute(player);
-		 
+		
 		assertFalse(player.isDamagedByPowerFailure());
 		assertEquals(INCREASED_DAMAGE, player.getNumberOfActionsSkipped());
 	}

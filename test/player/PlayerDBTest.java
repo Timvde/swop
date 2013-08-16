@@ -1,9 +1,9 @@
 package player;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import item.DummyEffectFactory;
@@ -49,6 +49,7 @@ public class PlayerDBTest {
 		List<Player> playerList = playerDB.getAllPlayers();
 		assertIsCorrectPlayerList(playerList);
 		
+		playerDB.clearDataBaseAndPlayers();
 		playerDB.createNewDB(builder.getResult().getAllStartingPositions());
 		List<Player> playerList2 = playerDB.getAllPlayers();
 		assertIsCorrectPlayerList(playerList2);
@@ -94,22 +95,22 @@ public class PlayerDBTest {
 	
 	@Test
 	public void testClearDB() {
-		List<Player> playerList = playerDB.getAllPlayers();
 		playerDB.clearDataBase();
 		assertSame(0, playerDB.getNumberOfPlayers());
-		
-		for (Player player : playerList) {
-			assertFalse(player.canPerformAction());
-		}
 	}
 	
 	private void assertIsCorrectPlayerList(List<Player> playerList) {
-		// all players should have WAITING state
-		for (Player player : playerList)
-			assertSame(PlayerState.WAITING, ((TronPlayer) player).getPlayerState());
+		// all players should have WAITING state except one
+		int numActive = 0;
+		for (Player player : playerList) {
+			if (((TronPlayer) player).getPlayerState() == PlayerState.ACTIVE)
+				numActive++;
+			else if (((TronPlayer) player).getPlayerState() != PlayerState.WAITING)
+				fail();
+		}
+		assertSame(1, numActive);
 		
 		assertIsSet(playerList);
-		assertCorrectOrder(playerList);
 	}
 	
 	private void assertIsSet(List<Player> playerList) {
@@ -117,38 +118,10 @@ public class PlayerDBTest {
 		assertSame(playerList.size(), set.size());
 	}
 	
-	private void assertCorrectOrder(List<Player> playerList) {
-		List<Player> orderedList = this.getAllPlayerFromDB();
-		
-		assertSame(orderedList.size(), playerList.size());
-		for (int i = 0; i < orderedList.size(); i++)
-			assertSame(playerList.get(i), orderedList.get(i));
-	}
-	
 	private void containDifferentPlayers(List<Player> playerList, List<Player> playerList2) {
 		assertEquals(playerList.size(), playerList2.size());
 		for (Player p1 : playerList)
 			for (Player p2 : playerList2)
 				assertNotSame(p1, p2);
-	}
-	
-	/**
-	 * Returns an ordered list with all the Players in the
-	 * {@link PlayerDataBase} (by simulating player switches).
-	 */
-	private List<Player> getAllPlayerFromDB() {
-		List<Player> result = new ArrayList<Player>();
-		
-		for (int i = 0; i < playerDB.getNumberOfPlayers(); i++) {
-			TronPlayer curPlayer = (TronPlayer) playerDB.getCurrentPlayer();
-			result.add(curPlayer);
-			
-			// let the cur player end his turn
-			playerDB.getCurrentPlayer().endTurn();
-			// now the curPlayer should have changed
-			assertNotSame(curPlayer, playerDB.getCurrentPlayer());
-			assertFalse(curPlayer.canPerformAction());
-		}
-		return result;
 	}
 }

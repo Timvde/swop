@@ -58,12 +58,6 @@ public class SquareTest {
 	}
 	
 	@Test
-	public void testAddItem_effectExecuted() {
-		// TODO test whether a square automatically adds an effect if an item is
-		// added to the square
-	}
-	
-	@Test
 	public void testRemove() {
 		// place some stuff on the square
 		LightGrenade lightGrenade = new LightGrenade(new DummyEffectFactory());
@@ -117,15 +111,6 @@ public class SquareTest {
 		assertEquals(square.getPlayer(), playerOnSquare);
 		squareContainer.remove(playerOnSquare);
 		assertEquals(square.getPlayer(), null);
-	}
-	
-	@Test
-	public void testLightTrail() {
-		assertFalse(square.hasLightTrail());
-		square.placeLightTrail();
-		assertTrue(square.hasLightTrail());
-		square.removeLightTrail();
-		assertFalse(square.hasLightTrail());
 	}
 	
 	@Test

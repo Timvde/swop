@@ -75,7 +75,7 @@ public class LightGrenadeTest {
 	
 	@Test
 	public void testUse() {
-		lightGrenade.use(emptySquare);
+		lightGrenade.use(emptySquare, null);
 		
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
 		assertTrue(emptySquare.contains(lightGrenade));
@@ -83,13 +83,14 @@ public class LightGrenadeTest {
 	
 	@Test(expected = UnsupportedOperationException.class)
 	public void testUse_SquareIsAWall() {
-		lightGrenade.use(new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(), new WallPart()));
+		lightGrenade.use(new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new WallPart()), null);
 	}
 	
 	@Test(expected = IllegalUseException.class)
 	public void testUse_alreadyLightGrenadeOnSquare() {
 		emptySquare.addItem(new LightGrenade(new DummyEffectFactory()));
-		lightGrenade.use(emptySquare);
+		lightGrenade.use(emptySquare, null);
 	}
 	
 	@Test
@@ -117,7 +118,7 @@ public class LightGrenadeTest {
 	 * @throws CannotPlaceLightGrenadeException
 	 */
 	public void activateLightGrenade() {
-		lightGrenade.use(emptySquare);
+		lightGrenade.use(emptySquare, null);
 		assertEquals(LightGrenadeState.ACTIVE, lightGrenade.getState());
 		assertTrue(emptySquare.contains(lightGrenade));
 	}

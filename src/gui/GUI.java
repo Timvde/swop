@@ -26,7 +26,6 @@ import javax.swing.JOptionPane;
 import player.Player;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
-import ObjectronExceptions.IllegalPickUpException;
 import ObjectronExceptions.IllegalUseException;
 import ObjectronExceptions.InventoryAlreadyContainsFlagException;
 import ObjectronExceptions.InventoryFullException;

@@ -9,13 +9,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+@SuppressWarnings("javadoc")
 public abstract class AGUI {
 	
 	private JFrame frame;
@@ -90,6 +90,7 @@ public abstract class AGUI {
 	
 	@SuppressWarnings("rawtypes")
 	public final ComboBox createComboBox(int x, int y, int w, int h, String[] options, Runnable clickHandler) {
+		@SuppressWarnings("unchecked")
 		JComboBox cb = new JComboBox(options);
 		cb.setLocation(x, y);
 		cb.setSize(w, h);

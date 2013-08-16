@@ -1,10 +1,7 @@
 package effects;
 
-import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalTeleportException;
-import item.IItem;
 import item.teleporter.Teleporter;
-import player.Player;
 import player.TronPlayer;
 import square.AbstractSquare;
 import square.SquareContainer;

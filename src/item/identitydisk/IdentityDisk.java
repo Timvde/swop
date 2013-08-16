@@ -33,10 +33,11 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 		Direction direction = (Direction) arguments.getUserChoise();
 		setSquare(square);
 		
-		if (!canMoveDisk(direction))
+		if (!canMoveDisk(direction)) {
 			// We can't move any further, so we'll have to drop here
 			currentSquare.addItem(this);
-		else
+		}
+		else {
 			while (canMoveDisk(direction)) {
 				moveDisk(direction);
 				// test if we have hit a player (and hit him if we have).
@@ -49,6 +50,7 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 					break;
 				}
 			}
+		}
 		
 		currentSquare = null;
 	}
@@ -79,10 +81,12 @@ public abstract class IdentityDisk extends Item implements Teleportable {
 	 * @return true if the disk can move in the specified direction, else false
 	 */
 	public boolean canMoveDisk(Direction direction) {
-		if (currentSquare.getNeighbourIn(direction) == null)
+		if (currentSquare.getNeighbourIn(direction) == null) {
 			return false;
-		else if (!currentSquare.getNeighbourIn(direction).canAddItem(this))
+		}
+		else if (!currentSquare.getNeighbourIn(direction).canAddItem(this)) {
 			return false;
+		}
 		return true;
 	}
 	

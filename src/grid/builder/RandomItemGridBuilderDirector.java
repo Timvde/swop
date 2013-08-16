@@ -17,7 +17,6 @@ import java.util.Set;
  * <i>randomly</i> (i.e. as specified by the Tron game constraints) place the
  * items on the grid being constructed.
  * 
- * TODO Constraints for the randomness of items
  */
 public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector {
 	
@@ -26,7 +25,7 @@ public abstract class RandomItemGridBuilderDirector extends GridBuilderDirector 
 	static final double	PERCENTAGE_OF_GRENADES				= 0.02;
 	static final double	PERCENTAGE_OF_TELEPORTERS			= 0.03;
 	static final double	PERCENTAGE_OF_IDENTITY_DISKS		= 0.02;
-	static final double	PERCENTAGE_OF_GENERATORS			= 0.05;
+	static final double	PERCENTAGE_OF_GENERATORS			= 0.07;
 	static final int	NUMBER_OF_CHARGED_IDENTITY_DISKS	= 1;
 	static final int	MAX_CID_SHORTEST_PATH_DISTANCE		= 2;
 	

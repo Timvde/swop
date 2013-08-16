@@ -36,12 +36,4 @@ public interface TronObject {
 	 * @return an AffectedByPowerFailure
 	 */
 	public AffectedByPowerFailure asAffectedByPowerFailure();
-	
-	/**
-	 * Returns the same instance of the object as a {@link FlagKeeper} object
-	 * or null if the object does not contain the flagkeeper property.
-	 * 
-	 * @return a flagkeeper
-	 */
-	public FlagKeeper asFlagKeeper();
 }

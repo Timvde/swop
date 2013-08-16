@@ -1,36 +1,38 @@
 package scenariotests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import item.IItem;
+import item.UseArguments;
+import item.identitydisk.DummyIDArgumentsHandler;
 import item.identitydisk.UnchargedIdentityDisk;
 import java.util.List;
 import game.CTFMode;
-import game.GameMode;
-import game.RaceMode;
 import grid.Coordinate;
 import grid.builder.DeterministicGridBuilderDirector;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theory;
-import player.actions.UseAction;
+import player.LightTrail;
+import player.Player;
 import square.Direction;
+import square.Property;
+import square.SquareContainer;
 import ObjectronExceptions.IllegalMoveException;
 
 @SuppressWarnings("javadoc")
 public class TeleportationTest extends SetUpTestGrid {
 	
-	public static @DataPoints
-	GameMode[]	candidates	= { new RaceMode(),
-			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
+	@Before
+	public void setUp() {
+		super.setUp(new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID));
+	}
 	
-	/**
-	 * This method will be called with all gamemodes.
-	 */
-	@Theory
-	public void setUp(GameMode mode) {
-		super.setUp(mode);
+	private boolean hasLightTrail(SquareContainer square) {
+		for (Property property : square.getProperties())
+			if (property instanceof LightTrail)
+				return true;
+		return false;
 	}
 	
 	@Test
@@ -50,44 +52,50 @@ public class TeleportationTest extends SetUpTestGrid {
 		
 		// move player 1 and check whether the light trail travels through the
 		// teleporter
-		moveCont.move(Direction.NORTH);
-		assertTrue(grid.getSquareAt(new Coordinate(0, 7)).hasLightTrail());
-		assertTrue(grid.getSquareAt(new Coordinate(9, 2)).hasLightTrail());
-		
-		moveCont.move(Direction.NORTH);
-		assertTrue(grid.getSquareAt(new Coordinate(0, 8)).hasLightTrail());
-		assertTrue(grid.getSquareAt(new Coordinate(0, 7)).hasLightTrail());
-		assertTrue(grid.getSquareAt(new Coordinate(8, 2)).hasLightTrail());
-		assertFalse(grid.getSquareAt(new Coordinate(8, 1)).hasLightTrail());
-		
-		moveCont.move(Direction.NORTH);
+		moveCont.move(Direction.SOUTH);
+		assertTrue(hasLightTrail(grid.getSquareAt(new Coordinate(0, 7))));
 	}
 	
 	@Test
 	public void testTeleportation_PlayerCoversDestination() {
+		Player player1 = playerDB.getCurrentPlayer();
 		// move player 1
-		
+		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.SOUTH);
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.SOUTH);
+		endTurnCont.endTurn();
+		assertNotSame(player1, playerDB.getCurrentPlayer());
 		
 		// move player 2
 		
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
+		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTH);
+		
+		// move player 1
+		assertEquals(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.WEST);
 		endTurnCont.endTurn();
 		
-		// move player 1 onto destination
-		
-		moveCont.move(Direction.SOUTH);
+		// player 2
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.EAST);
-		endTurnCont.endTurn();
+		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.EAST);
+		
+		// move player 1 into tele
+		assertEquals(player1, playerDB.getCurrentPlayer());
+				moveCont.move(Direction.SOUTHEAST);
+				endTurnCont.endTurn();
 		
 		// try to move player 2 onto the teleporter
 		
 		boolean exceptionThrown = false;
 		
 		try {
-			moveCont.move(Direction.NORTH);
+			moveCont.move(Direction.NORTHEAST);
+			moveCont.move(Direction.NORTHEAST);
 		}
 		catch (IllegalMoveException e) {
 			exceptionThrown = true;
@@ -103,6 +111,8 @@ public class TeleportationTest extends SetUpTestGrid {
 	@Test
 	public void testTeleportation_IDFliesThrough() {
 		// move player 1
+		Player player1 = playerDB.getCurrentPlayer();
+		assertEquals(player1, playerDB.getCurrentPlayer());
 		moveCont.move(Direction.WEST);
 		moveCont.move(Direction.WEST);
 		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
@@ -114,22 +124,27 @@ public class TeleportationTest extends SetUpTestGrid {
 		UnchargedIdentityDisk ID = (UnchargedIdentityDisk) itemsList.get(0);
 		pickUpCont.pickUpItem(ID);
 		
-		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.SOUTHEAST);
 		
 		// Player 2 actions
+		assertNotSame(player1, playerDB.getCurrentPlayer());
+		moveCont.move(Direction.NORTHEAST);
 		moveCont.move(Direction.NORTH);
 		endTurnCont.endTurn();
 		
 		// Player 1 actions
-		moveCont.move(Direction.EAST);
+		moveCont.move(Direction.SOUTH);
 		
-		ID.setDirection(Direction.SOUTH);
-		// we do not use the controller here because it will give a nullpointer
-		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(2);
+		UseArguments<?> arguments = ID.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		ID.use(playerDB.getCurrentPlayer().getCurrentPosition(), arguments);
 		
 		// Check if the ID landed on the correct spot
-		assertTrue(grid.getSquareAt(new Coordinate(0,9)).getCarryableItems().contains(ID));
+		assertTrue(grid.getSquareAt(new Coordinate(1,7)).getCarryableItems().contains(ID));
 
 	}
 }

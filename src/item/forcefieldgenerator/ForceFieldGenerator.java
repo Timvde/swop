@@ -61,14 +61,25 @@ public class ForceFieldGenerator extends Item {
 					break;
 				ForceFieldGenerator neighbouringGenerator = getForceFieldGeneratorOnSquare(neighbour);
 				if (neighbouringGenerator != null) {
-					if (square.hasPlayer())
+					if (square.hasPlayer() && !alreadyContainsForceField(listOfSquares)) {
 						new ForceField(this, neighbouringGenerator, listOfSquares, true);
-					else
+					}
+					else if (!alreadyContainsForceField(listOfSquares)) {
 						new ForceField(this, neighbouringGenerator, listOfSquares, false);
+					}
 				}
 			}
 			
 		}
+	}
+	
+	private boolean alreadyContainsForceField(List<SquareContainer> listOfSquares) {
+		for (SquareContainer square : listOfSquares) {
+			if (!square.hasProperty(PropertyType.FORCE_FIELD)) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private ForceFieldGenerator getForceFieldGeneratorOnSquare(AbstractSquare neighbour) {

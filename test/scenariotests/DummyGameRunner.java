@@ -36,7 +36,8 @@ public class DummyGameRunner extends GameRunner {
 		if (mode == null)
 			throw new IllegalArgumentException("the mode cannot be null");
 		
-		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
+		// Make a builder with powerfailures disabled.
+		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory(), true);
 		DeterministicGridBuilderDirector director = new DeterministicGridBuilderDirector(builder,
 				false);
 		director.construct();

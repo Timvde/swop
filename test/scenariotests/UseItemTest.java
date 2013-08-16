@@ -1,25 +1,19 @@
 package scenariotests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import game.CTFMode;
-import game.GameMode;
-import game.RaceMode;
 import grid.builder.DeterministicGridBuilderDirector;
 import gui.GUI;
 import item.DummyEffectFactory;
 import item.IItem;
-import item.identitydisk.IdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.lightgrenade.LightGrenadeState;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theory;
 import square.AbstractSquare;
 import square.Direction;
-import ObjectronExceptions.IllegalMoveException;
 import ObjectronExceptions.IllegalUseException;
 
 /**
@@ -32,17 +26,10 @@ import ObjectronExceptions.IllegalUseException;
  */
 @SuppressWarnings("javadoc")
 public class UseItemTest extends SetUpTestGrid {
-	
-	public static @DataPoints
-	GameMode[]	candidates	= { new RaceMode(),
-			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
-	
-	/**
-	 * This method will be called with all gamemodes.
-	 */
-	@Theory
-	public void setUp(GameMode mode) {
-		super.setUp(mode);
+
+	@Before
+	public void setUp() {
+		super.setUp(new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID));
 	}
 	
 	@Test
@@ -64,7 +51,6 @@ public class UseItemTest extends SetUpTestGrid {
 		useItemCont.useItem(LG);
 		
 		/*
-		 * TODO: We can't get an entire list of items anymore. The exploded
 		 * light grenade is not carriable, and therefore I can't replace this
 		 * with getCarriableItems(), like the rest
 		 */
@@ -125,32 +111,6 @@ public class UseItemTest extends SetUpTestGrid {
 		assertTrue(assertionThrown);
 	}
 	
-	@Test
-	public void testUseIdentityDisc() throws IllegalStateException, IllegalArgumentException,
-			IllegalMoveException {
-		// set a DummyGUI, so we have control over the returned direction by
-		// DummyGUI#getBasicDirection()
-		useItemCont.setGUI(new DummyGUI());
-		
-		// player 1
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		IdentityDisk id = (IdentityDisk) playerDB.getCurrentPlayer().getCurrentPosition()
-				.getCarryableItems().get(0);
-		pickUpCont.pickUpItem(id);
-		assertFalse(playerDB.getCurrentPlayer().getCurrentPosition().getCarryableItems()
-				.contains(id));
-		endTurnCont.endTurn();
-		
-		// player 2
-		moveCont.move(Direction.EAST);
-		endTurnCont.endTurn();
-		
-		// player 1
-		useItemCont.useItem(id);
-		assertFalse(playerDB.getCurrentPlayer().getInventoryContent().contains(id));
-	}
-	
 	@Test(expected = IllegalArgumentException.class)
 	public void testArgumentNull() {
 		useItemCont.useItem(null);
@@ -165,6 +125,7 @@ public class UseItemTest extends SetUpTestGrid {
 	 * set a DummyGUI, so we have control over the returned direction by
 	 * DummyGUI#getBasicDirection()
 	 */
+	@SuppressWarnings("unused")
 	private class DummyGUI extends GUI {
 		
 		public DummyGUI() {

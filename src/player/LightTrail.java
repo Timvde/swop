@@ -29,6 +29,9 @@ public class LightTrail implements Property {
 	/**
 	 * Create a new lightTrail behind a player. The length of the newly created
 	 * lightTrail will be zero.
+	 * 
+	 * @param startSquare
+	 *        The start square.
 	 */
 	public LightTrail(SquareContainer startSquare) {
 		lightTrail = new LinkedList<SquareContainer>();
@@ -79,7 +82,13 @@ public class LightTrail implements Property {
 	 */
 	public boolean isValidNewSquare(AbstractSquare currentSquare) {
 		// null cannot be added to the list
-		return currentSquare != null;
+		if (currentSquare == null)
+			return false;
+		
+		if (this.lightTrail.contains(currentSquare))
+			return false;
+		
+		return true;
 	}
 	
 	/**

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+@SuppressWarnings("javadoc")
 public final class Button {
 	
 	final JButton button;

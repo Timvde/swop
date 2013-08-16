@@ -1,12 +1,12 @@
 package effects;
 
 import item.Flag;
+import item.IItem;
 import java.util.List;
 import java.util.Random;
-import square.FlagKeeper;
+import player.TronPlayer;
 import square.SquareContainer;
 import square.TronObject;
-import square.WallPart;
 
 /**
  * if the player is carrying a flag, the flag is dropped onto a randomly
@@ -24,9 +24,9 @@ public class DropFlagEffect extends AbstractEffect {
 	 */
 	@Override
 	public void execute(TronObject object) throws IllegalStateException {
-		FlagKeeper flagkeeper = object.asFlagKeeper();
-		if (flagkeeper != null) {
-			Flag flag = flagkeeper.giveFlag();
+		if (object instanceof TronPlayer) {
+			TronPlayer flagkeeper = (TronPlayer) object;
+			Flag flag = getFlagFromPlayer(flagkeeper); 
 			if (flag != null) {
 				List<SquareContainer> neighbours = flagkeeper.getCurrentPosition()
 						.getAllNeighbours();
@@ -34,7 +34,8 @@ public class DropFlagEffect extends AbstractEffect {
 					throw new IllegalStateException(
 							" The flagkeeper's current square must have at least one neigbour.");
 				
-				// Try to choose a valid neighbour square that is not a wallpart.
+				// Try to choose a valid neighbour square that is not a
+				// wallpart.
 				SquareContainer neighbour = neighbours.get(new Random().nextInt(neighbours.size()));
 				int i = 0;
 				while (neighbour.isWallPart()) {
@@ -47,12 +48,24 @@ public class DropFlagEffect extends AbstractEffect {
 					
 					i++;
 				}
-				
 				neighbour.addItem(flag);
 			}
 		}
-		
 		super.execute(object);
+	}
+	
+	/**
+	 * Remove the flag from the player inventory if he got it. Else returns
+	 * null.
+	 */
+	private Flag getFlagFromPlayer(TronPlayer player) {
+		for (IItem item : player.getInventoryContent()) {
+			if (item instanceof Flag) {
+				player.getInventory().removeItem(item);
+				return (Flag) item;
+			}
+		}
+		return null;
 	}
 	
 }

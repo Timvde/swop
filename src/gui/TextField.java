@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.JTextField;
 
+@SuppressWarnings("javadoc")
 public final class TextField {
 	
 	final JTextField	textfield;

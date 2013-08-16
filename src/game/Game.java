@@ -11,7 +11,6 @@ import java.util.Observable;
 import java.util.Observer;
 import player.PlayerDataBase;
 import player.TurnEvent;
-import square.AbstractSquare;
 import square.SquareContainer;
 import square.StartingPositionProperty;
 

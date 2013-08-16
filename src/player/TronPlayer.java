@@ -1,36 +1,31 @@
 package player;
 
 import game.GameMode;
-import item.Flag;
 import item.IItem;
 import item.lightgrenade.Explodable;
 import item.teleporter.Teleportable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import player.actions.Action;
-import player.actions.PickupItemAction;
 import powerfailure.AffectedByPowerFailure;
-import square.FlagKeeper;
 import square.SquareContainer;
 import ObjectronExceptions.IllegalActionException;
-import ObjectronExceptions.InventoryAlreadyContainsFlagException;
 
 /**
  * Main character of the Tron game. A player carries an {@link Inventory
  * inventory} and is trailed by a {@link LightTrail light trail}. During the
- * game a player can perform
+ * game a player can perform 
  * {@value PlayerActionManager#MAX_NUMBER_OF_ACTIONS_PER_TURN} {@link Action
  * actions} during a turn.
  */
-public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure, Explodable,
-		FlagKeeper {
+public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure, Explodable {
 	
 	/**
-	 * The id of the player, not really used, but hey ... let's do something
-	 * crazy FIXME DO we stil need the id? in GUI?
+	 * The id of the player.
 	 */
 	private int							id;
 	private static AtomicInteger		nextID	= new AtomicInteger();
+	private boolean isDead = false;
 	
 	/** The starting square of this player */
 	private SquareContainer				startSquare;
@@ -67,6 +62,10 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		this.playerDB = playerDB;
 		this.setStartingPosition(startingPosition);
 		this.actionManager = new PlayerActionManager(this);
+	}
+	
+	public boolean isDead() {
+		return this.isDead;
 	}
 	
 	/**
@@ -173,7 +172,9 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	/**
-	 * Set the state of the player to a new specified state
+	 * Set the state of the player to a new specified state. It is not recommended to use
+	 * this method from anywhere else than the PlayerDB. The visibility is set to public
+	 * to use for testing reasons.
 	 * 
 	 * @param state
 	 *        the new state of the player
@@ -183,7 +184,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 *         state to the specified state. I.e.
 	 *         <code>this.getState().isAllowedTransistionTo(state)</code>
 	 */
-	void setPlayerState(PlayerState state) throws IllegalArgumentException {
+	 void setPlayerState(PlayerState state) throws IllegalArgumentException {
 		if (!this.state.isAllowedTransistionTo(state)) {
 			throw new IllegalArgumentException(
 					"The player is not allowed to switch from the current state ("
@@ -251,6 +252,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 * anymore (as nullpointers will be thrown).
 	 */
 	void endPlayerLife() {
+		this.isDead = true;
 		this.playerDB = null;
 		this.id = -1;
 		this.inventory.removeAll();
@@ -263,25 +265,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		this.currentSquare = null;
 	}
 	
-	private boolean hasInventorySpace(Action action) {
-		// Make sure the player only carries one flag
-		if (action instanceof PickupItemAction) {
-			for (IItem i : getInventoryContent()) {
-				if (i instanceof Flag) {
-					return false;
-				}
-			}
-			return true;
-		}
-		
-		return true;
-	}
-	
 	public void performAction(Action action) {
-		if (!hasInventorySpace(action)) {
-			throw new InventoryAlreadyContainsFlagException("A player can only carry one flag.");
-		}
-		
 		SquareContainer oldSquare = currentSquare;
 		action.execute(this);
 		actionManager.performedAction();
@@ -300,21 +284,5 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	
 	PlayerActionManager getActionManager() {
 		return actionManager;
-	}
-	
-	@Override
-	public FlagKeeper asFlagKeeper() {
-		return this;
-	}
-	
-	@Override
-	public Flag giveFlag() {
-		for (IItem item : getInventoryContent()) {
-			if (item instanceof Flag) {
-				this.inventory.removeItem(item);
-				return (Flag) item;
-			}
-		}
-		return null;
 	}
 }

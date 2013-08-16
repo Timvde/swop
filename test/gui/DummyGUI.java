@@ -3,7 +3,6 @@ package gui;
 import item.UseArguments;
 import java.util.Observable;
 import java.util.Observer;
-import square.Direction;
 
 @SuppressWarnings("javadoc")
 public class DummyGUI extends GUI implements Observer, ArgumentsHandler {
@@ -20,6 +19,6 @@ public class DummyGUI extends GUI implements Observer, ArgumentsHandler {
 	
 	@Override
 	public void handleArguments(UseArguments<?> arguments) {
-		arguments.setUserChoice(Direction.SOUTH);
+		arguments.setUserChoice(1);
 	}
 }

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import player.TurnEvent;
-import scenariotests.SetupTestGrid;
 import square.Direction;
 import square.NormalSquare;
+import square.Property;
 import square.SquareContainer;
 import effects.PowerFailureEffect;
 import effects.RaceEffectFactory;
@@ -42,7 +42,7 @@ public class PowerFailureTest {
 		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
 		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
-		assertEquals(true, sq.hasPowerFailure());
+		assertEquals(true, hasPowerFailure(sq));
 		
 		pf.updateStatus(TurnEvent.END_ACTION);
 		pf.updateStatus(TurnEvent.END_ACTION);
@@ -54,13 +54,20 @@ public class PowerFailureTest {
 		SquareContainer sq = new SquareContainer(neighbours, new NormalSquare());
 		
 		PrimaryPowerFailure pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
-		assertTrue(sq.hasPowerFailure());
+		assertTrue(hasPowerFailure(sq));
 		
 		pf.updateStatus(TurnEvent.END_TURN);
-		assertTrue(sq.hasPowerFailure());
+		assertTrue(hasPowerFailure(sq));
 		
 		pf.updateStatus(TurnEvent.END_TURN);
-		assertFalse(sq.hasPowerFailure());		
+		assertFalse(hasPowerFailure(sq));		
+	}
+	
+	private boolean hasPowerFailure(SquareContainer square) {
+		for (Property property : square.getProperties())
+			if (property instanceof PowerFailure)
+				return true;
+		return false;
 	}
 	
 	@Test 

@@ -30,6 +30,7 @@ public class PowerFailureCreator implements PropertyCreator {
 	 * This method has a chance of {@value #POWER_FAILURE_CHANCE} to create a
 	 * PrimaryPowerFailure on the specified square.
 	 */
+	@SuppressWarnings("javadoc")
 	public void affect(SquareContainer square) {
 		if (ENABLE_POWER_FAILURE) {
 			Random rand = new Random();

@@ -1,17 +1,15 @@
 package player;
 
+import item.Flag;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
 import item.IItem;
 
 /**
-<<<<<<< HEAD
- * An inventory of {@link Item}s that is carried by a {@link Player}.
-=======
- * An inventory of {@link Item}s that is carried by a
- * {@link TronPlayer}.
->>>>>>> tim_wil_ook_een_happy_place
+ * <<<<<<< HEAD An inventory of {@link Item}s that is carried by a
+ * {@link Player}. ======= An inventory of {@link Item}s that is carried by a
+ * {@link TronPlayer}. >>>>>>> tim_wil_ook_een_happy_place
  */
 public class Inventory implements IInventory {
 	
@@ -59,8 +57,19 @@ public class Inventory implements IInventory {
 			return false;
 		else if (item == null)
 			return false;
+		else if ((item instanceof Flag) && (containsFlag()))
+			return false;
 		else
 			return true;
+	}
+	
+	private boolean containsFlag() {
+		for (IItem i : this.contents) {
+			if (i instanceof Flag) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override

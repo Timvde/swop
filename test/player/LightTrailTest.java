@@ -3,80 +3,72 @@ package player;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
-import square.AbstractSquare;
 import square.Direction;
 import square.NormalSquare;
+import square.Property;
+import square.SquareContainer;
 
 @SuppressWarnings("javadoc")
 public class LightTrailTest {
 	
-	private LightTrail	lightTrail;
-	private NormalSquare		sq1;
-	private NormalSquare		sq2;
-	private NormalSquare		sq3;
-	private NormalSquare		sq4;
+	private LightTrail		lightTrail;
+	private SquareContainer	sq1;
+	private SquareContainer	sq2;
+	private SquareContainer	sq3;
+	private SquareContainer	sq4;
 	
 	@Before
 	public void setUp() {
-		// create a new empty neighbour map for the squares
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		sq1 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		sq2 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		sq3 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
+		sq4 = new SquareContainer(Collections.<Direction, SquareContainer> emptyMap(),
+				new NormalSquare());
 		
-		lightTrail = new LightTrail();
-		
-		sq1 = new NormalSquare();
-		sq2 = new NormalSquare();
-		sq3 = new NormalSquare();
-		sq4 = new NormalSquare();
+		lightTrail = new LightTrail(sq1);
 	}
 	
-	@Test
-	public void testConstructor() {
-		lightTrail = new LightTrail();
-		assertEquals(0, lightTrail.getLightTrailSquares().size());
+	private boolean hasLightTrail(SquareContainer square) {
+		for (Property property : square.getProperties())
+			if (property instanceof LightTrail)
+				return true;
+		return false;
 	}
 	
 	@Test
 	public void testUpdateLightTrail_validCoordinate() {
-		// add a first coordinate to the trail
-		lightTrail.updateLightTrail(sq1);
-		assertEquals(1, lightTrail.getLightTrailSquares().size());
-		assertTrue(lightTrail.getLightTrailSquares().contains(sq1));
-		assertTrue(sq1.hasLightTrail());
-		
 		// add a second coordinate to the trail
 		lightTrail.updateLightTrail(sq2);
 		assertEquals(2, lightTrail.getLightTrailSquares().size());
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq1));
-		assertTrue(sq1.hasLightTrail());
+		assertTrue(hasLightTrail(sq1));
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq2));
-		assertTrue(sq2.hasLightTrail());
 		
 		// add a third coordinate to the trail
 		lightTrail.updateLightTrail(sq3);
 		assertEquals(3, lightTrail.getLightTrailSquares().size());
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq1));
-		assertTrue(sq1.hasLightTrail());
+		assertTrue(hasLightTrail(sq1));
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq2));
-		assertTrue(sq2.hasLightTrail());
+		assertTrue(hasLightTrail(sq2));
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq3));
-		assertTrue(sq3.hasLightTrail());
 		
 		// add a fourth coordinate to the trail
-		// trail size should still be three
 		lightTrail.updateLightTrail(sq4);
-		assertEquals(3, lightTrail.getLightTrailSquares().size());
-		assertFalse(lightTrail.getLightTrailSquares().contains(sq1));
-		assertFalse(sq1.hasLightTrail());
+		assertEquals(4, lightTrail.getLightTrailSquares().size());
+		assertTrue(lightTrail.getLightTrailSquares().contains(sq1));
+		assertTrue(hasLightTrail(sq1));
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq2));
-		assertTrue(sq2.hasLightTrail());
+		assertTrue(hasLightTrail(sq2));
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq3));
-		assertTrue(sq3.hasLightTrail());
+		assertTrue(hasLightTrail(sq3));
 		assertTrue(lightTrail.getLightTrailSquares().contains(sq4));
-		assertTrue(sq4.hasLightTrail());
 		
 	}
 	
@@ -96,13 +88,15 @@ public class LightTrailTest {
 	
 	@Test
 	public void testUpdateLightTrail() {
-		// create a new empty neighbour map for the squares
-		Map<Direction, AbstractSquare> neighbours = new HashMap<Direction, AbstractSquare>();
+		lightTrail.updateLightTrail(new SquareContainer(Collections
+				.<Direction, SquareContainer> emptyMap(), new NormalSquare()));
+		lightTrail.updateLightTrail(new SquareContainer(Collections
+				.<Direction, SquareContainer> emptyMap(), new NormalSquare()));
+		lightTrail.updateLightTrail(new SquareContainer(Collections
+				.<Direction, SquareContainer> emptyMap(), new NormalSquare()));
 		
-		lightTrail.updateLightTrail(new NormalSquare());
-		lightTrail.updateLightTrail(new NormalSquare());
-		lightTrail.updateLightTrail(new NormalSquare());
-		
+		assertEquals(4, lightTrail.size());
+		lightTrail.updateLightTrail();
 		assertEquals(3, lightTrail.size());
 		lightTrail.updateLightTrail();
 		assertEquals(2, lightTrail.size());

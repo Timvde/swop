@@ -6,12 +6,12 @@ import org.junit.Test;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 @SuppressWarnings("javadoc")
-public class FileDirectorTest {
+public class FileDirectorTest { 
 	
 	@Test
 	public void testFileDirector() throws FileNotFoundException {
 		DummyGridBuilder builder = new DummyGridBuilder();
-		GridBuilderDirector director = new FileGridBuilderDirector(builder, "grid.txt");
+		GridBuilderDirector director = new FileGridBuilderDirector(builder, "gridtest.txt");
 		director.construct();
 		
 		builder.assertIsValidGrid();
@@ -33,7 +33,7 @@ public class FileDirectorTest {
 		try {
 			new FileGridBuilderDirector(builder, null);
 		}
-		catch (IllegalArgumentException e) {
+		catch (Exception e) {
 			exceptionThrown = true;
 		}
 		assertTrue(exceptionThrown);

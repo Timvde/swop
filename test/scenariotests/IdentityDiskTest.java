@@ -6,15 +6,14 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import game.CTFMode;
-import game.GameMode;
-import game.RaceMode;
 import grid.builder.DeterministicGridBuilderDirector;
 import item.IItem;
+import item.UseArguments;
+import item.identitydisk.DummyIDArgumentsHandler;
 import item.identitydisk.UnchargedIdentityDisk;
 import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theory;
 import player.Player;
 import player.actions.UseAction;
 import square.Direction;
@@ -22,16 +21,9 @@ import square.Direction;
 @SuppressWarnings("javadoc")
 public class IdentityDiskTest extends SetUpTestGrid {
 	
-	public static @DataPoints
-	GameMode[]	candidates	= { new RaceMode(),
-			new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID) };
-	
-	/**
-	 * This method will be called with all gamemodes.
-	 */
-	@Theory
-	public void setUp(GameMode mode) {
-		super.setUp(mode);
+	@Before
+	public void setUp() {
+		super.setUp(new CTFMode(DeterministicGridBuilderDirector.NUMBER_OF_PLAYERS_ON_TEST_GRID));
 	}
 	
 	/**
@@ -88,10 +80,14 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		
 		// Player 1 actions
 		assertSame(player1, playerDB.getCurrentPlayer());
-		ID.setDirection(Direction.EAST);
-		// we do not use the controller here because it will give a nullpointer
-		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(2);
+		UseArguments<?> arguments = ID.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID, idHandler));
+		
 		// Check if the ID is no longer in the inventory
 		assertFalse(player1.getInventoryContent().contains(ID));
 		moveCont.move(Direction.EAST);
@@ -134,10 +130,13 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		
 		// Player 1 actions
 		assertSame(player1, playerDB.getCurrentPlayer());
-		ID.setDirection(Direction.SOUTH);
-		// we do not use the controller here because it will give a nullpointer
-		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(1);
+		UseArguments<?> arguments = ID.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID, idHandler));
 		// Check if the ID is no longer in the inventory
 		assertFalse(player1.getInventoryContent().contains(ID));
 		moveCont.move(Direction.SOUTH);
@@ -200,68 +199,19 @@ public class IdentityDiskTest extends SetUpTestGrid {
 		endTurnCont.endTurn();
 		
 		// Player 1 actions
-		assertSame(player1, playerDB.getCurrentPlayer());
 		// Shoot the ID at player 2:
-		ID.setDirection(Direction.SOUTH);
-		// we do not use the controller here because it will give a nullpointer
-		// after asking the gui for the direction:
-		playerDB.getCurrentPlayer().performAction(new UseAction(ID));
-		endTurnCont.endTurn();
-		
+		// USE THE ID TO THE EAST
+		DummyIDArgumentsHandler idHandler = new DummyIDArgumentsHandler();
+		idHandler.setChoice(1);
+		UseArguments<?> arguments = ID.getUseArguments();
+		if (arguments != null)
+			idHandler.handleArguments(arguments);
+		playerDB.getCurrentPlayer().performAction(new UseAction(ID, idHandler));
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
+		moveCont.move(Direction.WEST);
 		// Test if it is again player 1's turn (player 2 skipped turn):
 		assertSame(player1, playerDB.getCurrentPlayer());
-	}
-	
-	/**
-	 * We will set the direction of the identity disk to null and see if the
-	 * correct exception is thrown.
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testDirection_ID_Null() {
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
-				.getCarryableItems();
-		
-		assertEquals(1, itemsList.size());
-		assertTrue(itemsList.get(0) instanceof UnchargedIdentityDisk);
-		
-		UnchargedIdentityDisk ID = (UnchargedIdentityDisk) itemsList.get(0);
-		pickUpCont.pickUpItem(ID);
-		
-		ID.setDirection(null);
-	}
-	
-	/**
-	 * We will set the direction of the identity disk to invalid ones and see if
-	 * the correct exception is thrown.
-	 */
-	@Test
-	public void testDirection_ID_Wrong() {
-		moveCont.move(Direction.WEST);
-		moveCont.move(Direction.WEST);
-		List<IItem> itemsList = playerDB.getCurrentPlayer().getCurrentPosition()
-				.getCarryableItems();
-		
-		assertEquals(1, itemsList.size());
-		assertTrue(itemsList.get(0) instanceof UnchargedIdentityDisk);
-		
-		UnchargedIdentityDisk ID = (UnchargedIdentityDisk) itemsList.get(0);
-		pickUpCont.pickUpItem(ID);
-		
-		boolean exceptionThrown = false;
-		for (Direction direction : Direction.values()) {
-			if (!direction.isPrimaryDirection()) {
-				try {
-					ID.setDirection(direction);
-				}
-				catch (IllegalArgumentException e) {
-					exceptionThrown = true;
-				}
-				assertTrue(exceptionThrown);
-				exceptionThrown = false;
-			}
-		}
 	}
 	
 }

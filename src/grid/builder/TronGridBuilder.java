@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import player.PlayerState;
 import powerfailure.PowerFailureCreator;
 import square.AbstractSquare;
 import square.Direction;
@@ -38,6 +37,7 @@ public class TronGridBuilder implements GridBuilder {
 	private int									numberOfSquares;
 	private Map<Integer, Coordinate>			startingPositions;
 	private EffectFactory						effectFactory;
+	private boolean								powerfailuresDisabled = false;
 	
 	/**
 	 * Create a new builder with an empty grid.
@@ -49,6 +49,23 @@ public class TronGridBuilder implements GridBuilder {
 		if (effectFactory == null)
 			throw new IllegalArgumentException("the factory cannot be null");
 		
+		this.effectFactory = effectFactory;
+		this.createNewEmptyGrid();
+	}
+	
+	/**
+	 * Create a new builder with an empty grid.
+	 * 
+	 * @param effectFactory
+	 *        The effect factory that the items will get.
+	 * @param PFDisabled
+	 *        A boolean to decide if powerfailures will be disabled.
+	 */
+	public TronGridBuilder(EffectFactory effectFactory, boolean PFDisabled) {
+		if (effectFactory == null)
+			throw new IllegalArgumentException("the factory cannot be null");
+		
+		this.powerfailuresDisabled = PFDisabled;
 		this.effectFactory = effectFactory;
 		this.createNewEmptyGrid();
 	}
@@ -68,7 +85,8 @@ public class TronGridBuilder implements GridBuilder {
 		
 		Map<Direction, SquareContainer> neighbours = getNeigboursFor(coordinate);
 		SquareContainer square = new SquareContainer(neighbours, new NormalSquare());
-		square.addPropertyCreator(new PowerFailureCreator(effectFactory));
+		if (!powerfailuresDisabled)
+			square.addPropertyCreator(new PowerFailureCreator(effectFactory));
 		if (grid.put(coordinate, square) == null)
 			numberOfSquares++;
 	}
@@ -133,14 +151,14 @@ public class TronGridBuilder implements GridBuilder {
 			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		
 		if (!coordinateContainsFFG(coordinate)) {
-		/*
-		 * We need to "use" the ForceFieldGenerator to make it detect other
-		 * generators and create a force field.
-		 */
+			/*
+			 * We need to "use" the ForceFieldGenerator to make it detect other
+			 * generators and create a force field.
+			 */
 			ForceFieldGenerator ffg = new ForceFieldGenerator();
 			grid.get(coordinate).addItem(ffg);
-		
-		//ffg.use(grid.get(coordinate), null);
+			
+			// ffg.use(grid.get(coordinate), null);
 		}
 	}
 	
@@ -285,7 +303,7 @@ public class TronGridBuilder implements GridBuilder {
 		}
 		return result;
 	}
-
+	
 	@Override
 	public void placeFlag(Coordinate coordinate, int id) {
 		if (!startingPositions.get(id).equals(coordinate))

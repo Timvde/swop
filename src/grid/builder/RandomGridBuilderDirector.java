@@ -15,6 +15,7 @@ import square.Wall;
  * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(Map, int, int)
  * supertype method}.
  */
+@SuppressWarnings("javadoc")
 public class RandomGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	/**

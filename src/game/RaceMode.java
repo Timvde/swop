@@ -29,6 +29,7 @@ public class RaceMode implements GameMode {
 		// The current player wins if he or she is the only one left (other one lost)
 		if (playerDB.getNumberOfPlayers() == 1) {
 			return true;
+			
 		}
 		
 		// check whether the player has reached the start of another

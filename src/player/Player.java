@@ -26,6 +26,14 @@ public interface Player extends TronObject {
 	public int getID(); 
 	
 	/**
+	 * Test whether a player is actually dead. This can be used to
+	 * remove player references without causing exceptions.
+	 * 
+	 * @return True if the player is no longer part of the game
+	 */
+	public boolean isDead();
+	
+	/**
 	 * Returns the square this player has to reach to win the game.
 	 * 
 	 * @return the square this player has to reach to win the game.

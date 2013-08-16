@@ -3,10 +3,15 @@ package grid;
 import java.util.Iterator;
 import square.SquareContainer;
 
+/**
+ * This class represents an iterator to iterate over the squares of a grid.
+ *
+ */
 public class GridIterator implements Iterator<SquareContainer> {
 	
 	Iterator<SquareContainer>	iterator;
 	
+	@SuppressWarnings("javadoc")
 	public GridIterator(Iterator<SquareContainer> iterator) {
 		if (iterator == null)
 			throw new IllegalArgumentException("The specified iterator cannot be null");

@@ -8,6 +8,7 @@ import item.identitydisk.UnchargedIdentityDisk;
 import item.lightgrenade.LightGrenade;
 import item.teleporter.Teleporter;
 import java.util.List;
+import square.AbstractSquare;
 import square.Square;
 import square.WallPart;
 import ObjectronExceptions.builderExceptions.GridBuildException;
@@ -58,11 +59,11 @@ public interface GridBuilder {
 	 * Place a flag with a certain owner ID at the specified coordinate.
 	 * 
 	 * @param coordinate
-	 * 			The coordinate where the new flag will be added.
+	 *        The coordinate where the new flag will be added.
 	 * @param id
-	 * 			The owner ID of the flag.
+	 *        The owner ID of the flag.
 	 */
-    void placeFlag(Coordinate coordinate, int id);
+	void placeFlag(Coordinate coordinate, int id);
 	
 	/**
 	 * Place a {@link LightGrenade light grenade} at the specified coordinate.
@@ -143,14 +144,9 @@ public interface GridBuilder {
 	 */
 	boolean canPlaceItem(Coordinate coordinate);
 	
-	// TODO maybe we need a canPlaceIDdisk method... instead of doing the
-	// "coordinate already contains" check at the director
-	
 	/**
 	 * Returns all neighbours of a specified coordinate, where one can directly
 	 * move to (i.e. teleporting is not included).
-	 * 
-	 * TODO include teleporting?
 	 * 
 	 * @param coordinate
 	 *        The coordinate to get the neighbours from

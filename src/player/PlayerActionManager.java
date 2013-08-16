@@ -76,7 +76,9 @@ public class PlayerActionManager {
 	}
 	
 	/**
-	 * Reset the number of actions left
+	 * Reset the number of actions left to one. This is done when the turn
+	 * is being ended. The one actoin left will be substracted by the End
+	 * Turn action.
 	 */
 	void resetActionsToEndTurn() {
 		//this.actionsLeft = 0;
@@ -98,9 +100,9 @@ public class PlayerActionManager {
 			
 			effect.execute(player);
 			
-//			this.actionsLeft = Math.min(this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN,
-//					MAX_NUMBER_OF_ACTIONS_PER_TURN);
-			this.actionsLeft = this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN;
+			this.actionsLeft = Math.min(this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN,
+					MAX_NUMBER_OF_ACTIONS_PER_TURN);
+//			this.actionsLeft = this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		}
 	}
 	

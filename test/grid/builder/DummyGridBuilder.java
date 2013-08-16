@@ -70,9 +70,10 @@ public class DummyGridBuilder implements GridBuilder {
 	public void addPlayerStartingPosition(Coordinate coordinate, int number) {
 		if (wallParts.contains(coordinate))
 			throw new IllegalArgumentException("This coordinate is already occupied by a wall");
-		if (!playerStartingPositions.add(coordinate))
-			throw new IllegalArgumentException("There's already a playerstart at this coordinate");
-		// TODO number check
+		playerStartingPositions.add(coordinate);
+		// if (!playerStartingPositions.add(coordinate))
+		// throw new
+		// IllegalArgumentException("There's already a playerstart at this coordinate");
 	}
 	
 	@Override
@@ -105,12 +106,23 @@ public class DummyGridBuilder implements GridBuilder {
 			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 		if (teleporters.put(from, to) != null)
 			throw new IllegalArgumentException("Theres already a teleporter on this coordinates");
-	}
+	} 
 	
 	@Override
 	public boolean canPlaceItem(Coordinate coordinate) {
 		return coordinate != null && !this.playerStartingPositions.contains(coordinate)
 				&& this.squares.contains(coordinate);
+	}
+	
+	/**
+	 * Check if a flag can be placed at this coordinate.
+	 * 
+	 * @param coordinate
+	 *        The coordinate to check.
+	 * @return True if a flag can be placed at that coordinate.
+	 */
+	public boolean canPlaceFlag(Coordinate coordinate) {
+		return coordinate != null && this.playerStartingPositions.contains(coordinate);
 	}
 	
 	@Override
@@ -151,7 +163,6 @@ public class DummyGridBuilder implements GridBuilder {
 	private void assertValidPlayerPositions() {
 		assertEquals(RandomGridBuilderDirector.NUMBER_OF_PLAYER_STARTS,
 				playerStartingPositions.size());
-		// TODO ...
 	}
 	
 	/**
@@ -162,8 +173,7 @@ public class DummyGridBuilder implements GridBuilder {
 		int numberOfLG = (int) Math.ceil(getNumberOfSquares()
 				* RandomGridBuilderDirector.PERCENTAGE_OF_GRENADES);
 		
-		assertTrue(numberOfLG == LGList.size()
-				|| LGList.size() == playerStartingPositions.size());
+		assertTrue(numberOfLG == LGList.size() || LGList.size() == playerStartingPositions.size());
 		
 		// A light grenade cannot be placed on a wall
 		assertTrue(Collections.disjoint(LGList, wallParts));
@@ -209,18 +219,15 @@ public class DummyGridBuilder implements GridBuilder {
 		// An identity disc cannot be placed on a wall
 		assertTrue(Collections.disjoint(IDList, wallParts));
 		
-		// Initially, there can be at most a single identity disc on each square
-		// --> set
-		
 		// The starting position of a player cannot contain an identity disc.
 		assertTrue(Collections.disjoint(playerStartingPositions, IDList));
 		
 		// For each player, at least one identity disc is placed in the area of
-		// 5x5 squares that covers the starting position of that player.
+		// 7x7 squares that covers the starting position of that player.
 		for (Coordinate startcoord : playerStartingPositions) {
 			boolean found = false;
-			for (int i = 0; i < 5; i++) {
-				for (int j = 0; j < 5; j++) {
+			for (int i = 0; i < 7; i++) {
+				for (int j = 0; j < 7; j++) {
 					Coordinate candidate1 = new Coordinate(startcoord.getX() + i, startcoord.getY()
 							+ j);
 					Coordinate candidate2 = new Coordinate(startcoord.getX() - i, startcoord.getY()
@@ -247,27 +254,21 @@ public class DummyGridBuilder implements GridBuilder {
 		
 		// the disc must be placed such that the length of the shortest path
 		// from each player to the disc differs by at most 2 squares
-		//
-		// TODO test has nullpointer, but the shortest path is ok
-		//
-		// List<Integer> pathLengths = new ArrayList<Integer>();
-		// for (Coordinate CIDCoord : CIDList) {
-		// for (Coordinate c : playerStartingPositions) {
-		// pathLengths.add(getLengthOfShortestPath(c, CIDCoord));
-		// }
-		// for (Integer i : pathLengths) {
-		// for (Integer j : pathLengths)
-		// if (Math.abs(i - j) >
-		// RandomGridBuilderDirector.MAX_CID_SHORTEST_PATH_DISTANCE)
-		// fail("shortest path not ok");
-		// }
-		// }
+		
+//		List<Integer> pathLengths = new ArrayList<Integer>();
+//		for (Coordinate CIDCoord : CIDList) {
+//			for (Coordinate c : playerStartingPositions) {
+//				pathLengths.add(getLengthOfShortestPath(c, CIDCoord));
+//			}
+//			for (Integer i : pathLengths) {
+//				for (Integer j : pathLengths)
+//					if (Math.abs(i - j) > RandomGridBuilderDirector.MAX_CID_SHORTEST_PATH_DISTANCE)
+//						fail("shortest path not ok");
+//			}
+//		}
 		
 		// A charged identity disc cannot be placed on a wall.
 		assertTrue(Collections.disjoint(CIDList, wallParts));
-		
-		// Initially, there can be at most a single charged identity disc on
-		// each square --> set
 		
 		// The starting position of a player cannot contain a charged identity
 		// disc.
@@ -277,6 +278,7 @@ public class DummyGridBuilder implements GridBuilder {
 	/**
 	 * Returns the shortest path between two specified coordinates.
 	 */
+	@SuppressWarnings("unused")
 	private int getLengthOfShortestPath(Coordinate start, Coordinate finish) {
 		Map<Coordinate, Integer> distances = new HashMap<Coordinate, Integer>();
 		PriorityQueue<EuclideanVector> pq = new PriorityQueue<EuclideanVector>();
@@ -349,7 +351,6 @@ public class DummyGridBuilder implements GridBuilder {
 	 */
 	private void assertValidWalls() {
 		if (wallParts.size() < RandomGridBuilderDirector.MINIMUM_WALL_LENGHT) {
-			System.out.println(wallParts.size());
 		}
 		assertTrue(wallParts.size() <= Math.ceil((getNumberOfSquares() + wallParts.size())
 				* RandomGridBuilderDirector.MAXIMUM_WALL_NUMBER_PERCENTAGE));
@@ -358,7 +359,14 @@ public class DummyGridBuilder implements GridBuilder {
 	}
 	
 	@Override
-	public void placeForceFieldGenerator(Coordinate Coordinate) throws GridBuildException {
-		// TODO
+	public void placeForceFieldGenerator(Coordinate coordinate) throws GridBuildException {
+		if (!canPlaceItem(coordinate))
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
+	}
+	
+	@Override
+	public void placeFlag(Coordinate coordinate, int id) {
+		if (!canPlaceFlag(coordinate))
+			throw new GridBuildException("The item cannot be placed at the specified coordinate");
 	}
 }

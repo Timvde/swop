@@ -282,7 +282,9 @@ public class SquareContainer extends AbstractSquare {
 	 * might not happen, depending on the creator's characteristics.
 	 */
 	public void updatePowerFailure() {
-		powerFailureCreator.affect(this);
+		if (powerFailureCreator != null) {
+			powerFailureCreator.affect(this);
+		}
 	}
 	
 	/**

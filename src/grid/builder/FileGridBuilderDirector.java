@@ -19,6 +19,7 @@ import ObjectronExceptions.builderExceptions.InvalidGridFileException;
  * {@link RandomItemGridBuilderDirector#placeItemsOnBoard(Map, int, int)
  * supertype method}.
  */
+@SuppressWarnings("javadoc")
 public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	private Map<Coordinate, Expression>	grid;
@@ -91,8 +92,17 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 			return false;
 		else if (hasDoubleStartingPositions())
 			return false;
+		else if (hasSingleOrNoStartingPosition())
+			return false;
 		else
 			return true;
+	}
+	
+	private boolean hasSingleOrNoStartingPosition() {
+		if (startingCoordinates.size() <= 1)
+			return true;
+		
+		return false;
 	}
 	
 	private boolean hasDoubleStartingPositions() {

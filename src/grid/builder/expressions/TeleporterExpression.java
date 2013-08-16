@@ -3,7 +3,7 @@ package grid.builder.expressions;
 import grid.Coordinate;
 import grid.builder.GridBuilder;
 
-
+@SuppressWarnings("javadoc")
 public class TeleporterExpression implements Expression {
 	
 	private Coordinate	destination;

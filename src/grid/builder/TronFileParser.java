@@ -22,8 +22,10 @@ import ObjectronExceptions.builderExceptions.InvalidGridFileException;
  * these can be added with a . separator. 
  *
  */
+@SuppressWarnings("javadoc")
 public class TronFileParser {
 	
+	@SuppressWarnings("unused")
 	private final File	file;
 	private Scanner		scanner;
 	

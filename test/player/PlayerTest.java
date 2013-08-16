@@ -107,18 +107,11 @@ public class PlayerTest implements Observer {
 	}
 	
 	@Test
-	public void testEndTurnWithoutMove() {
-		player.performAction(new EndTurnAction());
-		
-		// test whether player sets itself lost and reported it
-		assertEquals(PlayerState.FINISHED, player.getPlayerState());
-		assertEquals(TurnEvent.END_TURN, this.getTurnEventOfNotify());
-	}
-	
-	@Test
 	public void testCanPerformAction() {
 		assertIsCurrentPlayerTurn();
-		switchPlayers();
+		// switch
+		db.getCurrentPlayer().skipNumberOfActions(4);
+		db.actionPerformed(db.getCurrentPlayer());
 		// now it's not this player's turn. It should not be able to execute
 		// actions
 		boolean exceptionThrown = false;
@@ -140,7 +133,7 @@ public class PlayerTest implements Observer {
 		assertTrue(exceptionThrown);
 		
 		try {
-			player.performAction(new UseAction(new LightGrenade(new DummyEffectFactory())));
+			player.performAction(new UseAction(new LightGrenade(new DummyEffectFactory()), null));
 		}
 		catch (IllegalActionException e) {
 			exceptionThrown = true;
@@ -175,31 +168,38 @@ public class PlayerTest implements Observer {
 				player.getAllowedNumberOfActions());
 		assertIsCurrentPlayerTurn();
 		
-		// subtract another two: nb of actions will become zero
+		// subtract another three: nb of actions will become zero
 		// --> player must have asked the db to switch players
-		player.skipNumberOfActions(2);
-		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 3,
+		player.skipNumberOfActions(3);
+		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN - 4,
 				player.getAllowedNumberOfActions());
+		db.actionPerformed(player);
 		assertIsNotCurrentPlayerTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 		
-		// simulate player switch
-		switchPlayers();
-		assertIsCurrentPlayerTurn();
+		// switch back
+		db.getCurrentPlayer().skipNumberOfActions(4);
+		db.actionPerformed(db.getCurrentPlayer());
 		
 		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		
-		// subtract four at once
-		player.skipNumberOfActions(4);
+		// subtract five at once
+		player.skipNumberOfActions(5);
+		db.actionPerformed(player);
 		assertIsNotCurrentPlayerTurn();
-		switchPlayers();
-		// the result should now be two ( 3 - 4 + 3 )
-		assertEquals(2, player.getAllowedNumberOfActions());
+		
+		// switch back
+		db.getCurrentPlayer().skipNumberOfActions(4);
+		db.actionPerformed(db.getCurrentPlayer());
+		
+		// the result should now be two ( 4 - 5 + 4 )
+		assertEquals(3, player.getAllowedNumberOfActions());
 	}
 	
 	@Test
 	public void testAssignNewTurn() {
+		setUp();
 		assertIsCurrentPlayerTurn();
 		db.assignNewTurn(player);
 		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
@@ -210,13 +210,13 @@ public class PlayerTest implements Observer {
 		player.skipNumberOfActions(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN + 4);
 		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
+		db.actionPerformed(player);
 		// player should have switched turns (allowed nb actions < 0)
 		assertIsNotCurrentPlayerTurn();
 		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
 		
-		switchPlayers();
 		assertIsNotCurrentPlayerTurn();
-		assertEquals(-1, player.getAllowedNumberOfActions());
+		assertEquals(-4, player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());
 		assertIsNotCurrentPlayerTurn();
 	}
@@ -229,11 +229,6 @@ public class PlayerTest implements Observer {
 	}
 	
 	/* ############ PlayerDb methods (private) ############# */
-	
-	private void switchPlayers() {
-		db.getCurrentPlayer().endTurn();
-		assertEquals(TurnEvent.END_TURN, getTurnEventOfNotify());
-	}
 	
 	private void assertIsCurrentPlayerTurn() {
 		assertEquals(player, db.getCurrentPlayer());

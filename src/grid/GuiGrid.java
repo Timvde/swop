@@ -1,8 +1,11 @@
 package grid;
 
 import java.util.Set;
-import square.Square;
 
+/**
+ * This is a grid object used by the GUI, with limited methods for encapsulation.
+ *
+ */
 public interface GuiGrid {
 	
 	/**

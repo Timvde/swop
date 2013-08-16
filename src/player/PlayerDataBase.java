@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import square.PropertyType;
-import square.Square;
 import square.SquareContainer;
 
 /**
@@ -216,25 +215,32 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 */
 	void actionPerformed(TronPlayer player) {
 		if (player.equals(getCurrentPlayer())) {
-			System.out.println("action performed..");
 			notifyTurnEvent(TurnEvent.END_ACTION);
 			checkEndTurn(player);
 		}
 	}
 	
 	/**
-	 * Clears the current DB. Destroys all the players within so that no-one can
-	 * use an old Player reference to break the game.
+	 * Clears the current DB. 
 	 */
 	public void clearDataBase() {
+		this.playerList.clear();
+		this.numOfInitialPlayers = 0;
+	}
+	
+	/**
+	 * Clears the current DB. Destroys all the players within so that no-one can
+	 * use an old Player reference to break the game. This must only be used for tests.
+	 */
+	public void clearDataBaseAndPlayers() {
 		
-//		for (TronPlayer player : this.playerList) {
-//			/*
-//			 * Set all references of the player to null so that no-one can still
-//			 * play with an old player.
-//			 */
-//			player.endPlayerLife();
-//		}
+		for (TronPlayer player : this.playerList) {
+			/*
+			 * Set all references of the player to null so that no-one can still
+			 * play with an old player.
+			 */
+			player.endPlayerLife();
+		}
 		this.playerList.clear();
 		this.numOfInitialPlayers = 0;
 

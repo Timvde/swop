@@ -32,6 +32,7 @@ public class GUIDataController {
 	 *        The grid the controller will use. This may be <code>null</code>,
 	 *        but then one has to call the {@link #setGrid(Grid)} method later.
 	 */
+	@SuppressWarnings("javadoc")
 	public GUIDataController(PlayerDataBase playerDB, GuiGrid grid) {
 		if (playerDB == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");

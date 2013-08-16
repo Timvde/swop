@@ -43,6 +43,7 @@ public class UseAction implements Action {
 	 * @throws IllegalUseException
 	 *         The player must be allowed to use the item.
 	 */
+	@SuppressWarnings("javadoc")
 	public void execute(TronPlayer player) {
 		SquareContainer square = (SquareContainer) player.getCurrentPosition();
 		if (!player.canPerformAction())

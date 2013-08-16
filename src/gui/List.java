@@ -5,7 +5,7 @@ import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({ "rawtypes", "javadoc" })
 public final class List {
 	
 	final JList list;

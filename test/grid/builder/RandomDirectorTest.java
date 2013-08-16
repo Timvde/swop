@@ -16,7 +16,7 @@ public class RandomDirectorTest {
 		DummyGridBuilder builder = new DummyGridBuilder();
 		RandomGridBuilderDirector director = new RandomGridBuilderDirector(builder);
 		
-		for (int i = 0; i < 80; i++) {
+		for (int i = 0; i < 30; i++) {
 			director.setWidth(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH + i);
 			director.setHeight(RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT
 					+ new Random().nextInt(10) + i);

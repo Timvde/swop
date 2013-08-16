@@ -11,6 +11,7 @@ import effects.RaceEffectFactory;
 import player.TurnEvent;
 import square.Direction;
 import square.NormalSquare;
+import square.Property;
 import square.SquareContainer;
 
 @SuppressWarnings("javadoc")
@@ -26,6 +27,13 @@ public class PrimaryPowerFailureTest {
 		pf = new PrimaryPowerFailure(sq, new RaceEffectFactory());
 	}
 	
+	private boolean hasPowerFailure(SquareContainer square) {
+		for (Property property : square.getProperties())
+			if (property instanceof PowerFailure)
+				return true;
+		return false;
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
 	public final void testConstructor_nullArgument() {
 		new PrimaryPowerFailure(null, new RaceEffectFactory());
@@ -39,7 +47,7 @@ public class PrimaryPowerFailureTest {
 	@Test
 	public final void testConstructor() {
 		assertEquals(sq, pf.getSquare());
-		assertTrue(sq.hasPowerFailure());
+		assertTrue(hasPowerFailure(sq));
 		assertEquals(2, pf.getTimeToLive());
 	}
 	
@@ -47,14 +55,14 @@ public class PrimaryPowerFailureTest {
 	public final void testUpdateStatus() {
 		assertEquals(sq, pf.getSquare());
 		pf.updateStatus(TurnEvent.END_ACTION);
-		assertTrue(sq.hasPowerFailure());
+		assertTrue(hasPowerFailure(sq));
 		
 		pf.updateStatus(TurnEvent.END_TURN);
-		assertTrue(sq.hasPowerFailure());
+		assertTrue(hasPowerFailure(sq));
 		
 		pf.updateStatus(TurnEvent.END_TURN);
 		assertEquals(0, pf.getTimeToLive());
-		assertFalse(sq.hasPowerFailure());
+		assertFalse(hasPowerFailure(sq));
 	}
 	
 }

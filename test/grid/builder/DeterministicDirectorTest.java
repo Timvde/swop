@@ -3,7 +3,6 @@ package grid.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import item.IItem;
 import item.teleporter.Teleporter;
 import org.junit.Before;
@@ -24,20 +23,6 @@ public class DeterministicDirectorTest {
 		builder = new TronGridBuilder(new RaceEffectFactory());
 		GridBuilderDirector director = new DeterministicGridBuilderDirector(builder, false);
 		director.construct();
-	}
-	
-	@Test
-	public void testDeterministicNoPowerFailures() {
-		Grid grid = builder.getResult();
-		
-		assertEquals(grid.toString(), "s s s s s s s u s s \n" + "s s s s s s s s s s \n"
-				+ "s s s s s s s l s t \n" + "s s s s s s s s s s \n" + "s s s s s s s s s s \n"
-				+ "s s s s w w w w w s \n" + "s s s s s s s l s s \n" + "t s l s s s s s l s \n"
-				+ "s s s s s l l l l s \n" + "s s u s s s s s s s \n");
-	}
-	
-	public void testDeterministicPowerFailures() {
-		fail("not yet implemented");
 	}
 	
 	@Test

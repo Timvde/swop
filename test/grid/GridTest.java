@@ -1,9 +1,6 @@
 package grid;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import grid.builder.DeterministicGridBuilderDirector;
 import grid.builder.TronGridBuilder;
 import item.DummyEffectFactory;
@@ -60,48 +57,18 @@ public class GridTest {
 	}
 	
 	@Test
-	public final void testGetItemList() {
-		// does this needs testing?
-	}
-	
-	@Test
-	public final void testGetSquareAt() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
 	public final void testGetHeight() {
-		fail("Not yet implemented");
+		assertSame(grid.getHeight(), 10);
 	}
 	
 	@Test
 	public final void testGetWidth() {
-		fail("Not yet implemented");
+		assertSame(grid.getWidth(), 10);
 	}
 	
 	@Test
 	public final void testGetAllGridCoordinates() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public final void testCanMoveFromCoordInDirection() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public final void testUpdatePowerFailures() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public final void testAddPowerFailureAtCoordinate() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public final void testEnablePowerFailures() {
-		fail("Not yet implemented");
+		assertSame(grid.getAllGridCoordinates().size(), 100);
 	}
 	
 }

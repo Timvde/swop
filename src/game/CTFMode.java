@@ -10,7 +10,6 @@ import player.Player;
 import player.PlayerDataBase;
 import player.TronPlayer;
 import player.TurnEvent;
-import player.actions.UseAction;
 import effects.CTFEffectFactory;
 import effects.EffectFactory;
 
@@ -69,7 +68,6 @@ public class CTFMode implements GameMode {
 		
 		// The current player wins if he or she is the only one left
 		if (playerDB.getNumberOfPlayers() == 1) {
-			System.out.println("Current player wins because he's the only one left.");
 			return true;
 		}
 		
@@ -93,25 +91,19 @@ public class CTFMode implements GameMode {
 					ArrayList<Integer> flagsCurPlayer;
 					
 					if (!capturedFlags.containsKey(curPlayer)) {
-						System.out.println("First time player " + curPlayer.getID()
-								+ " captures a flag. He captures flag " + flagOwnerID);
+						
 						flagsCurPlayer = new ArrayList<Integer>();
 						flagsCurPlayer.add(flagOwnerID);
 						
 						capturedFlags.put(curPlayer, flagsCurPlayer);
-						System.out.println("Captured flags of player " + curPlayer.getID()
-								+ " are: " + flagsCurPlayer);
+						
 					}
 					else if (!capturedFlags.get(curPlayer).contains(flagOwnerID)) {
-						System.out.println("Player " + curPlayer.getID() + " captured flag "
-								+ flagOwnerID);
+						
 						flagsCurPlayer = capturedFlags.get(curPlayer);
 						flagsCurPlayer.add(flagOwnerID);
 						
 						capturedFlags.put(curPlayer, flagsCurPlayer);
-						
-						System.out.println("Captured flags of player " + curPlayer.getID()
-								+ " are: " + flagsCurPlayer);
 					}
 				}
 		}
@@ -120,8 +112,6 @@ public class CTFMode implements GameMode {
 				&& (capturedFlags.get(curPlayer).size() == playerDB.getNumberOfInitialPlayers() - 1)) {
 			// the player has captured all flags of all players still alive
 			// playerDB.clearDataBase();
-			System.out.println("Player " + curPlayer.getID() + " wins with "
-					+ capturedFlags.get(curPlayer).size() + " flags.");
 			return true;
 		}
 		return false;

@@ -97,6 +97,7 @@ public enum Direction {
 	 * @return the primary directions neighbouring this direction or itself if
 	 *         it a primary direction
 	 */
+	@SuppressWarnings("javadoc")
 	public List<Direction> getPrimaryDirections() {
 		List<Direction> primaryDirections = new ArrayList<Direction>();
 		if (isPrimaryDirection)

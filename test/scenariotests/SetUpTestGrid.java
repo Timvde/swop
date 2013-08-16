@@ -22,7 +22,7 @@ public abstract class SetUpTestGrid {
 	protected void setUp(GameMode mode) {
 		DummyGameRunner runner = new DummyGameRunner();
 		runner.newDeterministicTestGame(mode);
-		
+		 
 		this.endTurnCont = runner.getEndTurnCont();
 		this.moveCont = runner.getMoveCont();
 		this.pickUpCont = runner.getPickUpCont();

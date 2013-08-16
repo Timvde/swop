@@ -1,11 +1,9 @@
 package item.forcefieldgenerator;
 
 import java.util.List;
-import java.util.Random;
 import square.AbstractSquare;
 import square.AbstractSquareDecorator;
 import square.Property;
-import square.PropertyType;
 import square.SquareContainer;
 
 /**
@@ -24,7 +22,6 @@ public class ForceField implements Property {
 	private List<SquareContainer>	squares;
 	private ForceFieldState			state;
 	private int						counter;
-	private int						ID;
 	
 	/**
 	 * Create a Force Field.
@@ -39,19 +36,18 @@ public class ForceField implements Property {
 	 *        All the squares this force field affects
 	 * @param delayedStart
 	 *        A boolean to indicate that this force field needs a delayed start.
-	 *        This is used when a player puts one down and needs time to run.
+	 *        This is used when a player puts one down and needs a fair chance to run.
 	 */
 	public ForceField(ForceFieldGenerator generator1, ForceFieldGenerator generator2,
 			List<SquareContainer> squares, boolean delayedStart) {
-		System.out.println("creating new FF");
+		
 		this.generator1 = generator1;
 		this.generator2 = generator2;
 		this.squares = squares;
 		this.state = ForceFieldState.INACTIVE;
-		this.ID = new Random().nextInt(1000);
 		
 		if (delayedStart)
-			this.counter = -2;
+			this.counter = -1;
 		else
 			this.counter = 0;
 		
@@ -78,7 +74,6 @@ public class ForceField implements Property {
 	 * Update this forcefield that an action has happened.
 	 */
 	public void update() {
-		System.out.println(this.ID + " got updated!");
 		counter++;
 		
 		if (counter >= (NUMBER_OF_ACTIONS_TO_SWITCH) * this.squares.size()) {
