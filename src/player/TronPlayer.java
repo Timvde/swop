@@ -37,8 +37,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	private LightTrail					lightTrail;
 	/** The state of the player */
 	private PlayerState					state;
-	/** The player database in which the player is placed */
-	private PlayerDataBase				playerDB;
 	/** The Action Manager that manages this player's actions */
 	private final PlayerActionManager	actionManager;
 	
@@ -48,7 +46,7 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 * {@value PlayerDataBase#MAX_NUMBER_OF_ACTIONS_PER_TURN}. The default state
 	 * of a player is {@link PlayerState#WAITING}. Until the state is set to
 	 * {@link PlayerState#ACTIVE} the player will not be able to perform any
-	 * action.
+	 * action. The playerDB is only passed to give it to the action manager.
 	 */
 	TronPlayer(PlayerDataBase playerDB, SquareContainer startingPosition)
 			throws IllegalArgumentException {
@@ -59,11 +57,11 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 		this.inventory = new Inventory();
 		this.lightTrail = new LightTrail(startingPosition);
 		this.state = PlayerState.WAITING;
-		this.playerDB = playerDB;
 		this.setStartingPosition(startingPosition);
-		this.actionManager = new PlayerActionManager(this);
+		this.actionManager = new PlayerActionManager(this, playerDB);
 	}
 	
+	@Override
 	public boolean isDead() {
 		return this.isDead;
 	}
@@ -253,7 +251,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	 */
 	void endPlayerLife() {
 		this.isDead = true;
-		this.playerDB = null;
 		this.id = -1;
 		this.inventory.removeAll();
 		this.lightTrail.destroy();
@@ -278,8 +275,6 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 			lightTrail.updateLightTrail(currentSquare);
 		else
 			lightTrail.updateLightTrail();
-		// end a players action
-		playerDB.actionPerformed(this);
 	}
 	
 	PlayerActionManager getActionManager() {

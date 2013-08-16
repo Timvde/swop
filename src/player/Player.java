@@ -6,12 +6,6 @@ import player.actions.Action;
 import square.SquareContainer;
 import square.TronObject;
  
-/*
- * NOTE: Only PlayerDB holds a reference to the Player-objects. 
- * The controllers only get IPlayer references 
- * (using the getCurrentPlayer() method of the IPlayerDB class)
- */
-
 /**
  * A Player is the main actor of the game. It can move round, pick up objects
  * and tries to win the game

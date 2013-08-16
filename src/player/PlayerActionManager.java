@@ -14,6 +14,7 @@ public class PlayerActionManager {
 	private TronPlayer		player;
 	private int				actionsLeft;
 	private int				numberOfTurnsToSkip;
+	private PlayerDataBase	playerDB;
 	/** A boolean representing whether the player has moved */
 	private boolean			hasMoved;
 	
@@ -22,9 +23,12 @@ public class PlayerActionManager {
 	 * 
 	 * @param player
 	 *        The player which this ActionManager manages
+	 * @param playerDB
+	 *        The player database.
 	 */
-	public PlayerActionManager(TronPlayer player) {
+	public PlayerActionManager(TronPlayer player, PlayerDataBase playerDB) {
 		this.player = player;
+		this.playerDB = playerDB;
 		this.actionsLeft = 0;
 		this.numberOfTurnsToSkip = 0;
 	}
@@ -73,15 +77,16 @@ public class PlayerActionManager {
 	 */
 	void performedAction() {
 		decrementNumberOfActions(1);
+		playerDB.actionPerformed(this.player);
 	}
 	
 	/**
-	 * Reset the number of actions left to one. This is done when the turn
-	 * is being ended. The one actoin left will be substracted by the End
-	 * Turn action.
+	 * Reset the number of actions left to one. This is done when the turn is
+	 * being ended. The one actoin left will be substracted by the End Turn
+	 * action.
 	 */
 	void resetActionsToEndTurn() {
-		//this.actionsLeft = 0;
+		// this.actionsLeft = 0;
 		this.actionsLeft = 1;
 	}
 	
@@ -102,7 +107,8 @@ public class PlayerActionManager {
 			
 			this.actionsLeft = Math.min(this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN,
 					MAX_NUMBER_OF_ACTIONS_PER_TURN);
-//			this.actionsLeft = this.actionsLeft + MAX_NUMBER_OF_ACTIONS_PER_TURN;
+			// this.actionsLeft = this.actionsLeft +
+			// MAX_NUMBER_OF_ACTIONS_PER_TURN;
 		}
 	}
 	
