@@ -17,6 +17,7 @@ import controllers.NewGameController;
 public class StartGameTest {
 	
 	private NewGameController	newGameCont;
+	private static final int	NUMBER_OF_PLAYERS	= 4;
 	
 	@Before
 	public void setUp() {
@@ -46,18 +47,18 @@ public class StartGameTest {
 	@Test
 	public void testNewCTFGameCorrectDimensions() {
 		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH,
-				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT);
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT, NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewCTFGameInCorrectDimensions() {
 		newGameCont.newCTFGame(RandomGridBuilderDirector.MINIMUM_GRID_WIDTH - 1,
-				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT - 1);
+				RandomGridBuilderDirector.MINIMUM_GRID_HEIGHT - 1, NUMBER_OF_PLAYERS);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testNewCTFGame_negativeDimensions() {
-		newGameCont.newCTFGame(-1, 10);
+		newGameCont.newCTFGame(-1, 10, NUMBER_OF_PLAYERS);
 	}
 	
 	// ############## test newRaceGame(String) ################
