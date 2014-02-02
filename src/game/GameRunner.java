@@ -119,8 +119,10 @@ public class GameRunner {
 	 */
 	public void newGame(GameMode mode, String file) throws InvalidGridFileException,
 			IllegalStateException, FileNotFoundException {
-		if (mode == null || file == null)
-			throw new IllegalArgumentException("the file and mode cannot be null");
+		if (mode == null)
+			throw new IllegalArgumentException("The game mode must be set");
+		if (file == null)
+			throw new IllegalArgumentException("The file must be set");
 	
 		
 		TronGridBuilder builder = new TronGridBuilder(mode.getEffectFactory());
@@ -140,7 +142,7 @@ public class GameRunner {
 	 *        the grid for the game
 	 * @throws IllegalStateExcption
 	 *         The number of players as {@link GameMode#getNumberOfPlayers()
-	 *         given by the mode} must be less then or equal to the number of
+	 *         given by the mode} must be less than or equal to the number of
 	 *         starting locations defined in the grid.
 	 */
 	protected void createGame(GameMode mode, Grid grid) throws IllegalStateException {

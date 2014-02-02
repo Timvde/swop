@@ -33,13 +33,6 @@ public class Flag extends Item {
 			this.teleportBack();
 	}
 	
-	/**
-	 * Sends the flag back to its home square.
-	 */
-	public void sendHome() {
-		this.teleportBack();
-	}
-	
 	@Override
 	public boolean isCarriable() {
 		return true;
@@ -50,7 +43,10 @@ public class Flag extends Item {
 		return "Flag " + ownerID;
 	}
 	
-	private void teleportBack() {
+	/**
+	 * Sends the flag back to its home square.
+	 */
+	public void teleportBack() {
 		this.home.addItem(this);
 	}
 	

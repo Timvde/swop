@@ -52,6 +52,8 @@ public class NewGameController {
 	 *        The width of the game grid.
 	 * @param height
 	 *        The height of the game grid.
+	 * @param numberOfPlayers
+	 *        The number of players that will play this game.
 	 * @throws IllegalArgumentException
 	 *         The specified width and height must be greater then the minima.
 	 * @throws IllegalArgumentException
@@ -61,8 +63,9 @@ public class NewGameController {
 	 *         The number of players must be less then or equal to the number of
 	 *         starting locations defined in grid to be created.
 	 */
-	public void newCTFGame(int width, int height) throws IllegalArgumentException {
-		GameMode mode = new CTFMode(4);
+	public void newCTFGame(int width, int height, int numberOfPlayers)
+			throws IllegalArgumentException {
+		GameMode mode = new CTFMode(numberOfPlayers);
 		this.gameRunner.newGame(mode, width, height);
 	}
 	

@@ -5,7 +5,7 @@ package ObjectronExceptions;
  * inventory already contains a flag.
  *
  */
-public class InventoryAlreadyContainsFlagException extends IllegalActionException {
+public class InventoryAlreadyContainsFlagException extends IllegalPickUpException {
 	
 private static final long	serialVersionUID	= -3774112096236660086L;
 	

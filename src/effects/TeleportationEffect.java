@@ -1,11 +1,10 @@
 package effects;
 
-import ObjectronExceptions.IllegalTeleportException;
 import item.teleporter.Teleporter;
-import player.TronPlayer;
 import square.AbstractSquare;
 import square.SquareContainer;
 import square.TronObject;
+import ObjectronExceptions.IllegalTeleportException;
 
 /**
  * A Teleportation effect
@@ -41,14 +40,8 @@ public class TeleportationEffect extends AbstractEffect {
 		if (teleporter.getSquare() == null)
 			throw new IllegalStateException("Teleporter is not placed on a square");
 		if (!destinationSquare.canBeAdded(object)) {
-			if (object instanceof TronPlayer) {
 				throw new IllegalTeleportException(
-						"The player can't be be teleported to the destination.");
-			}
-			else {
-				throw new IllegalStateException(
-						"This object can't be teleported to the destination square");
-			}
+					"This TronObject can't be be teleported to the destination.");
 		}
 		
 		AbstractSquare currentSquare = teleporter.getSquare();

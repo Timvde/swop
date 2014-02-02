@@ -6,7 +6,7 @@ import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
 
 /**
- * This class will handle the move actions of the GUI.
+ * This class acts as an API to move players.
  * 
  * @author tom
  * 
@@ -28,14 +28,12 @@ public class MoveController {
 	}
 	
 	/**
-	 * Move the current player. The IllegalMoveException must be caught in the
-	 * GUI to notify players about move problems.
+	 * Move the current player.
 	 * 
 	 * @param direction
 	 *        The direction to move the player in.
 	 * @throws IllegalMoveException
-	 *         If the given direction is not a legal move. This can be caught in
-	 *         the GUI to display feedback.
+	 *         If the given direction is not a legal move.
 	 */
 	public void move(Direction direction) throws IllegalMoveException {
 		playerDB.getCurrentPlayer().performAction(new MoveAction(direction));

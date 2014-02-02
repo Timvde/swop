@@ -1,6 +1,7 @@
 package powerfailure;
 
 import java.util.Random;
+import player.TurnEvent;
 import square.PropertyCreator;
 import square.SquareContainer;
 import effects.EffectFactory;
@@ -37,5 +38,10 @@ public class PowerFailureCreator implements PropertyCreator {
 			if (rand.nextFloat() < POWER_FAILURE_CHANCE)
 				new PrimaryPowerFailure(square, effectFactory);
 		}
+	}
+
+	@Override
+	public TurnEvent getUpdateEvent() {
+		return TurnEvent.END_TURN;
 	}
 }

@@ -51,7 +51,7 @@ public class PickupItemAction implements Action {
 		// if the item is a flag and its the flag of the current player, return the flag
 		// to its home location and leave this method
 		if ((item instanceof Flag) && ((Flag) item).getOwnerID() == player.getID()) {
-			((Flag) item).sendHome();
+			((Flag) item).teleportBack();
 			square.remove(item);
 			
 			return;

@@ -26,8 +26,8 @@ import javax.swing.JOptionPane;
 import player.Player;
 import square.Direction;
 import ObjectronExceptions.IllegalMoveException;
+import ObjectronExceptions.IllegalPickUpException;
 import ObjectronExceptions.IllegalUseException;
-import ObjectronExceptions.InventoryAlreadyContainsFlagException;
 import ObjectronExceptions.InventoryFullException;
 import ObjectronExceptions.builderExceptions.GridBuildException;
 import controllers.EndTurnController;
@@ -104,7 +104,7 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 	private Image					squareBackground;
 	private Image					generatorInactive;
 	private Image					forceField;
-	private Image	flagImage;
+	private Image					flagImage;
 	
 	/**
 	 * This is the list of items that the current player can interact with.
@@ -229,8 +229,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 						Coordinate guiCoord = toGUIGridCoord(c);
 						
 						if (square.isStartingPosition()) {
-							graphics.drawImage(finish, guiCoord.getX(),
-									guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+							graphics.drawImage(finish, guiCoord.getX(), guiCoord.getY(),
+									SQUARE_SIZE, SQUARE_SIZE, null);
 						}
 						
 						// Draw powerfailures if necessary
@@ -287,8 +287,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 							}
 							if (i.getClass() == Flag.class) {
-								graphics.drawImage(flagImage, guiCoord.getX(),
-										guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+								graphics.drawImage(flagImage, guiCoord.getX(), guiCoord.getY(),
+										SQUARE_SIZE, SQUARE_SIZE, null);
 							}
 						}
 						
@@ -300,16 +300,16 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player1, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player1, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									break;
 								case 2:
 									if (guiDataController.getCurrentPlayer().getID() == 2) {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player2, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player2, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 3:
@@ -317,8 +317,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player3, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player3, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 4:
@@ -326,8 +326,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player4, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player4, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 5:
@@ -335,8 +335,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player5, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player5, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 6:
@@ -344,8 +344,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player6, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player6, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 7:
@@ -353,8 +353,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player7, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player7, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 8:
@@ -362,8 +362,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player8, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player8, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								case 9:
@@ -371,8 +371,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 										graphics.drawImage(greenBackground, guiCoord.getX(),
 												guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
 									}
-									graphics.drawImage(player9, guiCoord.getX(),
-											guiCoord.getY(), SQUARE_SIZE, SQUARE_SIZE, null);
+									graphics.drawImage(player9, guiCoord.getX(), guiCoord.getY(),
+											SQUARE_SIZE, SQUARE_SIZE, null);
 									
 									break;
 								default:
@@ -467,8 +467,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 				});
 		
 		// create num players CTF text field
-		numPlayersCTFTextField = gui.createTextField(modeElementsOffsetX, modeElementsOffsetY + 173,
-				70, 20);
+		numPlayersCTFTextField = gui.createTextField(modeElementsOffsetX,
+				modeElementsOffsetY + 173, 70, 20);
 		numPlayersCTFTextField.setText("4");
 		numPlayersCTFTextField.disable();
 		/* ---- ---- ---- ---- ----------- ---- ---- ---- ---- */
@@ -616,19 +616,18 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 					
 					public void run() {
 						// Use the itemListSelected to access the Item that is
-						// selected in the items on square list! Catch the 
-						// relevant exceptions for giving feedback to the player.
+						// selected in the items on square list! Catch the
+						// relevant exceptions for giving feedback to the
+						// player.
 						if (itemListSelected != null) {
 							try {
 								pickUpController.pickUpItem((IItem) itemListSelected);
 							}
 							catch (InventoryFullException e) {
-								JOptionPane.showMessageDialog(gui.getFrame(),
-										e.getMessage());
+								JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
 							}
-							catch (InventoryAlreadyContainsFlagException e) {
-								JOptionPane.showMessageDialog(gui.getFrame(),
-										e.getMessage());
+							catch (IllegalPickUpException e) {
+								JOptionPane.showMessageDialog(gui.getFrame(), e.getMessage());
 							}
 							itemListSelected = null;
 							gui.repaint();
@@ -671,10 +670,10 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 					public void run() {
 						
 						try {
+							int width = Integer.parseInt(gridWidthTextField.getText());
+							int height = Integer.parseInt(gridHeightTextField.getText());
 							if (modeComboBox.getSelectedIndex() == 0) {
 								try {
-									int width = Integer.parseInt(gridWidthTextField.getText());
-									int height = Integer.parseInt(gridHeightTextField.getText());
 									newGameController.newRaceGame(width, height);
 									gui.repaint();
 								}
@@ -684,17 +683,14 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 								}
 							}
 							if (modeComboBox.getSelectedIndex() == 1) {
-								try {
-									int width = Integer.parseInt(gridWidthTextField.getText());
-									int height = Integer.parseInt(gridHeightTextField.getText());
-									newGameController.newCTFGame(width, height);
-									gui.repaint();
-								}
-								catch (NumberFormatException e) {
-									JOptionPane.showMessageDialog(gui.getFrame(),
-											"Please use a valid number format for the number of players and grid dimensions.");
-								}
+								newGameController.newCTFGame(width, height,
+										Integer.parseInt(numPlayersCTFTextField.getText()));
+								gui.repaint();
 							}
+						}
+						catch (NumberFormatException e) {
+							JOptionPane.showMessageDialog(gui.getFrame(),
+									"Please use a valid number format for the number of players and grid dimensions.");
 						}
 						catch (IllegalArgumentException e) {
 							JOptionPane.showMessageDialog(gui.getFrame(),
@@ -810,11 +806,11 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 	/**
 	 * Draw a whole Grid object on the GUI.
 	 */
-	public void draw() {		
+	public void draw() {
 		if (this.gui != null)
 			gui.repaint();
 	}
-	 
+	
 	/**
 	 * This method will convert the game Grid coordinate to x and y coordinates
 	 * on the GUI frame.
@@ -865,9 +861,8 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 			
 			switch (state) {
 				case PLAYER_WON:
-					JOptionPane
-							.showMessageDialog(gui.getFrame(),
-									"The current player has won the game!");
+					JOptionPane.showMessageDialog(gui.getFrame(),
+							"The current player has won the game!");
 					break;
 				case PLAYER_LOSE:
 					JOptionPane.showMessageDialog(gui.getFrame(),
@@ -875,15 +870,15 @@ public class GUI implements Runnable, Observer, ArgumentsHandler {
 					break;
 			}
 		}
-		//else do nothing; return
+		// else do nothing; return
 	}
-
+	
 	@Override
 	public void handleArguments(UseArguments<?> arguments) {
-		int response = JOptionPane
-				.showOptionDialog(null, arguments.getQuestion(),
-						"This item needs more info", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
-						null, arguments.getPossibleAnswers().toArray(), arguments.getPossibleAnswers().get(0));
+		int response = JOptionPane.showOptionDialog(null, arguments.getQuestion(),
+				"This item needs more info", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, arguments.getPossibleAnswers().toArray(),
+				arguments.getPossibleAnswers().get(0));
 		arguments.setUserChoice(response);
 	}
 	

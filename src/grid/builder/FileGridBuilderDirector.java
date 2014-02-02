@@ -50,7 +50,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	
 	/**
 	 * Construct the grid specified in the file given in the constructor. This
-	 * method will also {@link RandomItemGridBuilderDirector <i>randomly</i>}
+	 * method will also {@link RandomItemGridBuilderDirector} <i>randomly</i>
 	 * (i.e. as specified by the Tron game constraints) place items on the grid.
 	 * 
 	 * @throws InvalidGridFileException

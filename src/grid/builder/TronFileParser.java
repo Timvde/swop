@@ -16,11 +16,12 @@ import java.util.Scanner;
 import ObjectronExceptions.builderExceptions.InvalidGridFileException;
 
 /**
- * File parser to parse a file for the TRON game and return an according expression
- * Squares can be defined by one of the following chars: *,# and ' '. Each square can have 
- * several arguments. Arguments are separated by a : char. If the items require an additional argument
- * these can be added with a . separator. 
- *
+ * File parser to parse a file for the TRON game and return an according
+ * expression Squares can be defined by one of the following chars: *,# and ' '.
+ * Each square can have several arguments. Arguments are separated by a : char.
+ * If the items require an additional argument these can be added with a .
+ * separator.
+ * 
  */
 @SuppressWarnings("javadoc")
 public class TronFileParser {
@@ -33,9 +34,9 @@ public class TronFileParser {
 	 * Create a new parser to parse a specified
 	 * 
 	 * @param file
-	 *        the file describing a new game board
+	 *        The file describing a new game board
 	 * @throws FileNotFoundException
-	 *         if the file does not exist
+	 *         If the file does not exist
 	 */
 	public TronFileParser(File file) throws FileNotFoundException {
 		if (!isValidFile(file))

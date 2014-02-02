@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 import player.Player;
-import player.TurnEvent;
 import effects.Effect;
 
 /**
@@ -26,7 +25,7 @@ public class SquareContainer extends AbstractSquare {
 	private AbstractSquare							square;
 	private HashMap<Direction, SquareContainer>		neighbours;
 	private Map<Property, AbstractSquareDecorator>	decorators;
-	private PropertyCreator							powerFailureCreator;
+	private List<PropertyCreator>					propertyCreators;
 	
 	/**
 	 * Create a new square container with specified neighbours, after this
@@ -57,6 +56,7 @@ public class SquareContainer extends AbstractSquare {
 		this.square = square;
 		this.decorators = new HashMap<Property, AbstractSquareDecorator>();
 		this.neighbours = new HashMap<Direction, SquareContainer>(neighbours);
+		this.propertyCreators = new ArrayList<PropertyCreator>();
 		
 		// Make sure the link is bidirectional
 		for (Direction direction : neighbours.keySet())
@@ -77,15 +77,6 @@ public class SquareContainer extends AbstractSquare {
 		if (neighbours == null)
 			return false;
 		return true;
-	}
-	
-	/**
-	 * Check if this square container represents a square that is a wall part.
-	 * 
-	 * @return True if the square contained is an instance of WallPart.
-	 */
-	public boolean isWallPart() {
-		return (this.square instanceof WallPart);
 	}
 	
 	/**
@@ -144,7 +135,7 @@ public class SquareContainer extends AbstractSquare {
 	 *        The property creator.
 	 */
 	public void addPropertyCreator(PropertyCreator creator) {
-		this.powerFailureCreator = creator;
+		this.propertyCreators.add(creator);
 	}
 	
 	/**
@@ -273,18 +264,9 @@ public class SquareContainer extends AbstractSquare {
 	@Override
 	public void update(Observable o, Object arg) {
 		square.update(o, arg);
-		if (arg == TurnEvent.END_TURN)
-			this.updatePowerFailure();
-	}
-	
-	/**
-	 * This method will ask the property creator to affect him. This might or
-	 * might not happen, depending on the creator's characteristics.
-	 */
-	public void updatePowerFailure() {
-		if (powerFailureCreator != null) {
-			powerFailureCreator.affect(this);
-		}
+		for (PropertyCreator creator : this.propertyCreators)
+			if (arg == creator.getUpdateEvent())
+				creator.affect(this);
 	}
 	
 	/**

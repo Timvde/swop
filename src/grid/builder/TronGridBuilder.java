@@ -47,7 +47,7 @@ public class TronGridBuilder implements GridBuilder {
 	 */
 	public TronGridBuilder(EffectFactory effectFactory) {
 		if (effectFactory == null)
-			throw new IllegalArgumentException("the factory cannot be null");
+			throw new IllegalArgumentException("The factory should be set");
 		
 		this.effectFactory = effectFactory;
 		this.createNewEmptyGrid();

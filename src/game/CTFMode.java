@@ -4,7 +4,9 @@ import item.Flag;
 import item.IItem;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import player.Inventory;
 import player.Player;
 import player.PlayerDataBase;
@@ -28,10 +30,10 @@ public class CTFMode implements GameMode {
 	/**
 	 * The minimum number of players at the start of CTFMode
 	 */
-	public static final int					MINIMUM_NUMBER_OF_PLAYERS	= 2;
+	public static final int				MINIMUM_NUMBER_OF_PLAYERS	= 2;
 	
-	private int								numberOfPlayers;
-	private Map<Player, ArrayList<Integer>>	capturedFlags;
+	private int							numberOfPlayers;
+	private Map<Player, Set<Integer>>	capturedFlags;
 	
 	/**
 	 * Creates a new CTFMode with a specified number of players.
@@ -47,7 +49,7 @@ public class CTFMode implements GameMode {
 			throw new IllegalArgumentException("the number of players must be valid");
 		
 		this.numberOfPlayers = numberOfPlayers;
-		this.capturedFlags = new HashMap<Player, ArrayList<Integer>>();
+		this.capturedFlags = new HashMap<Player, Set<Integer>>();
 	}
 	
 	/**
@@ -82,17 +84,18 @@ public class CTFMode implements GameMode {
 					// teleport the flag back.
 					Inventory playerInv = ((TronPlayer) curPlayer).getInventory();
 					playerInv.removeItem(item);
-					((Flag) item).sendHome();
+					((Flag) item).teleportBack();
 					
-					// See if this flag was already captured. If not, add it to
-					// the
-					// list for the current player.
+					/*
+					 * See if this flag was already captured. If not, add it to
+					 * the list for the current player.
+					 */
 					int flagOwnerID = ((Flag) item).getOwnerID();
-					ArrayList<Integer> flagsCurPlayer;
+					Set<Integer> flagsCurPlayer;
 					
 					if (!capturedFlags.containsKey(curPlayer)) {
 						
-						flagsCurPlayer = new ArrayList<Integer>();
+						flagsCurPlayer = new HashSet<Integer>();
 						flagsCurPlayer.add(flagOwnerID);
 						
 						capturedFlags.put(curPlayer, flagsCurPlayer);

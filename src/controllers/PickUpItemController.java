@@ -1,7 +1,6 @@
 package controllers;
 
 import ObjectronExceptions.IllegalPickUpException;
-import ObjectronExceptions.InventoryAlreadyContainsFlagException;
 import ObjectronExceptions.InventoryFullException;
 import item.IItem;
 import player.IPlayerDataBase;
@@ -46,13 +45,10 @@ public class PickUpItemController {
 	 * @throws InventoryFullException
 	 *         The inventory of the player is full. This can be caught in the
 	 *         GUI for displaying messages.
-	 * @throws InventoryAlreadyContainsFlagException
-	 *         The player is already carrying a flag and cannot pick another one
-	 *         up. This can be caught in the GUI for displaying messages.
 	 * 
 	 */
 	public void pickUpItem(IItem item) throws IllegalPickUpException, IllegalArgumentException,
-			InventoryFullException, InventoryAlreadyContainsFlagException {
+			InventoryFullException {
 		playerDB.getCurrentPlayer().performAction(new PickupItemAction(item));
 	}
 	

@@ -1,7 +1,6 @@
 package controllers;
 
 import grid.Coordinate;
-import grid.Grid;
 import grid.GuiGrid;
 import grid.GuiSquare;
 import item.IItem;
@@ -30,9 +29,8 @@ public class GUIDataController {
 	 *        The player database the controller will use.
 	 * @param grid
 	 *        The grid the controller will use. This may be <code>null</code>,
-	 *        but then one has to call the {@link #setGrid(Grid)} method later.
+	 *        but then one has to call the {@link #setGrid(GuiGrid)} method later.
 	 */
-	@SuppressWarnings("javadoc")
 	public GUIDataController(PlayerDataBase playerDB, GuiGrid grid) {
 		if (playerDB == null)
 			throw new IllegalArgumentException("the specified argument cannot be null");

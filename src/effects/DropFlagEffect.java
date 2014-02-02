@@ -5,6 +5,7 @@ import item.IItem;
 import java.util.List;
 import java.util.Random;
 import player.TronPlayer;
+import square.PropertyType;
 import square.SquareContainer;
 import square.TronObject;
 
@@ -38,7 +39,7 @@ public class DropFlagEffect extends AbstractEffect {
 				// wallpart.
 				SquareContainer neighbour = neighbours.get(new Random().nextInt(neighbours.size()));
 				int i = 0;
-				while (neighbour.isWallPart()) {
+				while (neighbour.hasProperty(PropertyType.WALL)) {
 					neighbour = neighbours.get(new Random().nextInt(neighbours.size()));
 					
 					if (i > 8) {
