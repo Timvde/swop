@@ -19,8 +19,7 @@ public interface Effect {
 	 * Executes the effect on a given item. If the effect does not modify the
 	 * specified object, it should be left in the same state.
 	 * 
-	 * If a new effect has been set, the execute method on the other effect must
-	 * be called after executing this effect.
+	 * This method guarantees the whole effect chain will be called.
 	 * 
 	 * @param object
 	 *        the object on which the effect will be executed

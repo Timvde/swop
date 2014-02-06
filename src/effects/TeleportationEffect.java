@@ -19,7 +19,7 @@ public class TeleportationEffect extends AbstractEffect {
 	}
 	
 	@Override
-	public void execute(TronObject object) {
+	public void preExecutionHook(TronObject object) {
 		// If we can teleport, do it ...
 		if (object.asTeleportable() != null) {
 			if (teleporter.getSkipNextTeleport() == false) {
@@ -30,8 +30,6 @@ public class TeleportationEffect extends AbstractEffect {
 			else if (teleporter.getSkipNextTeleport() == true)
 				teleporter.setSkipNextTeleport(false);
 		}
-		
-		super.execute(object);
 	}
 	
 	private void teleport(TronObject object, SquareContainer destinationSquare) {

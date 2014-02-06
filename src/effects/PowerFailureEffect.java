@@ -15,12 +15,10 @@ public class PowerFailureEffect extends AbstractEffect {
 	}
 	
 	@Override
-	public void execute(TronObject object) {
+	public void preExecutionHook(TronObject object) {
 		if (execute && object.asAffectedByPowerFailure() != null) {
 			object.asAffectedByPowerFailure().damageByPowerFailure();
 		}
-		
-		super.execute(object);
 	}
 	
 	@Override

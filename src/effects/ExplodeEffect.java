@@ -23,13 +23,11 @@ public class ExplodeEffect extends AbstractEffect {
 	}
 	
 	@Override
-	public void execute(TronObject object) {
+	public void preExecutionHook(TronObject object) {
 		if (canExecuteEffect(object)) {
 			lightGrenade.explode();
 			object.asExplodable().skipNumberOfActions(damage);
 		}
-		
-		super.execute(object);
 	}
 	
 	/**

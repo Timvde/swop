@@ -24,7 +24,7 @@ public class DropFlagEffect extends AbstractEffect {
 	 *         The flagkeeper's current square must have at least one neigbour.
 	 */
 	@Override
-	public void execute(TronObject object) throws IllegalStateException {
+	public void preExecutionHook(TronObject object) throws IllegalStateException {
 		if (object instanceof TronPlayer) {
 			TronPlayer flagkeeper = (TronPlayer) object;
 			Flag flag = getFlagFromPlayer(flagkeeper); 
@@ -52,7 +52,6 @@ public class DropFlagEffect extends AbstractEffect {
 				neighbour.addItem(flag);
 			}
 		}
-		super.execute(object);
 	}
 	
 	/**

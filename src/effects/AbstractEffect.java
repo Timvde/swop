@@ -10,7 +10,7 @@ import square.TronObject;
  * To implement an effect, a programmer needs only to implement the
  * {@link #execute(square.TronObject)} method. At the end of this method, the
  * programmer MUST call the execute method of the next effect. This effect is
- * accessible as a protected field. <br> 
+ * accessible as a protected field. <br>
  * 
  * </p>
  */
@@ -31,8 +31,17 @@ public abstract class AbstractEffect implements Effect {
 	}
 	
 	@Override
-	public void execute(TronObject object) {
+	public final void execute(TronObject object) {
+		preExecutionHook(object);
 		if (next != null)
 			next.execute(object);
 	}
+	
+	/**
+	 * This method allows subclasses to execute their function before the next
+	 * effect in the chain is called.
+	 * 
+	 * @param object
+	 */
+	protected void preExecutionHook(TronObject object) {}
 }

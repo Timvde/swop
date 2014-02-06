@@ -17,12 +17,11 @@ public class PowerFailureStartTurnEffect extends AbstractEffect {
 	private static final int	POWER_FAILURE_PENALTY_AT_START_TURN	= 1;
 	
 	@Override
-	public void execute(TronObject object) {
+	public void preExecutionHook(TronObject object) {
 		if (object instanceof TronPlayer) {
 			TronPlayer player = (TronPlayer) object;
 			player.skipNumberOfActions(POWER_FAILURE_PENALTY_AT_START_TURN);
 		}
-		super.execute(object);
 	}
 	
 }

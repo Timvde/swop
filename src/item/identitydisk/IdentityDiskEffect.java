@@ -11,12 +11,10 @@ import effects.AbstractEffect;
 public class IdentityDiskEffect extends AbstractEffect {
 	
 	@Override
-	public void execute(TronObject object) {
+	public void preExecutionHook(TronObject object) {
 		if (object instanceof TronPlayer) {
 			TronPlayer player = (TronPlayer) object;
 			player.skipNextTurn();
 		}
-		
-		super.execute(object);
 	}
 }

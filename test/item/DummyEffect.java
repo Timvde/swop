@@ -13,11 +13,10 @@ public class DummyEffect extends AbstractEffect {
 	private boolean	isModified = false;
 	
 	@Override
-	public void execute(TronObject object) {
+	public void preExecutionHook(TronObject object) {
 		if (object instanceof LightGrenade)
 			((ExplodeEffect) ((LightGrenade) object).getEffect()).increaseStrength();
 		isExecuted = true;
-		super.execute(object);
 	}
 	
 	@Override
