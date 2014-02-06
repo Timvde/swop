@@ -243,6 +243,16 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	}
 	
 	/**
+	 * This method will make sure a new turn is assigned to a player correctly.
+	 * It will take into account all properties of a square that can affect a
+	 * player's turns.
+	 */
+	void assignNewTurn() {
+		setPlayerState(PlayerState.ACTIVE);
+		getActionManager().assignNewTurn();
+	}
+	
+	/**
 	 * Sets all references of the player to null so that no-one can modify the
 	 * game with an old player. The state of the player will be set to FINISHED.
 	 * 

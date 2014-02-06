@@ -201,7 +201,7 @@ public class PlayerTest implements Observer {
 	public void testAssignNewTurn() {
 		setUp();
 		assertIsCurrentPlayerTurn();
-		db.assignNewTurn(player);
+		player.assignNewTurn();
 		assertEquals(PlayerActionManager.MAX_NUMBER_OF_ACTIONS_PER_TURN,
 				player.getAllowedNumberOfActions());
 		assertFalse(player.hasMovedYet());

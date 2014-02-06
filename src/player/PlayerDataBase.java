@@ -61,7 +61,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		// Set the first player as starting player.
 		this.currentPlayerIndex = 0;
 		
-		assignNewTurn(playerList.get(currentPlayerIndex));
+		playerList.get(currentPlayerIndex).assignNewTurn();
 		
 	}
 	
@@ -161,7 +161,6 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		notifyTurnEvent(TurnEvent.END_TURN);
 		
 		// Switch players and assign a new turn
-		// player.getActionManager().resetActions();
 		player.setPlayerState(PlayerState.WAITING);
 		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 		TronPlayer newPlayer = playerList.get(currentPlayerIndex);
@@ -171,7 +170,10 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		 * may introduce a new player switch (the resulting penalty after adding
 		 * new actions may still be < 0)
 		 */
-		assignNewTurn(newPlayer);
+		newPlayer.assignNewTurn();
+		
+		// allowed number of actions could be <= 0 because of penalties
+		checkEndTurn();
 	}
 	
 	private void notifyTurnEvent(TurnEvent event) {
@@ -180,29 +182,13 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	}
 	
 	/**
-	 * This method will make sure a new turn is assigned to a player correctly.
-	 * It will take into account all properties of a square that can affect a
-	 * player's turns.
-	 * 
-	 * @param player
-	 *        The player to assign a new turn to
-	 */
-	void assignNewTurn(TronPlayer player) {
-		player.setPlayerState(PlayerState.ACTIVE);
-		player.getActionManager().assignNewTurn();
-		
-		// allowed number of actions could be <= 0 because of penalties
-		checkEndTurn(player);
-	}
-	
-	/**
 	 * This method checks if a player has any actions left. If not, it ends its
 	 * turn.
 	 */
-	private void checkEndTurn(TronPlayer player) {
-		if (player.getAllowedNumberOfActions() <= 0) {
+	private void checkEndTurn() {
+		if (getCurrentPlayer().getAllowedNumberOfActions() <= 0) {
 			// this method will return if it's not this player's turn
-			endPlayerTurn(player);
+			endPlayerTurn(getCurrentPlayer());
 		}
 	}
 	
@@ -216,7 +202,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	void actionPerformed(TronPlayer player) {
 		if (player.equals(getCurrentPlayer())) {
 			notifyTurnEvent(TurnEvent.END_ACTION);
-			checkEndTurn(player);
+			checkEndTurn();
 		}
 	}
 	
