@@ -99,10 +99,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 	}
 	
 	private boolean hasSingleOrNoStartingPosition() {
-		if (startingCoordinates.size() <= 1)
-			return true;
-		
-		return false;
+		return (startingCoordinates.size() <= 1);
 	}
 	
 	private boolean hasDoubleStartingPositions() {
@@ -174,10 +171,7 @@ public class FileGridBuilderDirector extends RandomItemGridBuilderDirector {
 				}
 		}
 		
-		if (squaresReachableFromStart.size() != builder.getNumberOfSquares()) {
-			return true;
-		}
-		return false;
+		return (squaresReachableFromStart.size() != builder.getNumberOfSquares());
 	}
 	
 	/**
