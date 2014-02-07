@@ -38,7 +38,7 @@ public class TeleportationEffect extends AbstractEffect {
 		if (teleporter.getSquare() == null)
 			throw new IllegalStateException("Teleporter is not placed on a square");
 		if (!destinationSquare.canBeAdded(object)) {
-				throw new IllegalTeleportException(
+			throw new IllegalTeleportException(
 					"This TronObject can't be be teleported to the destination.");
 		}
 		

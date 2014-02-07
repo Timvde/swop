@@ -262,14 +262,14 @@ public class TronPlayer implements Player, Teleportable, AffectedByPowerFailure,
 	void endPlayerLife() {
 		this.isDead = true;
 		this.id = -1;
-		this.inventory.removeAll();
+		getInventory().removeAll();
 		this.lightTrail.destroy();
-		this.state = PlayerState.FINISHED;
+		setPlayerState(PlayerState.FINISHED);
 		
-		if (currentSquare != null)
-			this.currentSquare.remove(this);
+		if (getCurrentPosition() != null)
+			getCurrentPosition().remove(this);
 		
-		this.currentSquare = null;
+		setSquare(null);
 	}
 	
 	public void performAction(Action action) {

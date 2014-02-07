@@ -54,8 +54,7 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		for (SquareContainer playerStartingPosition : startingPositions) {
 			TronPlayer newPlayer = new TronPlayer(this, playerStartingPosition);
-			this.playerList.add(newPlayer);
-			this.numOfInitialPlayers++;
+			addPlayerToDB(newPlayer);
 		}
 		
 		// Set the first player as starting player.
@@ -63,6 +62,11 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 		
 		playerList.get(currentPlayerIndex).assignNewTurn();
 		
+	}
+	
+	private void addPlayerToDB(TronPlayer player) {
+		this.playerList.add(player);
+		this.numOfInitialPlayers++;
 	}
 	
 	/**
@@ -247,9 +251,8 @@ public class PlayerDataBase extends Observable implements IPlayerDataBase {
 	 * possessed disappear.
 	 */
 	public void removeCurrentPlayer() {
-		TronPlayer curPlayer = this.playerList.get(currentPlayerIndex);
+		TronPlayer curPlayer = getCurrentPlayer();
 		curPlayer.endPlayerLife();
 		this.playerList.remove(curPlayer);
-		this.currentPlayerIndex = (this.currentPlayerIndex + 1) % getNumberOfPlayers();
 	}
 }
